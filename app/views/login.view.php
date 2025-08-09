@@ -1,11 +1,7 @@
 <?php require '../app/views/partials/header.php'; ?>
         <!-- <form method="post">
 
-            <?php if(!empty($errors)):?>
-            <div class="alert alert-danger">       
-                <?= implode("<br>",$errors)?> 
-            </div>
-            <?php endif;?>
+            
 
           <h1>Please sign in</h1>
            <div>
