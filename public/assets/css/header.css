@@ -1,0 +1,245 @@
+/* header.css */
+/* Import Poppins font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800&display=swap');
+
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #f5f5f5;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Header Container */
+.header {
+    display: flex;
+    padding: 20px 210px 20px 50px;
+    align-items: center;
+    gap: 515px;
+    background: #FFF;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(18, 20, 23, 0.1);
+}
+
+/* Logo Text */
+.logo {
+    flex: 1 0 0;
+    color: #000000;
+    font-feature-settings: 'dlig' on;
+    font-family: 'Poppins', sans-serif;
+    font-size: 21px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 23px; /* 109.524% */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+/* .logo:hover {
+    color: #333333;
+} */
+
+/* Right Navigation Container */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 59px;
+}
+
+/* Navigation Links List */
+.nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+    align-items: center;
+}
+
+/* Navigation Links */
+.nav-link {
+    color: #121417;
+    font-feature-settings: 'dlig' on;
+    font-family: 'Poppins', sans-serif;
+    font-size: 21px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 21px; /* 100% */
+    text-decoration: none;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: #000000;
+}
+
+/* Active Navigation Link */
+.nav-link.active {
+    color: #4F46E5;
+    font-weight: 600;
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #4F46E5;
+    border-radius: 1px;
+}
+
+/* Register Button */
+.register-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 114px;
+    height: 39px;
+    flex-shrink: 0;
+    background-color: #000000;
+    color: #FFFFFF;
+    font-feature-settings: 'dlig' on;
+    font-family: 'Poppins', sans-serif;
+    font-size: 21px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 21px; /* 100% */
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.register-btn:hover {
+    background-color: #333333;
+    transform: translateY(-1px);
+}
+
+.register-btn:active {
+    transform: translateY(0);
+}
+
+/* Focus States for Accessibility */
+.register-btn:focus
+ {
+    outline: 2px solid #000000;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Large Tablets and Small Desktops */
+@media (max-width: 1200px) {
+    .header {
+        gap: 300px;
+        padding: 20px 100px 20px 30px;
+    }
+}
+
+/* Tablets */
+@media (max-width: 992px) {
+    .header {
+        gap: 150px;
+        padding: 20px 60px 20px 20px;
+    }
+    .header-right {
+        gap: 40px;
+    }
+    .nav-links {
+        gap: 30px;
+    }
+}
+
+/* Mobile Phones */
+@media (max-width: 768px) {
+    .header {
+        gap: 20px;
+        padding: 15px 20px;
+        flex-wrap: wrap;
+    }
+    .header-right {
+        gap: 25px;
+        flex-wrap: wrap;
+    }
+    .nav-links {
+        gap: 20px;
+    }
+    .logo {
+        font-size: 18px;
+        line-height: 20px;
+    }
+    .nav-link {
+        font-size: 18px;
+        line-height: 18px;
+    }
+    .register-btn {
+        font-size: 18px;
+        width: 100px;
+        height: 35px;
+        line-height: 18px;
+    }
+}
+
+/* Very Small Phones */
+@media (max-width: 480px) {
+    .header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+        padding: 15px 20px 20px 20px;
+    }
+    
+    .logo {
+        align-self: flex-start;
+        margin-bottom: 10px;
+    }
+    
+    .header-right {
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .nav-links {
+        width: 100%;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 15px;
+        order: 2;
+    }
+    
+    .register-btn {
+        order: 1;
+        align-self: center;
+        width: 120px;
+    }
+}
+
+/* Extra Small Devices */
+@media (max-width: 360px) {
+    .nav-links {
+        justify-content: center;
+        gap: 10px;
+    }
+    .nav-link {
+        font-size: 16px;
+    }
+    .logo {
+        font-size: 16px;
+    }
+    .register-btn {
+        font-size: 16px;
+        width: 100px;
+        height: 32px;
+    }
+}

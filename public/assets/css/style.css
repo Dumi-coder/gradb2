@@ -1,0 +1,82 @@
+/* --- Global Styles & Variables ---
+:root {
+    --primary-color: #007bff; /* A nice blue 
+    --secondary-color: #6c757d; /* A gray 
+    --success-color: #28a745; /* Green 
+    --danger-color: #dc3545; /* Red 
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --border-radius: 5px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: var(--light-color);
+    color: var(--dark-color);
+}
+ 
+/* --- BUTTON STYLES (Component) --- 
+/* This is the base style for ALL buttons 
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+}
+
+/* Modifier classes for different button colors 
+.btn-primary {
+    color: #fff;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker blue on hover 
+    border-color: #0056b3;
+}
+
+.btn-secondary {
+    color: #fff;
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* --- FORM INPUT STYLES (Component) --- 
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: var(--border-radius);
+    box-sizing: border-box; /* Important for consistent sizing 
+}
+
+/* --- CARD STYLE (Component) --- 
+.card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+} */
