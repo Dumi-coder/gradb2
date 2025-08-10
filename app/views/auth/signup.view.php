@@ -60,6 +60,7 @@
                     placeholder="University email address" 
                     required
                 >
+                <div id="email-error" style="color:red;"></div>
             </div>
             <div class="form-group">
                 <input 
@@ -69,6 +70,7 @@
                     placeholder="University ID" 
                     required
                 >
+                <div id="student-id-error" style="color:red;"></div>
             </div>
             <div class="form-group">
                 <input 
@@ -101,6 +103,43 @@
                 >
             </div>
             <button type="submit" class="login-btn" name="signup">Sign Up</button>
+            
+
+            <!-- Add this in your signup.view.php above </form> -->
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Email real-time validation
+            document.querySelector('input[name="email"]').addEventListener('blur', function() {
+                let email = this.value;
+                fetch('<?=ROOT?>/ajax/validate_email.php?email=' + encodeURIComponent(email))
+                    .then(response => response.json())
+                    .then(data => {
+                        let errorDiv = document.getElementById('email-error');
+                        if(data.error) {
+                            errorDiv.textContent = data.error;
+                        } else {
+                            errorDiv.textContent = '';
+                        }
+                    });
+            });
+        
+            // Student ID real-time validation
+            document.querySelector('input[name="student_id"]').addEventListener('blur', function() {
+                let studentId = this.value;
+                fetch('<?=ROOT?>/ajax/validate_student_id.php?student_id=' + encodeURIComponent(studentId))
+                    .then(response => response.json())
+                    .then(data => {
+                        let errorDiv = document.getElementById('student-id-error');
+                        if(data.error) {
+                            errorDiv.textContent = data.error;
+                        } else {
+                            errorDiv.textContent = '';
+                        }
+                    });
+            });
+        });
+        </script>
+
         </form>
         
         <div class="signup-link">
