@@ -1,5 +1,3 @@
-
-
     <footer class="footer">
         <div class="upperfooter">
             <a href="#">Privacy Policy</a>
