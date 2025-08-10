@@ -9,7 +9,7 @@ Trait Model // This trait provides basic database operations for models
     protected $limit        = 10;// Default limit for pagination
     protected $offset       = 0;// Default offset for pagination
     protected $order_type   = "desc"; // Default order type for sorting
-    protected $order_column = "id";// Default order column for sorting
+    protected $order_column = "student_id";// Default order column for sorting
     public $errors          = [];// Array to hold validation errors
 
     public function findAll()
@@ -71,7 +71,7 @@ Trait Model // This trait provides basic database operations for models
         /**remove unwanted data */
         if(!empty($this->allowedColumns))
         {
-            foreach($data as $keys => $value)
+            foreach($data as $key => $value)
             {
                 if(!in_array($key,$this->allowedColumns))
                 {
@@ -79,8 +79,6 @@ Trait Model // This trait provides basic database operations for models
                 }
             }
         }
-
-
         $keys=array_keys($data);
         $query="insert into $this->table (".implode(",", $keys).") values (:".implode(",:",$keys).")";// Start building the insert query
         $this->query($query,$data);// Execute the query with the provided data
@@ -88,12 +86,12 @@ Trait Model // This trait provides basic database operations for models
         return false;// Return false to indicate the operation is complete
     }
 
-    public function update($id,$data,$id_column='id')
+    public function update($id,$data,$id_column='student_id')
     {
         /**remove unwanted data */
         if(!empty($this->allowedColumns))
         {
-            foreach($data as $keys => $value)
+            foreach($data as $key => $value)
             {
                 if(!in_array($key,$this->allowedColumns))
                 {
@@ -119,7 +117,7 @@ Trait Model // This trait provides basic database operations for models
         return false;// Return false to indicate the operation is complete
     }
 
-    public function delete($id,$id_column='id')// This method deletes a record based on the provided ID and ID column
+    public function delete($id,$id_column='student_id')// This method deletes a record based on the provided ID and ID column
     {
         $data[$id_column]=$id;
         $query="delete from $this->table where $id_column = :$id_column ";
