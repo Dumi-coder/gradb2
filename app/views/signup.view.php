@@ -27,7 +27,7 @@
         </form> 
 </div> -->
 
-<!-- <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/login.css"> -->
+<link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/login.css">
 
 <main class="main-content">
     <div class="login-container">
