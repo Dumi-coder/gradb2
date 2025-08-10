@@ -25,7 +25,7 @@ else{// This condition is executed if the server name is not 'localhost', indica
         define('DBPASS','');
         define('DBDRIVER','');
         
-        define('ROOT','https://www.yourwebsite.com');
+        define('ROOT','https://www.GradBridge.com');
 }
 
 define('APP_NAME','GradBridge');// This is the name of the application, used in the title tag and other places.

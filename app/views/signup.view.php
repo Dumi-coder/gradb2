@@ -1,15 +1,7 @@
 <?php require '../app/views/partials/header.php'; ?>
-<div>
+<!-- <div>
     
     <form method="post">
-        
-        <?php if(!empty($errors)):?>
-            <div class="alert alert-danger">       
-                <?= implode("<br>",$errors)?> 
-            </div>
-            <?php endif;?>
-        
-            <!-- <img class="mb-4" src="../assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"> -->
             <h1>Create account</h1>
             
             <div class="form-group">
@@ -33,7 +25,53 @@
             <a href="<?=ROOT?>/login">Login</a>
             
         </form> 
-    
-</div>     
+</div> -->
+
+
+<main class="main-content">
+    <div class="login-container">
+        <h1 class="welcome-title">Welcome <span class="back-text">Back!</span></h1>
+        
+        <form action="login_process.php" method="POST" class="login-form">
+
+            <?php if(!empty($errors)):?>
+            <div class="alert alert-danger">       
+                <?= implode("<br>",$errors)?> 
+            </div>
+            <?php endif;?>
+
+            <div class="form-group">
+                <input 
+                    type="email" 
+                    name="email" 
+                    class="form-input" 
+                    placeholder="University email address" 
+                    value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>"
+                    required
+                >
+            </div>
+            
+            <div class="form-group">
+                <input 
+                    type="password" 
+                    name="password" 
+                    class="form-input" 
+                    placeholder="Password" 
+                    required
+                >
+            </div>
+            
+            <button type="submit" class="login-btn" name="login">Login</button>
+        </form>
+        
+        <a href="forgot_password.php" class="forgot-password">Forgot Password</a>
+        
+        <div class="signup-link">
+            Don't have an Account? <a href="<?=ROOT?>/signup">Sign Up</a>
+        </div>
+    </div>
+</main> 
+
 
 <?php require '../app/views/partials/footer.php'; ?>
+
