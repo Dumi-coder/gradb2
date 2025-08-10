@@ -1,1 +1,8 @@
-<h1>view file is not found</h1><br>";
+<?php require '../app/views/partials/header.php'; ?><!--header-->
+
+<div>
+    <h3>404 page not found</h3>
+    
+</div>
+
+<?php require '../app/views/partials/footer.php'; ?><!--footer-->
