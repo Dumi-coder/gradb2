@@ -16,7 +16,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 30px;
+    gap: 10px;
     border-radius: 7px;
     border: 1px solid #000;
     background: #FFF;
@@ -44,7 +44,7 @@
 
 .form-group {
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 7px;
 }
 
 .form-input {
@@ -159,7 +159,7 @@
     .login-container {
         width: 90%;
         max-width: 400px;
-        padding: 50px 40px;
+        padding: 30px 40px;
     }
 }
 
