@@ -26,7 +26,7 @@
     <div class="login-container">
         <h1 class="welcome-title">Welcome <span class="back-text">Back!</span></h1>
         
-        <form action="login_process.php" method="POST" class="login-form">
+        <form  method="POST" class="login-form">
 
             <?php if(!empty($errors)):?>
             <div class="alert alert-danger">       
@@ -40,7 +40,6 @@
                     name="email" 
                     class="form-input" 
                     placeholder="University email address" 
-                    value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>"
                     required
                 >
             </div>

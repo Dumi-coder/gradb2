@@ -34,20 +34,21 @@
     <div class="login-container">
         <h1 class="welcome-title">Welcome <span class="back-text">Back!</span></h1>
         
-        <form action="login_process.php" method="POST" class="login-form">
+        <form  method="POST" class="login-form">
 
             <?php if(!empty($errors)):?>
             <div class="alert alert-danger">       
                 <?= implode("<br>",$errors)?> 
             </div>
             <?php endif;?>
+
             <div class="form-group">
                 <input 
                     type="name" 
                     name="name" 
                     class="form-input" 
                     placeholder="Full Name" 
-                    value="<?php echo isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''; ?>"
+                    
                     required
                 >
             </div>
@@ -57,7 +58,6 @@
                     name="email" 
                     class="form-input" 
                     placeholder="University email address" 
-                    value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>"
                     required
                 >
             </div>
@@ -67,7 +67,6 @@
                     name="student_id" 
                     class="form-input" 
                     placeholder="University ID" 
-                    value="<?php echo isset($_POST['student_id']) ? htmlspecialchars($_POST['student_id']) : ''; ?>"
                     required
                 >
             </div>
@@ -77,7 +76,6 @@
                     name="faculty" 
                     class="form-input" 
                     placeholder="Faculty" 
-                    value="<?php echo isset($_POST['faculty']) ? htmlspecialchars($_POST['faculty']) : ''; ?>"
                     required
                 >
             </div>
@@ -102,7 +100,7 @@
                     required
                 >
             </div>
-            <button type="submit" class="login-btn" name="login">Login</button>
+            <button type="submit" class="login-btn" name="signup">Sign Up</button>
         </form>
         
         <div class="signup-link">

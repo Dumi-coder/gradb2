@@ -79,7 +79,7 @@ Trait Model // This trait provides basic database operations for models
                 }
             }
         }
-        $keys=array_keys($data);
+        $keys=array_keys($data);// Get the keys of the data array
         $query="insert into $this->table (".implode(",", $keys).") values (:".implode(",:",$keys).")";// Start building the insert query
         $this->query($query,$data);// Execute the query with the provided data
 

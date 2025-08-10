@@ -20,7 +20,10 @@ trait Database// This trait provides basic database operations for models
 
         $check=$stm->execute($data);               // 3. Execute the statement with data
         if($check)                                 // 4. If execution was successful
-        {
+        {<?php
+if(empty($data['confirm_password']) || $data['password'] !== $data['confirm_password']) {
+    $this->errors['confirm_password'] = "Passwords do not match";
+}
            $result=$stm->fetchAll(PDO::FETCH_OBJ); // 5. Fetch all results as objects
            if(is_array($result) && count($result))
            {

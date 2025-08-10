@@ -13,6 +13,7 @@ class Signup extends Controller{
             if($user->validate($_POST))
             {
                 $user->insert($_POST);
+
                 redirect('login');
             }
     
