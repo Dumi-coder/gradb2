@@ -105,10 +105,8 @@
             <button type="submit" class="login-btn" name="login">Login</button>
         </form>
         
-        <!-- <a href="forgot_password.php" class="forgot-password">Forgot Password</a> -->
-        
         <div class="signup-link">
-            Don't have an Account? <a href="<?=ROOT?>/signup">Sign Up</a>
+            Already have an account?  <a href="<?=ROOT?>/login">Sing In</a>
         </div>
     </div>
 </main> 
