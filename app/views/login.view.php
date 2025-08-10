@@ -18,6 +18,7 @@
             <a href="<?=ROOT?>/signup">Signup</a>
             
         </form>  -->        
+    <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/login.css">
 
 <main class="main-content">
     <div class="login-container">

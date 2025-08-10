@@ -9,7 +9,7 @@
      <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/header.css">
     <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/footer.css">
-    <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/login.css">
+    <!-- <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/login.css"> -->
     <!-- Note: Using the full URL for CSS is more reliable -->
 </head>
 <body>
