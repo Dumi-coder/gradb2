@@ -32,15 +32,15 @@
     font-style: normal;
     font-weight: 400;
     line-height: 24px;
-    transition: color 0.3s ease;
+    /* transition: color 0.3s ease; */
     position: relative;
 }
 
-.upperfooter a:hover {
-    color: #4a5568;
-}
+/* .upperfooter a:hover { */
+    /* color: #4a5568;
+} */
 
-.upperfooter a::after {
+/* .upperfooter a::after {
     content: '';
     position: absolute;
     bottom: -2px;
@@ -53,7 +53,7 @@
 
 .upperfooter a:hover::after {
     width: 100%;
-}
+} */
 
 /* Social Icons Container */
 .social-icons {
@@ -67,7 +67,7 @@
     width: 24px;
     height: 24px;
     color: #61708A;
-    transition: all 0.3s ease;
+    /* transition: all 0.3s ease; */
     text-decoration: none;
     border-radius: 4px;
     display: flex;
@@ -76,15 +76,15 @@
     padding: 4px;
 }
 
-.social-icon:hover {
+/* .social-icon:hover {
     color: #4a5568;
     background-color: rgba(74, 85, 104, 0.1);
     transform: translateY(-2px);
-}
+} */
 
-.social-icon:active {
+/* .social-icon:active {
     transform: translateY(0);
-}
+} */
 
 /* Social Icon SVGs */
 .social-icon svg {
@@ -108,23 +108,23 @@
 }
 
 /* Selection Colors */
-::selection {
+/* ::selection {
     background-color: #61708A;
     color: white;
-}
+} */
 
-::-moz-selection {
+/* ::-moz-selection {
     background-color: #61708A;
     color: white;
-}
+} */
 
 /* Focus States for Accessibility */
-.upperfooter a:focus,
+/* .upperfooter a:focus,
 .social-icon:focus {
     outline: 2px solid #61708A;
     outline-offset: 2px;
     border-radius: 4px;
-}
+} */
 
 /* ========== RESPONSIVE DESIGN ========== */
 
