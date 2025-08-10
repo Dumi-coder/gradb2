@@ -1,6 +1,6 @@
 <?php
 //  echo "App.php loaded<br> ";
-
+//router
 
 class App// This is the main application class that handles routing and loading controllers
 {

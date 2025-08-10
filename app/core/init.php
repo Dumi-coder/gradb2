@@ -4,7 +4,7 @@ spl_autoload_register(function($classname){// Autoload classes
     require $filename = "../app/models/".ucfirst($classname).".php";// Automatically load model classes
 });
 // Include necessary files for the application
-require 'config.php';// Load configuration settings
+require 'Config.php';// Load configuration settings
 require 'functions.php';// Load utility functions
 require 'Database.php';// Load the Database class for database operations
 require 'Model.php';// Load the Model trait for database interaction

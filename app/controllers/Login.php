@@ -22,6 +22,6 @@ class Login extends Controller{
             $user->errors['email'] = "Invalid email or password";
         }
         $data['errors'] = $user->errors;
-        $this->view('login',$data);// This loads the 'login' view.
+        $this->view('auth/login',$data);// This loads the 'login' view.
     }
 }

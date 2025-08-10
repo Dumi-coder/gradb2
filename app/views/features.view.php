@@ -3,4 +3,5 @@
 <div>
     <h3>This is Features page</h3>
 </div>
+
 <?php require '../app/views/partials/footer.php'; ?>

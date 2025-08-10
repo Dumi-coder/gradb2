@@ -1,6 +1,6 @@
 <?php   
 //  echo "User.php model loaded<br>";
-
+//core user data,auth logic
 class User // Model class for User
 {
     use Model;// Use the Model trait for database operations

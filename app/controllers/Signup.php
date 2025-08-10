@@ -20,6 +20,6 @@ class Signup extends Controller{
 
         }
         // show($_POST);
-        $this->view('signup',$data);// This loads the 'login' view.
+        $this->view('auth/signup',$data);// This loads the 'login' view.
     }
 }
