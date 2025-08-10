@@ -34,7 +34,7 @@
             <nav>
                 <ul class="nav-links">
                     <li><a href="/gradb2/public/home" class="nav-link">Home</a></li>
-                    <li><a href="/gradb2/public/home" class="nav-link">About</a></li>
+                    <li><a href="/gradb2/public/About" class="nav-link">About</a></li>
                     <li><a href="/gradb2/public/Features" class="nav-link">Features</a></li>
                     <li><a href="/gradb2/public/login" class="nav-link">Login</a></li>
                 </ul>

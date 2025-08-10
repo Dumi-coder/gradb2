@@ -1,4 +1,3 @@
-<?php require '../app/views/partials/header.php'; ?>
 <!-- <div>
     
     <form method="post">
@@ -26,6 +25,8 @@
             
         </form> 
 </div> -->
+
+<?php require '../app/views/partials/header.php'; ?>
 
 <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/login.css">
 
@@ -72,7 +73,6 @@
         </div>
     </div>
 </main> 
-
 
 <?php require '../app/views/partials/footer.php'; ?>
 

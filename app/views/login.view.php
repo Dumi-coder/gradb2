@@ -1,24 +1,27 @@
-<?php require '../app/views/partials/header.php'; ?>
-        <!-- <form method="post">            
-          <h1>Please sign in</h1>
+<!-- <form method="post">            
+    <h1>Please sign in</h1>
            <div>
              <input  name="email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-              <label for="floatingInput">Email address</label>
+             <label for="floatingInput">Email address</label>
             </div>
             <div>
                  <input name="password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
                  <label for="floatingPassword">Password</label>
             </div>
             <div>
-                 <input  type="checkbox" value="remember-me" id="checkDefault">
-                 <label for="checkDefault">Remember me</label>
+                <input  type="checkbox" value="remember-me" id="checkDefault">
+                <label for="checkDefault">Remember me</label>
             </div> 
             <button type="submit">Sign in</button> 
             <a href="<?=ROOT?>/home">Home</a>
             <a href="<?=ROOT?>/signup">Signup</a>
             
         </form>  -->        
+        
+<?php require '../app/views/partials/header.php'; ?>
+
 <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/login.css">
+
 <main class="main-content">
     <div class="login-container">
         <h1 class="welcome-title">Welcome <span class="back-text">Back!</span></h1>
@@ -63,7 +66,9 @@
     </div>
 </main>
 
-<style> 
+<?php require '../app/views/partials/footer.php'; ?>
+
+<!-- /*<style> 
 /* Login Page Specific Styles 
 .main-content {
     display: flex;
@@ -237,6 +242,3 @@
     }
 }
 </style>*/
-
-
-<?php require '../app/views/partials/footer.php'; ?>
