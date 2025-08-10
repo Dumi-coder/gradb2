@@ -19,13 +19,13 @@ class User // Model class for User
         if(!filter_var($data['email'],FILTER_VALIDATE_EMAIL))
         {
             $this->errors['email']="Email is NOT VALID";
-         }//else{
-        //     $existing=$this->first(['email'=>$data['email']]);
-        //     if($existing)
-        //     {
-        //         $this->errors['email']="Email already registered";
-        //     }
-        // }
+         }else{
+            $existing=$this->first(['email'=>$data['email']]);
+            if($existing)
+            {
+                $this->errors['email']="Email already registered";
+            }
+        }
         
         if(empty($data['password']))
         {
