@@ -41,7 +41,16 @@
                 <?= implode("<br>",$errors)?> 
             </div>
             <?php endif;?>
-
+            <div class="form-group">
+                <input 
+                    type="name" 
+                    name="name" 
+                    class="form-input" 
+                    placeholder="Full Name" 
+                    value="<?php echo isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''; ?>"
+                    required
+                >
+            </div>
             <div class="form-group">
                 <input 
                     type="email" 
@@ -52,17 +61,47 @@
                     required
                 >
             </div>
-            
             <div class="form-group">
                 <input 
-                    type="password" 
-                    name="password" 
+                    type="student_id" 
+                    name="student_id" 
                     class="form-input" 
-                    placeholder="Password" 
+                    placeholder="University ID" 
+                    value="<?php echo isset($_POST['student_id']) ? htmlspecialchars($_POST['student_id']) : ''; ?>"
+                    required
+                >
+            </div>
+            <div class="form-group">
+                <input 
+                    type="faculty" 
+                    name="faculty" 
+                    class="form-input" 
+                    placeholder="Faculty" 
+                    value="<?php echo isset($_POST['faculty']) ? htmlspecialchars($_POST['faculty']) : ''; ?>"
                     required
                 >
             </div>
             
+            
+            <div class="form-group">
+                <input 
+                type="password" 
+                name="password" 
+                class="form-input" 
+                placeholder="Password" 
+                required
+                >
+            </div>
+
+            <div class="form-group">
+                <input 
+                    type="password" 
+                    name="confirm_password" 
+                    class="form-input" 
+                    placeholder="Confirm Password" 
+                    required
+                >
+            </div>
             <button type="submit" class="login-btn" name="login">Login</button>
         </form>
         
