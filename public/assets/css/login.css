@@ -53,11 +53,11 @@
     padding: 15px 20px;
     border: 1px solid #D1D5DB;
     border-radius: 8px;
-    background: #F8F9FA;
+    background: #E0EBF9;
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
     font-weight: 400;
-    color: #6B7280;
+    color: #000000A3;
     transition: all 0.3s ease;
     outline: none;
 }
