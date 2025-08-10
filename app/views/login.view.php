@@ -18,7 +18,7 @@
             <a href="<?=ROOT?>/signup">Signup</a>
             
         </form>  -->        
-    <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/login.css">
+    <!-- <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/login.css"> -->
 
 <main class="main-content">
     <div class="login-container">
@@ -64,8 +64,8 @@
     </div>
 </main>
 
-<!-- <style> 
-/* Login Page Specific Styles 
+<style> 
+/* Login Page Specific Styles */
 .main-content {
     display: flex;
     justify-content: center;
@@ -220,7 +220,7 @@
     text-align: center;
 }
 
-/* Responsive Design 
+/* Responsive Design */
 @media (max-width: 768px) {
     .login-container {
         width: 90%;
@@ -237,7 +237,7 @@
         font-size: 24px;
     }
 }
-</style>*/
+</style>
 
 
 <?php require '../app/views/partials/footer.php'; ?>
