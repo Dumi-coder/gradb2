@@ -20,15 +20,19 @@ class User // Model class for User
         if(empty($data['email']))// Validate email
         {
             $this->errors['email'] = "Email is required";
-        }else
-        if(!filter_var($data['email'],FILTER_VALIDATE_EMAIL))
-        {
-            $this->errors['email']="Email is NOT VALID";
-         }else{
-            $existing=$this->first(['email'=>$data['email']]);
-            if($existing)
+        }
+        else{
+
+            if(!filter_var($data['email'],FILTER_VALIDATE_EMAIL))
             {
-                $this->errors['email']="Email already registered";
+                    $this->errors['email']="Email is NOT VALID";
+            }
+            else{
+                    $existing=$this->first(['email'=>$data['email']]);
+                    if($existing)
+                    {
+                            $this->errors['email']="Email already registered";
+                    }
             }
         }
 
@@ -63,7 +67,7 @@ class User // Model class for User
             $this->errors['confirm_password'] = "Passwords do not match";
         }
 
-        // Check if there are any validation errors
+        //check if there are any errors
         if(empty($this->errors))
         {
             return true;
