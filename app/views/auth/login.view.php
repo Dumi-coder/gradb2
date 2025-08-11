@@ -1,22 +1,4 @@
-<!-- <form method="post">            
-    <h1>Please sign in</h1>
-           <div>
-             <input  name="email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-             <label for="floatingInput">Email address</label>
-            </div>
-            <div>
-                 <input name="password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
-                 <label for="floatingPassword">Password</label>
-            </div>
-            <div>
-                <input  type="checkbox" value="remember-me" id="checkDefault">
-                <label for="checkDefault">Remember me</label>
-            </div> 
-            <button type="submit">Sign in</button> 
-            <a href="<?=ROOT?>/home">Home</a>
-            <a href="<?=ROOT?>/signup">Signup</a>
-            
-        </form>  -->        
+    
         
 <?php require '../app/views/partials/header.php'; ?>
 
