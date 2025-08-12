@@ -8,7 +8,7 @@ class Signup extends Controller{
         
         if($_SERVER['REQUEST_METHOD']=="POST")
         {
-            $user= new Student;
+            $user= new User;
 
             if($user->validate($_POST))
             {

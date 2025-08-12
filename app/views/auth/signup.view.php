@@ -38,8 +38,8 @@
             </div>
             <div class="form-group">
                 <input 
-                    type="student_id" 
-                    name="student_id" 
+                    type="user_id" 
+                    name="user_id" 
                     class="form-input" 
                     placeholder="University ID" 
                     required

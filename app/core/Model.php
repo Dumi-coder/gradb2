@@ -9,7 +9,6 @@ Trait Model // This trait provides basic database operations for models
     protected $limit        = 10;// Default limit for pagination
     protected $offset       = 0;// Default offset for pagination
     protected $order_type   = "desc"; // Default order type for sorting
-    // public $id_column      = id_column; // Default ID column for operations
     public $order_column='student_id';// Default order column for sorting
     public $errors          = [];// Array to hold validation errors
 

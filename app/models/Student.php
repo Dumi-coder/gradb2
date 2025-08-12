@@ -6,8 +6,8 @@ class Student
 
     protected $table = 'student'; // Your student table name
     protected $allowedColumns = ['name', 'email', 'student_id', 'faculty', 'password'];
-    protected $id_column = 'student_id';
-    protected $order_column = 'student_id';
+    public $id_column = 'student_id';
+    public $order_column = 'student_id';
 
     
     // You can add a validate() method similar to User if needed
