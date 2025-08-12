@@ -27,7 +27,6 @@ class App// This is the main application class that handles routing and loading 
             unset($URL[0]);
         }
         else{
-
             $filename="../app/controllers/".ucfirst($URL[0])."/".ucfirst($URL[0]).".php";// Construct the filename for the controller in a subdirectory if it exists
             if(file_exists($filename))
             {
@@ -40,7 +39,7 @@ class App// This is the main application class that handles routing and loading 
                 $this->controller='_404';// Set the controller name to '_404'
             }
         }
-        // show($URL);
+        
          $controller=new $this->controller;// Create an instance of the controller class
         /**   select method */
          if(!empty($URL[1]))
@@ -49,8 +48,7 @@ class App// This is the main application class that handles routing and loading 
              {
                  $this->method = $URL[1];// Set the method to the second segment of the URL if it exists
                 unset($URL[1]);// Remove the second segment from the URL array
-             }
-            
+             }            
          }
         call_user_func_array([$controller,$this->method],$URL); // Call the method on the controller instance
     }

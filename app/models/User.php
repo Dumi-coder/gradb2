@@ -6,8 +6,10 @@ class User // Model class for User
     use Model;// Use the Model trait for database operations
 
     protected $table = 'users';// Specify the table name
-    protected $allowedColumns = ['name','email','student_id','faculty','password'];// Define the columns that can be inserted or updated
-    
+    protected $allowedColumns = ['name','email','user_id','faculty','password'];// Define the columns that can be inserted or updated
+    // public $id_column = 'student_id'; // Use your unique column for ordering
+    // public $order_column = 'student_id'; // Use your unique column for ordering
+
     public function validate($data)
     {
         $this->errors = [];
@@ -37,35 +39,30 @@ class User // Model class for User
         }
 
         // Student ID validation & uniqueness
-        if (empty($data['student_id'])) {
-            $this->errors['student_id'] = "Student ID is required";
-        } else {
-            $existing = $this->first(['student_id' => $data['student_id']]);
-            if ($existing) {
-                $this->errors['student_id'] = "Student ID already registered";
-            }
-       }
+    //     if (empty($data['student_id'])) {
+    //         $this->errors['student_id'] = "Student ID is required";
+    //     } else {
+    //         $existing = $this->first(['student_id' => $data['student_id']]);
+    //         if ($existing) {
+    //             $this->errors['student_id'] = "Student ID already registered";
+    //         }
+    //    }
         // Faculty validation
         if (empty($data['faculty'])) {
             $this->errors['faculty'] = "Faculty is required";
         }
 
         // Confirm password validation
-        if(empty($data['password']))
-        {
-            $this->errors['password']="Password is required";
-        }else if (strlen($data['password']) < 6) {
-            $this->errors['password'] = "Password must be at least 6 characters";
-        }else{
-            $existing=$this->first(['password'=>$data['password']]);
-            if($existing)
-            {
-                $this->errors['password']="use another password";
-            }
-        }
-        if ($data['password'] !== $data['confirm_password']) {
-            $this->errors['confirm_password'] = "Passwords do not match";
-        }
+        // if(empty($data['password']))
+        // {
+        //     $this->errors['password']="Password is required";
+        // }else if (strlen($data['password']) < 6) {
+        //     $this->errors['password'] = "Password must be at least 6 characters";
+        // }
+        // // Check if passwords match
+        // if ($data['password'] !== $data['confirm_password']) {
+        //     $this->errors['confirm_password'] = "Passwords do not match";
+        // }
 
         //check if there are any errors
         if(empty($this->errors))

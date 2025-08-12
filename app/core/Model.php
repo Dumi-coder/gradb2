@@ -9,7 +9,8 @@ Trait Model // This trait provides basic database operations for models
     protected $limit        = 10;// Default limit for pagination
     protected $offset       = 0;// Default offset for pagination
     protected $order_type   = "desc"; // Default order type for sorting
-    protected $order_column = "student_id";// Default order column for sorting
+    // public $id_column      = id_column; // Default ID column for operations
+    public $order_column='student_id';// Default order column for sorting
     public $errors          = [];// Array to hold validation errors
 
     public function findAll()
@@ -88,6 +89,9 @@ Trait Model // This trait provides basic database operations for models
 
     public function update($id,$data,$id_column='student_id')
     {
+        // if (empty($id_column)) {
+        //     $id_column = $this->id_column;
+        // }
         /**remove unwanted data */
         if(!empty($this->allowedColumns))
         {
@@ -119,6 +123,10 @@ Trait Model // This trait provides basic database operations for models
 
     public function delete($id,$id_column='student_id')// This method deletes a record based on the provided ID and ID column
     {
+        // if (empty($id_column)) {
+        //     $id_column = $this->id_column;
+        // }
+        
         $data[$id_column]=$id;
         $query="delete from $this->table where $id_column = :$id_column ";
         $this->query($query,$data);// Execute the query

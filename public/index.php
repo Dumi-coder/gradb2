@@ -1,5 +1,10 @@
 <?php
 session_start();// Start the session to manage user sessions
+
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
+
 // echo "index.php loaded<br>";// Debugging line to confirm index.php is loaded
 require "../app/core/init.php";// Load the initialization file
 

@@ -1,5 +1,4 @@
-    
-        
+            
 <?php require '../app/views/partials/header.php'; ?>
 
 <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/login&signup.css">
