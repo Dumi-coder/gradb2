@@ -1,5 +1,3 @@
-
-
 <?php require '../app/views/partials/header.php'; ?>
 
 <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/login&signup.css">
@@ -22,7 +20,7 @@
                     name="name" 
                     class="form-input" 
                     placeholder="Full Name" 
-                    
+                    value="<?=$_POST['name'] ?? ''?>"
                     required
                 >
             </div>
@@ -31,17 +29,19 @@
                     type="email" 
                     name="email" 
                     class="form-input" 
-                    placeholder="University email address" 
+                    placeholder="University email address"
+                    value="<?=$_POST['email'] ?? ''?>" 
                     required
                 >
                 <!-- <div id="email-error" style="color:red;"></div> -->
             </div>
             <div class="form-group">
                 <input 
-                    type="user_id" 
-                    name="user_id" 
+                    type="student_id" 
+                    name="student_id" 
                     class="form-input" 
                     placeholder="University ID" 
+                    value="<?=$_POST['student_id'] ?? ''?>"
                     required
                 >
                 <!-- <div id="student-id-error" style="color:red;"></div> -->
@@ -52,6 +52,7 @@
                     name="faculty" 
                     class="form-input" 
                     placeholder="Faculty" 
+                    value="<?=$_POST['faculty'] ?? ''?>"
                     required
                 >
             </div>
@@ -81,7 +82,7 @@
         </form>
         
         <div class="signup-link">
-            Already have an account?  <a href="<?=ROOT?>/login">Sing In</a>
+            Already have an account?  <a href="<?=ROOT?>/auth/login">Sing In</a>
         </div>
     </div>
 </main> 

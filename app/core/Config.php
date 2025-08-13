@@ -9,7 +9,7 @@
 if($_SERVER['SERVER_NAME']== 'localhost')// This condition checks if the server name is 'localhost'.
 {
         /** dabtabase config */
-        define('DBNAME','my_db');
+        define('DBNAME','gradb2');
         define('DBHOST','localhost');
         define('DBUSER','root');
         define('DBPASS','');
@@ -19,7 +19,7 @@ if($_SERVER['SERVER_NAME']== 'localhost')// This condition checks if the server 
 }
 else{// This condition is executed if the server name is not 'localhost', indicating a production environment.
         /** dabtabase config */
-        define('DBNAME','my_db');
+        define('DBNAME','gradb2');
         define('DBHOST','localhost');
         define('DBUSER','root');
         define('DBPASS','');

@@ -9,6 +9,7 @@ require 'functions.php';// Load utility functions
 require 'Database.php';// Load the Database class for database operations
 require 'Model.php';// Load the Model trait for database interaction
 require 'Controller.php';// Load the Controller class for handling views and requests
+require 'Auth.php';// Load the Auth class for authentication logic
 require 'App.php';// Load the App class for routing and controller management
 
 

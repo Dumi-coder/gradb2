@@ -9,7 +9,7 @@ Trait Model // This trait provides basic database operations for models
     protected $limit        = 10;// Default limit for pagination
     protected $offset       = 0;// Default offset for pagination
     protected $order_type   = "desc"; // Default order type for sorting
-    public $order_column='student_id';// Default order column for sorting
+    // public $order_column='id';// Default order column for sorting
     public $errors          = [];// Array to hold validation errors
 
     public function findAll()
@@ -86,11 +86,11 @@ Trait Model // This trait provides basic database operations for models
         return false;// Return false to indicate the operation is complete
     }
 
-    public function update($id,$data,$id_column='student_id')
+    public function update($id,$data,$id_column=null)
     {
-        // if (empty($id_column)) {
-        //     $id_column = $this->id_column;
-        // }
+        if (!$id_column) {
+            $id_column = $this->id_column;
+        }
         /**remove unwanted data */
         if(!empty($this->allowedColumns))
         {
@@ -120,11 +120,11 @@ Trait Model // This trait provides basic database operations for models
         return false;// Return false to indicate the operation is complete
     }
 
-    public function delete($id,$id_column='student_id')// This method deletes a record based on the provided ID and ID column
+    public function delete($id,$id_column=null)// This method deletes a record based on the provided ID and ID column
     {
-        // if (empty($id_column)) {
-        //     $id_column = $this->id_column;
-        // }
+        if (!$id_column) {
+            $id_column = $this->id_column;
+        }
         
         $data[$id_column]=$id;
         $query="delete from $this->table where $id_column = :$id_column ";
