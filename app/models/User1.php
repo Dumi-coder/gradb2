@@ -1,28 +1,25 @@
 <!-- <?php   
 //  echo "User.php model loaded<br>";
 //core user data,auth logic
-// class User // Model class for User
-// {
-//     use Model;// Use the Model trait for database operations
+class User // Model class for User
+{
+    use Model;// Use the Model trait for database operations
 
-//     protected $table = 'users';// Specify the table name
-//     protected $allowedColumns = ['name','email','user_id','faculty','password'];// Define the columns that can be inserted or updated
-//     public $id_column = 'user_id'; // Use your unique column for ordering
-//     public $order_column = 'user_id'; // Use your unique column for ordering
+    protected $table = 'users';// Specify the table name
+    protected $allowedColumns = ['name','email','user_id','faculty','password'];// Define the columns that can be inserted or updated
+    public $id_column = 'user_id'; // Use your unique column for ordering
+    public $order_column = 'user_id'; // Use your unique column for ordering
 
-    
-
-
-//     public function validate($data)
-//     {
-//         $this->errors = [];
-//         if(empty($this->errors))
-//         {
-//             return true;
-//         }
-//         return false;
-//     }   
-// }
+    public function validate($data)
+    {
+        $this->errors = [];
+        if(empty($this->errors))
+        {
+            return true;
+        }
+        return false;
+    }   
+}
          
 
     //     if (empty($data['name'])) {// Validate name

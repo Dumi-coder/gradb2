@@ -20,7 +20,6 @@
                     name="name" 
                     class="form-input" 
                     placeholder="Full Name" 
-                    value="<?=$_POST['name'] ?? ''?>"
                     required
                 >
             </div>
@@ -30,8 +29,7 @@
                     name="email" 
                     class="form-input" 
                     placeholder="University email address"
-                    value="<?=$_POST['email'] ?? ''?>" 
-                    required
+                      
                 >
                 <!-- <div id="email-error" style="color:red;"></div> -->
             </div>
@@ -41,23 +39,34 @@
                     name="student_id" 
                     class="form-input" 
                     placeholder="University ID" 
-                    value="<?=$_POST['student_id'] ?? ''?>"
                     required
                 >
                 <!-- <div id="student-id-error" style="color:red;"></div> -->
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <input 
                     type="faculty" 
                     name="faculty" 
                     class="form-input" 
                     placeholder="Faculty" 
-                    value="<?=$_POST['faculty'] ?? ''?>"
                     required
                 >
+            </div> -->
+            <div class="form-group">
+                <select name="faculty" class="form-input">
+                    <option value="">Select User Type</option>
+                    <option value="UCSC">UCSC</option>
+                    <option value="FOA">FOA</option>
+                    <option value="FOS">FOS</option>
+                    <option value="FOM">FOM</option>
+                    <option value="FOMF">FOMF</option>
+                    <option value="FOL">FOL</option>
+                    <option value="FOE">FOE</option>
+                    <option value="FOT">FOT</option>
+                    
+                </select>
             </div>
-            
-            
+                    
             <div class="form-group">
                 <input 
                 type="password" 
@@ -82,7 +91,7 @@
         </form>
         
         <div class="signup-link">
-            Already have an account?  <a href="<?=ROOT?>/auth/login">Sing In</a>
+            Already have an account?  <a href="<?=ROOT?>/login">Sing In</a>
         </div>
     </div>
 </main> 

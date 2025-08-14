@@ -15,13 +15,13 @@
             </div>
             <?php endif;?>
 
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <select name="user_type" class="form-input" required>
                     <option value="">Select User Type</option>
                     <option value="student" <?= (isset($_POST['user_type']) && $_POST['user_type'] == 'student') ? 'selected' : '' ?>>Student</option>
                     <option value="alumni" <?= (isset($_POST['user_type']) && $_POST['user_type'] == 'alumni') ? 'selected' : '' ?>>Alumni</option>
                 </select>
-            </div>
+            </div> -->
 
             <div class="form-group">
                 <input 
@@ -54,12 +54,12 @@
         </div> -->
         <div class="signup-link">
             Don't have an account? 
-            <a href="<?=ROOT?>/auth/student_signup">Student Sign Up</a> | 
-            <a href="<?=ROOT?>/auth/alumni_signup">Alumni Sign Up</a>
+            <a href="<?=ROOT?>/student_signup">Student Sign Up</a> | 
+            <a href="<?=ROOT?>/alumni_signup">Alumni Sign Up</a>
         </div>
         
         <div class="forgot-password">
-            <a href="<?=ROOT?>/auth/forgot_password">Forgot Password?</a>
+            <a href="<?=ROOT?>/forgot_password">Forgot Password?</a>
         </div>
     </div>
 </main>

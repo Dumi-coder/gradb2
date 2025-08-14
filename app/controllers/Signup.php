@@ -1,26 +1,26 @@
 <?php
 
-// class Signup extends Controller{
+class Signup extends Controller{
 
-//     public function index()
-//     {
-//         $data=[];
+    public function index()
+    {
+        $data=[];
         
-//         if($_SERVER['REQUEST_METHOD']=="POST")
-//         {
-//             $user= new User;
+        if($_SERVER['REQUEST_METHOD']=="POST")
+        {
+            $user= new Student;
 
-//             if($user->validate($_POST))
-//             {
-//                 $user->insert($_POST);
+            if($user->validate($_POST))
+            {
+                $user->insert($_POST);
 
-//                 redirect('login');
-//             }
+                redirect('login');
+            }
     
-//             $data['errors'] = $user->errors;
+            $data['errors'] = $user->errors;
 
-//         }
-//         // show($_POST);
-//         $this->view('auth/student_signup',$data);// This loads the 'signup' view.
-//     }
-// }
+        }
+        // show($_POST);
+        $this->view('auth/student_signup',$data);// This loads the 'signup' view.
+    }
+}
