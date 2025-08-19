@@ -11,7 +11,7 @@ The system provides networking opportunities, mentoring, career guidance, and al
 - Support different roles:
   - **Student** → access alumni resources, networking, career guidance.  
   - **Alumni** → mentor, post opportunities, events, and updates.  
-  - **Verifier** → validate alumni identities before granting access.  
+  - **Counselor** → validate alumni identities before granting access.  
   - **Faculty Admin** → manage alumni of their faculty.  
   - **Super Admin** → manage the entire university alumni network.  
 
