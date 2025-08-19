@@ -1,5 +1,5 @@
 <?php
-
+// Handles ALL registration, login, logout, password resets
 // class AuthController extends Controller
 // {
 //     // Display login page

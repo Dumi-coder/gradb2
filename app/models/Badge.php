@@ -1,0 +1,1 @@
+<!-- For the gamification/badge system -->

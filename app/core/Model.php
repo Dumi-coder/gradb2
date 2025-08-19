@@ -3,9 +3,7 @@
 Trait Model // This trait provides basic database operations for models
 {    
     use Database;// Use the Database trait for database connection and query execution
-    
     // protected $table        = 'users';
-
     protected $limit        = 10;// Default limit for pagination
     protected $offset       = 0;// Default offset for pagination
     protected $order_type   = "desc"; // Default order type for sorting
