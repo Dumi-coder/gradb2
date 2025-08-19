@@ -10,8 +10,8 @@ The system provides networking opportunities, mentoring, career guidance, and al
 - Each faculty has its own alumni society, along with a **main UOC alumni society**.
 - Support different roles:
   - **Student** → access alumni resources, networking, career guidance.  
-  - **Alumni** → mentor, post opportunities, events, and updates.  
-  - **Verifier** → validate alumni identities before granting access.  
+  - **Alumni** → mentor, post opportunities, events, and updates. 
+  - **Counselor** → validate alumni identities before granting access. 
   - **Faculty Admin** → manage alumni of their faculty.  
   - **Super Admin** → manage the entire university alumni network.  
 
@@ -51,3 +51,5 @@ git commit -m "Describe your changes"
 
 # 6. Push changes to GitHub
 git push origin feature-Disuri
+
+
