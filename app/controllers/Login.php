@@ -8,7 +8,7 @@ class Login extends Controller{
         
         if($_SERVER['REQUEST_METHOD']=="POST")
         {
-            $user= new User; 
+            $user= new Student; 
             $arr['email']=$_POST['email'];
             $row = $user->first($arr);
             if($row)
