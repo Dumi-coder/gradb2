@@ -37,17 +37,7 @@ The system provides networking opportunities, mentoring, career guidance, and al
 
    cd gradb2
 
-# 2. Switch to your feature branch
-git switch feature-Disuri
 
-# 3. Check status of changes
-git status
-
-# 4. Add all changes
-git add .
-
-# 5. Commit your changes with a message
-git commit -m "Describe your changes"
 
 # 6. Push changes to GitHub
 git push origin feature-Disuri
