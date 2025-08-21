@@ -7,7 +7,7 @@
 </head>
 <body>
     <div>
-        <h2>This is user management of Super admin </h2>
+        <h2>this is Alumni profile</h2>
     </div>
 </body>
 </html>

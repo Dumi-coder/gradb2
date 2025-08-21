@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h2>student dashboard</h2>
-</body>
+<?php require '../app/views/partials/header.php'; ?>
+
+    <div>
+        <h2>This is Student Dashboard</h2>
+    </div>
+
+    <a href="<?=ROOT?>/Student/Profile">student profile</a>
+
+ </body>
 </html>
