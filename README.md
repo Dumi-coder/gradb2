@@ -26,28 +26,8 @@ The system provides networking opportunities, mentoring, career guidance, and al
 
 ---
 
-# GradBridge – Basic Git Workflow
-
-## 🌿 Basic Workflow for Teammates
-
-```bash
-#1. Clone the repository:
-   
+## ⚙️ Setup Instructions
+1. **Clone the repository**  
+   ```bash
    git clone git@github.com:Dumi-coder/gradb2.git
-
    cd gradb2
-
-# 2. Switch to your feature branch
-git switch feature-Yourname
-
-# 3. Check status of changes
-git status
-
-# 4. Add all changes
-git add .
-
-# 5. Commit your changes with a message
-git commit -m "Describe your changes"
-
-# 6. Push changes to GitHub
-git push origin feature-Yourname
