@@ -60,7 +60,7 @@ body {
 }
 
 /* Navigation Links */
-.nav-link {
+.nav-link{
     color: #121417;
     font-feature-settings: 'dlig' on;
     font-family: 'Poppins', sans-serif;

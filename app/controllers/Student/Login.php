@@ -9,7 +9,7 @@ class Login extends Controller{
         if($_SERVER['REQUEST_METHOD']=="POST")
         {
             $user= new Student; 
-            $arr['email']=$_POST['email'];
+            $arr['student_id']=$_POST['student_id'];
             $row = $user->first($arr);
             if($row)
             {
@@ -19,7 +19,7 @@ class Login extends Controller{
                     redirect('home');
                 }
             }
-            $user->errors['email'] = "Invalid email or password";
+            // $user->errors['password'] = "Invalid id or password";
         }
         $data['errors'] = $user->errors;
         $this->view('auth/student_login',$data);// This loads the 'login' view.

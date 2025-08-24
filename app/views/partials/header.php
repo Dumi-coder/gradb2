@@ -26,7 +26,7 @@
                     <li><a href="/gradb2/public/About" class="nav-link">About</a></li>
                     <li><a href="/gradb2/public/Features" class="nav-link">Features</a></li>
                     <!-- <li><a class="nav-link" id="loginBtn">Login</a></li>  -->
-                    <button id="loginBtn" class="register-btn">Login</button>
+                    <li><a id="loginBtn" class="nav-link">Login</a></li>
                     <button id="registerBtn" class="register-btn">Register</button>
                 
                     <!-- <li><a href="/gradb2/public/login" class="nav-link">Login</a></li> -->

@@ -30,7 +30,7 @@
                     name="email" 
                     class="form-input" 
                     placeholder="University email address" 
-                    value="<?=$_POST['email'] ?? ''?>"
+                    
                     required
                 >
                 <!-- <div id="email-error" style="color:red;"></div> -->
