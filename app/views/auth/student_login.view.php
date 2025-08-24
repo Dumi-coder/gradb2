@@ -28,8 +28,8 @@
                 <!-- <label for="login_id" id="loginIdLabel"></label> -->
                 <input 
                    type="text" 
-                   name="login_id" 
-                   id="loginIDInput" 
+                   name="student_id" 
+                   id="studentIDInput" 
                    class="form-input"
                    placeholder="Student ID" 
                    required>
@@ -55,8 +55,7 @@
         </div> -->
         <div class="signup-link">
             Don't have an account? 
-            <a href="<?=ROOT?>/student_signup">Student Sign Up</a> | 
-            <a href="<?=ROOT?>/alumni_signup">Alumni Sign Up</a>
+            <a href="<?=ROOT?>/student/signup">Student Sign Up</a> 
         </div>
         
         <div class="forgot-password">

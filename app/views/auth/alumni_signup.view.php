@@ -48,7 +48,7 @@
             </div>
             <div class="form-group">
                 <select name="faculty" class="form-input">
-                    <option value="">Select User Type</option>
+                    <option value="">Select Faculty</option>
                     <option value="UCSC">UCSC</option>
                     <option value="FOA">FOA</option>
                     <option value="FOS">FOS</option>
@@ -97,7 +97,7 @@
         </form>
         
         <div class="signup-link">
-            Already have an account?  <a href="<?=ROOT?>/auth/login">Sing In</a>
+            Already have an account?  <a href="<?=ROOT?>/alumni/login">Login</a>
         </div>
     </div>
 </main> 

@@ -32,5 +32,6 @@
             © <?php echo date('Y'); ?> GradBridge. All rights reserved.
         </div>
     </footer>
+    <script src='<?=ROOT?>/assets/js/main.js'></script>
 </body>
 </html>
