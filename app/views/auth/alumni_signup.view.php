@@ -20,7 +20,7 @@
                     name="name" 
                     class="form-input" 
                     placeholder="Full Name" 
-                    value="<?=$_POST['name'] ?? ''?>"
+                    
                     required
                 >
             </div>
@@ -41,36 +41,38 @@
                     name="alumni_id" 
                     class="form-input" 
                     placeholder="Alumni ID" 
-                    value="<?=$_POST['alumni_id'] ?? ''?>"
+                    
                     required
                 >
                 <!-- <div id="student-id-error" style="color:red;"></div> -->
             </div>
             <div class="form-group">
-                <input 
-                    type="faculty" 
-                    name="faculty" 
-                    class="form-input" 
-                    placeholder="Faculty" 
-                    value="<?=$_POST['faculty'] ?? ''?>"
-                    required
-                >
+                <select name="faculty" class="form-input">
+                    <option value="">Select User Type</option>
+                    <option value="UCSC">UCSC</option>
+                    <option value="FOA">FOA</option>
+                    <option value="FOS">FOS</option>
+                    <option value="FOM">FOM</option>
+                    <option value="FOMF">FOMF</option>
+                    <option value="FOL">FOL</option>
+                    <option value="FOE">FOE</option>
+                    <option value="FOT">FOT</option>
+                    
+                </select>
             </div>
             <div class="form-group">
                 <input 
                     type="number" 
                     name="graduation_year" 
                     class="form-input" 
-                    placeholder="Graduation Year" 
-                    value="<?= $_POST['graduation_year'] ?? '' ?>"
+                    placeholder="Graduation Year"                     
                     min="1900" 
                     max="<?= date('Y') ?>"
                     required
                 >
             </div>
-            
-            
-            <div class="form-group">
+                        
+           <div class="form-group">
                 <input 
                 type="password" 
                 name="password" 
