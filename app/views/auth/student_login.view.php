@@ -14,18 +14,9 @@
                 <?= implode("<br>",$errors)?> 
             </div>
             <?php endif;?>
-            <!-- <div class="form-group">
-                <input 
-                    type="email" 
-                    name="email" 
-                    class="form-input" 
-                    placeholder="email address" 
-                    
-                    required
-                >
-            </div> -->
+            
             <div class="form-group">
-                <!-- <label for="login_id" id="loginIdLabel"></label> -->
+                
                 <input 
                    type="text" 
                    name="student_id" 

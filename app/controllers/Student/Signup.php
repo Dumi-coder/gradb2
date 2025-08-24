@@ -14,7 +14,7 @@ class Signup extends Controller{
             {
                 $user->insert($_POST);
 
-                redirect('login');
+                redirect('student/login');
             }
     
             $data['errors'] = $user->errors;

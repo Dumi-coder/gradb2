@@ -8,8 +8,8 @@ class Login extends Controller{
         
         if($_SERVER['REQUEST_METHOD']=="POST")
         {
-            $user= new Student; 
-            $arr['email']=$_POST['email'];
+            $user= new Alumni; 
+            $arr['alumni_id']=$_POST['alumni_id'];
             $row = $user->first($arr);
             if($row)
             {
@@ -19,7 +19,7 @@ class Login extends Controller{
                     redirect('home');
                 }
             }
-            $user->errors['email'] = "Invalid email or password";
+            // $user->errors['alumni_id'] = "Invalid id or password";
         }
         $data['errors'] = $user->errors;
         $this->view('auth/alumni_login',$data);// This loads the 'login' view.
