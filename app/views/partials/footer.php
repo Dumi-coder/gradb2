@@ -33,5 +33,6 @@
         </div>
     </footer>
     <script src='<?=ROOT?>/assets/js/main.js'></script>
+    <script src="<?=ROOT?>/assets/js/form-validation.js"></script>
 </body>
 </html>
