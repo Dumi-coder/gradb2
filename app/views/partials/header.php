@@ -7,9 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- <link rel="stylesheet" href="http://localhost/gradb2/public/css/style.css"> -->
      <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/header.css">
-    <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/popupstyle.css">
-    <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/footer.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/header.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/popupstyle.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/footer.css">
     <!-- <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/login.css"> -->
     <!-- Note: Using the full URL for CSS is more reliable -->
 </head>
