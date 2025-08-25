@@ -24,6 +24,7 @@
                    class="form-input"
                    placeholder="Student ID" 
                    required>
+                <span class="error-text" id="idError"></span>
             </div>
             
             <div class="form-group">
@@ -34,16 +35,12 @@
                     placeholder="Password" 
                     required
                 >
+                <span class="error-text" id="passwordError"></span>
             </div>
             
             <button type="submit" class="login-btn" name="login">Login</button>
         </form>
         
-        <!-- <a href="forgot_password.php" class="forgot-password">Forgot Password</a>
-        
-        <div class="signup-link">
-            Don't have an Account? <a href="<?=ROOT?>/signup">Sign Up</a>
-        </div> -->
         <div class="signup-link">
             Don't have an account? 
             <a href="<?=ROOT?>/student/signup">Student Sign Up</a> 
