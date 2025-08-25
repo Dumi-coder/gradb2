@@ -1,4 +1,26 @@
 /*login  signup*/
+/* --- Form Validation Styles --- */
+.form-control.is-invalid {
+    border-color: #dc3545; /* Red border for invalid fields */
+}
+
+.error-text {
+    color: #dc3545; /* Red text for error messages */
+    font-size: 0.875em; /* A little smaller than normal text */
+    display: block; /* Ensures it appears on a new line */
+    margin-top: 5px;
+    height: 1em; /* Reserve space to prevent layout shift */
+}
+
+.error-message.server-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+}
 
 .main-content {
     display: flex;

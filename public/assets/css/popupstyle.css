@@ -1,0 +1,51 @@
+/* ---Popup Modal Styles --- */
+.modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px); /* Nice blur effect on background */
+    -webkit-backdrop-filter: blur(5px);
+    opacity: 0; /* Start fully transparent */
+    transition: opacity 0.3s ease;
+}
+
+/* Add this class with JS to show the modal */
+.modal-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    margin: 15% auto;
+    padding: 30px;
+    border: 1px solid #ddd;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.close-modal {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal-buttons {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Adds space between buttons */
+}

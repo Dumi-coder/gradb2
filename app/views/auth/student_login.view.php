@@ -14,25 +14,17 @@
                 <?= implode("<br>",$errors)?> 
             </div>
             <?php endif;?>
-            <!-- <div class="form-group">
-                <input 
-                    type="email" 
-                    name="email" 
-                    class="form-input" 
-                    placeholder="email address" 
-                    
-                    required
-                >
-            </div> -->
+            
             <div class="form-group">
-                <!-- <label for="login_id" id="loginIdLabel"></label> -->
+                
                 <input 
                    type="text" 
-                   name="login_id" 
-                   id="loginIDInput" 
+                   name="student_id" 
+                   id="studentIDInput" 
                    class="form-input"
                    placeholder="Student ID" 
                    required>
+                <span class="error-text" id="idError"></span>
             </div>
             
             <div class="form-group">
@@ -43,20 +35,15 @@
                     placeholder="Password" 
                     required
                 >
+                <span class="error-text" id="passwordError"></span>
             </div>
             
             <button type="submit" class="login-btn" name="login">Login</button>
         </form>
         
-        <!-- <a href="forgot_password.php" class="forgot-password">Forgot Password</a>
-        
-        <div class="signup-link">
-            Don't have an Account? <a href="<?=ROOT?>/signup">Sign Up</a>
-        </div> -->
         <div class="signup-link">
             Don't have an account? 
-            <a href="<?=ROOT?>/student_signup">Student Sign Up</a> | 
-            <a href="<?=ROOT?>/alumni_signup">Alumni Sign Up</a>
+            <a href="<?=ROOT?>/student/signup">Student Sign Up</a> 
         </div>
         
         <div class="forgot-password">
