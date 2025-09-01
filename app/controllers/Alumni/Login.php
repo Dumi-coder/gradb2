@@ -16,7 +16,7 @@ class Login extends Controller{
                 if($row->password === $_POST['password'])
                 {
                     $_SESSION['USER'] = $row; // Store user ID in session
-                    redirect('home');
+                    redirect('alumni/dashboard');
                 }
             }
             // $user->errors['alumni_id'] = "Invalid id or password";
