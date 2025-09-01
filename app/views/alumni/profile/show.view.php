@@ -255,6 +255,32 @@ main {
     margin-top: 0; /* Reset any default margins */
 }
 
+/* Make header profile section smaller for profile page */
+.profile-toggle {
+    padding: 4px 8px !important;
+    gap: 4px !important;
+    font-size: 11px !important;
+}
+
+.profile-avatar {
+    width: 20px !important;
+    height: 20px !important;
+}
+
+.profile-icon {
+    width: 10px !important;
+    height: 10px !important;
+}
+
+.profile-name {
+    font-size: 10px !important;
+}
+
+.dropdown-arrow {
+    width: 12px !important;
+    height: 12px !important;
+}
+
 /* Sidebar minimization styles for profile page */
 .sidebar {
     transition: all 0.3s ease;
