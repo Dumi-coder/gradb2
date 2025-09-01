@@ -8,20 +8,20 @@ class Login extends Controller{
         
         if($_SERVER['REQUEST_METHOD']=="POST")
         {
-            $user= new Student; 
-            $arr['student_id']=$_POST['student_id'];
+            $user= new Counselor; 
+            $arr['alumni_id']=$_POST['alumni_id'];
             $row = $user->first($arr);
             if($row)
             {
                 if($row->password === $_POST['password'])
                 {
                     $_SESSION['USER'] = $row; // Store user ID in session
-                    redirect('student/dashboard');
+                    redirect('counselor/dashboard');
                 }
             }
-            // $user->errors['password'] = "Invalid id or password";
+            // $user->errors['alumni_id'] = "Invalid id or password";
         }
         $data['errors'] = $user->errors;
-        $this->view('auth/student_login',$data);// This loads the 'login' view.
+        $this->view('auth/counselor_login',$data);// This loads the 'login' view.
     }
 }

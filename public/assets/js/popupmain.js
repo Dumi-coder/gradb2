@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalPrompt = document.getElementById('modalPrompt');
     const studentLink = document.getElementById('studentLink');
     const alumniLink = document.getElementById('alumniLink');
+    const counselorLink = document.getElementById('counselorLink');
     
     
     const ROOT_URL = 'http://localhost/gradb2/public'; 
@@ -28,12 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
             studentLink.href = `${ROOT_URL}/student/login`; 
             alumniLink.href = `${ROOT_URL}/alumni/login`;
+            counselorLink.href = `${ROOT_URL}/counselor/login`;
         } else { // It's a 'register' action
             modalTitle.textContent = 'Register As';
             modalPrompt.textContent = 'Please select your role to begin registration.';
             
             studentLink.href = `${ROOT_URL}/student/signup`;
             alumniLink.href = `${ROOT_URL}/alumni/signup`;
+            counselorLink.href = `${ROOT_URL}/counselor/signup`;
         }
         // Show the modal with a smooth fade-in
         modal.classList.add('active');

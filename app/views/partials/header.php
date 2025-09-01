@@ -46,6 +46,8 @@
             <div class="modal-buttons">
                 <a href="#" id="studentLink" class="btn btn-lg btn-student">I'm a Student</a>
                 <a href="#" id="alumniLink" class="btn btn-lg btn-alumni">I'm an Alumnus</a>
+                <br>
+                <a href="#" id="counselorLink" class="btn btn-lg btn-alumni">Counselor</a>
             </div>
         </div>
      </div>
