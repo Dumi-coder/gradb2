@@ -16,7 +16,10 @@
 <body>
     <header class="header">
         <div class="header-left">
-            <a href="#" class="logo">GradBridge</a>
+            <a href="#" class="logo">
+                <img src="<?=ROOT?>/assets/images/icons/sitelogo.png" alt="GradBridge Logo" class="logo-image">
+                <span class="logo-text">GradBridge</span>
+            </a>
         </div>
         
         <div class="header-right">
