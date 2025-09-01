@@ -1,0 +1,341 @@
+/* =============================================================
+	 Alumni Profile Page Styles (Organized)
+	 Sections:
+	 1. Base / Layout
+	 2. Header Overrides
+	 3. Sidebar (standard + collapsed)
+	 4. Animations
+	 5. Main Content Layout
+	 6. Profile Components
+	 7. Responsive
+	 ============================================================= */
+
+/* 1. Base / Layout ------------------------------------------------ */
+body {
+	padding-top: 0;
+}
+
+.header {
+	position: fixed; /* override base */
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1001;
+	background: #ffffff;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+main {
+	margin-top: 0;
+}
+
+/* 2. Header Overrides (scoped so they don't affect profile content) */
+.header .profile-toggle {
+	display: flex;
+	gap: 4px;
+	padding: 4px 8px;
+	font-size: 11px;
+}
+
+.header .profile-avatar {
+	width: 20px;
+	height: 20px;
+}
+
+.header .profile-icon {
+	width: 10px;
+	height: 10px;
+}
+
+.header .profile-name {
+	font-size: 10px; /* header only */
+}
+
+.header .dropdown-arrow {
+	width: 12px;
+	height: 12px;
+}
+
+/* 3. Sidebar ------------------------------------------------------ */
+.sidebar {
+	transition: all 0.3s ease;
+}
+
+.sidebar.collapsed {
+	width: 70px;
+}
+
+.sidebar.collapsed .nav-link {
+	padding: 0.75rem;
+	justify-content: center;
+	position: relative;
+}
+
+.sidebar.collapsed .nav-icon {
+	margin-right: 0;
+	width: 24px;
+	height: 24px;
+}
+
+.sidebar.collapsed .nav-link span {
+	display: none;
+}
+
+.sidebar.collapsed .sidebar-header {
+	padding: 1rem 0.5rem;
+	justify-content: flex-start;
+}
+
+.sidebar.collapsed .nav-item {
+	margin: 0.25rem 0.5rem;
+}
+
+.sidebar.collapsed .nav-link:hover::after {
+	content: attr(data-tooltip);
+	position: absolute;
+	left: 70px;
+	top: 50%;
+	transform: translateY(-50%);
+	background: #1e293b;
+	color: #ffffff;
+	padding: 0.5rem 0.75rem;
+	border-radius: 0.375rem;
+	font-size: 0.875rem;
+	white-space: nowrap;
+	z-index: 1000;
+	opacity: 0;
+	animation: tooltipFadeIn 0.2s ease forwards;
+}
+
+/* 4. Animations --------------------------------------------------- */
+@keyframes tooltipFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-50%) translateX(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(-50%) translateX(0);
+	}
+}
+
+/* 5. Main Content Layout ------------------------------------------ */
+.main-content {
+	margin-left: 280px;
+	transition: margin-left 0.3s ease;
+}
+
+.sidebar.collapsed + .main-content {
+	margin-left: 70px;
+}
+
+/* 6. Profile Components ------------------------------------------- */
+.profile-container {
+	max-width: 1000px;
+	margin: 20px auto;
+	padding: 20px;
+	font-family: Arial, sans-serif;
+}
+
+.profile-header {
+	text-align: center;
+	background: #ffffff;
+	padding: 30px;
+	border-radius: 10px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+}
+
+.profile-photo {
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+	background: #007bff;
+	margin: 0 auto 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #ffffff;
+	font-size: 48px;
+	font-weight: bold;
+}
+
+/* This .profile-name refers to the large profile heading inside content */
+.profile-header .profile-name {
+	font-size: 28px;
+	color: #333333;
+	margin-bottom: 10px;
+}
+
+.profile-role {
+	font-size: 18px;
+	color: #007bff;
+	margin-bottom: 5px;
+}
+
+.profile-batch {
+	color: #666666;
+	font-size: 16px;
+}
+
+.profile-section {
+	background: #ffffff;
+	padding: 25px;
+	border-radius: 10px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+}
+
+.section-title {
+	font-size: 20px;
+	color: #333333;
+	margin-bottom: 20px;
+	padding-bottom: 10px;
+	border-bottom: 2px solid #eeeeee;
+}
+
+.info-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 20px;
+}
+
+.info-item {
+	display: flex;
+	flex-direction: column;
+}
+
+.info-label {
+	font-weight: bold;
+	color: #666666;
+	font-size: 14px;
+	text-transform: uppercase;
+	margin-bottom: 5px;
+}
+
+.info-value {
+	color: #333333;
+	font-size: 16px;
+}
+
+.badges-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+	gap: 15px;
+}
+
+.badge-item {
+	text-align: center;
+	padding: 15px;
+	background: #f8f9fa;
+	border-radius: 8px;
+	border: 2px solid transparent;
+	transition: all 0.3s ease;
+}
+
+.badge-item:hover {
+	border-color: #007bff;
+	transform: translateY(-2px);
+}
+
+.badge-icon {
+	font-size: 24px;
+	margin-bottom: 8px;
+}
+
+.badge-label {
+	font-size: 12px;
+	font-weight: bold;
+	color: #333333;
+}
+
+.contributions-list {
+	display: grid;
+	gap: 15px;
+}
+
+.contribution-item {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	padding: 15px;
+	background: #f8f9fa;
+	border-radius: 8px;
+	border-left: 4px solid #007bff;
+}
+
+.contribution-icon {
+	font-size: 20px;
+}
+
+.contribution-details h3 {
+	margin: 0 0 5px 0;
+	color: #333333;
+	font-size: 16px;
+}
+
+.contribution-details p {
+	margin: 0 0 8px 0;
+	color: #666666;
+	font-size: 14px;
+}
+
+.contribution-count {
+	background: #007bff;
+	color: #ffffff;
+	padding: 4px 8px;
+	border-radius: 12px;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.social-links {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+	gap: 15px;
+}
+
+.social-link {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 15px;
+	background: #f8f9fa;
+	border-radius: 8px;
+	text-decoration: none;
+	color: #333333;
+	transition: all 0.3s ease;
+}
+
+.social-link:hover {
+	background: #007bff;
+	color: #ffffff;
+	transform: translateY(-2px);
+}
+
+.social-icon {
+	font-size: 20px;
+	margin-bottom: 8px;
+}
+
+.social-label {
+	font-size: 12px;
+	font-weight: bold;
+}
+
+/* 7. Responsive --------------------------------------------------- */
+@media (max-width: 768px) {
+	.profile-container {
+		padding: 15px;
+		margin: 10px;
+	}
+	.info-grid {
+		grid-template-columns: 1fr;
+	}
+	.badges-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+	.social-links {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
