@@ -149,6 +149,11 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- View All Link -->
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-text">View All Student Mentorship Requests</button>
+                </div>
             </section>
 
             <!-- Active Mentorships Section -->
@@ -175,6 +180,7 @@
                         </div>
                         <div class="card-actions">
                             <button class="btn btn-primary">More Details</button>
+                            <button class="btn btn-secondary">Mark as Completed</button>
                         </div>
                     </div>
 
@@ -195,6 +201,7 @@
                         </div>
                         <div class="card-actions">
                             <button class="btn btn-primary">More Details</button>
+                            <button class="btn btn-secondary">Mark as Completed</button>
                         </div>
                     </div>
 
@@ -215,6 +222,7 @@
                         </div>
                         <div class="card-actions">
                             <button class="btn btn-primary">More Details</button>
+                            <button class="btn btn-secondary">Mark as Completed</button>
                         </div>
                     </div>
                 </div>
@@ -224,7 +232,6 @@
             <section class="dashboard-section">
                 <div class="section-header">
                     <h2 class="section-title">Completed Mentorships</h2>
-                    <button class="btn btn-text">View All Completed Mentorships</button>
                 </div>
                 
                 <div class="mentorship-grid">
@@ -319,6 +326,57 @@
                             <button class="btn btn-primary">More Details</button>
                         </div>
                     </div>
+
+                    <!-- Completed Mentorship Card 5 -->
+                    <div class="mentorship-card">
+                        <div class="card-header">
+                            <div class="student-info">
+                                <h3 class="card-title">Ryan Davis</h3>
+                                <p class="request-type">Career Pivot</p>
+                            </div>
+                            <span class="card-badge completed">Completed</span>
+                        </div>
+                        <div class="card-content">
+                            <p class="card-description">
+                                Successfully transitioned from finance to data science through structured mentorship program. 
+                                Completed relevant certifications and secured senior analyst position at fintech startup.
+                            </p>
+                            <div class="completion-date">
+                                <strong>Completed:</strong> Apr 28, 2025
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary">More Details</button>
+                        </div>
+                    </div>
+
+                    <!-- Completed Mentorship Card 6 -->
+                    <div class="mentorship-card">
+                        <div class="card-header">
+                            <div class="student-info">
+                                <h3 class="card-title">Priya Singh</h3>
+                                <p class="request-type">Academic Excellence</p>
+                            </div>
+                            <span class="card-badge completed">Completed</span>
+                        </div>
+                        <div class="card-content">
+                            <p class="card-description">
+                                Achieved academic excellence through targeted study strategies and research guidance. 
+                                Graduated summa cum laude and accepted into prestigious PhD program with full scholarship.
+                            </p>
+                            <div class="completion-date">
+                                <strong>Completed:</strong> Apr 10, 2025
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary">More Details</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- View All Link -->
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-text">View All Completed Mentorships</button>
                 </div>
             </section>
         </div>
