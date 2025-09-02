@@ -1,11 +1,13 @@
 <?php require '../app/views/partials/alumni_header.php'; ?>
-<div class="edit-profile-wrapper" style="padding:40px 20px;max-width:940px;margin:0 auto;">
-    <main>
-        <div class="content-wrapper">
-            <div class="profile-container">
-                <div class="profile-header" style="position:relative;">
-                    <!-- Removed avatar initials, title, and subtitle as requested -->
-                </div>
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
+<div class="dashboard-container" style="display:block;background:#f8fafc;margin-top:90px;min-height:calc(100vh - 90px);">
+    <main class="main-content" style="margin-left:0;min-height:auto;">
+        <div class="content-wrapper" style="max-width:960px;margin:0 auto;">
+            <header class="dashboard-header" style="margin-bottom:1.5rem;">
+                <h1 class="dashboard-title" style="font-size:2rem;font-weight:700;color:#1e293b;margin:0;">Edit Profile</h1>
+                <p class="dashboard-subtitle" style="color:#64748b;font-size:1rem;margin-top:6px;">Update your personal information</p>
+            </header>
+            <div class="profile-container" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:1rem;padding:2rem;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
                 <div class="edit-form" style="max-width:820px;margin:0 auto;">
                     <div class="profile-section">
                         <h2 class="section-title">Personal Information</h2>
@@ -49,8 +51,8 @@
     .btn-secondary{background:#6c757d;color:#fff}
     .btn-secondary:hover{background:#545b62}
     .form-actions{display:flex;justify-content:flex-end;gap:14px;margin-top:10px;padding-top:25px;border-top:1px solid #e0e0e0}
-    .section-title{font-size:22px;margin:0 0 18px;font-weight:600;color:#222}
-    .demo-success{position:fixed;top:20px;right:20px;background:#dbeafe;color:#1e40af;padding:14px 18px;border:1px solid #bfdbfe;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.12);animation:fadeIn .35s ease;font-weight:500}
+    .section-title{font-size:20px;margin:0 0 18px;font-weight:600;color:#1e293b}
+    .demo-success{position:fixed;top:110px;right:20px;background:#dbeafe;color:#1e40af;padding:14px 18px;border:1px solid #bfdbfe;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.12);animation:fadeIn .35s ease;font-weight:500;z-index:1500}
     @keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
     @media (max-width:780px){.form-grid{grid-template-columns:1fr}.form-actions{flex-direction:column}.btn{width:100%}}
 </style>

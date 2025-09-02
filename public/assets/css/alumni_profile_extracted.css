@@ -324,6 +324,36 @@ main {
 }
 
 /* 7. Responsive --------------------------------------------------- */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 70px;
+        top: 90px;
+    }
+    
+    .sidebar .nav-link span {
+        display: none;
+    }
+    
+    .sidebar .nav-link {
+        padding: 0.75rem;
+        justify-content: center;
+    }
+    
+    .sidebar .nav-icon {
+        margin-right: 0;
+        width: 24px;
+        height: 24px;
+    }
+    
+    .main-content {
+        margin-left: 70px;
+    }
+    
+    .content-wrapper {
+        padding: 1rem;
+    }
+}
+
 @media (max-width: 768px) {
 	.profile-container {
 		padding: 15px;

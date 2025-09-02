@@ -167,6 +167,7 @@ const mockData = {
 const elements = {
     sidebar: document.getElementById('sidebar'),
     sidebarToggle: document.getElementById('sidebarToggle'),
+    mainContent: document.querySelector('.main-content'),
     mentorshipCards: document.getElementById('mentorship-cards'),
     aidCards: document.getElementById('aid-cards'),
     forumPosts: document.getElementById('forum-posts'),
@@ -518,6 +519,25 @@ const initDashboard = () => {
             card.style.transform = 'translateY(0)';
         });
     });
+    
+    // Responsive sidebar auto-collapse
+    function handleResponsiveSidebar() {
+        if (!elements.sidebar || !elements.mainContent) return;
+        
+        if (window.innerWidth <= 1024) {
+            // Auto-collapse on small screens
+            elements.sidebar.classList.add('collapsed');
+            elements.mainContent.style.marginLeft = '70px';
+        } else {
+            // Restore normal width on larger screens
+            elements.sidebar.classList.remove('collapsed');
+            elements.mainContent.style.marginLeft = '280px';
+        }
+    }
+    
+    // Apply responsive behavior on load and resize
+    handleResponsiveSidebar();
+    window.addEventListener('resize', handleResponsiveSidebar);
     
     console.log('Alumni Dashboard initialized successfully!');
 };
