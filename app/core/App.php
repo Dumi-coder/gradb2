@@ -49,14 +49,15 @@ class App// This is the main application class that handles routing and loading 
         
          $controller=new $this->controller;// Create an instance of the controller class
         /**   select method */
-         if(!empty($URL[1]) && method_exists($controller, $URL[1]))
-         {
-            //  if(method_exists($controller,$URL[1]))
-            //  {
-                $this->method = $URL[1];// Set the method to the second segment of the URL if it exists
-                unset($URL[1]);// Remove the second segment from the URL array
-            //  }            
-         }
+        // Reindex remaining URL parts so the first remaining segment is at index 0
+        if(!empty($URL)) {
+            $URL = array_values($URL);
+        }
+        // Determine method if provided
+        if(!empty($URL) && isset($URL[0]) && method_exists($controller, $URL[0])) {
+            $this->method = $URL[0];
+            unset($URL[0]);
+        }
         $params=array_values($URL);// Re-index the URL array to get the parameters
         call_user_func_array([$controller,$this->method],$params); // Call the method on the controller instance
     }

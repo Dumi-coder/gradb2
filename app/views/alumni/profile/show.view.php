@@ -87,15 +87,6 @@
                     </a>
                 </li>
             </ul>
-            
-            <div class="sidebar-footer">
-                <a href="#" class="nav-link logout-link" data-tooltip="Logout">
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
-                    </svg>
-                    <span>Logout</span>
-                </a>
-            </div>
         </nav>
     </aside>
 
@@ -105,7 +96,13 @@
             <!-- Profile Content -->
             <div class="profile-container">
                 <!-- Profile Header -->
-                <div class="profile-header">
+                <div class="profile-header" style="position: relative;">
+                    <a href="<?=ROOT?>/alumni/profile/edit" class="btn btn-primary edit-profile-btn" style="position: absolute; top: 10px; right: 10px; font-size: 14px; padding: 8px 12px; text-decoration:none; display:inline-flex; align-items:center;">
+                        <svg class="btn-icon" viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 5px;">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                        </svg>
+                        Edit Profile
+                    </a>
                     <div class="profile-photo">JD</div>
                     <h1 class="profile-name">John Doe</h1>
                     <p class="profile-role">Software Engineer</p>
@@ -140,6 +137,14 @@
                             <span class="info-label">Email</span>
                             <span class="info-value">john.doe@email.com</span>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Bio -->
+                <div class="profile-section">
+                    <h2 class="section-title">Bio</h2>
+                    <div class="bio-text" style="background:#ffffff;border:1px solid #e2e8f0;padding:1.25rem;border-radius:0.75rem;line-height:1.55;color:#475569;font-size:0.95rem;">
+                        Experienced software engineer with expertise in full-stack development. Passionate about mentoring students and contributing to the alumni community.
                     </div>
                 </div>
 

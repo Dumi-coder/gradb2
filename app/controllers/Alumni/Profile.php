@@ -5,4 +5,10 @@ class Profile extends Controller
     {        
         $this->view('alumni/profile/show');
     }
+
+    // Front-end only edit page (no persistence logic)
+    public function edit()
+    {
+        $this->view('alumni/profile/edit');
+    }
 }

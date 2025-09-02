@@ -87,15 +87,6 @@
                     </a>
                 </li>
             </ul>
-            
-            <div class="sidebar-footer">
-                <a href="#" class="nav-link logout-link" data-tooltip="Logout">
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
-                    </svg>
-                    <span>Logout</span>
-                </a>
-            </div>
         </nav>
     </aside>
 
@@ -126,12 +117,6 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary edit-profile-btn">
-                        <svg class="btn-icon" viewBox="0 0 24 24">
-                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                        </svg>
-                        Edit Profile
-                    </button>
                 </div>
             </section>
 
