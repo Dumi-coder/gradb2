@@ -1,0 +1,275 @@
+/* Alumni Mentorship Page Styles */
+
+/* Section Spacing */
+.dashboard-section {
+    margin-bottom: 3rem;
+}
+
+.dashboard-section:last-child {
+    margin-bottom: 2rem;
+}
+
+/* Mentorship Grid Layout */
+.mentorship-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+/* Mentorship Card Styles - Following dashboard card pattern */
+.mentorship-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    min-height: 280px;
+}
+
+.mentorship-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Card Header */
+.mentorship-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.student-info {
+    flex: 1;
+}
+
+.mentorship-card .card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.2;
+}
+
+.request-type {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Status Badges - Following dashboard badge pattern */
+.mentorship-card .card-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    white-space: nowrap;
+}
+
+.mentorship-card .card-badge.pending {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.mentorship-card .card-badge.urgent {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.mentorship-card .card-badge.active {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.mentorship-card .card-badge.completed {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+
+/* Card Content */
+.mentorship-card .card-content {
+    flex: 1;
+    margin-bottom: 1.5rem;
+}
+
+.mentorship-card .card-description {
+    color: #64748b;
+    line-height: 1.5;
+    font-size: 0.875rem;
+    margin: 0 0 1rem 0;
+}
+
+/* Completion Date Styling */
+.completion-date {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+.completion-date strong {
+    color: #475569;
+    font-weight: 600;
+}
+
+/* Card Actions */
+.mentorship-card .card-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: auto;
+}
+
+/* Single button styling for active/completed mentorships */
+.mentorship-card .card-actions .btn:only-child {
+    max-width: 140px;
+}
+
+.mentorship-card .btn {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+}
+
+.mentorship-card .btn-primary {
+    background-color: #2563eb;
+    color: white;
+}
+
+.mentorship-card .btn-primary:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.mentorship-card .btn-secondary {
+    background-color: #f8fafc;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+.mentorship-card .btn-secondary:hover {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .mentorship-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.25rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .mentorship-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .main-content {
+        padding: 1rem;
+    }
+    
+    .mentorship-card {
+        padding: 1.25rem;
+        min-height: auto;
+    }
+    
+    .mentorship-card .card-header {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: flex-start;
+    }
+    
+    .mentorship-card .card-badge {
+        align-self: flex-start;
+    }
+    
+    .mentorship-card .card-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .mentorship-card .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-wrapper {
+        padding: 1rem 0.5rem;
+    }
+    
+    .mentorship-card {
+        padding: 1rem;
+        border-radius: 0.75rem;
+    }
+    
+    .mentorship-card .card-title {
+        font-size: 1rem;
+    }
+    
+    .request-type {
+        font-size: 0.8rem;
+    }
+    
+    .mentorship-card .card-description {
+        font-size: 0.8rem;
+    }
+}
+
+/* Animation for card loading */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mentorship-card {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+.mentorship-card:nth-child(1) { animation-delay: 0.1s; }
+.mentorship-card:nth-child(2) { animation-delay: 0.2s; }
+.mentorship-card:nth-child(3) { animation-delay: 0.3s; }
+.mentorship-card:nth-child(4) { animation-delay: 0.4s; }
+.mentorship-card:nth-child(5) { animation-delay: 0.5s; }
+.mentorship-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* Focus states for accessibility */
+.mentorship-card .btn:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+.mentorship-card:focus-within {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
