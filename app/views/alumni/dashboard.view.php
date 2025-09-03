@@ -65,10 +65,7 @@
                 <section class="dashboard-section" id="forum-section">
                     <div class="section-header">
                         <h2 class="section-title">Discussion Forum</h2>
-                        <div class="section-actions">
-                            <button class="btn btn-primary">New Post</button>
-                            <button class="btn btn-secondary">All Forums</button>
-                        </div>
+                        <button class="btn btn-text">View All</button>
                     </div>
                     <div class="forum-posts" id="forum-posts">
                         <!-- Posts will be populated by JavaScript -->
@@ -79,10 +76,7 @@
                 <section class="dashboard-section" id="fundraiser-section">
                     <div class="section-header">
                         <h2 class="section-title">Fundraising Campaigns</h2>
-                        <div class="section-actions">
-                            <button class="btn btn-primary">Create Campaign</button>
-                            <button class="btn btn-secondary">View All</button>
-                        </div>
+                        <button class="btn btn-text">View All</button>
                     </div>
                     <div class="fundraiser-grid" id="fundraiser-grid">
                         <div class="fundraiser-card">
@@ -136,10 +130,7 @@
                 <section class="dashboard-section" id="events-section">
                     <div class="section-header">
                         <h2 class="section-title">Alumni Events</h2>
-                        <div class="section-actions">
-                            <button class="btn btn-primary">Publish Event</button>
-                            <button class="btn btn-secondary">View All</button>
-                        </div>
+                        <button class="btn btn-text">View All</button>
                     </div>
                     <div class="cards-container" id="events-cards">
                         <!-- Cards will be populated by JavaScript -->
@@ -150,12 +141,7 @@
                 <section class="dashboard-section" id="resources-section">
                     <div class="section-header">
                         <h2 class="section-title">Shared Resources</h2>
-                        <button class="btn btn-primary">
-                            <svg class="btn-icon" viewBox="0 0 24 24">
-                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
-                            </svg>
-                            Upload
-                        </button>
+                        <button class="btn btn-text">View All</button>
                     </div>
                     <div class="resources-list" id="resources-list">
                         <!-- Resources will be populated by JavaScript -->
@@ -166,7 +152,6 @@
                 <section class="dashboard-section" id="badges-section">
                     <div class="section-header">
                         <h2 class="section-title">Your Badges</h2>
-                        <button class="btn btn-text">View All</button>
                     </div>
                     <div class="badges-grid" id="badges-grid">
                         <!-- Badges will be populated by JavaScript -->
