@@ -58,8 +58,8 @@
                     <span>Fundraisers</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link" data-section="events" data-tooltip="Events">
+            <li class="nav-item <?= (isset($current_page) && $current_page === 'events') ? 'active' : '' ?>">
+                <a href="<?=ROOT?>/alumni/events" class="nav-link" data-tooltip="Events">
                     <svg class="nav-icon" viewBox="0 0 24 24">
                         <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
                     </svg>
