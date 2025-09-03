@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mentorship - GradBridge</title>
+    <meta name="description" content="Request mentorship from experienced alumni and track your mentorship requests." />
+    <meta name="author" content="GradBridge" />
+    
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="assets/css/Main.css">
+    <link rel="stylesheet" href="assets/css/other.css">
+    <link rel="stylesheet" href="assets/css/mentorship.css">
+  </head>
+
+  <body>
+    <!-- Top Navbar -->
+    <header class="dashboard-header">
+      <div class="container">
+        <div class="header-content">
+          <div class="welcome-section">
+            <h1 class="welcome-text">Mentorship</h1>
+          </div>
+          
+          <div class="header-actions">
+            <button class="btn btn-outline notification-btn" aria-label="Notifications">
+              <i class="fas fa-bell"></i>
+              <span class="notification-badge">3</span>
+            </button>
+            <button class="btn btn-primary logout-btn">
+              <i class="fas fa-sign-out-alt"></i>
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="dashboard-container">
+      <!-- Sidebar Navigation -->
+      <aside class="sidebar">
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <h3 class="nav-section-title">Main</h3>
+            <a href="student-dashboard.html" class="nav-item">
+              <i class="fas fa-tachometer-alt"></i>
+              <span>Dashboard Home</span>
+            </a>
+            <a href="mentorship.html" class="nav-item active">
+              <i class="fas fa-users"></i>
+              <span>Mentorship</span>
+            </a>
+            <a href="aid-requests.html" class="nav-item">
+              <i class="fas fa-hands-helping"></i>
+              <span>Aid Requests</span>
+            </a>
+            <a href="discussion-forum.html" class="nav-item">
+              <i class="fas fa-comments"></i>
+              <span>Discussion Forum</span>
+            </a>
+            <a href="events-board.html" class="nav-item">
+              <i class="fas fa-calendar-alt"></i>
+              <span>Events Board</span>
+            </a>
+          </div>
+          
+          <div class="nav-section">
+            <h3 class="nav-section-title">Resources</h3>
+            <a href="#events" class="nav-item">
+              <i class="fas fa-calendar-alt"></i>
+              <span>Events</span>
+            </a>
+            <a href="#resources" class="nav-item">
+              <i class="fas fa-folder-open"></i>
+              <span>Resources</span>
+            </a>
+            <a href="#fundraising" class="nav-item">
+              <i class="fas fa-hand-holding-heart"></i>
+              <span>Fundraising</span>
+            </a>
+            <a href="#faq" class="nav-item">
+              <i class="fas fa-question-circle"></i>
+              <span>FAQ</span>
+            </a>
+          </div>
+          
+          <div class="nav-section">
+            <h3 class="nav-section-title">Account</h3>
+            <a href="#profile" class="nav-item">
+              <i class="fas fa-user-circle"></i>
+              <span>Profile</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="main-content">
+        <div class="content-container">
+          <!-- Need Mentorship Section -->
+          <section class="mentorship-section">
+          <div class="mentorship-card">
+            <h2 class="card-title">Need mentorship?</h2>
+            <p class="card-description">Before requesting, please check if your query is already answered.</p>
+            <button class="btn btn-outline btn-md faq-btn">
+              <i class="fas fa-question-circle"></i>
+              <span>View FAQs</span>
+            </button>
+            <div class="divider"></div>
+            <p class="question-text">Are your questions still unanswered?</p>
+            <button class="btn btn-primary btn-lg request-btn">
+              <i class="fas fa-plus"></i>
+              <span>Yes, Request Mentorship</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Your Mentorship Requests Section -->
+        <section class="requests-section">
+          <h2 class="section-title">Your mentorship requests</h2>
+          <div class="requests-grid">
+            <div class="request-card">
+              <div class="request-header">
+                <h3 class="request-title">Career guidance</h3>
+                <span class="status-badge status-pending">Pending</span>
+              </div>
+              <p class="request-description">Seeking advice to transition from academia to industry roles...</p>
+              <div class="request-actions">
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-eye"></i>
+                  <span>View Details</span>
+                </button>
+              </div>
+            </div>
+            
+            <div class="request-card">
+              <div class="request-header">
+                <h3 class="request-title">Final Year Project</h3>
+                <span class="status-badge status-approved">Approved</span>
+              </div>
+              <p class="request-description">Need help with the machine learning implementation</p>
+              <div class="request-actions">
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-user"></i>
+                  <span>View Alumni Profile</span>
+                </button>
+              </div>
+            </div>
+            
+            <div class="request-card">
+              <div class="request-header">
+                <h3 class="request-title">Technical Skills Development</h3>
+                <span class="status-badge status-completed">Completed</span>
+              </div>
+              <p class="request-description">Looking for guidance on advanced programming concepts</p>
+              <div class="request-actions">
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-user"></i>
+                  <span>View Alumni Profile</span>
+                </button>
+              </div>
+            </div>
+            
+            <div class="request-card">
+              <div class="request-header">
+                <h3 class="request-title">Leadership Training</h3>
+                <span class="status-badge status-waiting">Waiting</span>
+              </div>
+              <p class="request-description">Want to develop leadership skills for student organizations</p>
+              <div class="request-actions">
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-eye"></i>
+                  <span>View Details</span>
+                </button>
+              </div>
+            </div>
+          </div>
+                  </section>
+        </div>
+      </main>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
