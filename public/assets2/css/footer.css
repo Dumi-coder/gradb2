@@ -1,0 +1,273 @@
+/* footer.css */
+
+/* Footer Container */
+.footer {
+    display: flex;
+    width: 100%;
+    max-width: 1439px;
+    margin: 0 auto;
+    padding: 37px 320px 78px 320px;
+    flex-direction: column;
+    align-items: center;
+    gap: 42px;
+    background: #FFF;
+    border-top: 1px solid #E5E7EB;
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.02);
+}
+
+/* Upper Footer - Navigation Links */
+.upperfooter {
+    display: flex;
+    height: 24px;
+    align-items: flex-start;
+    gap: 70px;
+}
+
+/* Footer Navigation Links */
+.upperfooter a {
+    color: #61708A;
+    text-decoration: none;
+    font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    /* transition: color 0.3s ease; */
+    position: relative;
+}
+
+/* .upperfooter a:hover { */
+    /* color: #4a5568;
+} */
+
+/* .upperfooter a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: #4a5568;
+    transition: width 0.3s ease;
+}
+
+.upperfooter a:hover::after {
+    width: 100%;
+} */
+
+/* Social Icons Container */
+.social-icons {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+/* Individual Social Icon */
+.social-icon {
+    width: 24px;
+    height: 24px;
+    color: #61708A;
+    /* transition: all 0.3s ease; */
+    text-decoration: none;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+}
+
+/* .social-icon:hover {
+    color: #4a5568;
+    background-color: rgba(74, 85, 104, 0.1);
+    transform: translateY(-2px);
+} */
+
+/* .social-icon:active {
+    transform: translateY(0);
+} */
+
+/* Social Icon SVGs */
+.social-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+/* Copyright Section */
+.copyright {
+    height: 24px;
+    align-self: stretch;
+    color: #61708A;
+    text-align: center;
+    font-feature-settings: 'dlig' on;
+    font-family: "Poppins", sans-serif;
+    font-size: 21px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 114.286% */
+}
+
+/* Selection Colors */
+/* ::selection {
+    background-color: #61708A;
+    color: white;
+} */
+
+/* ::-moz-selection {
+    background-color: #61708A;
+    color: white;
+} */
+
+/* Focus States for Accessibility */
+/* .upperfooter a:focus,
+.social-icon:focus {
+    outline: 2px solid #61708A;
+    outline-offset: 2px;
+    border-radius: 4px;
+} */
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Large Desktops and Tablets */
+@media (max-width: 1439px) {
+    .footer {
+        width: 100%;
+        max-width: 1439px;
+        padding: 37px 100px 78px 100px;
+    }
+}
+
+/* Medium Tablets */
+@media (max-width: 1200px) {
+    .footer {
+        padding: 37px 80px 78px 80px;
+    }
+    .upperfooter {
+        gap: 50px;
+    }
+}
+
+/* Small Tablets */
+@media (max-width: 992px) {
+    .footer {
+        padding: 37px 60px 78px 60px;
+    }
+    .upperfooter {
+        gap: 40px;
+    }
+    .copyright {
+        font-size: 19px;
+    }
+}
+
+/* Mobile Phones */
+@media (max-width: 768px) {
+    .footer {
+        padding: 37px 20px 60px 20px;
+        gap: 30px;
+    }
+    
+    .upperfooter {
+        flex-direction: column;
+        gap: 25px;
+        height: auto;
+        text-align: center;
+        align-items: center;
+    }
+    
+    .upperfooter a {
+        font-size: 15px;
+    }
+    
+    .social-icons {
+        justify-content: center;
+        gap: 20px;
+        margin-top: 5px;
+    }
+    
+    .social-icon {
+        width: 28px;
+        height: 28px;
+        padding: 6px;
+    }
+    
+    .social-icon svg {
+        width: 22px;
+        height: 22px;
+    }
+    
+    .copyright {
+        font-size: 18px;
+        line-height: 22px;
+    }
+}
+
+/* Small Mobile Phones */
+@media (max-width: 480px) {
+    .footer {
+        padding: 25px 15px 40px 15px;
+        gap: 20px;
+    }
+    
+    .upperfooter {
+        gap: 20px;
+    }
+    
+    .upperfooter a {
+        font-size: 14px;
+        line-height: 20px;
+    }
+    
+    .social-icons {
+        gap: 15px;
+    }
+    
+    .copyright {
+        font-size: 16px;
+        line-height: 20px;
+        padding: 0 10px;
+    }
+}
+
+/* Extra Small Devices */
+@media (max-width: 360px) {
+    .footer {
+        padding: 20px 10px 30px 10px;
+    }
+    
+    .upperfooter a {
+        font-size: 13px;
+    }
+    
+    .social-icon {
+        width: 24px;
+        height: 24px;
+        padding: 4px;
+    }
+    
+    .social-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .copyright {
+        font-size: 14px;
+        line-height: 18px;
+    }
+}
+
+/* Footer Spacing Adjustment */
+.footer {
+    margin-top: auto;
+}
+
+/* Ensure footer sticks to bottom for short content pages */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1;
+}

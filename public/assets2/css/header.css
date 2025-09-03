@@ -1,0 +1,440 @@
+/* header.css */
+/* Import Poppins font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800&display=swap');
+
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #f5f5f5;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Header Container */
+.header {
+    display: flex;
+    padding: 15px 50px;
+    align-items: center;
+    justify-content: space-between;
+    background: #FFF;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(18, 20, 23, 0.1);
+    position: relative;
+    height: 100px;
+}
+
+/* Header Left - Logo Section */
+.header-left {
+    flex: 0 0 auto;
+}
+
+/* Logo Container */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #000000;
+    font-family: 'Poppins', sans-serif;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.logo:hover {
+    transform: translateY(-1px);
+}
+
+/* Logo Image */
+.logo-image {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+/* Logo Text */
+.logo-text {
+    font-size: 28px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #000000;
+    font-feature-settings: 'dlig' on;
+}
+
+/* Header Center - Navigation */
+.header-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+/* Header Right - Profile Section */
+.header-right {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+/* Navigation Links List */
+.nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+    align-items: center;
+}
+
+/* Navigation Links */
+.nav-link{
+    color: #121417;
+    font-feature-settings: 'dlig' on;
+    font-family: 'Poppins', sans-serif;
+    font-size: 21px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 21px; /* 100% */
+    text-decoration: none;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: #000000;
+}
+
+/* Active Navigation Link */
+.nav-link.active {
+    color: #4F46E5;
+    font-weight: 600;
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #4F46E5;
+    border-radius: 1px;
+}
+
+/* Profile Section Styles */
+.profile-section {
+    position: relative;
+}
+
+.profile-menu {
+    position: relative;
+}
+
+.profile-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #1e293b;
+}
+
+.profile-toggle:hover {
+    border-color: #cbd5e1;
+    background-color: #f8fafc;
+}
+
+.profile-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-icon {
+    width: 12px;
+    height: 12px;
+    fill: white;
+}
+
+.profile-name {
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.dropdown-arrow {
+    width: 14px;
+    height: 14px;
+    fill: #64748b;
+    transition: transform 0.2s ease;
+}
+
+.profile-toggle.active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 4px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    z-index: 1000;
+}
+
+.profile-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    color: #1e293b;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.dropdown-item:hover {
+    background-color: #f8fafc;
+}
+
+.dropdown-item.logout {
+    color: #dc2626;
+    border-bottom: none;
+}
+
+.dropdown-item.logout:hover {
+    background-color: #fef2f2;
+}
+
+.dropdown-icon {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: #e2e8f0;
+    margin: 2px 0;
+}
+
+/* Register Button */
+.register-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 114px;
+    height: 39px;
+    flex-shrink: 0;
+    background-color: #000000;
+    color: #FFFFFF;
+    font-feature-settings: 'dlig' on;
+    font-family: 'Poppins', sans-serif;
+    font-size: 21px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 21px; /* 100% */
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.register-btn:hover {
+    background-color: #333333;
+    transform: translateY(-1px);
+}
+
+.register-btn:active {
+    transform: translateY(0);
+}
+
+/* Focus States for Accessibility */
+.register-btn:focus
+ {
+    outline: 2px solid #000000;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Large Tablets and Small Desktops */
+@media (max-width: 1200px) {
+    .header {
+        padding: 15px 30px;
+        height: 80px;
+    }
+    
+    .logo-text {
+        font-size: 22px;
+    }
+    
+    .nav-links {
+        gap: 30px;
+    }
+}
+
+/* Tablets */
+@media (max-width: 992px) {
+    .header {
+        padding: 12px 20px;
+        height: 75px;
+    }
+    
+    .logo-image {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .logo-text {
+        font-size: 20px;
+    }
+    
+    .nav-links {
+        gap: 25px;
+    }
+    
+    .nav-link {
+        font-size: 16px;
+    }
+    
+    .profile-name {
+        display: none;
+    }
+}
+
+/* Mobile Phones */
+@media (max-width: 768px) {
+    .header {
+        padding: 12px 15px;
+        flex-wrap: wrap;
+        height: auto;
+        min-height: 65px;
+    }
+    
+    .header-center {
+        order: 3;
+        flex: 1 1 100%;
+        margin-top: 8px;
+    }
+    
+    .logo-image {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .logo-text {
+        font-size: 18px;
+    }
+    
+    .nav-links {
+        gap: 20px;
+        justify-content: center;
+    }
+    
+    .nav-link {
+        font-size: 14px;
+    }
+    
+    .profile-dropdown {
+        right: -10px;
+        min-width: 180px;
+    }
+}
+
+/* Small Mobile Phones */
+@media (max-width: 480px) {
+    .header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+        padding: 15px 20px;
+    }
+    
+    .header-left,
+    .header-center,
+    .header-right {
+        width: 100%;
+    }
+    
+    .header-center {
+        order: 2;
+        margin-top: 0;
+    }
+    
+    .header-right {
+        order: 3;
+        justify-content: center;
+    }
+    
+    .logo {
+        justify-content: center;
+    }
+    
+    .logo-text {
+        font-size: 18px;
+    }
+    
+    .nav-links {
+        gap: 15px;
+        justify-content: center;
+    }
+    
+    .nav-link {
+        font-size: 14px;
+    }
+}
+
+/* Very Small Phones */
+@media (max-width: 360px) {
+    .logo-image {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .logo-text {
+        font-size: 16px;
+    }
+    
+    .nav-links {
+        gap: 10px;
+    }
+    
+    .nav-link {
+        font-size: 13px;
+    }
+    
+    .profile-dropdown {
+        right: 0;
+        left: 0;
+        min-width: auto;
+    }
+}
