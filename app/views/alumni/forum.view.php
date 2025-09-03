@@ -19,7 +19,7 @@
             <!-- Forum Actions Section -->
             <section class="forum-actions">
                 <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="openNewDiscussionModal()">
+                    <button class="btn btn-primary btn-fixed-discussion" onclick="openNewDiscussionModal()">
                         <svg class="btn-icon" viewBox="0 0 24 24">
                             <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
                         </svg>
@@ -56,184 +56,177 @@
                     </div>
                 </div>
 
-                <!-- Forum Table -->
-                <div class="forum-table-container">
-                    <table class="forum-table">
-                        <thead>
-                            <tr>
-                                <th class="forum-title-col">Forum Title</th>
-                                <th class="created-by-col">Created By</th>
-                                <th class="last-activity-col">Last Activity</th>
-                                <th class="replies-col">Views</th>
-                                <th class="action-col">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Forum Row 1 - Active Thread -->
-                            <tr class="forum-row active-thread" onclick="openThread(1)">
-                                <td class="forum-title">
-                                    <div class="thread-info">
-                                        <h4 class="thread-title">Career Transition Tips: From Engineering to Product Management</h4>
-                                        <p class="thread-preview">Looking for advice on transitioning from software engineering to product management roles...</p>
-                                        <div class="thread-tags">
-                                            <span class="tag career">Career</span>
-                                            <span class="tag hot">Hot Topic</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="created-by">
-                                    <div class="user-info">
-                                        <div class="user-avatar">SM</div>
-                                        <span class="user-name">Sarah Martinez</span>
-                                    </div>
-                                </td>
-                                <td class="last-activity">
-                                    <div class="activity-info">
-                                        <span class="time">2 hours ago</span>
-                                        <span class="by">by Michael Chen</span>
-                                    </div>
-                                </td>
-                                <td class="replies">
-                                    <span class="reply-count">156</span>
-                                </td>
-                                <td class="action">
-                                    <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openThread(1)">View Thread</button>
-                                </td>
-                            </tr>
+                <!-- Forum Cards Grid -->
+                <div class="mentorship-grid">
+                    <!-- Forum Card 1 - Hot Topic -->
+                    <div class="mentorship-card" onclick="openThread(1)">
+                        <div class="card-header">
+                            <div class="student-info">
+                                <h3 class="card-title">Career Transition Tips: From Engineering to Product Management</h3>
+                                <p class="request-type">Created by Sarah Martinez</p>
+                            </div>
+                            <span class="card-badge urgent">Hot Topic</span>
+                        </div>
+                        <div class="card-content">
+                            <p class="card-description">
+                                Looking for advice on transitioning from software engineering to product management roles. What skills should I focus on developing? Any recommended courses or certifications?
+                            </p>
+                            <div class="thread-tags">
+                                <span class="tag career">Career</span>
+                                <span class="tag hot">Hot</span>
+                            </div>
+                            <div class="aid-details">
+                                <div class="aid-amount">Views: <strong>156</strong></div>
+                                <div class="aid-type">Last Activity: <strong>2 hours ago</strong></div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); openThread(1)">Join Discussion</button>
+                            <button class="btn btn-secondary">View Replies</button>
+                        </div>
+                    </div>
 
-                            <!-- Forum Row 2 -->
-                            <tr class="forum-row" onclick="openThread(2)">
-                                <td class="forum-title">
-                                    <div class="thread-info">
-                                        <h4 class="thread-title">Networking Events: Best Practices for Alumni Connections</h4>
-                                        <p class="thread-preview">What are your go-to strategies for meaningful networking at alumni events?</p>
-                                        <div class="thread-tags">
-                                            <span class="tag networking">Networking</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="created-by">
-                                    <div class="user-info">
-                                        <div class="user-avatar">JD</div>
-                                        <span class="user-name">John Davis</span>
-                                    </div>
-                                </td>
-                                <td class="last-activity">
-                                    <div class="activity-info">
-                                        <span class="time">5 hours ago</span>
-                                        <span class="by">by Lisa Wang</span>
-                                    </div>
-                                </td>
-                                <td class="replies">
-                                    <span class="reply-count">89</span>
-                                </td>
-                                <td class="action">
-                                    <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openThread(2)">View Thread</button>
-                                </td>
-                            </tr>
+                    <!-- Forum Card 2 -->
+                    <div class="mentorship-card" onclick="openThread(2)">
+                        <div class="card-header">
+                            <div class="student-info">
+                                <h3 class="card-title">Networking Events: Best Practices for Alumni Connections</h3>
+                                <p class="request-type">Created by John Davis</p>
+                            </div>
+                            <span class="card-badge active">Active</span>
+                        </div>
+                        <div class="card-content">
+                            <p class="card-description">
+                                What are your go-to strategies for meaningful networking at alumni events? Share your experiences and tips for building lasting professional relationships.
+                            </p>
+                            <div class="thread-tags">
+                                <span class="tag networking">Networking</span>
+                            </div>
+                            <div class="aid-details">
+                                <div class="aid-amount">Views: <strong>89</strong></div>
+                                <div class="aid-type">Last Activity: <strong>5 hours ago</strong></div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); openThread(2)">Join Discussion</button>
+                            <button class="btn btn-secondary">View Replies</button>
+                        </div>
+                    </div>
 
-                            <!-- Forum Row 3 -->
-                            <tr class="forum-row" onclick="openThread(3)">
-                                <td class="forum-title">
-                                    <div class="thread-info">
-                                        <h4 class="thread-title">Mentoring New Graduates: Effective Strategies</h4>
-                                        <p class="thread-preview">Share your experiences and tips for mentoring recent graduates in your field...</p>
-                                        <div class="thread-tags">
-                                            <span class="tag mentorship">Mentorship</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="created-by">
-                                    <div class="user-info">
-                                        <div class="user-avatar">AR</div>
-                                        <span class="user-name">Alex Rodriguez</span>
-                                    </div>
-                                </td>
-                                <td class="last-activity">
-                                    <div class="activity-info">
-                                        <span class="time">1 day ago</span>
-                                        <span class="by">by Emily Johnson</span>
-                                    </div>
-                                </td>
-                                <td class="replies">
-                                    <span class="reply-count">134</span>
-                                </td>
-                                <td class="action">
-                                    <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openThread(3)">View Thread</button>
-                                </td>
-                            </tr>
+                    <!-- Forum Card 3 -->
+                    <div class="mentorship-card" onclick="openThread(3)">
+                        <div class="card-header">
+                            <div class="student-info">
+                                <h3 class="card-title">Mentoring New Graduates: Effective Strategies</h3>
+                                <p class="request-type">Created by Alex Rodriguez</p>
+                            </div>
+                            <span class="card-badge active">Active</span>
+                        </div>
+                        <div class="card-content">
+                            <p class="card-description">
+                                Share your experiences and tips for mentoring recent graduates in your field. What approaches have worked best for you in guiding new professionals?
+                            </p>
+                            <div class="thread-tags">
+                                <span class="tag mentorship">Mentorship</span>
+                            </div>
+                            <div class="aid-details">
+                                <div class="aid-amount">Views: <strong>134</strong></div>
+                                <div class="aid-type">Last Activity: <strong>1 day ago</strong></div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); openThread(3)">Join Discussion</button>
+                            <button class="btn btn-secondary">View Replies</button>
+                        </div>
+                    </div>
 
-                            <!-- Forum Row 4 -->
-                            <tr class="forum-row" onclick="openThread(4)">
-                                <td class="forum-title">
-                                    <div class="thread-info">
-                                        <h4 class="thread-title">Industry Trends: AI and Machine Learning Impact</h4>
-                                        <p class="thread-preview">Discussion about how AI/ML is reshaping different industries and career paths...</p>
-                                        <div class="thread-tags">
-                                            <span class="tag general">General</span>
-                                            <span class="tag trending">Trending</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="created-by">
-                                    <div class="user-info">
-                                        <div class="user-avatar">RP</div>
-                                        <span class="user-name">Rachel Patel</span>
-                                    </div>
-                                </td>
-                                <td class="last-activity">
-                                    <div class="activity-info">
-                                        <span class="time">2 days ago</span>
-                                        <span class="by">by David Kim</span>
-                                    </div>
-                                </td>
-                                <td class="replies">
-                                    <span class="reply-count">198</span>
-                                </td>
-                                <td class="action">
-                                    <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openThread(4)">View Thread</button>
-                                </td>
-                            </tr>
+                    <!-- Forum Card 4 - Trending -->
+                    <div class="mentorship-card" onclick="openThread(4)">
+                        <div class="card-header">
+                            <div class="student-info">
+                                <h3 class="card-title">Industry Trends: AI and Machine Learning Impact</h3>
+                                <p class="request-type">Created by Rachel Patel</p>
+                            </div>
+                            <span class="card-badge pending">Trending</span>
+                        </div>
+                        <div class="card-content">
+                            <p class="card-description">
+                                Discussion about how AI/ML is reshaping different industries and career paths. How are you adapting to these technological changes in your profession?
+                            </p>
+                            <div class="thread-tags">
+                                <span class="tag general">General</span>
+                                <span class="tag trending">Trending</span>
+                            </div>
+                            <div class="aid-details">
+                                <div class="aid-amount">Views: <strong>198</strong></div>
+                                <div class="aid-type">Last Activity: <strong>2 days ago</strong></div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); openThread(4)">Join Discussion</button>
+                            <button class="btn btn-secondary">View Replies</button>
+                        </div>
+                    </div>
 
-                            <!-- Forum Row 5 -->
-                            <tr class="forum-row" onclick="openThread(5)">
-                                <td class="forum-title">
-                                    <div class="thread-info">
-                                        <h4 class="thread-title">Work-Life Balance in Tech: Your Strategies</h4>
-                                        <p class="thread-preview">How do you maintain a healthy work-life balance in demanding tech roles?</p>
-                                        <div class="thread-tags">
-                                            <span class="tag career">Career</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="created-by">
-                                    <div class="user-info">
-                                        <div class="user-avatar">MT</div>
-                                        <span class="user-name">Mark Thompson</span>
-                                    </div>
-                                </td>
-                                <td class="last-activity">
-                                    <div class="activity-info">
-                                        <span class="time">3 days ago</span>
-                                        <span class="by">by Jessica Lee</span>
-                                    </div>
-                                </td>
-                                <td class="replies">
-                                    <span class="reply-count">92</span>
-                                </td>
-                                <td class="action">
-                                    <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openThread(5)">View Thread</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <!-- Forum Card 5 -->
+                    <div class="mentorship-card" onclick="openThread(5)">
+                        <div class="card-header">
+                            <div class="student-info">
+                                <h3 class="card-title">Work-Life Balance in Tech: Your Strategies</h3>
+                                <p class="request-type">Created by Mark Thompson</p>
+                            </div>
+                            <span class="card-badge active">Active</span>
+                        </div>
+                        <div class="card-content">
+                            <p class="card-description">
+                                How do you maintain a healthy work-life balance in demanding tech roles? Share your strategies and tips for managing stress and personal time.
+                            </p>
+                            <div class="thread-tags">
+                                <span class="tag career">Career</span>
+                            </div>
+                            <div class="aid-details">
+                                <div class="aid-amount">Views: <strong>92</strong></div>
+                                <div class="aid-type">Last Activity: <strong>3 days ago</strong></div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); openThread(5)">Join Discussion</button>
+                            <button class="btn btn-secondary">View Replies</button>
+                        </div>
+                    </div>
+
+                    <!-- Forum Card 6 -->
+                    <div class="mentorship-card" onclick="openThread(6)">
+                        <div class="card-header">
+                            <div class="student-info">
+                                <h3 class="card-title">Remote Work Best Practices</h3>
+                                <p class="request-type">Created by Jennifer Lee</p>
+                            </div>
+                            <span class="card-badge active">Active</span>
+                        </div>
+                        <div class="card-content">
+                            <p class="card-description">
+                                What are your best practices for remote work productivity? Looking for tips on home office setup, communication tools, and maintaining team collaboration.
+                            </p>
+                            <div class="thread-tags">
+                                <span class="tag career">Career</span>
+                                <span class="tag general">General</span>
+                            </div>
+                            <div class="aid-details">
+                                <div class="aid-amount">Views: <strong>67</strong></div>
+                                <div class="aid-type">Last Activity: <strong>4 days ago</strong></div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); openThread(6)">Join Discussion</button>
+                            <button class="btn btn-secondary">View Replies</button>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Pagination -->
-                <div class="forum-pagination">
-                    <button class="btn btn-secondary btn-sm">Previous</button>
-                    <span class="pagination-info">Page 1 of 8</span>
-                    <button class="btn btn-secondary btn-sm">Next</button>
+                <!-- View All Link -->
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-text">View All Forum Topics</button>
                 </div>
             </section>
         </div>
@@ -267,8 +260,8 @@
                 <textarea id="discussionDescription" name="description" placeholder="Describe your discussion topic in detail..." rows="5" required></textarea>
             </div>
             <div class="form-actions">
-                <button type="button" class="btn btn-secondary" onclick="closeNewDiscussionModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary">Create Discussion</button>
+                <button type="button" class="btn btn-secondary btn-fixed-discussion" onclick="closeNewDiscussionModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-fixed-discussion">Create Discussion</button>
             </div>
         </form>
     </div>
@@ -326,6 +319,7 @@
 
 <!-- CSS Files -->
 <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni_mentorship.css">
 
 <!-- Forum Specific CSS -->
 <style>
@@ -371,89 +365,12 @@
     background: white;
 }
 
-/* Forum Table */
-.forum-table-container {
-    background: white;
-    border-radius: 1rem;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e2e8f0;
-}
-
-.forum-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.forum-table thead {
-    background: #f8fafc;
-}
-
-.forum-table th {
-    padding: 1rem;
-    text-align: left;
-    font-weight: 600;
-    color: #374151;
-    border-bottom: 1px solid #e2e8f0;
-    font-size: 0.875rem;
-}
-
-.forum-table td {
-    padding: 1.25rem 1rem;
-    border-bottom: 1px solid #f1f5f9;
-    vertical-align: top;
-}
-
-.forum-row {
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.forum-row:hover {
-    background-color: #f8fafc;
-}
-
-.forum-row.active-thread {
-    background-color: #f0f9ff;
-    border-left: 4px solid #2563eb;
-}
-
-/* Column widths */
-.forum-title-col { width: 45%; }
-.created-by-col { width: 15%; }
-.last-activity-col { width: 15%; }
-.replies-col { width: 10%; }
-.action-col { width: 15%; }
-
-/* Thread Info */
-.thread-info {
-    max-width: 100%;
-}
-
-.thread-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #1e293b;
-    margin: 0 0 0.5rem 0;
-    line-height: 1.4;
-}
-
-.thread-preview {
-    color: #64748b;
-    font-size: 0.875rem;
-    margin: 0 0 0.75rem 0;
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
+/* Thread Tags */
 .thread-tags {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
+    margin-bottom: 1rem;
 }
 
 .tag {
@@ -491,74 +408,6 @@
 .tag.trending {
     background-color: #fef3c7;
     color: #92400e;
-}
-
-/* User Info */
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.user-avatar {
-    width: 2rem;
-    height: 2rem;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border-radius: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 600;
-    font-size: 0.75rem;
-}
-
-.user-name {
-    font-weight: 500;
-    color: #374151;
-    font-size: 0.875rem;
-}
-
-/* Activity Info */
-.activity-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.activity-info .time {
-    font-weight: 500;
-    color: #374151;
-    font-size: 0.875rem;
-}
-
-.activity-info .by {
-    color: #64748b;
-    font-size: 0.75rem;
-}
-
-/* Reply Count */
-.reply-count {
-    background: #f1f5f9;
-    color: #475569;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-weight: 600;
-    font-size: 0.875rem;
-}
-
-/* Pagination */
-.forum-pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 2rem;
-}
-
-.pagination-info {
-    color: #64748b;
-    font-size: 0.875rem;
 }
 
 /* Modal Styles */
@@ -767,14 +616,6 @@
 }
 
 @media (max-width: 768px) {
-    .forum-table-container {
-        overflow-x: auto;
-    }
-    
-    .forum-table {
-        min-width: 700px;
-    }
-    
     .thread-meta {
         flex-direction: column;
         align-items: flex-start;

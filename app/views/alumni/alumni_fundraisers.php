@@ -436,12 +436,26 @@ $totalContributions = isset($totalContributions) ? $totalContributions : count($
 
 <script src="<?=ROOT?>/assets/js/dashboard.js"></script>
 <script>
-// Ensure sidebar toggle works on this page
+// Ensure sidebar toggle works on this page and icons remain visible
 document.addEventListener('DOMContentLoaded', function() {
     // Add sidebar toggle functionality if not already initialized
     const sidebarToggle = document.getElementById('sidebarToggle');
     const sidebar = document.getElementById('sidebar');
     
+    // Function to ensure icons are visible
+    function ensureIconsVisible() {
+        const navIcons = document.querySelectorAll('.nav-icon');
+        navIcons.forEach(icon => {
+            icon.style.display = 'block';
+            icon.style.visibility = 'visible';
+            icon.style.opacity = '1';
+        });
+    }
+    
+    // Call on page load
+    ensureIconsVisible();
+    
+    // Handle manual sidebar toggle
     if (sidebarToggle && sidebar && !sidebarToggle.hasAttribute('data-initialized')) {
         sidebarToggle.setAttribute('data-initialized', 'true');
         sidebarToggle.addEventListener('click', function() {
@@ -454,7 +468,42 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 mainContent.style.marginLeft = '280px';
             }
+            
+            // Ensure icons remain visible after toggle
+            setTimeout(ensureIconsVisible, 100);
         });
+    }
+    
+    // Handle responsive behavior
+    function handleResize() {
+        if (window.innerWidth <= 1024) {
+            sidebar.classList.add('collapsed');
+            document.querySelector('.main-content').style.marginLeft = '70px';
+        } else {
+            sidebar.classList.remove('collapsed');
+            document.querySelector('.main-content').style.marginLeft = '280px';
+        }
+        // Ensure icons are visible after resize
+        setTimeout(ensureIconsVisible, 100);
+    }
+    
+    // Initial call
+    handleResize();
+    
+    // Listen for resize events
+    window.addEventListener('resize', handleResize);
+    
+    // Observe DOM changes to ensure icons stay visible
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                ensureIconsVisible();
+            }
+        });
+    });
+    
+    if (sidebar) {
+        observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
     }
 });
 
@@ -468,6 +517,13 @@ if (createBtn) {
     createSection.style.display = createSection.style.display === 'none' ? 'block' : 'none';
   });
 }
+
+if (cancelBtn) {
+  cancelBtn.addEventListener('click', () => {
+    createSection.style.display = 'none';
+  });
+}
+</script>
 if (cancelBtn) {
   cancelBtn.addEventListener('click', () => {
     createSection.style.display = 'none';

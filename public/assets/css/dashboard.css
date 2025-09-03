@@ -153,6 +153,7 @@
     height: 20px;
     margin-right: 0.75rem;
     fill: currentColor;
+    color: #2563eb; /* Ensure visibility in collapsed sidebar */
 }
 
 .sidebar.collapsed .nav-icon {
@@ -457,6 +458,13 @@
     width: 16px;
     height: 16px;
     fill: currentColor;
+}
+
+/* Fixed size for Start New Discussion, Cancel, and Create Discussion buttons */
+.btn-fixed-discussion {
+    min-width: 220px;
+    max-width: 220px;
+    box-sizing: border-box;
 }
 
 /* Cards Container */
@@ -807,6 +815,13 @@
         margin-right: 0;
         width: 24px;
         height: 24px;
+        fill: currentColor;
+        color: #64748b;
+    }
+    
+    .sidebar .nav-item.active .nav-icon {
+        color: #2563eb;
+        fill: #2563eb;
     }
     
     .main-content {
