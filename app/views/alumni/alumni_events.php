@@ -92,6 +92,21 @@ $events = [
         'approval_status' => 'approved',
         'max_attendees' => 300,
         'current_attendees' => 178
+    ],
+    [
+        'id' => 9,
+        'title' => 'Digital Marketing Masterclass',
+        'description' => 'Learn cutting-edge digital marketing strategies from industry experts. Covers social media marketing, SEO, content creation, and analytics.',
+        'date' => '2025-09-25',
+        'time' => '10:00',
+        'location' => 'Business Center, Conference Hall A',
+        'organizer' => 'Marketing Alumni Network',
+        'type' => 'alumni',
+        'registered' => false,
+        'status' => 'approved',
+        'approval_status' => 'approved',
+        'max_attendees' => 80,
+        'current_attendees' => 52
     ]
 ];
 
@@ -185,59 +200,43 @@ $current_page = 'events';
                     </h2>
                     <span class="section-count"><?php echo count($pendingEvents); ?> events</span>
                 </div>
-                <div class="events-table-container">
-                    <?php if (empty($pendingEvents)): ?>
-                        <div class="empty-state">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"/>
-                                <polyline points="12,6 12,12 16,14"/>
-                            </svg>
-                            <h3>No Pending Events</h3>
-                            <p>You don't have any events waiting for approval.</p>
-                        </div>
-                    <?php else: ?>
-                        <table class="events-table">
-                            <thead>
-                                <tr>
-                                    <th>Event Title</th>
-                                    <th>Date & Time</th>
-                                    <th>Location</th>
-                                    <th>Submitted</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($pendingEvents as $event): ?>
-                                    <tr>
-                                        <td>
-                                            <div class="event-title">
-                                                <strong><?php echo htmlspecialchars($event['title']); ?></strong>
-                                                <p class="event-description"><?php echo htmlspecialchars(substr($event['description'], 0, 80)) . '...'; ?></p>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="event-datetime">
-                                                <strong><?php echo date('M j, Y', strtotime($event['date'])); ?></strong>
-                                                <span><?php echo date('g:i A', strtotime($event['time'])); ?></span>
-                                            </div>
-                                        </td>
-                                        <td class="event-location"><?php echo htmlspecialchars($event['location']); ?></td>
-                                        <td class="submitted-date"><?php echo date('M j, Y', strtotime($event['submitted_date'])); ?></td>
-                                        <td>
-                                            <span class="badge badge-pending">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <circle cx="12" cy="12" r="10"/>
-                                                    <polyline points="12,6 12,12 16,14"/>
-                                                </svg>
-                                                Pending Approval
-                                            </span>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    <?php endif; ?>
-                </div>
+                <?php if (empty($pendingEvents)): ?>
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12,6 12,12 16,14"/>
+                        </svg>
+                        <h3>No Pending Events</h3>
+                        <p>You don't have any events waiting for approval.</p>
+                    </div>
+                <?php else: ?>
+                    <div class="mentorship-grid">
+                        <?php foreach ($pendingEvents as $event): ?>
+                            <div class="mentorship-card">
+                                <div class="card-header">
+                                    <div class="student-info">
+                                        <h3 class="card-title"><?php echo htmlspecialchars($event['title']); ?></h3>
+                                        <p class="request-type"><?php echo htmlspecialchars($event['location']); ?></p>
+                                    </div>
+                                    <span class="card-badge pending">Pending</span>
+                                </div>
+                                <div class="card-content">
+                                    <p class="card-description">
+                                        <?php echo htmlspecialchars($event['description']); ?>
+                                    </p>
+                                    <div class="aid-details">
+                                        <div class="aid-amount">Date: <strong><?php echo date('M j, Y', strtotime($event['date'])); ?></strong></div>
+                                        <div class="aid-type">Time: <strong><?php echo date('g:i A', strtotime($event['time'])); ?></strong></div>
+                                    </div>
+                                </div>
+                                <div class="card-actions">
+                                    <button class="btn btn-primary">Edit</button>
+                                    <button class="btn btn-secondary">Delete</button>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
             </section>
 
             <!-- Registered Events Section -->
@@ -364,54 +363,61 @@ $current_page = 'events';
                 <div class="section-header">
                     <h2 class="section-title">Upcoming Events</h2>
                 </div>
-                <div class="events-list">
-                    <?php 
-                    $upcomingEvents = array_filter($events, function($event) {
-                        return $event['status'] === 'approved' && $event['date'] >= date('Y-m-d');
-                    });
-                    usort($upcomingEvents, function($a, $b) {
-                        return strtotime($a['date']) - strtotime($b['date']);
-                    });
-                    ?>
-                    
-                    <?php if (!empty($upcomingEvents)): ?>
+                <?php 
+                $upcomingEvents = array_filter($events, function($event) {
+                    return $event['status'] === 'approved' && $event['date'] >= date('Y-m-d');
+                });
+                usort($upcomingEvents, function($a, $b) {
+                    return strtotime($a['date']) - strtotime($b['date']);
+                });
+                ?>
+                
+                <?php if (!empty($upcomingEvents)): ?>
+                    <div class="mentorship-grid">
                         <?php foreach ($upcomingEvents as $event): ?>
-                            <div class="event-list-item <?= $event['registered'] ? 'registered' : '' ?>" onclick="openEventModal(<?= $event['id'] ?>)">
-                                <div class="event-info">
-                                    <div class="event-header">
-                                        <h3 class="event-title"><?= htmlspecialchars($event['title']) ?></h3>
-                                        <span class="event-badge <?= $event['type'] ?>"><?= ucfirst($event['type']) ?> Event</span>
+                            <div class="mentorship-card">
+                                <div class="card-header">
+                                    <div class="student-info">
+                                        <h3 class="card-title"><?= htmlspecialchars($event['title']) ?></h3>
+                                        <p class="request-type"><?= htmlspecialchars($event['location']) ?></p>
                                     </div>
-                                    <div class="event-details">
-                                        <span class="event-date">
-                                            <svg class="icon" viewBox="0 0 24 24">
-                                                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
-                                            </svg>
-                                            <?= date('F j, Y', strtotime($event['date'])) ?> at <?= date('g:i A', strtotime($event['time'])) ?>
-                                        </span>
-                                        <span class="event-location">
-                                            <svg class="icon" viewBox="0 0 24 24">
-                                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                                            </svg>
-                                            <?= htmlspecialchars($event['location']) ?>
-                                        </span>
+                                    <span class="card-badge <?= $event['registered'] ? 'active' : 'pending' ?>"><?= $event['registered'] ? 'Registered' : 'Available' ?></span>
+                                </div>
+                                <div class="card-content">
+                                    <p class="card-description">
+                                        <?= htmlspecialchars($event['description']) ?>
+                                    </p>
+                                    <div class="aid-details">
+                                        <div class="aid-amount">Date: <strong><?= date('M j, Y', strtotime($event['date'])) ?></strong></div>
+                                        <div class="aid-type">Time: <strong><?= date('g:i A', strtotime($event['time'])) ?></strong></div>
                                     </div>
                                 </div>
-                                <div class="event-actions">
+                                <div class="card-actions">
+                                    <button class="btn btn-primary" onclick="openEventModal(<?= $event['id'] ?>)">View Details</button>
                                     <?php if ($event['registered']): ?>
-                                        <button class="btn btn-success btn-sm">Registered</button>
+                                        <button class="btn btn-success">Registered</button>
                                     <?php else: ?>
-                                        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); registerForEvent(<?= $event['id'] ?>)">Register</button>
+                                        <button class="btn btn-secondary" onclick="registerForEvent(<?= $event['id'] ?>)">Register</button>
                                     <?php endif; ?>
                                 </div>
                             </div>
                         <?php endforeach; ?>
-                    <?php else: ?>
-                        <div class="empty-state">
-                            <p>No upcoming events available.</p>
-                        </div>
-                    <?php endif; ?>
-                </div>
+                    </div>
+                    
+                    <!-- View More Link -->
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="btn btn-text">View All Upcoming Events</button>
+                    </div>
+                <?php else: ?>
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12,6 12,12 16,14"/>
+                        </svg>
+                        <h3>No Upcoming Events</h3>
+                        <p>No upcoming events available.</p>
+                    </div>
+                <?php endif; ?>
             </section>
         </div>
     </main>
@@ -1286,8 +1292,6 @@ $current_page = 'events';
 }
 </style>
 
-<?php require '../app/views/partials/footer.php'; ?>
-
 <!-- JavaScript -->
 <script src="<?=ROOT?>/assets/js/dashboard.js"></script>
 <script>
@@ -1708,4 +1712,77 @@ function showSuccessMessage(message = '', type = 'success') {
         messageDiv.style.transform = 'translateX(100%)';
     }, 4000);
 }
+
+// Sidebar toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Add sidebar toggle functionality if not already initialized
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    
+    // Function to ensure icons are visible
+    function ensureIconsVisible() {
+        const navIcons = document.querySelectorAll('.nav-icon');
+        navIcons.forEach(icon => {
+            icon.style.display = 'block';
+            icon.style.visibility = 'visible';
+            icon.style.opacity = '1';
+        });
+    }
+    
+    // Call on page load
+    ensureIconsVisible();
+    
+    // Handle manual sidebar toggle
+    if (sidebarToggle && sidebar && !sidebarToggle.hasAttribute('data-initialized')) {
+        sidebarToggle.setAttribute('data-initialized', 'true');
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            
+            // Update main content margin
+            const mainContent = document.querySelector('.main-content');
+            if (sidebar.classList.contains('collapsed')) {
+                mainContent.style.marginLeft = '70px';
+            } else {
+                mainContent.style.marginLeft = '280px';
+            }
+            
+            // Ensure icons remain visible after toggle
+            setTimeout(ensureIconsVisible, 100);
+        });
+    }
+    
+    // Handle responsive behavior
+    function handleResize() {
+        if (window.innerWidth <= 1024) {
+            sidebar.classList.add('collapsed');
+            document.querySelector('.main-content').style.marginLeft = '70px';
+        } else {
+            sidebar.classList.remove('collapsed');
+            document.querySelector('.main-content').style.marginLeft = '280px';
+        }
+        // Ensure icons are visible after resize
+        setTimeout(ensureIconsVisible, 100);
+    }
+    
+    // Initial call
+    handleResize();
+    
+    // Listen for resize events
+    window.addEventListener('resize', handleResize);
+    
+    // Observe DOM changes to ensure icons stay visible
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                ensureIconsVisible();
+            }
+        });
+    });
+    
+    if (sidebar) {
+        observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+    }
+});
 </script>
+
+<?php require '../app/views/partials/footer.php'; ?>

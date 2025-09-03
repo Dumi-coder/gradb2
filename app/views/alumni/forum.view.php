@@ -80,9 +80,8 @@
                                 <div class="aid-type">Last Activity: <strong>2 hours ago</strong></div>
                             </div>
                         </div>
-                        <div class="card-actions">
-                            <button class="btn btn-primary" onclick="event.stopPropagation(); openThread(1)">Join Discussion</button>
-                            <button class="btn btn-secondary">View Replies</button>
+                        <div class="card-actions" style="justify-content: center;">
+                            <button class="btn btn-primary">Join Discussion</button>
                         </div>
                     </div>
 
@@ -107,9 +106,8 @@
                                 <div class="aid-type">Last Activity: <strong>5 hours ago</strong></div>
                             </div>
                         </div>
-                        <div class="card-actions">
-                            <button class="btn btn-primary" onclick="event.stopPropagation(); openThread(2)">Join Discussion</button>
-                            <button class="btn btn-secondary">View Replies</button>
+                        <div class="card-actions" style="justify-content: center;">
+                            <button class="btn btn-primary">Join Discussion</button>
                         </div>
                     </div>
 
@@ -134,9 +132,8 @@
                                 <div class="aid-type">Last Activity: <strong>1 day ago</strong></div>
                             </div>
                         </div>
-                        <div class="card-actions">
-                            <button class="btn btn-primary" onclick="event.stopPropagation(); openThread(3)">Join Discussion</button>
-                            <button class="btn btn-secondary">View Replies</button>
+                        <div class="card-actions" style="justify-content: center;">
+                            <button class="btn btn-primary">Join Discussion</button>
                         </div>
                     </div>
 
@@ -162,9 +159,8 @@
                                 <div class="aid-type">Last Activity: <strong>2 days ago</strong></div>
                             </div>
                         </div>
-                        <div class="card-actions">
-                            <button class="btn btn-primary" onclick="event.stopPropagation(); openThread(4)">Join Discussion</button>
-                            <button class="btn btn-secondary">View Replies</button>
+                        <div class="card-actions" style="justify-content: center;">
+                            <button class="btn btn-primary">Join Discussion</button>
                         </div>
                     </div>
 
@@ -189,9 +185,8 @@
                                 <div class="aid-type">Last Activity: <strong>3 days ago</strong></div>
                             </div>
                         </div>
-                        <div class="card-actions">
-                            <button class="btn btn-primary" onclick="event.stopPropagation(); openThread(5)">Join Discussion</button>
-                            <button class="btn btn-secondary">View Replies</button>
+                        <div class="card-actions" style="justify-content: center;">
+                            <button class="btn btn-primary">Join Discussion</button>
                         </div>
                     </div>
 
@@ -217,9 +212,8 @@
                                 <div class="aid-type">Last Activity: <strong>4 days ago</strong></div>
                             </div>
                         </div>
-                        <div class="card-actions">
-                            <button class="btn btn-primary" onclick="event.stopPropagation(); openThread(6)">Join Discussion</button>
-                            <button class="btn btn-secondary">View Replies</button>
+                        <div class="card-actions" style="justify-content: center;">
+                            <button class="btn btn-primary">Join Discussion</button>
                         </div>
                     </div>
                 </div>

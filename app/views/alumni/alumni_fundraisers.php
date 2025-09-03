@@ -153,7 +153,6 @@ $totalContributions = isset($totalContributions) ? $totalContributions : count($
             <section class="dashboard-section">
                 <div class="section-header">
                     <h2 class="section-title">Completed Fundraisers</h2>
-                    <a href="#" class="btn btn-text">View All Completed</a>
                 </div>
                 <div class="mentorship-grid">
                     <?php if (!empty($completedFundraisers)): ?>
@@ -191,6 +190,11 @@ $totalContributions = isset($totalContributions) ? $totalContributions : count($
                                 </div>
                             </div>
                         <?php endforeach; ?>
+                        
+                        <!-- View All Link -->
+                        <div style="text-align: center; margin-top: 1rem; grid-column: 1 / -1;">
+                            <a href="#" class="btn btn-text">View All Completed Fundraisers</a>
+                        </div>
                     <?php else: ?>
                         <div class="empty-state">
                             <p>No completed fundraisers yet.</p>
@@ -432,8 +436,6 @@ $totalContributions = isset($totalContributions) ? $totalContributions : count($
 }
 </style>
 
-<?php require '../app/views/partials/footer.php'; ?>
-
 <script src="<?=ROOT?>/assets/js/dashboard.js"></script>
 <script>
 // Ensure sidebar toggle works on this page and icons remain visible
@@ -524,9 +526,5 @@ if (cancelBtn) {
   });
 }
 </script>
-if (cancelBtn) {
-  cancelBtn.addEventListener('click', () => {
-    createSection.style.display = 'none';
-  });
-}
-</script>
+
+<?php require '../app/views/partials/footer.php'; ?>
