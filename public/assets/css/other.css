@@ -1,0 +1,14 @@
+/* other.css - Component Styles Import File */
+
+/* Import all component CSS files */
+@import url('./buttons.css');
+@import url('./dashboard-header.css');
+@import url('./layout.css');
+@import url('./sidebar.css');
+@import url('./hero.css');
+@import url('./emotional-points.css');
+@import url('./features.css');
+@import url('./cta.css');
+@import url('./footer.css');
+@import url('./auth.css');
+@import url('./about.css');
