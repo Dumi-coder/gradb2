@@ -837,6 +837,12 @@
     }
 }
 
+@media (max-width: 1050px) {
+    .sidebar-toggle {
+        display: none;
+    }
+}
+
 @media (max-width: 768px) {
     .profile-card {
         flex-direction: column;
