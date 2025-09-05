@@ -1,5 +1,5 @@
 <?php require '../app/views/partials/alumni_header.php'; ?>
-
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni-dashboard">
 <!-- Alumni Dashboard Content -->
 <div class="dashboard-container">
     <!-- Sidebar Navigation -->
@@ -268,7 +268,7 @@
 </div>
 
 <!-- Add CSS and JS links -->
-<link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni-dashboard.css">
 
 <style>
 /* Additional styles to ensure proper header positioning for alumni dashboard */
@@ -292,6 +292,6 @@ main {
 </style>
 
 <?php require '../app/views/partials/footer.php'; ?>
+<script src="<?=ROOT?>/assets/js/alumni-dashboard.js"></script>
 
 <!-- Add JavaScript before closing body -->
-<script src="<?=ROOT?>/assets/js/dashboard.js"></script>
