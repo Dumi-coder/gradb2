@@ -7,7 +7,7 @@
 </head>
 <body>
     <div>
-        <h2>This is Super admin dashboard</h2>
+        <h2> Super admin dashboard</h2>
     </div>
 </body>
 </html>
