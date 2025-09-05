@@ -1,0 +1,577 @@
+/* dashboard.css - Student Dashboard Styles */
+
+/* Dashboard Sections */
+.dashboard-section {
+  margin-top: 0;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+}
+
+.section-title {
+  font-size: var(--font-2xl);
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0;
+}
+
+/* Profile Section */
+.profile-section {
+  margin-top: 0;
+}
+
+.profile-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+/* Profile Picture styles moved to edit-profile.css component */
+
+.profile-details h3 {
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--foreground);
+}
+
+.profile-details p {
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--muted-foreground);
+}
+
+.profile-stats {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+/* Mentorship Section */
+.mentorship-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.mentorship-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mentor-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.mentor-avatar {
+  width: 60px;
+  height: 60px;
+  background-color: var(--secondary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 1.5rem;
+}
+
+.mentor-details h4 {
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--foreground);
+}
+
+.mentor-details p {
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+.mentorship-status {
+  text-align: right;
+}
+
+.next-session {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin: var(--spacing-xs) 0 0 0;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-active {
+  background-color: #10b981;
+  color: white;
+}
+
+.status-pending {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.status-approved {
+  background-color: #10b981;
+  color: white;
+}
+
+.status-completed {
+  background-color: #6b7280;
+  color: white;
+}
+
+.status-waiting {
+  background-color: #8b5cf6;
+  color: white;
+}
+
+.status-accepted {
+  background-color: #10b981;
+  color: white;
+}
+
+/* Aid Requests Table */
+.aid-requests-table {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.aid-requests-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.aid-requests-table th,
+.aid-requests-table td {
+  padding: var(--spacing-md);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.aid-requests-table th {
+  background-color: var(--secondary);
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.aid-requests-table tr:hover {
+  background-color: var(--secondary);
+}
+
+/* Forum Section */
+.forum-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.forum-post {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.post-author {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.post-time {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.post-title {
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--foreground);
+}
+
+.post-excerpt {
+  color: var(--muted-foreground);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.post-stats {
+  display: flex;
+  gap: var(--spacing-md);
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.post-stats span {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+/* Events Section */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.event-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  gap: var(--spacing-lg);
+  align-items: center;
+}
+
+.event-date {
+  text-align: center;
+  min-width: 80px;
+}
+
+.event-day {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.event-month {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+}
+
+.event-details {
+  flex: 1;
+}
+
+.event-title {
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--foreground);
+}
+
+.event-time,
+.event-location {
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.event-description {
+  margin: var(--spacing-sm) 0 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+/* Resources Section */
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.resource-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.resource-icon {
+  width: 50px;
+  height: 50px;
+  background-color: var(--secondary);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 1.25rem;
+}
+
+.resource-info {
+  flex: 1;
+}
+
+.resource-name {
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--foreground);
+}
+
+.resource-meta,
+.resource-size {
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+/* Fundraiser Section */
+.fundraiser-content {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+}
+
+.fundraiser-title {
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--foreground);
+}
+
+.fundraiser-description {
+  color: var(--muted-foreground);
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+.fundraiser-progress {
+  margin-bottom: var(--spacing-lg);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background-color: var(--secondary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--spacing-sm);
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--primary);
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+.progress-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+}
+
+.raised {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.goal {
+  color: var(--muted-foreground);
+}
+
+.fundraiser-meta {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.fundraiser-meta span {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+/* Button Size Variations - Using existing button system */
+.btn-sm {
+  height: 36px;
+  padding: 0 var(--spacing-md);
+  font-size: 0.875rem;
+}
+
+.btn-md {
+  height: var(--button-height);
+  padding: 0 var(--spacing-lg);
+  font-size: 1rem;
+}
+
+.btn-lg {
+  height: 56px;
+  padding: 0 var(--spacing-xl);
+  font-size: 1.125rem;
+}
+
+/* Dashboard Button Width Standardization */
+.dashboard-section .btn,
+.dashboard-header .btn {
+  min-width: 140px;
+}
+
+/* Profile edit button */
+.edit-profile-btn {
+  min-width: 120px;
+}
+
+/* Section action buttons */
+.request-mentorship-btn,
+.new-aid-btn,
+.upload-file-btn,
+.request-fundraiser-btn,
+.donate-btn {
+  min-width: 160px;
+}
+
+/* Secondary action buttons */
+.go-to-forum-btn,
+.view-all-btn {
+  min-width: 130px;
+}
+
+/* Table action buttons */
+.aid-requests-table .btn-sm {
+  min-width: 100px;
+}
+
+/* Event registration buttons */
+.event-register-btn {
+  min-width: 120px;
+}
+
+/* Resource download buttons */
+.resource-card .btn-sm {
+  min-width: 100px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .main-content {
+    margin-left: 240px;
+  }
+  
+  .mentorship-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .events-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .resources-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+  
+  .main-content {
+    margin-left: 0;
+    padding: var(--spacing-md);
+  }
+  
+  /* Header styles moved to dashboard-header.css component */
+  
+  .profile-card {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    text-align: center;
+  }
+  
+  .profile-stats {
+    justify-content: center;
+  }
+  
+  .mentorship-card {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    text-align: center;
+  }
+  
+  .mentorship-status {
+    text-align: center;
+  }
+  
+  .event-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .resource-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .aid-requests-table {
+    overflow-x: auto;
+  }
+  
+  /* Header styles moved to dashboard-header.css component */
+}
+
+@media (max-width: 480px) {
+  .section-header {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+  }
+  
+  .profile-stats {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .fundraiser-meta {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+}
+
+/* Notification Button and Badge styles moved to dashboard-header.css component */

@@ -1,12 +1,10 @@
 <?php require '../app/views/partials/header.php'; ?>
-
-<link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/login&signup.css">
-
-<main class="main-content">
-    <div class="login-container">
-        <h1 class="welcome-title">Welcome <span class="back-text">Back!</span></h1>
-        
-        <form  method="POST" class="login-form">
+    <!-- Signup Form -->
+    <section class="auth-section gradient-hero">
+      <div class="container">
+        <div class="auth-card">
+          <h1 class="auth-title">Welcome to <span class="brand">GradBridge</span></h1>
+          <form class="auth-form"  method="post">
 
             <?php if(!empty($errors)):?>
             <div class="alert alert-danger">       
@@ -14,47 +12,17 @@
             </div>
             <?php endif;?>
 
-            <div class="form-group">
-                <input 
-                    type="name" 
-                    name="name" 
-                    class="form-input" 
-                    placeholder="Full Name" 
-                    required
-                >
-            </div>
-            <div class="form-group">
-                <input 
-                    type="email" 
-                    name="email" 
-                    class="form-input" 
-                    placeholder="University email address"
-                      
-                >
-                <!-- <div id="email-error" style="color:red;"></div> -->
-            </div>
-            <div class="form-group">
-                <input 
-                    type="student_id" 
-                    name="student_id" 
-                    class="form-input" 
-                    placeholder="University ID" 
-                    required
-                >
-                <!-- <div id="student-id-error" style="color:red;"></div> -->
-            </div>
-            <!-- <div class="form-group">
-                <input 
-                    type="faculty" 
-                    name="faculty" 
-                    class="form-input" 
-                    placeholder="Faculty" 
-                    required
-                >
-            </div> -->
-            <div class="form-group">
-                <select name="faculty" class="form-input">
-                    <option value="">Select User Type</option>
+
+            <input class="input" type="text" name="name" placeholder="Full Name" required />
+
+            <input class="input" type="email" name="universityEmail" placeholder="University email address" required />
+
+            <input class="input" type="text" name="student_id" placeholder="University ID" required />
+
+            <!-- <input class="input" type="text" name="faculty" placeholder="Faculty" required /> -->
+            <div>
+                <select name="faculty" class="input">
+                    <option value="">Select Faculty</option>
                     <option value="UCSC">UCSC</option>
                     <option value="FOA">FOA</option>
                     <option value="FOS">FOS</option>
@@ -66,35 +34,24 @@
                     
                 </select>
             </div>
-                    
-            <div class="form-group">
-                <input 
-                type="password" 
-                name="password" 
-                class="form-input" 
-                placeholder="Password" 
-                required
-                >
+
+            <input class="input" type="password" name="password" placeholder="Password" required />
+
+            <input class="input" type="password" name="confirm_password" placeholder="Confirm password" required />
+
+            <div class="auth-actions">
+              <button type="submit" class="btn btn-primary" style="width:100%">Create Account</button>
             </div>
 
-            <div class="form-group">
-                <input 
-                    type="password" 
-                    name="confirm_password" 
-                    class="form-input" 
-                    placeholder="Confirm Password" 
-                    required
-                >
-            </div>
-            <button type="submit" class="login-btn" name="signup">Sign Up</button>
+          </form>
 
-        </form>
-        
-        <div class="signup-link">
-            Already have an account?  <a href="<?=ROOT?>/login">Sing In</a>
+          <p class="auth-meta">Already have an account? <a href="<?=ROOT?>/student/login">Sign In</a></p>
+
         </div>
-    </div>
-</main> 
+      </div>
+    </section>
 
-<?php require '../app/views/partials/footer.php'; ?>
+<?php require '../app/views/partials/footer.php'; ?><!--footer-->
+
+
 

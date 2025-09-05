@@ -1,0 +1,33 @@
+/* about.css - About section refinements */
+
+.about {
+  position: relative;
+  padding: var(--spacing-2xl) 0;
+  /* Smooth background that fades back to white */
+  background: linear-gradient(
+    180deg,
+    var(--background) 0%,
+    var(--brand-grey) 20%,
+    var(--brand-grey) 80%,
+    var(--background) 100%
+  );
+}
+
+/* Extra soft fade at the bottom to avoid a harsh cutoff */
+.about::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 72px;
+  background: linear-gradient(180deg, var(--brand-grey), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.about .about-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+

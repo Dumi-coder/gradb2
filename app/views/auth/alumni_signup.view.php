@@ -1,104 +1,56 @@
 <?php require '../app/views/partials/header.php'; ?>
 
-<link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/login&signup.css">
+    <!-- Alumni Signup Form -->
+    <section class="auth-section gradient-hero">
+      <div class="container">
+        <div class="auth-card">
+          <h1 class="auth-title">Welcome to <span class="brand">GradBridge</span></h1>
 
-<main class="main-content">
-    <div class="login-container">
-        <h1 class="welcome-title">Welcome <span class="back-text">Back!</span></h1>
-        
-        <form  method="POST" class="login-form">
+          <form class="auth-form"  method="post">
 
-            <?php if(!empty($errors)):?>
+          <?php if(!empty($errors)):?>
             <div class="alert alert-danger">       
                 <?= implode("<br>",$errors)?> 
             </div>
             <?php endif;?>
 
-            <div class="form-group">
-                <input 
-                    type="name" 
-                    name="name" 
-                    class="form-input" 
-                    placeholder="Full Name" 
-                    value="<?=$_POST['name'] ?? ''?>"
-                    required
-                >
-            </div>
-            <div class="form-group">
-                <input 
-                    type="email" 
-                    name="email" 
-                    class="form-input" 
-                    placeholder="University email address" 
-                    value="<?=$_POST['email'] ?? ''?>"
-                    required
-                >
-                <!-- <div id="email-error" style="color:red;"></div> -->
-            </div>
-            <div class="form-group">
-                <input 
-                    type="alumni_id" 
-                    name="alumni_id" 
-                    class="form-input" 
-                    placeholder="Alumni ID" 
-                    value="<?=$_POST['alumni_id'] ?? ''?>"
-                    required
-                >
-                <!-- <div id="student-id-error" style="color:red;"></div> -->
-            </div>
-            <div class="form-group">
-                <input 
-                    type="faculty" 
-                    name="faculty" 
-                    class="form-input" 
-                    placeholder="Faculty" 
-                    value="<?=$_POST['faculty'] ?? ''?>"
-                    required
-                >
-            </div>
-            <div class="form-group">
-                <input 
-                    type="number" 
-                    name="graduation_year" 
-                    class="form-input" 
-                    placeholder="Graduation Year" 
-                    value="<?= $_POST['graduation_year'] ?? '' ?>"
-                    min="1900" 
-                    max="<?= date('Y') ?>"
-                    required
-                >
-            </div>
+            <input class="input" type="text" name="name" placeholder="Full Name" required />
             
+            <input class="input" type="email" name="email" placeholder="Work email address" required />
             
-            <div class="form-group">
-                <input 
-                type="password" 
-                name="password" 
-                class="form-input" 
-                placeholder="Password" 
-            
-                required
-                >
-            </div>
+            <input class="input" type="text" name="alumni_id" placeholder="Alumni Membership Number" required />
 
-            <div class="form-group">
-                <input 
-                    type="password" 
-                    name="confirm_password" 
-                    class="form-input" 
-                    placeholder="Confirm Password" 
-                    required
-                >
+            <!-- <input class="input" type="text" name="faculty" placeholder="Faculty" required /> -->
+            <div>
+                <select name="faculty" class="input">
+                    <option value="">Select Faculty</option>
+                    <option value="UCSC">UCSC</option>
+                    <option value="FOA">FOA</option>
+                    <option value="FOS">FOS</option>
+                    <option value="FOM">FOM</option>
+                    <option value="FOMF">FOMF</option>
+                    <option value="FOL">FOL</option>
+                    <option value="FOE">FOE</option>
+                    <option value="FOT">FOT</option>
+                    
+                </select>
             </div>
-            <button type="submit" class="login-btn" name="signup">Sign Up</button>
-
-        </form>
-        
-        <div class="signup-link">
-            Already have an account?  <a href="<?=ROOT?>/auth/login">Sing In</a>
+            
+            <input class="input" type="password" name="password" placeholder="Password" required />
+            
+            <input class="input" type="password" name="confirm_password" placeholder="Confirm password" required />
+            
+            <div class="auth-actions">
+              <button type="submit" class="btn btn-primary" style="width:100%">Create Account</button>
+            </div>
+            
+          </form>
+          
+          <p class="auth-meta">Already have an account? <a href="<?=ROOT?>/alumni/login">Sign In</a></p>
         </div>
-    </div>
-</main> 
+      </div>
+    </section>
 
-<?php require '../app/views/partials/footer.php'; ?>
+<?php require '../app/views/partials/footer.php'; ?><!--footer-->
+
 
