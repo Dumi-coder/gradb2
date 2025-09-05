@@ -1,0 +1,130 @@
+/* emotional-points.css - Emotional Points Section Component Styles */
+
+/* Emotional Points - Updated with larger containers and stacking animation */
+.emotional-points {
+  padding: var(--spacing-2xl) 0;
+  position: relative;
+  min-height: 300vh; /* Increased height for scroll effect */
+}
+
+.points-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* Remove gap for stacking effect */
+  max-width: 900px; /* Increased max-width for bigger containers */
+  margin: 0 auto;
+  position: relative;
+}
+
+.point-card {
+  background-color: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2xl);
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: sticky;
+  top: 120px;
+  z-index: 1;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 80vh; /* Reduced margin for better spacing */
+  transform: translateY(100px);
+  opacity: 0;
+}
+
+.point-card:last-child {
+  margin-bottom: 0;
+}
+
+.point-card.active {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.point-card:nth-child(1) {
+  z-index: 13; /* Highest z-index for first card */
+  background: linear-gradient(135deg, #ffffff, #f8faff);
+  top: 120px;
+}
+
+.point-card:nth-child(2) {
+  z-index: 12; /* Middle z-index for second card */
+  background: linear-gradient(135deg, #ffffff, #f0f4ff);
+  top: 140px;
+}
+
+.point-card:nth-child(3) {
+  z-index: 11; /* Proper z-index for third card */
+  background: linear-gradient(135deg, #ffffff, #e8f2ff);
+  top: 160px;
+  margin-bottom: 50vh; /* Reduced margin for the last card */
+}
+
+.point-content {
+  position: relative;
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.point-card:hover .point-content {
+  transform: translateY(-5px);
+}
+
+.point-title {
+  font-size: 2rem; /* Increased font size for bigger containers */
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: var(--spacing-md); /* Increased margin */
+  transition: color 0.3s ease;
+}
+
+.point-card:hover .point-title {
+  color: var(--primary);
+}
+
+.point-subtitle {
+  font-size: 1.25rem; /* Increased font size */
+  color: var(--muted-foreground);
+  transition: color 0.3s ease;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.point-card:hover .point-subtitle {
+  color: var(--foreground);
+}
+
+/* Remove old point styles */
+.point {
+  display: none;
+}
+
+.emotional-points .point-image {
+  display: none;
+}
+
+/* Responsive Emotional Points */
+@media (min-width: 768px) {
+  .points-grid {
+    max-width: 1000px; /* Even larger on desktop */
+  }
+  
+  .point-card {
+    padding: var(--spacing-2xl) var(--spacing-xl); /* More padding on desktop */
+    min-height: 300px; /* Taller on desktop */
+  }
+  
+  .point-title {
+    font-size: 2.5rem; /* Larger title on desktop */
+  }
+  
+  .point-subtitle {
+    font-size: 1.375rem; /* Larger subtitle on desktop */
+  }
+}

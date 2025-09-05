@@ -1,0 +1,190 @@
+/* mentorship-request.css - Mentorship Request Form Page Styles */
+
+/* Main Content Layout - Using Dashboard Style */
+.main-content {
+  flex: 1;
+  margin-left: 0; /* No sidebar on this page */
+  padding: var(--spacing-lg);
+  background-color: var(--background);
+  margin-top: 80px; /* Account for fixed header */
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Form Container - Full Width with Margins */
+.mentorship-form-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mentorship-form-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  width: 100%;
+}
+
+/* Form Title and Description */
+.form-title {
+  font-size: var(--font-2xl);
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 var(--spacing-md) 0;
+  text-align: center;
+}
+
+.form-description {
+  font-size: var(--font-base);
+  color: var(--muted-foreground);
+  text-align: center;
+  margin: 0 0 var(--spacing-lg) 0;
+  line-height: var(--leading-normal);
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+.form-label {
+  display: block;
+  font-size: var(--font-base);
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: var(--spacing-sm);
+}
+
+.required {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+/* Form Inputs */
+.form-select,
+.form-textarea,
+.form-input {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-base);
+  font-family: inherit;
+  background-color: var(--secondary);
+  color: var(--foreground);
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right var(--spacing-md) center;
+  background-size: 16px;
+  padding-right: calc(var(--spacing-md) * 2 + 16px);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: var(--leading-normal);
+}
+
+.form-select:focus,
+.form-textarea:focus,
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(14, 32, 114, 0.1);
+  background-color: var(--background);
+}
+
+.form-select:hover,
+.form-textarea:hover,
+.form-input:hover {
+  border-color: var(--primary);
+}
+
+/* Form Actions */
+.form-actions {
+  text-align: center;
+  margin-top: var(--spacing-lg);
+}
+
+.submit-btn {
+  min-width: 280px;
+  height: 56px;
+  font-size: var(--font-md);
+  font-weight: 600;
+  background-color: var(--foreground);
+  color: var(--background);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+.submit-btn:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+.submit-btn i {
+  font-size: var(--font-base);
+}
+
+/* Header styles moved to dashboard-header.css component */
+
+/* Footer styles removed - page doesn't have footer */
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: var(--font-3xl);
+  }
+  
+  .mentorship-form-card {
+    padding: var(--spacing-lg);
+  }
+  
+  .form-title {
+    font-size: var(--font-xl);
+  }
+  
+  .submit-btn {
+    min-width: 100%;
+    height: 48px;
+  }
+  
+  /* Footer styles removed */
+}
+
+@media (max-width: 480px) {
+  .mentorship-form-container {
+    padding: 0 var(--spacing-sm);
+  }
+  
+  .mentorship-form-card {
+    padding: var(--spacing-md);
+  }
+  
+  /* Page header styles removed */
+}

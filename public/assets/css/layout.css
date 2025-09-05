@@ -1,0 +1,38 @@
+/* layout.css - Essential Dashboard Layout Structure */
+
+/* Dashboard Container - Creates flexbox layout for sidebar + content */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  padding-top: 100px; /* Accounts for fixed header height */
+}
+
+/* Main Content - Positioned to the right of sidebar */
+.main-content {
+  flex: 1;
+  margin-left: 280px; /* Pushes content right of sidebar (280px = sidebar width) */
+  padding: 0 var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
+  background-color: var(--background);
+}
+
+/* Dashboard Sections - Basic spacing for content sections */
+.dashboard-section {
+  margin-top: 0;
+  margin-bottom: var(--spacing-2xl);
+}
+
+/* Section Headers - Basic header layout */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Section Titles - Basic title styling */
+.section-title {
+  font-size: var(--font-2xl);
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0;
+}

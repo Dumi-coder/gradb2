@@ -1,0 +1,50 @@
+/* cta.css - Call to Action Section Component Styles */
+
+/* Final CTA - FIXED SECTION */
+.final-cta {
+  padding: var(--spacing-2xl) 0;
+  background: var(--gradient-hero) !important; /* Force the blue gradient background */
+  position: relative;
+}
+
+.final-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-hero);
+  z-index: 1;
+}
+
+.final-cta .container {
+  position: relative;
+  z-index: 2;
+}
+
+.cta-content {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.cta-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--background); /* White text on blue background */
+  margin-bottom: var(--spacing-lg);
+}
+
+.cta-subtitle {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.9); /* Semi-transparent white */
+  margin-bottom: var(--spacing-xl);
+}
+
+/* Responsive CTA */
+@media (min-width: 768px) {
+  .cta-title {
+    font-size: 3rem;
+  }
+}

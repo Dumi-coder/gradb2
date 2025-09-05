@@ -1,0 +1,92 @@
+/* buttons.css - Button Component Styles */
+
+/* Button Styles - Standardized with 10px border radius */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs); /* Add spacing between icon and text */
+  height: var(--button-height);
+  padding: 0 var(--spacing-lg);
+  border-radius: 10px; /* Changed to 10px for all buttons */
+  font-weight: 600;
+  font-size: var(--font-base);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: scale(1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ensure icons and text are properly spaced */
+.btn i {
+  margin-right: 0; /* Remove default margin since we're using gap */
+}
+
+.btn span {
+  margin-left: 0; /* Remove default margin since we're using gap */
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary {
+  background-color: var(--foreground); /* Black background */
+  color: var(--background); /* White text */
+}
+
+.btn-primary:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.btn-secondary {
+  background-color: var(--foreground); /* Black background */
+  color: var(--background); /* White text */
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.btn-outline {
+  background-color: var(--background); /* White background */
+  color: var(--foreground); /* Black text */
+  border: 1px solid var(--foreground); /* Black border */
+}
+
+.btn-outline:hover {
+  background-color: var(--foreground);
+  color: var(--background);
+}
+
+.btn-light {
+  background-color: var(--background);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.btn-light:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Ripple effect */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0);
+  animation: ripple-animation 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
