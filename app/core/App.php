@@ -11,6 +11,8 @@ class App// This is the main application class that handles routing and loading 
     {
         $URL=$_GET['url'] ?? 'Home';// Get the URL from the query string, default to 'home' if not set
         $URL=explode("/", trim($URL,"/"));// Split the URL by slashes
+        // Debug: log the URL segments
+        error_log("URL segments: " . print_r($URL, true));
         return $URL;       // Return the array of URL segments
     }
 

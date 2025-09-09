@@ -22,6 +22,6 @@
       </div>
     </footer>
 
-    <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
+    <!-- <script type="module" src="<?=ROOT?>/assets/js/main.js"></script> -->
   </body>
 </html>

@@ -21,11 +21,16 @@ trait Database// This trait provides basic database operations for models
         $check=$stm->execute($data);               // 3. Execute the statement with data
         if($check)                                 // 4. If execution was successful
         {
-           $result=$stm->fetchAll(PDO::FETCH_OBJ); // 5. Fetch all results as objects
-           if(is_array($result) && count($result))
-           {
-            return $result;
-           }
+            if(stripos($query,"SELECT") === 0) // Check if the query is a SELECT statement
+            {
+                $result=$stm->fetchAll(PDO::FETCH_OBJ); // 5. Fetch all results as objects
+                if(is_array($result) && count($result))
+                    {
+                        return $result;
+                
+                    }
+            }
+            return true; // For non-SELECT queries, return true to indicate success
         }
         return false;// 6. Return false if no results found or execution failed
     }

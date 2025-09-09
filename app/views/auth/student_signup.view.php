@@ -15,9 +15,11 @@
 
             <input class="input" type="text" name="name" placeholder="Full Name" required />
 
-            <input class="input" type="email" name="universityEmail" placeholder="University email address" required />
+            <input class="input" type="email" name="email" placeholder="University email address" required />
 
             <input class="input" type="text" name="student_id" placeholder="University ID" required />
+
+            <input class="input" type="text" name="academic_year" placeholder="Academic Year" required />
 
             <!-- <input class="input" type="text" name="faculty" placeholder="Faculty" required /> -->
             <div>
@@ -45,7 +47,7 @@
 
           </form>
 
-          <p class="auth-meta">Already have an account? <a href="<?=ROOT?>/student/login">Sign In</a></p>
+          <p class="auth-meta">Already have an account? <a href="<?=ROOT?>/Student/Auth">Sign In</a></p>
 
         </div>
       </div>

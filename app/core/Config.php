@@ -16,6 +16,7 @@ if($_SERVER['SERVER_NAME']== 'localhost')// This condition checks if the server 
         define('DBDRIVER','');
 
         define('ROOT','http://localhost/gradb2/public');
+        
 }
 else{// This condition is executed if the server name is not 'localhost', indicating a production environment.
         /** dabtabase config */
