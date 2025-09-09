@@ -17,3 +17,4 @@ function redirect($path)
      die;
     // exit();// Redirect to the specified path and exit the script
 }
+

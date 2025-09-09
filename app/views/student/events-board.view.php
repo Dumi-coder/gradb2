@@ -35,10 +35,8 @@
               <i class="fas fa-bell"></i>
               <span class="notification-badge">3</span>
             </button>
-            <button class="btn btn-primary logout-btn">
-              <i class="fas fa-sign-out-alt"></i>
-              Logout
-            </button>
+           <a href="<?=ROOT?>/student/Logout"><button class="btn btn-primary logout-btn">Logout</button></a>
+
           </div>
         </div>
       </div>

@@ -1,74 +1,89 @@
-<!-- <?php   
-//  echo "User.php model loaded<br>";
-//core user data,auth logic
-class User // Model class for User
+<?php
+
+class User
 {
-    use Model;// Use the Model trait for database operations
+    use Model;
+    
+    protected $table = 'users';
+    protected $order_column = 'user_id';
+    protected $id_column = 'user_id';
+    
+    protected $allowedColumns = [
+        'name',
+        'email', 
+        'password',
+        'role'
+    ];
 
-    protected $table = 'users';// Specify the table name
-    protected $allowedColumns = ['name','email','user_id','faculty','password'];// Define the columns that can be inserted or updated
-    public $id_column = 'user_id'; // Use your unique column for ordering
-    public $order_column = 'user_id'; // Use your unique column for ordering
-
-    public function validate($data)
+    public function insert($data)
     {
-        $this->errors = [];
-        if(empty($this->errors))
-        {
+        try {
+            // Remove unwanted data
+            if (!empty($this->allowedColumns)) {
+                foreach ($data as $key => $value) {
+                    if (!in_array($key, $this->allowedColumns)) {
+                        unset($data[$key]);
+                    }
+                }
+            }
+
+            $keys = array_keys($data);
+            $query = "INSERT INTO $this->table (" . implode(",", $keys) . ") VALUES (:" . implode(",:", $keys) . ")";
+            
+            if (defined('DEBUG') && DEBUG) {
+                echo "Query: " . $query . "<br>";
+                echo "Data: ";
+                $debug_data = $data;
+                $debug_data['password'] = '[HIDDEN]'; // Don't show password in debug
+                print_r($debug_data);
+                echo "<br>";
+            }
+            
+            $con = $this->connect();
+            $stm = $con->prepare($query);
+            $result = $stm->execute($data);
+            
+            if (!$result) {
+                $errorInfo = $stm->errorInfo();
+                if (defined('DEBUG') && DEBUG) {
+                    echo "SQL Error: ";
+                    print_r($errorInfo);
+                    echo "<br>";
+                }
+                return false;
+            }
+            
             return true;
+            
+        } catch (Exception $e) {
+            if (defined('DEBUG') && DEBUG) {
+                echo "Exception in User insert: " . $e->getMessage() . "<br>";
+            }
+            return false;
         }
-        return false;
-    }   
+    }
+
+    private function connect()
+    {
+        try {
+            $string = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8";
+            $con = new PDO($string, DBUSER, DBPASS);
+            $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $con;
+        } catch (PDOException $e) {
+            if (defined('DEBUG') && DEBUG) {
+                echo "Database connection error: " . $e->getMessage() . "<br>";
+            }
+            return null;
+        }
+    }
+
+    // Add debug method for updates
+    public function logUpdate($id, $data, $id_column)
+    {
+        error_log("User update attempted - ID: $id, Column: $id_column, Data: " . print_r($data, true));
+        $result = $this->update($id, $data, $id_column);
+        error_log("User update result: " . ($result ? 'success' : 'failed'));
+        return $result;
+    }
 }
-         
-
-    //     if (empty($data['name'])) {// Validate name
-    //        $this->errors['name'] = "Name is required";
-    //     }
-
-    //     if(empty($data['email']))// Validate email
-    //     {
-    //         $this->errors['email'] = "Email is required";
-    //     }
-    //     else{
-
-    //         if(!filter_var($data['email'],FILTER_VALIDATE_EMAIL))
-    //         {
-    //                 $this->errors['email']="Email is NOT VALID";
-    //         }
-    //         else{
-    //                 $existing=$this->first(['email'=>$data['email']]);
-    //                 if($existing)
-    //                 {
-    //                         $this->errors['email']="Email already registered";
-    //                 }
-    //         }
-    //     }
-
-    //     // Student ID validation & uniqueness
-    // //     if (empty($data['student_id'])) {
-    // //         $this->errors['student_id'] = "Student ID is required";
-    // //     } else {
-    // //         $existing = $this->first(['student_id' => $data['student_id']]);
-    // //         if ($existing) {
-    // //             $this->errors['student_id'] = "Student ID already registered";
-    // //         }
-    // //    }
-    //     // Faculty validation
-    //     if (empty($data['faculty'])) {
-        //         $this->errors['faculty'] = "Faculty is required";
-        //     }
-
-        // Confirm password validation
-        // if(empty($data['password']))
-        // {
-        //     $this->errors['password']="Password is required";
-        // }else if (strlen($data['password']) < 6) {
-        //     $this->errors['password'] = "Password must be at least 6 characters";
-        // }
-        // // Check if passwords match
-        // if ($data['password'] !== $data['confirm_password']) {
-        //     $this->errors['confirm_password'] = "Passwords do not match";
-        // }
-        
-        //check if there are any errors -->

@@ -28,8 +28,8 @@
       <div class="container">
         <div class="header-content">
           <div class="welcome-section">
-            <h1 class="welcome-text">Welcome, <span class="student-name">Sarah Johnson</span></h1>
-            <p class="student-role">Computer Science • Year 3</p>
+            <h1 class="welcome-text">Welcome, <span class="student-name"><?= esc($profile->name) ?></span></h1>
+            <p class="student-role">Computer Science • Year <?= esc($profile->academic_year)?></p>
           </div>
           
           <div class="header-actions">
@@ -37,10 +37,10 @@
               <i class="fas fa-bell" style="font-size: 1.1rem;"></i>
               <span class="notification-badge">3</span>
             </button>
-            <button class="btn btn-primary logout-btn">
-              <i class="fas fa-sign-out-alt"></i>
-              Logout
-            </button>
+            <!-- <button class="btn btn-primary logout-btn">  -->
+               <!-- <i class="fas fa-sign-out-alt"></i>  -->
+              <a href="<?=ROOT?>/student/Logout"><button class="btn btn-primary logout-btn">Logout</button></a>
+            <!-- </button> -->
           </div>
         </div>
       </div>
@@ -56,10 +56,10 @@
         <section class="dashboard-section profile-section">
           <div class="section-header">
             <h2 class="section-title">Student Profile</h2>
-            <button class="btn btn-outline btn-md edit-profile-btn">
+            <!-- <button class="btn btn-outline btn-md edit-profile-btn">
               <i class="fas fa-edit"></i>
               <span>Edit Profile</span>
-            </button>
+            </button> -->
           </div>
           
           <div class="profile-card">
@@ -76,11 +76,26 @@
                   <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
                 </div>
               </div>
+              
+              <!-- <?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
+                <div class="alert-success">Profile updated successfully!</div>
+            <?php endif; ?> -->
+
               <div class="profile-details">
-                <h3 class="profile-name">Sarah Johnson</h3>
+                <!-- <h3 class="profile-name">Sarah Johnson</h3>
                 <p class="profile-email">sarah.johnson@university.edu</p>
                 <p class="profile-major">Computer Science • Year 3</p>
-                <p class="profile-gpa">GPA: 3.8/4.0</p>
+                <p class="profile-gpa">GPA: 3.8/4.0</p> -->
+                <!-- <h4>Hi,  <?=$username?></h4>
+               <h4>Hi,  <?=$userrole?></h4>
+                 <h4>Hi,  <?=$useremail?></h4> -->
+                 <h3 class="profile-name"><?= esc($profile->name) ?></h3>
+                <!-- <p class="profile-id"><strong>Student ID:</strong> <?= esc($profile->student_id) ?></p> -->
+                <p class="profile-faculty"><strong></strong> <?= esc($profile->faculty) ?></p>
+                <p class="profile-year"><strong></strong> <?= esc($profile->academic_year) . " year" ?></p><p>
+                <p class="profile-email"><strong></strong> <?= esc($profile->email) ?></p>
+                <p class="profile-bio"><strong></strong>mobile <?= esc($profile->mobile) ?></p>
+                <!-- <p class="profile-bio"><strong>Bio:</strong> <?= esc($profile->bio) ?></p> -->
               </div>
             </div>
             <div class="profile-stats">
@@ -384,7 +399,7 @@
       </main>
     </div>
 
-    <script src="<?=ROOT?>/assets/js/main.js"></script>
+    <!-- <script src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/edit-profile.js"></script>
     <script src="<?=ROOT?>/assets/js/dashboard.js"></script>
     <script>
@@ -392,6 +407,6 @@
       document.addEventListener('DOMContentLoaded', function() {
         // Don't auto-initialize - only create when edit profile button is clicked
       });
-    </script>
+    </script> -->
   </body>
 </html>

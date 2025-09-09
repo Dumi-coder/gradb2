@@ -47,7 +47,7 @@
           
           <div class="nav-section">
             <h3 class="nav-section-title">Account</h3>
-            <a href="<?=ROOT?>/Student/profile" class="nav-item">
+            <a href="<?=ROOT?>/Student/profile/show" class="nav-item">
               <i class="fas fa-user-circle"></i>
               <span>Profile</span>
             </a>
