@@ -15,7 +15,9 @@
             <?php endif;?>
 
             <input class="input" type="text" name="name" placeholder="Full Name" required />
-            
+
+            <!-- <input class="input" type="text" name="alumni_id" placeholder="Alumni ID" required /> -->
+
             <input class="input" type="email" name="email" placeholder="Work email address" required />
             
             <input class="input" type="text" name="alumni_id" placeholder="Alumni Membership Number" required />
@@ -46,7 +48,7 @@
             
           </form>
           
-          <p class="auth-meta">Already have an account? <a href="<?=ROOT?>/alumni/login">Sign In</a></p>
+          <p class="auth-meta">Already have an account? <a href="<?=ROOT?>/alumni/auth">Sign In</a></p>
         </div>
       </div>
     </section>

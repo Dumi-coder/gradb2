@@ -114,8 +114,8 @@ Trait Model // This trait provides basic database operations for models
         $query .= " where $id_column = :$id_column ";// Append the where clause to the query
         $data[$id_column]=$id;
         // echo $query;
-        $this->query($query,$data);// Execute the query with the provided data
-        return false;// Return false to indicate the operation is complete
+        return $this->query($query,$data);// Execute the query with the provided data
+        // return $result !==false;// Return false to indicate the operation is complete
     }
 
     public function delete($id,$id_column=null)// This method deletes a record based on the provided ID and ID column

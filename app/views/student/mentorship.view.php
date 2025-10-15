@@ -39,10 +39,8 @@
               <i class="fas fa-bell"></i>
               <span class="notification-badge">3</span>
             </button>
-            <button class="btn btn-primary logout-btn">
-              <i class="fas fa-sign-out-alt"></i>
-              Logout
-            </button>
+           <a href="<?=ROOT?>/student/Logout"><button class="btn btn-primary logout-btn">Logout</button></a>
+
           </div>
         </div>
       </div>
@@ -67,10 +65,12 @@
             </button>
             <div class="divider"></div>
             <p class="question-text">Are your questions still unanswered?</p>
+            <a href="<?=ROOT?>/student/MentorshipReq">
             <button class="btn btn-primary btn-lg request-btn">
               <i class="fas fa-plus"></i>
               <span>Yes, Request Mentorship</span>
             </button>
+            </a>
           </div>
         </section>
 

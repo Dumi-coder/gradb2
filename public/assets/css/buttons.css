@@ -18,6 +18,7 @@
   transform: scale(1);
   position: relative;
   overflow: hidden;
+  
 }
 
 /* Ensure icons and text are properly spaced */
@@ -84,6 +85,11 @@
   pointer-events: none;
 }
 
+.logout-btn a{
+  text-decoration: none;    
+}
+
+  
 @keyframes ripple-animation {
   to {
     transform: scale(4);
