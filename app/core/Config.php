@@ -20,10 +20,11 @@
 // }
 // else{// This condition is executed if the server name is not 'localhost', indicating a production environment.
         /** dabtabase config */
-        define('DBNAME','gradb2');
-        define('DBHOST','localhost');
-        define('DBUSER','root');
-        define('DBPASS','');
+        define('DBNAME','gradb2_gradb2');
+        define('DBPORT','3306');
+        define('DBHOST','mysql-gradb2.alwaysdata.net');
+        define('DBUSER','gradb2');
+        define('DBPASS','passwordmysql');
         define('DBDRIVER','');
         
         // define('ROOT','https://www.GradBridge.com');
