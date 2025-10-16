@@ -8,26 +8,25 @@
  // If it is not, it sets the database configuration for a production environment.
 // if($_SERVER['SERVER_NAME']== 'localhost')// This condition checks if the server name is 'localhost'.
 // {
-        /** dabtabase config */
-        // define('DBNAME','gradb2');
-        // define('DBHOST','localhost');
-        // define('DBUSER','root');
-        // define('DBPASS','');
-        // define('DBDRIVER','');
+//         /** dabtabase config */
+//         define('DBNAME','gradb2');
+//         define('DBHOST','localhost');
+//         define('DBUSER','root');
+//         define('DBPASS','');
+//         define('DBDRIVER','');
 
         define('ROOT','http://localhost/gradb2/public');
         
 // }
 // else{// This condition is executed if the server name is not 'localhost', indicating a production environment.
-//         /** dabtabase config */
-        define('DBNAME','gradb2_gradb2');
-        define('DBPORT','3306');
-        define('DBHOST','mysql-gradb2.alwaysdata.net');
-        define('DBUSER','gradb2');
-        define('DBPASS','passwordmysql');
+        /** dabtabase config */
+        define('DBNAME','gradb2');
+        define('DBHOST','localhost');
+        define('DBUSER','root');
+        define('DBPASS','');
         define('DBDRIVER','');
         
-        // define('ROOT','https://gradb2.alwaysdata.net/public');
+        // define('ROOT','https://www.GradBridge.com');
 // }
 
 define('APP_NAME','GradBridge');// This is the name of the application, used in the title tag and other places.
