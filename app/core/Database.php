@@ -5,13 +5,13 @@
 
 trait Database// This trait provides basic database operations for models
 {
-    private function connect()// This function is used to establish a connection to the database
-    {
-        // $string = "mysql:hostname=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8";
-        $string="mysql:hostname=".DBHOST.";dbname=".DBNAME;// Create a DSN string for the database connection
-        $con = new PDO($string,DBUSER,DBPASS);// Create a new PDO instance with the DSN, username, and password
-        return $con;// Return the PDO connection object
-    }
+    private function connect()
+{
+    $string = "mysql:host=".DBHOST.";dbname=".DBNAME.";charset=utf8";
+    $con = new PDO($string, DBUSER, DBPASS);
+    return $con;
+}
+
     
     public function query($query,$data=[])// This function is used to execute a query and return the results
     {

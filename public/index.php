@@ -6,7 +6,7 @@ session_start();// Start the session to manage user sessions
 // error_reporting(E_ALL);
 
 // echo "index.php loaded<br>";// Debugging line to confirm index.php is loaded
-require "../app/core/init.php";// Load the initialization file
+require "../app/core/init.php";// Load the initialization file ../
 
 
 if(DEBUG)// Check if debug mode is enabled
