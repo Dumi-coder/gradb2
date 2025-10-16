@@ -1,14 +1,10 @@
 <?php require '../app/views/partials/alumni_header.php'; ?>
-
-<!-- Alumni Forum Content -->
-<div class="dashboard-container">
-    <?php 
-    $current_page = 'forum';
-    require '../app/views/partials/alumni_sidebar.php'; 
-    ?>
-
-    <!-- Main Content Area -->
-    <main class="main-content">
+<?php 
+$current_page = 'forum';
+require '../app/views/partials/alumni_sidebar.php'; 
+?>
+<!-- Main Content Area -->
+<main class="main-content">
         <div class="content-wrapper">
             <!-- Header -->
             <header class="dashboard-header">
@@ -627,8 +623,6 @@
 }
 </style>
 
-<?php require '../app/views/partials/footer.php'; ?>
-
 <!-- JavaScript -->
 <script src="<?=ROOT?>/assets/js/dashboard.js"></script>
 
@@ -808,33 +802,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (sidebarToggle && sidebar && mainContent) {
         sidebarToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('collapsed');
-            
-            if (sidebar.classList.contains('collapsed')) {
-                mainContent.style.marginLeft = '70px';
-            } else {
-                mainContent.style.marginLeft = '280px';
-            }
+            // DISABLED: Sidebar toggle functionality removed
+            // sidebar.classList.toggle('collapsed');
+            // The sidebar now stays fixed at 280px width - no toggling
+            console.log('Sidebar toggle disabled - layout stays fixed');
         });
         
-        // Set initial margin
-        if (window.innerWidth <= 1024) {
-            sidebar.classList.add('collapsed');
-            mainContent.style.marginLeft = '70px';
-        } else {
-            mainContent.style.marginLeft = '280px';
-        }
-        
-        // Handle window resize
-        window.addEventListener('resize', function() {
-            if (window.innerWidth <= 1024) {
-                sidebar.classList.add('collapsed');
-                mainContent.style.marginLeft = '70px';
-            } else {
-                sidebar.classList.remove('collapsed');
-                mainContent.style.marginLeft = '280px';
-            }
-        });
     }
     
     // Close modals when clicking outside

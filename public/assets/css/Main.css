@@ -1,0 +1,149 @@
+/* Main.css - Global Styles, Variables, and Utility Classes */
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* CSS Variables - Design System */
+:root {
+  /* GradBridge Design System - Blue, Black, White Theme */
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(0, 0%, 8%);
+  
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(0, 0%, 8%);
+  
+  /* Primary: Deep Blue - Changed to #0E2072 */
+  --primary: #0E2072;
+  --primary-foreground: hsl(0, 0%, 100%);
+  
+  /* Secondary: Soft Ash Grey */
+  --secondary: hsl(210, 11%, 96%);
+  --secondary-foreground: hsl(0, 0%, 8%);
+  
+  /* Muted: Light Grey */
+  --muted: hsl(210, 11%, 96%);
+  --muted-foreground: hsl(0, 0%, 45%);
+  
+  /* Accent: Blue Variant - Changed to #0E2072 */
+  --accent: #0E2072;
+  --accent-foreground: hsl(0, 0%, 100%);
+  
+  /* Brand Colors */
+  --brand-blue: #0E2072;
+  --brand-blue-light: #0E2072;
+  --brand-black: hsl(0, 0%, 8%);
+  --brand-grey: hsl(210, 11%, 96%);
+  --brand-grey-dark: hsl(0, 0%, 45%);
+  
+  /* Borders */
+  --border: hsl(210, 11%, 90%);
+  
+  /* Gradients */
+  --gradient-hero: linear-gradient(135deg, #0E2072 0%, #0E2072 100%);
+  --gradient-subtle: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(210, 11%, 96%) 100%);
+  
+  /* Spacing */
+  --container-max-width: 1200px;
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-2xl: 4rem;
+  
+  /* Border radius */
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Components */
+  --button-height: 48px;
+  
+  /* Font Sizes - Typography Scale */
+  --font-xs: 0.75rem;      /* 12px - Extra Small */
+  --font-sm: 0.875rem;     /* 14px - Small */
+  --font-base: 1rem;       /* 16px - Base/Default */
+  --font-md: 1.125rem;     /* 18px - Medium */
+  --font-lg: 1.25rem;      /* 20px - Large */
+  --font-xl: 1.5rem;       /* 24px - Extra Large */
+  --font-2xl: 1.75rem;     /* 28px - 2X Large */
+  --font-3xl: 2rem;        /* 32px - 3X Large */
+  --font-4xl: 2.5rem;      /* 40px - 4X Large */
+  --font-5xl: 3rem;        /* 48px - 5X Large */
+  
+  /* Line Heights */
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+}
+
+/* Base Element Styles */
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Utility Classes */
+.container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.gradient-hero {
+  background: var(--background);
+}
+
+.gradient-subtle {
+  background: var(--gradient-subtle);
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+  .hero-content {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-2xl);
+  }
+  
+  .hero-title {
+    font-size: 4rem;
+  }
+  
+  .hero-buttons {
+    flex-direction: row;
+  }
+  
+  .section-title {
+    font-size: 3rem;
+  }
+  
+  .cta-title {
+    font-size: 3rem;
+  }
+  
+  .footer-content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .features-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .hero-title {
+    font-size: 5rem;
+  }
+}

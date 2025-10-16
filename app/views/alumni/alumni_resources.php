@@ -274,19 +274,34 @@ function formatDate($date) {
     <!-- Main Content Area -->
     <main class="main-content">
         <div class="content-wrapper">
-            <!-- Header -->
-            <header class="dashboard-header">
-                <div class="header-left">
-                    <h1 class="dashboard-title">Shared Resources</h1>
-                    <p class="dashboard-subtitle">Upload, discover, and download academic resources</p>
-                    <div class="header-subaction">
-                        <button id="uploadResourceBtn" class="btn btn-primary">+ Upload Resource</button>
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">Shared Resources</h1>
+                <p class="page-subtitle">Upload, discover, and download academic resources</p>
+            </div>
+
+            <!-- Upload Button Section -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h2 class="section-title">Quick Actions</h2>
+                </div>
+                <div class="card">
+                    <div class="upload-action-container">
+                        <div class="upload-action-content">
+                            <div class="upload-action-info">
+                                <h3>Share Your Resources</h3>
+                                <p>Upload lecture notes, templates, past papers, or helpful guides to help fellow alumni and students.</p>
+                            </div>
+                            <div class="upload-action-button">
+                                <button id="uploadResourceBtn" class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">
+                                    <i class="fas fa-upload"></i>
+                                    Upload New Resource
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="header-actions">
-                    <!-- reserved for other header actions -->
-                </div>
-            </header>
+            </section>
 
             <!-- Upload Resource Form (hidden by default) -->
             <section class="dashboard-section" id="upload-resource-section" style="display:none;">
@@ -340,8 +355,8 @@ function formatDate($date) {
                                 </div>
 
                                 <div class="form-actions full">
-                                    <button type="submit" class="btn btn-primary">Upload Resource</button>
-                                    <button type="button" id="cancelUploadBtn" class="btn btn-text">Cancel</button>
+                                    <button type="submit" class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">Upload Resource</button>
+                                    <button type="button" id="cancelUploadBtn" class="btn btn-text" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important; text-decoration: none !important;" onmouseover="this.style.backgroundColor='#000000'; this.style.color='white'; this.style.textDecoration='none';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000'; this.style.textDecoration='none';">Cancel</button>
                                 </div>
                             </form>
                         </div>
@@ -416,7 +431,7 @@ function formatDate($date) {
                             
                             <!-- Department filter removed -->
                             
-                            <button type="submit" class="btn btn-primary">Search</button>
+                            <button type="submit" class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">Search</button>
                         </div>
                     </form>
                     <!-- Optional section footer for quick actions -->
@@ -483,8 +498,8 @@ function formatDate($date) {
                                             </div>
                                         </div>
                                         <div class="card-actions">
-                                            <button class="btn btn-primary">Download</button>
-                                            <button class="btn btn-secondary">Like</button>
+                                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">Download</button>
+                                            <button class="btn btn-secondary" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important;" onmouseover="this.style.backgroundColor='#87CEEB'; this.style.color='#000000';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000';">Like</button>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -540,8 +555,8 @@ function formatDate($date) {
                                             </div>
                                         </div>
                                         <div class="card-actions">
-                                            <button class="btn btn-primary">Download</button>
-                                            <button class="btn btn-secondary">Like</button>
+                                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">Download</button>
+                                            <button class="btn btn-secondary" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important;" onmouseover="this.style.backgroundColor='#87CEEB'; this.style.color='#000000';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000';">Like</button>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -596,8 +611,8 @@ function formatDate($date) {
                                     </div>
                                 </div>
                                 <div class="card-actions">
-                                    <button class="btn btn-primary">Edit</button>
-                                    <button class="btn btn-secondary">Delete</button>
+                                    <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">Edit</button>
+                                    <button class="btn btn-secondary" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important;" onmouseover="this.style.backgroundColor='#FF0000'; this.style.color='white';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000';">Delete</button>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -804,18 +819,58 @@ function formatDate($date) {
     }
 }
 
-/* place upload button beneath subtitle */
-.header-subaction {
-    margin-top: 0.6rem;
+/* Upload Action Section */
+.upload-action-container {
+    padding: 1.5rem;
 }
 
-.header-subaction .btn {
-    padding: 0.55rem 1rem;
+.upload-action-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.upload-action-info h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.5rem 0;
+}
+
+.upload-action-info p {
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.upload-action-button .btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.upload-action-button .btn i {
+    font-size: 1rem;
 }
 
 @media (max-width: 768px) {
-    .header-subaction {
-        margin-top: 0.4rem;
+    .upload-action-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .upload-action-button {
+        width: 100%;
+    }
+    
+    .upload-action-button .btn {
+        width: 100%;
+        justify-content: center;
     }
 }
 
@@ -981,29 +1036,35 @@ function formatDate($date) {
 }
 
 .upload-info .btn-primary {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    border: none;
+    background-color: #000000 !important;
+    color: white !important;
+    border: 2px solid #000000 !important;
+    font-weight: bold !important;
     padding: 0.75rem 2rem;
     border-radius: 8px;
-    font-weight: 600;
     transition: all 0.2s ease;
 }
 
 .upload-info .btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 16px rgba(37,99,235,0.28);
+    background-color: #000000 !important;
+    color: white !important;
+    border: 2px solid #000000 !important;
+    font-weight: bold !important;
 }
 
-/* Ensure header upload button matches the upload card primary color */
+/* Ensure header upload button matches the edit button styling */
 #uploadResourceBtn {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    border: none;
-    color: #fff;
+    background-color: #000000 !important;
+    color: white !important;
+    border: 2px solid #000000 !important;
+    font-weight: bold !important;
 }
 
 #uploadResourceBtn:hover {
-    box-shadow: 0 8px 16px rgba(37,99,235,0.18);
-    transform: translateY(-1px);
+    background-color: #000000 !important;
+    color: white !important;
+    border: 2px solid #000000 !important;
+    font-weight: bold !important;
 }
 
 .upload-info .btn-text {
@@ -1168,41 +1229,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (sidebarToggle && sidebar && !sidebarToggle.hasAttribute('data-initialized')) {
         sidebarToggle.setAttribute('data-initialized', 'true');
         sidebarToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('collapsed');
-            if (sidebar.classList.contains('collapsed')) {
-                if (mainContent) {
-                    mainContent.style.marginLeft = '80px';
-                }
-            } else {
-                if (mainContent) {
-                    mainContent.style.marginLeft = '280px';
-                }
-            }
+            // DISABLED: Sidebar toggle functionality removed
+            // sidebar.classList.toggle('collapsed');
+            // The sidebar and content now stay fixed - no toggling
+            console.log('Sidebar toggle disabled - layout stays fixed');
         });
     }
 
-    // Handle responsive behavior - both collapse and expand
-    function handleResize() {
-        if (window.innerWidth <= 1024) {
-            if (sidebar && !sidebar.classList.contains('collapsed')) {
-                sidebar.classList.add('collapsed');
-                if (mainContent) {
-                    mainContent.style.marginLeft = '80px';
-                }
-            }
-        } else {
-            if (sidebar && sidebar.classList.contains('collapsed')) {
-                sidebar.classList.remove('collapsed');
-                if (mainContent) {
-                    mainContent.style.marginLeft = '280px';
-                }
-            }
-        }
-    }
-
-    // Initial call and resize listener
-    handleResize();
-    window.addEventListener('resize', handleResize);
 
     // MutationObserver to reinitialize if sidebar is dynamically added
     const observer = new MutationObserver(function(mutations) {
@@ -1220,5 +1253,3 @@ document.addEventListener('DOMContentLoaded', function() {
     observer.observe(document.body, { childList: true, subtree: true });
 });
 </script>
-
-<?php require '../app/views/partials/footer.php'; ?>

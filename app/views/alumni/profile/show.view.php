@@ -14,7 +14,7 @@
             <div class="profile-container">
                 <!-- Profile Header -->
                 <div class="profile-header" style="position: relative;">
-                    <a href="<?=ROOT?>/alumni/profile/edit" class="btn btn-primary edit-profile-btn" style="position: absolute; top: 10px; right: 10px; font-size: 14px; padding: 8px 12px; text-decoration:none; display:inline-flex; align-items:center;">
+                    <a href="<?=ROOT?>/alumni/profile/edit" class="btn btn-primary edit-profile-btn" style="position: absolute; top: 10px; right: 10px; font-size: 14px; padding: 8px 12px; text-decoration:none; display:inline-flex; align-items:center; background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">
                         <svg class="btn-icon" viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 5px;">
                             <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
                         </svg>
@@ -131,20 +131,20 @@
                 <div class="profile-section">
                     <h2 class="section-title">Contact & Social Links</h2>
                     <div class="social-links">
-                        <a href="#" class="social-link">
-                            <div class="social-icon">🔗</div>
+                        <a href="#" class="social-link" style="display: flex; align-items: center; padding: 1rem; background: #ffffff; border: none; border-radius: 8px; text-decoration: none; color: #000000; font-weight: bold; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" onmouseover="this.style.boxShadow='0 4px 8px rgba(0,0,0,0.2)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'; this.style.transform='translateY(0)';">
+                            <div class="social-icon" style="font-size: 1.5rem; margin-right: 0.75rem;">🔗</div>
                             <div class="social-label">LinkedIn</div>
                         </a>
-                        <a href="#" class="social-link">
-                            <div class="social-icon">🐙</div>
+                        <a href="#" class="social-link" style="display: flex; align-items: center; padding: 1rem; background: #ffffff; border: none; border-radius: 8px; text-decoration: none; color: #000000; font-weight: bold; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" onmouseover="this.style.boxShadow='0 4px 8px rgba(0,0,0,0.2)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'; this.style.transform='translateY(0)';">
+                            <div class="social-icon" style="font-size: 1.5rem; margin-right: 0.75rem;">🐙</div>
                             <div class="social-label">GitHub</div>
                         </a>
-                        <a href="#" class="social-link">
-                            <div class="social-icon">🐦</div>
+                        <a href="#" class="social-link" style="display: flex; align-items: center; padding: 1rem; background: #ffffff; border: none; border-radius: 8px; text-decoration: none; color: #000000; font-weight: bold; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" onmouseover="this.style.boxShadow='0 4px 8px rgba(0,0,0,0.2)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'; this.style.transform='translateY(0)';">
+                            <div class="social-icon" style="font-size: 1.5rem; margin-right: 0.75rem;">🐦</div>
                             <div class="social-label">Twitter</div>
                         </a>
-                        <a href="#" class="social-link">
-                            <div class="social-icon">🌐</div>
+                        <a href="#" class="social-link" style="display: flex; align-items: center; padding: 1rem; background: #ffffff; border: none; border-radius: 8px; text-decoration: none; color: #000000; font-weight: bold; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" onmouseover="this.style.boxShadow='0 4px 8px rgba(0,0,0,0.2)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'; this.style.transform='translateY(0)';">
+                            <div class="social-icon" style="font-size: 1.5rem; margin-right: 0.75rem;">🌐</div>
                             <div class="social-label">Website</div>
                         </a>
                     </div>
@@ -158,6 +158,15 @@
 <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
 <link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni_profile_extracted.css">
 
-<?php require '../app/views/partials/footer.php'; ?>
+<!-- Override any blue hover effects on badges and add shadow hover -->
+<style>
+.badge-item:hover {
+    border-color: transparent !important;
+    border: 2px solid transparent !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-2px) !important;
+}
+</style>
+
 <!-- Profile page extracted JS -->
 <script src="<?=ROOT?>/assets/js/alumni_profile.js"></script>

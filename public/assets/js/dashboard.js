@@ -411,19 +411,6 @@ const handlers = {
         }
     },
     
-    // Handle sidebar toggle
-    sidebarToggle: () => {
-        const sidebar = elements.sidebar;
-        sidebar.classList.toggle('collapsed');
-        
-        // Update main content margin
-        const mainContent = document.querySelector('.main-content');
-        if (sidebar.classList.contains('collapsed')) {
-            mainContent.style.marginLeft = '70px';
-        } else {
-            mainContent.style.marginLeft = '280px';
-        }
-    },
     
     // Handle navigation
     navigation: (section) => {
@@ -484,10 +471,6 @@ const initDashboard = () => {
     // Render all sections
     render.all();
     
-    // Add event listeners
-    if (elements.sidebarToggle) {
-        elements.sidebarToggle.addEventListener('click', handlers.sidebarToggle);
-    }
     
     // Add navigation event listeners
     document.querySelectorAll('.nav-link[data-section]').forEach(link => {
@@ -520,24 +503,6 @@ const initDashboard = () => {
         });
     });
     
-    // Responsive sidebar auto-collapse
-    function handleResponsiveSidebar() {
-        if (!elements.sidebar || !elements.mainContent) return;
-        
-        if (window.innerWidth <= 1024) {
-            // Auto-collapse on small screens
-            elements.sidebar.classList.add('collapsed');
-            elements.mainContent.style.marginLeft = '70px';
-        } else {
-            // Restore normal width on larger screens
-            elements.sidebar.classList.remove('collapsed');
-            elements.mainContent.style.marginLeft = '280px';
-        }
-    }
-    
-    // Apply responsive behavior on load and resize
-    handleResponsiveSidebar();
-    window.addEventListener('resize', handleResponsiveSidebar);
     
     console.log('Alumni Dashboard initialized successfully!');
 };

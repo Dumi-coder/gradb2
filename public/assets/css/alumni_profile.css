@@ -102,7 +102,6 @@
 }
 
 .badge-item:hover {
-    border-color: #007bff;
     transform: translateY(-2px);
 }
 

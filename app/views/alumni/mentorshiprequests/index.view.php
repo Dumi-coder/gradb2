@@ -10,11 +10,11 @@
     <!-- Main Content Area -->
     <main class="main-content">
         <div class="content-wrapper">
-            <!-- Header -->
-            <header class="dashboard-header">
-                <h1 class="dashboard-title">Mentorship</h1>
-                <p class="dashboard-subtitle">Connect with students seeking guidance and make a difference in their academic and career journey.</p>
-            </header>
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">Mentorship</h1>
+                <p class="page-subtitle">Connect with students seeking guidance and make a difference in their academic and career journey.</p>
+            </div>
 
             <!-- Mentorship Requests Section -->
             <section class="dashboard-section">
@@ -39,8 +39,8 @@
                             </p>
                         </div>
                         <div class="card-actions">
-                            <button class="btn btn-primary">Accept</button>
-                            <button class="btn btn-secondary">Decline</button>
+                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">Accept</button>
+                            <button class="btn btn-secondary" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important;" onmouseover="this.style.backgroundColor='#FF0000'; this.style.color='white';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000';">Decline</button>
                         </div>
                     </div>
 
@@ -60,8 +60,8 @@
                             </p>
                         </div>
                         <div class="card-actions">
-                            <button class="btn btn-primary">Accept</button>
-                            <button class="btn btn-secondary">Decline</button>
+                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">Accept</button>
+                            <button class="btn btn-secondary" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important;" onmouseover="this.style.backgroundColor='#FF0000'; this.style.color='white';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000';">Decline</button>
                         </div>
                     </div>
 
@@ -81,8 +81,8 @@
                             </p>
                         </div>
                         <div class="card-actions">
-                            <button class="btn btn-primary">Accept</button>
-                            <button class="btn btn-secondary">Decline</button>
+                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">Accept</button>
+                            <button class="btn btn-secondary" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important;" onmouseover="this.style.backgroundColor='#FF0000'; this.style.color='white';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000';">Decline</button>
                         </div>
                     </div>
 
@@ -102,8 +102,8 @@
                             </p>
                         </div>
                         <div class="card-actions">
-                            <button class="btn btn-primary">Accept</button>
-                            <button class="btn btn-secondary">Decline</button>
+                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">Accept</button>
+                            <button class="btn btn-secondary" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important;" onmouseover="this.style.backgroundColor='#FF0000'; this.style.color='white';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000';">Decline</button>
                         </div>
                     </div>
 
@@ -123,8 +123,8 @@
                             </p>
                         </div>
                         <div class="card-actions">
-                            <button class="btn btn-primary">Accept</button>
-                            <button class="btn btn-secondary">Decline</button>
+                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">Accept</button>
+                            <button class="btn btn-secondary" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important;" onmouseover="this.style.backgroundColor='#FF0000'; this.style.color='white';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000';">Decline</button>
                         </div>
                     </div>
 
@@ -144,8 +144,8 @@
                             </p>
                         </div>
                         <div class="card-actions">
-                            <button class="btn btn-primary">Accept</button>
-                            <button class="btn btn-secondary">Decline</button>
+                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">Accept</button>
+                            <button class="btn btn-secondary" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important;" onmouseover="this.style.backgroundColor='#FF0000'; this.style.color='white';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000';">Decline</button>
                         </div>
                     </div>
                 </div>
@@ -179,8 +179,8 @@
                             </p>
                         </div>
                         <div class="card-actions">
-                            <button class="btn btn-primary">More Details</button>
-                            <button class="btn btn-secondary">Mark as Completed</button>
+                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">More Details</button>
+                            <button class="btn btn-secondary" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important;" onmouseover="this.style.backgroundColor='#90EE90'; this.style.color='#000000';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000';">Mark as Completed</button>
                         </div>
                     </div>
 
@@ -200,8 +200,8 @@
                             </p>
                         </div>
                         <div class="card-actions">
-                            <button class="btn btn-primary">More Details</button>
-                            <button class="btn btn-secondary">Mark as Completed</button>
+                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">More Details</button>
+                            <button class="btn btn-secondary" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important;" onmouseover="this.style.backgroundColor='#90EE90'; this.style.color='#000000';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000';">Mark as Completed</button>
                         </div>
                     </div>
 
@@ -221,8 +221,8 @@
                             </p>
                         </div>
                         <div class="card-actions">
-                            <button class="btn btn-primary">More Details</button>
-                            <button class="btn btn-secondary">Mark as Completed</button>
+                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">More Details</button>
+                            <button class="btn btn-secondary" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important;" onmouseover="this.style.backgroundColor='#90EE90'; this.style.color='#000000';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000';">Mark as Completed</button>
                         </div>
                     </div>
                 </div>
@@ -254,7 +254,7 @@
                             </div>
                         </div>
                         <div class="card-actions">
-                            <button class="btn btn-primary">More Details</button>
+                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">More Details</button>
                         </div>
                     </div>
 
@@ -277,7 +277,7 @@
                             </div>
                         </div>
                         <div class="card-actions">
-                            <button class="btn btn-primary">More Details</button>
+                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">More Details</button>
                         </div>
                     </div>
 
@@ -300,7 +300,7 @@
                             </div>
                         </div>
                         <div class="card-actions">
-                            <button class="btn btn-primary">More Details</button>
+                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">More Details</button>
                         </div>
                     </div>
 
@@ -323,7 +323,7 @@
                             </div>
                         </div>
                         <div class="card-actions">
-                            <button class="btn btn-primary">More Details</button>
+                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">More Details</button>
                         </div>
                     </div>
 
@@ -346,7 +346,7 @@
                             </div>
                         </div>
                         <div class="card-actions">
-                            <button class="btn btn-primary">More Details</button>
+                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">More Details</button>
                         </div>
                     </div>
 
@@ -369,7 +369,7 @@
                             </div>
                         </div>
                         <div class="card-actions">
-                            <button class="btn btn-primary">More Details</button>
+                            <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">More Details</button>
                         </div>
                     </div>
                 </div>
@@ -386,8 +386,6 @@
 <!-- CSS Files -->
 <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
 <link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni_mentorship.css">
-
-<?php require '../app/views/partials/footer.php'; ?>
 
 <!-- JavaScript -->
 <script src="<?=ROOT?>/assets/js/dashboard.js"></script>
@@ -412,24 +410,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Set initial margin
-        if (window.innerWidth <= 1024) {
-            sidebar.classList.add('collapsed');
-            mainContent.style.marginLeft = '70px';
-        } else {
-            mainContent.style.marginLeft = '280px';
-        }
-        
-        // Handle window resize
-        window.addEventListener('resize', function() {
-            if (window.innerWidth <= 1024) {
-                sidebar.classList.add('collapsed');
-                mainContent.style.marginLeft = '70px';
-            } else {
-                sidebar.classList.remove('collapsed');
-                mainContent.style.marginLeft = '280px';
-            }
-        });
     }
 });
 </script>

@@ -60,13 +60,34 @@ $totalContributions = isset($totalContributions) ? $totalContributions : count($
 
     <main class="main-content">
         <div class="content-wrapper">
-            <header class="dashboard-header">
-                <h1 class="dashboard-title">Fundraisers</h1>
-                <p class="dashboard-subtitle">Create and contribute to fundraisers that support students and university initiatives.</p>
-                <div class="header-actions">
-                    <button id="createFundraiserBtn" class="btn btn-primary">+ Create Fundraiser</button>
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">Fundraisers</h1>
+                <p class="page-subtitle">Create and contribute to fundraisers that support students and university initiatives.</p>
+            </div>
+
+            <!-- Create Fundraiser Button Section -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h2 class="section-title">Quick Actions</h2>
                 </div>
-            </header>
+                <div class="card">
+                    <div class="upload-action-container">
+                        <div class="upload-action-content">
+                            <div class="upload-action-info">
+                                <h3>Start a Fundraiser</h3>
+                                <p>Create a new fundraiser to support students, university initiatives, or community projects.</p>
+                            </div>
+                            <div class="upload-action-button">
+                                <button id="createFundraiserBtn" class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">
+                                    <i class="fas fa-plus"></i>
+                                    Create Fundraiser
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <!-- Create Fundraiser Form (hidden by default) -->
             <section class="dashboard-section" id="create-fundraiser-section" style="display:none;">
@@ -90,8 +111,8 @@ $totalContributions = isset($totalContributions) ? $totalContributions : count($
                             <input type="file" id="proof" name="proof" accept="image/*,.pdf" />
                         </div>
                         <div class="form-actions full">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                            <button type="button" id="cancelCreateBtn" class="btn btn-text">Cancel</button>
+                            <button type="submit" class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">Submit</button>
+                            <button type="button" id="cancelCreateBtn" class="btn btn-text" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important; text-decoration: none !important;" onmouseover="this.style.backgroundColor='#000000'; this.style.color='white'; this.style.textDecoration='none';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000'; this.style.textDecoration='none';">Cancel</button>
                         </div>
                     </form>
                 </div>
@@ -136,8 +157,8 @@ $totalContributions = isset($totalContributions) ? $totalContributions : count($
                                     </div>
                                 </div>
                                 <div class="card-actions">
-                                    <button class="btn btn-primary">Donate</button>
-                                    <button class="btn btn-secondary">View Details</button>
+                                    <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">Donate</button>
+                                    <button class="btn btn-secondary" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important;" onmouseover="this.style.backgroundColor='#000000'; this.style.color='white';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000';">View Details</button>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -185,8 +206,8 @@ $totalContributions = isset($totalContributions) ? $totalContributions : count($
                                     </div>
                                 </div>
                                 <div class="card-actions">
-                                    <button class="btn btn-primary">View Details</button>
-                                    <a href="<?= htmlspecialchars($f['proof_url']) ?>" class="btn btn-text">View Proof</a>
+                                    <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">View Details</button>
+                                    <a href="<?= htmlspecialchars($f['proof_url']) ?>" class="btn btn-text" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important;" onmouseover="this.style.backgroundColor='#000000'; this.style.color='white';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000';">View Proof</a>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -245,8 +266,8 @@ $totalContributions = isset($totalContributions) ? $totalContributions : count($
                                     </div>
                                 </div>
                                 <div class="card-actions">
-                                    <button class="btn btn-primary">View Details</button>
-                                    <a href="#" class="btn btn-text">View Proof</a>
+                                    <button class="btn btn-primary" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">View Details</button>
+                                    <a href="#" class="btn btn-text" style="border: 2px solid #000000 !important; color: #000000 !important; background-color: white !important; font-weight: bold !important;" onmouseover="this.style.backgroundColor='#000000'; this.style.color='white';" onmouseout="this.style.backgroundColor='white'; this.style.color='#000000';">View Proof</a>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -266,6 +287,61 @@ $totalContributions = isset($totalContributions) ? $totalContributions : count($
 <style>
 .card { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 .header-actions { margin-top: 8px; }
+
+/* Upload Action Section */
+.upload-action-container {
+    padding: 1.5rem;
+}
+
+.upload-action-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.upload-action-info h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.5rem 0;
+}
+
+.upload-action-info p {
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.upload-action-button .btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.upload-action-button .btn i {
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .upload-action-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .upload-action-button {
+        width: 100%;
+    }
+    
+    .upload-action-button .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
 .header-actions .btn-primary { float: right; }
 .table { overflow-x: auto; }
 .fundraisers-table { width: 100%; border-collapse: collapse; }
@@ -457,43 +533,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Call on page load
     ensureIconsVisible();
     
-    // Handle manual sidebar toggle
+    // Handle manual sidebar toggle - DISABLED
     if (sidebarToggle && sidebar && !sidebarToggle.hasAttribute('data-initialized')) {
         sidebarToggle.setAttribute('data-initialized', 'true');
         sidebarToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('collapsed');
+            // DISABLED: Sidebar toggle functionality removed
+            // sidebar.classList.toggle('collapsed');
+            // The sidebar and content now stay fixed - no toggling
+            console.log('Sidebar toggle disabled - layout stays fixed');
             
-            // Update main content margin
-            const mainContent = document.querySelector('.main-content');
-            if (sidebar.classList.contains('collapsed')) {
-                mainContent.style.marginLeft = '70px';
-            } else {
-                mainContent.style.marginLeft = '280px';
-            }
-            
-            // Ensure icons remain visible after toggle
+            // Ensure icons remain visible
             setTimeout(ensureIconsVisible, 100);
         });
     }
     
-    // Handle responsive behavior
-    function handleResize() {
-        if (window.innerWidth <= 1024) {
-            sidebar.classList.add('collapsed');
-            document.querySelector('.main-content').style.marginLeft = '70px';
-        } else {
-            sidebar.classList.remove('collapsed');
-            document.querySelector('.main-content').style.marginLeft = '280px';
-        }
-        // Ensure icons are visible after resize
-        setTimeout(ensureIconsVisible, 100);
-    }
-    
-    // Initial call
-    handleResize();
-    
-    // Listen for resize events
-    window.addEventListener('resize', handleResize);
     
     // Observe DOM changes to ensure icons stay visible
     const observer = new MutationObserver(function(mutations) {
@@ -526,5 +579,3 @@ if (cancelBtn) {
   });
 }
 </script>
-
-<?php require '../app/views/partials/footer.php'; ?>

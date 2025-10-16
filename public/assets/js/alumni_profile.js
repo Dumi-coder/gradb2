@@ -8,15 +8,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (sidebarToggle && sidebar && mainContent) {
         sidebarToggle.addEventListener('click', function() {
             sidebar.classList.toggle('collapsed');
-            if (sidebar.classList.contains('collapsed')) {
-                mainContent.style.marginLeft = '70px';
-            } else {
-                mainContent.style.marginLeft = '280px';
-            }
-            console.log('Sidebar toggled:', sidebar.classList.contains('collapsed') ? 'collapsed' : 'expanded');
+            // REMOVED: mainContent margin changes to prevent content shifting
+            // The CSS now handles the fixed layout with !important flags
+            console.log('Sidebar toggle disabled - sidebar stays fixed');
         });
         
-        // Responsive sidebar auto-collapse
+        // Responsive sidebar auto-collapse - DISABLED
+        // The sidebar will no longer automatically collapse on smaller screens
+        /*
         function handleResponsiveSidebar() {
             if (window.innerWidth <= 1024) {
                 // Auto-collapse on small screens
@@ -32,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Apply responsive behavior on load and resize
         handleResponsiveSidebar();
         window.addEventListener('resize', handleResponsiveSidebar);
+        */
         
         console.log('Profile page sidebar toggle initialized successfully!');
     } else {

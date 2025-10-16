@@ -29,7 +29,9 @@
 
 /* Sidebar Styles */
 .sidebar {
-    width: 280px;
+    width: 280px !important; /* Force width to prevent collapse */
+    min-width: 280px !important;
+    max-width: 280px !important;
     background: white;
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
     position: fixed;
@@ -40,9 +42,12 @@
     overflow-y: auto;
 }
 
+/* Disable collapsed state completely */
 .sidebar.collapsed {
-    width: 70px;
+    width: 280px !important;
+    min-width: 280px !important;
 }
+
 
 .sidebar-header {
     padding: 1.5rem;
@@ -60,14 +65,6 @@
     display: none; /* Hide the title */
 }
 
-.sidebar.collapsed .sidebar-title {
-    display: none;
-}
-
-.sidebar.collapsed .sidebar-header {
-    padding: 1rem 0.5rem;
-    justify-content: flex-start;
-}
 
 .sidebar-toggle {
     background: none;
@@ -108,9 +105,6 @@
     margin: 0.25rem 1rem;
 }
 
-.sidebar.collapsed .nav-item {
-    margin: 0.25rem 0.5rem;
-}
 
 .nav-link {
     display: flex;
@@ -140,13 +134,6 @@
     border: 1px solid #bfdbfe;
 }
 
-/* Enhanced active state for collapsed sidebar */
-.sidebar.collapsed .nav-item.active .nav-link {
-    background-color: #dbeafe;
-    color: #2563eb;
-    border: 2px solid #bfdbfe;
-    border-radius: 0.5rem;
-}
 
 .nav-icon {
     width: 20px;
@@ -156,44 +143,7 @@
     color: #2563eb; /* Ensure visibility in collapsed sidebar */
 }
 
-.sidebar.collapsed .nav-icon {
-    margin-right: 0;
-    width: 24px;
-    height: 24px;
-}
 
-.sidebar.collapsed .nav-link span {
-    display: none;
-}
-
-/* Tooltip for collapsed sidebar */
-.sidebar.collapsed .nav-link:hover::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    left: 70px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #1e293b;
-    color: white;
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    white-space: nowrap;
-    z-index: 1000;
-    opacity: 0;
-    animation: tooltipFadeIn 0.2s ease forwards;
-}
-
-@keyframes tooltipFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-50%) translateX(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(-50%) translateX(0);
-    }
-}
 
 .sidebar-footer {
     border-top: 1px solid #e2e8f0;
@@ -254,14 +204,11 @@
 /* Main Content */
 .main-content {
     flex: 1;
-    margin-left: 280px;
+    margin-left: 280px !important; /* Force consistent margin - no collapse */
     transition: margin-left 0.3s ease;
     min-height: calc(100vh - 90px); /* Adjust for fixed header */
 }
 
-.sidebar.collapsed + .main-content {
-    margin-left: 70px;
-}
 
 .content-wrapper {
     padding: 2rem;
@@ -350,13 +297,22 @@
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
+    margin-top: 0.75rem;
 }
 
 .badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.875rem;
+    border-radius: var(--radius-full);
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+}
+
+.badge i {
+    font-size: 0.875rem;
 }
 
 .badge-mentor {
@@ -408,39 +364,86 @@
     gap: 0.5rem;
 }
 
-/* Buttons */
+/* Buttons - Updated to match student dashboard styling */
 .btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 0.5rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    height: 48px;
+    padding: 0 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
     text-decoration: none;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
 }
 
 .btn-primary {
-    background-color: #2563eb;
+    background-color: #1f2937;
     color: white;
+    border: 2px solid #1f2937;
 }
 
 .btn-primary:hover {
-    background-color: #1d4ed8;
-    transform: translateY(-1px);
+    background-color: #111827;
+    border: 2px solid #111827;
+}
+
+.btn-outline {
+    background-color: white;
+    color: #000000;
+    border: 2px solid #000000;
+}
+
+.btn-outline:hover {
+    background-color: #000000;
+    color: white;
+    border: 2px solid #000000;
 }
 
 .btn-secondary {
-    background-color: #f1f5f9;
-    color: #475569;
+    background-color: #000000;
+    color: white;
+    border: 2px solid #000000;
 }
 
 .btn-secondary:hover {
-    background-color: #e2e8f0;
-    transform: translateY(-1px);
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 2px solid rgba(0, 0, 0, 0.8);
+}
+
+.dashboard-container .btn-accept,
+.dashboard-container button.btn-accept,
+.dashboard-container .btn.btn-accept,
+.request-actions .btn-accept,
+.request-actions button.btn-accept,
+.request-actions .btn.btn-accept {
+    background-color: #000000 !important;
+    color: white !important;
+    border: 2px solid #000000 !important;
+    font-weight: bold !important;
+}
+
+.dashboard-container .btn-accept:hover,
+.dashboard-container button.btn-accept:hover,
+.dashboard-container .btn.btn-accept:hover,
+.request-actions .btn-accept:hover,
+.request-actions button.btn-accept:hover,
+.request-actions .btn.btn-accept:hover {
+    background-color: #333333 !important;
+    color: white !important;
+    border: 2px solid #333333 !important;
 }
 
 .btn-text {
@@ -452,6 +455,66 @@
 .btn-text:hover {
     color: #1d4ed8;
     text-decoration: underline;
+}
+
+/* Button Size Variations - Matching student dashboard */
+.btn-sm {
+    height: 36px;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+}
+
+.btn-md {
+    height: 48px;
+    padding: 0 1.5rem;
+    font-size: 1rem;
+}
+
+/* Stronger, friendly-scoped outline for alumni dashboard 'View All' buttons */
+/* Targets buttons inside section headers to ensure the black outline is always visible */
+.dashboard-container .section-header .btn-outline {
+    background-color: #ffffff; /* ensure white background */
+    color: #000000; /* black text */
+    border: 2px solid #000000; /* prominent black outline */
+    box-shadow: none; /* avoid shadow hiding the border */
+}
+
+.dashboard-container .section-header .btn-outline:hover {
+    background-color: #000000;
+    color: #ffffff;
+    border: 2px solid #000000;
+}
+
+.btn-lg {
+    height: 56px;
+    padding: 0 2rem;
+    font-size: 1.125rem;
+}
+
+/* Ensure icons and text are properly spaced */
+.btn i {
+    margin-right: 0;
+}
+
+.btn span {
+    margin-left: 0;
+}
+
+/* Ripple effect */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0);
+    animation: ripple-animation 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
 }
 
 .btn-icon {
@@ -795,38 +858,13 @@
     line-height: 1.4;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .sidebar {
-        width: 70px;
-        top: 90px; /* Maintain position below fixed header */
-    }
-    
-    .sidebar .nav-link span {
-        display: none;
-    }
-    
-    .sidebar .nav-link {
-        padding: 0.75rem;
-        justify-content: center;
-    }
-    
-    .sidebar .nav-icon {
-        margin-right: 0;
-        width: 24px;
-        height: 24px;
-        fill: currentColor;
-        color: #64748b;
-    }
+/* Responsive Design - Sidebar stays expanded */
     
     .sidebar .nav-item.active .nav-icon {
         color: #2563eb;
         fill: #2563eb;
     }
     
-    .main-content {
-        margin-left: 70px;
-    }
     
     .dashboard-grid {
         grid-template-columns: 1fr;

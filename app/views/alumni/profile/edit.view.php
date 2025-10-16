@@ -1,62 +1,252 @@
 <?php require '../app/views/partials/alumni_header.php'; ?>
-<link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
-<div class="dashboard-container" style="display:block;background:#f8fafc;margin-top:90px;min-height:calc(100vh - 90px);">
-    <main class="main-content" style="margin-left:0;min-height:auto;">
-        <div class="content-wrapper" style="max-width:960px;margin:0 auto;">
-            <header class="dashboard-header" style="margin-bottom:1.5rem;">
-                <h1 class="dashboard-title" style="font-size:2rem;font-weight:700;color:#1e293b;margin:0;">Edit Profile</h1>
-                <p class="dashboard-subtitle" style="color:#64748b;font-size:1rem;margin-top:6px;">Update your personal information</p>
-            </header>
-            <div class="profile-container" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:1rem;padding:2rem;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
-                <div class="edit-form" style="max-width:820px;margin:0 auto;">
-                    <div class="profile-section">
-                        <h2 class="section-title">Personal Information</h2>
-                        <div class="form-grid">
-                            <label class="form-group"> <span class="form-label">Full Name</span><input class="form-input" value="John Michael Doe"/></label>
-                            <label class="form-group"> <span class="form-label">Graduation Year</span><input type="number" class="form-input" value="2018"/></label>
-                            <label class="form-group"> <span class="form-label">Degree</span><input class="form-input" value="Computer Science"/></label>
-                            <label class="form-group"> <span class="form-label">Current Job</span><input class="form-input" value="Senior Software Engineer"/></label>
-                            <label class="form-group"> <span class="form-label">Location</span><input class="form-input" value="San Francisco, CA"/></label>
-                            <label class="form-group"> <span class="form-label">Email</span><input type="email" class="form-input" value="john.doe@email.com"/></label>
-                        </div>
+<?php 
+$current_page = 'profile';
+require '../app/views/partials/alumni_sidebar.php'; 
+?>
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/edit-profile.css">
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="profile-edit-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Edit Profile</h1>
+            <p class="page-subtitle">Update your personal information and preferences</p>
+        </div>
+
+        <!-- Profile Edit Card -->
+        <div class="profile-edit-card">
+            <!-- Profile Picture Section -->
+            <div class="profile-picture-section">
+                <div class="profile-avatar-large">
+                    <span>JD</span>
+                    <div class="avatar-upload-overlay">
+                        <i class="fas fa-camera"></i>
                     </div>
-                    <div class="profile-section">
-                        <h2 class="section-title">Additional Information</h2>
-                        <div class="form-grid">
-                            <label class="form-group"> <span class="form-label">Phone</span><input class="form-input" value="+1 (555) 123-4567"/></label>
-                            <label class="form-group"> <span class="form-label">LinkedIn</span><input class="form-input" value="https://linkedin.com/in/johndoe"/></label>
-                            <label class="form-group form-full"> <span class="form-label">Bio</span><textarea class="form-textarea" rows="4">Experienced software engineer with expertise in full-stack development. Passionate about mentoring students and contributing to the alumni community.</textarea></label>
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <a href="<?=ROOT?>/alumni/profile" class="btn btn-secondary">Cancel</a>
-                        <button type="button" class="btn btn-primary" onclick="showDemoSuccess()">Save Changes</button>
+                </div>
+                <div class="avatar-info">
+                    <h3>Profile Picture</h3>
+                    <p>Upload a new profile picture. JPG, PNG or GIF. Max size 5MB.</p>
+                    <div class="avatar-actions">
+                        <button class="btn btn-sm btn-outline">
+                            <i class="fas fa-upload"></i> Upload Photo
+                        </button>
+                        <button class="btn btn-sm btn-outline">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
                     </div>
                 </div>
             </div>
+
+            <form id="editProfileForm">
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                    <h2 class="section-title">Personal Information</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-user"></i>
+                                Full Name <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" value="John Michael Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-envelope"></i>
+                                Email Address <span class="required">*</span>
+                            </label>
+                            <input type="email" class="form-input" value="john.doe@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-phone"></i>
+                                Phone Number
+                            </label>
+                            <input type="tel" class="form-input" value="+1 (555) 123-4567" placeholder="+1 (555) 000-0000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Location
+                            </label>
+                            <input type="text" class="form-input" value="San Francisco, CA" placeholder="City, State">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Academic Information Section -->
+                <div class="form-section">
+                    <h2 class="section-title">Academic Information</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-graduation-cap"></i>
+                                Graduation Year <span class="required">*</span>
+                            </label>
+                            <input type="number" class="form-input" value="2018" min="1950" max="2030" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-book"></i>
+                                Degree Program <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" value="Computer Science" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-university"></i>
+                                Faculty/Department
+                            </label>
+                            <input type="text" class="form-input" value="Faculty of Science" placeholder="Enter faculty">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-award"></i>
+                                Specialization
+                            </label>
+                            <input type="text" class="form-input" value="Software Engineering" placeholder="Enter specialization">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional Information Section -->
+                <div class="form-section">
+                    <h2 class="section-title">Professional Information</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-briefcase"></i>
+                                Current Position
+                            </label>
+                            <input type="text" class="form-input" value="Senior Software Engineer" placeholder="Your job title">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-building"></i>
+                                Company/Organization
+                            </label>
+                            <input type="text" class="form-input" value="TechCorp Inc." placeholder="Where you work">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-industry"></i>
+                                Industry
+                            </label>
+                            <select class="form-select">
+                                <option>Technology</option>
+                                <option>Healthcare</option>
+                                <option>Finance</option>
+                                <option>Education</option>
+                                <option>Manufacturing</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fab fa-linkedin"></i>
+                                LinkedIn Profile
+                            </label>
+                            <input type="url" class="form-input" value="https://linkedin.com/in/johndoe" placeholder="https://linkedin.com/in/username">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Section -->
+                <div class="form-section">
+                    <h2 class="section-title">About You</h2>
+                    <div class="form-grid single-column">
+                        <div class="form-group full-width">
+                            <label class="form-label">
+                                <i class="fas fa-align-left"></i>
+                                Professional Bio
+                            </label>
+                            <textarea class="form-textarea" id="bioTextarea" maxlength="500">Experienced software engineer with expertise in full-stack development. Passionate about mentoring students and contributing to the alumni community. Specialized in building scalable web applications and leading development teams.</textarea>
+                            <div class="char-counter">
+                                <span id="charCount">202</span>/500 characters
+                            </div>
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">
+                                <i class="fas fa-lightbulb"></i>
+                                Skills & Expertise
+                            </label>
+                            <input type="text" class="form-input" value="JavaScript, Python, React, Node.js, Cloud Computing" placeholder="Enter your key skills (comma-separated)">
+                            <p class="form-hint">Add skills that you can help students with or use in your profession</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <div class="form-actions-left">
+                        <a href="<?=ROOT?>/alumni/profile" class="btn btn-outline">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                    <div class="form-actions-right">
+                        <button type="button" class="btn btn-outline" onclick="resetForm()">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                        <button type="submit" class="btn btn-primary" onclick="showSuccessToast(event)" style="background-color: #000000 !important; color: white !important; border: 2px solid #000000 !important; font-weight: bold !important;">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
-    </main>
+    </div>
+</main>
+
+<!-- Success Toast -->
+<div id="successToast" class="success-toast" style="display: none;">
+    <i class="fas fa-check-circle"></i>
+    <span>Profile updated successfully!</span>
 </div>
-<div id="demoSuccess" class="demo-success" style="display:none;">Profile updated</div>
-<style>
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-    .form-group{display:flex;flex-direction:column;gap:6px}
-    .form-full{grid-column:1 / -1}
-    .form-label{font-size:14px;font-weight:600;color:#333}
-    .form-input,.form-textarea{padding:12px 14px;border:2px solid #e0e0e0;border-radius:8px;font-size:15px;transition:border .25s,box-shadow .25s;background:#fff}
-    .form-input:focus,.form-textarea:focus{outline:none;border-color:#007bff;box-shadow:0 0 0 3px rgba(0,123,255,.15)}
-    .btn{display:inline-flex;align-items:center;justify-content:center;border:none;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:500;cursor:pointer;transition:.25s;background:#eee;text-decoration:none}
-    .btn-primary{background:#007bff;color:#fff}
-    .btn-primary:hover{background:#005fcc}
-    .btn-secondary{background:#6c757d;color:#fff}
-    .btn-secondary:hover{background:#545b62}
-    .form-actions{display:flex;justify-content:flex-end;gap:14px;margin-top:10px;padding-top:25px;border-top:1px solid #e0e0e0}
-    .section-title{font-size:20px;margin:0 0 18px;font-weight:600;color:#1e293b}
-    .demo-success{position:fixed;top:110px;right:20px;background:#dbeafe;color:#1e40af;padding:14px 18px;border:1px solid #bfdbfe;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.12);animation:fadeIn .35s ease;font-weight:500;z-index:1500}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-    @media (max-width:780px){.form-grid{grid-template-columns:1fr}.form-actions{flex-direction:column}.btn{width:100%}}
-</style>
+
+<?php require '../app/views/partials/alumni_footer.php'; ?>
+
 <script>
-function showDemoSuccess(){const n=document.getElementById('demoSuccess');n.style.display='block';setTimeout(()=>{n.style.display='none'},3000)}
+// Character counter for bio
+const bioTextarea = document.getElementById('bioTextarea');
+const charCount = document.getElementById('charCount');
+const charCounter = document.querySelector('.char-counter');
+
+bioTextarea.addEventListener('input', function() {
+    const length = this.value.length;
+    charCount.textContent = length;
+    
+    // Update styling based on character count
+    if (length > 450) {
+        charCounter.classList.add('danger');
+        charCounter.classList.remove('warning');
+    } else if (length > 400) {
+        charCounter.classList.add('warning');
+        charCounter.classList.remove('danger');
+    } else {
+        charCounter.classList.remove('warning', 'danger');
+    }
+});
+
+// Show success toast
+function showSuccessToast(event) {
+    event.preventDefault();
+    const toast = document.getElementById('successToast');
+    toast.style.display = 'flex';
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.4s ease';
+        setTimeout(() => {
+            toast.style.display = 'none';
+            toast.style.animation = 'slideInRight 0.4s ease';
+        }, 400);
+    }, 3000);
+}
+
+// Reset form
+function resetForm() {
+    if (confirm('Are you sure you want to reset all changes?')) {
+        document.getElementById('editProfileForm').reset();
+        charCount.textContent = bioTextarea.value.length;
+    }
+}
 </script>
-<?php require '../app/views/partials/footer.php'; ?>

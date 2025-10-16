@@ -1,0 +1,462 @@
+/* dashboard-cards.css - Custom Card Styles for Alumni Dashboard */
+
+/* Dashboard Grid Layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+}
+
+/* General Section Styling */
+.dashboard-section {
+    margin-bottom: 0;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.view-all-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: var(--font-sm);
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.view-all-link:hover {
+    color: #1d4ed8;
+}
+
+/* Specific 'View All' button styling to ensure visible black outline in alumni dashboard */
+.view-all-btn {
+    background-color: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
+    box-shadow: none;
+}
+
+.view-all-btn:hover {
+    background-color: #000000;
+    color: #ffffff;
+    border: 2px solid #000000;
+}
+
+/* Mentorship Request Cards */
+.request-card-container {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+.request-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+}
+
+.request-header {
+    margin-bottom: var(--spacing-md);
+}
+
+.student-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xs);
+}
+
+.student-name-header {
+    font-size: var(--font-lg);
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0;
+}
+
+.status-badge-new {
+    background-color: #dcfce7;
+    color: #16a34a;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: var(--font-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.student-university {
+    color: var(--muted-foreground);
+    font-size: var(--font-sm);
+    margin: 0;
+}
+
+.request-body {
+    margin-bottom: var(--spacing-lg);
+}
+
+.request-description {
+    color: var(--foreground);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.request-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* Aid Request Cards */
+.aid-card-container {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+.aid-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+}
+
+.urgent-indicator {
+    width: 5px;
+    background-color: #ef4444;
+    flex-shrink: 0;
+}
+
+.aid-card-content {
+    padding: var(--spacing-lg);
+    flex: 1;
+}
+
+.aid-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-md);
+}
+
+.student-name-aid {
+    font-size: var(--font-lg);
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0 0 var(--spacing-xs) 0;
+}
+
+.aid-type {
+    color: var(--muted-foreground);
+    font-size: var(--font-sm);
+    margin: 0;
+}
+
+.status-badge-urgent {
+    background-color: #fee2e2;
+    color: #dc2626;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: var(--font-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.aid-description {
+    color: var(--foreground);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-lg);
+}
+
+.aid-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* Forum Post Cards */
+.forum-container {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.forum-post-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    transition: box-shadow 0.2s;
+}
+
+.forum-post-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.forum-post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-sm);
+}
+
+.forum-title {
+    font-size: var(--font-md);
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0;
+    flex: 1;
+}
+
+.post-time-badge {
+    color: var(--muted-foreground);
+    font-size: var(--font-sm);
+    white-space: nowrap;
+    margin-left: var(--spacing-sm);
+}
+
+.forum-excerpt {
+    color: var(--muted-foreground);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+}
+
+.forum-stats {
+    display: flex;
+    gap: var(--spacing-md);
+    font-size: var(--font-sm);
+    color: var(--muted-foreground);
+}
+
+.forum-stats i {
+    margin-right: 0.25rem;
+}
+
+/* Fundraising Campaign Cards */
+.fundraiser-container {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+.fundraiser-campaign-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+}
+
+.campaign-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-md);
+}
+
+.campaign-title {
+    font-size: var(--font-lg);
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0;
+    flex: 1;
+}
+
+.campaign-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: var(--font-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    white-space: nowrap;
+    margin-left: var(--spacing-sm);
+}
+
+.campaign-badge.urgent {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.campaign-badge.active {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+.campaign-description {
+    color: var(--muted-foreground);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-lg);
+}
+
+.progress-container {
+    margin-bottom: var(--spacing-lg);
+}
+
+.progress-bar-wrapper {
+    height: 8px;
+    background-color: var(--secondary);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-bottom: var(--spacing-sm);
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-color: #2563eb;
+    border-radius: var(--radius-full);
+    transition: width 0.3s ease;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--font-sm);
+}
+
+.amount-raised {
+    color: var(--foreground);
+    font-weight: 700;
+}
+
+.amount-goal {
+    color: var(--muted-foreground);
+}
+
+.campaign-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* Events Cards */
+.events-container {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+.event-card-new {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+}
+
+.event-title-new {
+    font-size: var(--font-lg);
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.event-description-new {
+    color: var(--muted-foreground);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+}
+
+.event-meta {
+    display: flex;
+    gap: var(--spacing-lg);
+    font-size: var(--font-sm);
+    color: var(--muted-foreground);
+}
+
+.event-meta i {
+    margin-right: 0.25rem;
+}
+
+/* Badges Grid */
+.badges-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.badge-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.badge-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.badge-icon-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-md) auto;
+    font-size: 2rem;
+}
+
+.badge-icon-circle.blue {
+    background-color: #dbeafe;
+    color: #2563eb;
+}
+
+.badge-icon-circle.green {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+.badge-icon-circle.purple {
+    background-color: #f3e8ff;
+    color: #9333ea;
+}
+
+.badge-icon-circle.orange {
+    background-color: #fed7aa;
+    color: #ea580c;
+}
+
+.badge-title {
+    font-size: var(--font-md);
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0 0 var(--spacing-xs) 0;
+}
+
+.badge-desc {
+    font-size: var(--font-sm);
+    color: var(--muted-foreground);
+    margin: 0;
+}
+
+/* Full-width sections for Badges */
+#badges-section {
+    grid-column: 1 / -1;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .badges-grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+    
+    .request-actions,
+    .aid-actions,
+    .campaign-actions {
+        flex-direction: column;
+    }
+    
+    .request-actions .btn,
+    .aid-actions .btn,
+    .campaign-actions .btn {
+        width: 100%;
+    }
+}
