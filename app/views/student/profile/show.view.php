@@ -68,17 +68,17 @@
               <i class="fas fa-edit"></i>
               <span>Edit Profile</span>
             </button> -->
-            <a href="<?= ROOT ?>/student/profile/?action=edit&id=<?= $profile->student_id ?>" class="btn btn-primary">
-                    <!-- <i class="fas fa-edit"></i> -->
-                    Edit Profile
-                  </a>
+            <!-- <a href="<?= ROOT ?>/student/profile/?action=edit&id=<?= $profile->student_id ?>" class="btn btn-primary">
+                     <i class="fas fa-edit"></i> -->
+                    <!-- Edit Profile --> 
+                  <!-- </a> -->
           </div>
                     
           <div class="profile-card">
             <div class="profile-info">
-              <div class="profile-avatar-container">
+              <!-- <div class="profile-avatar-container">
             
-                  <!-- <h2 class="profile-header">Profile Information</h2> -->
+                   <h2 class="profile-header">Profile Information</h2> 
                   <div class="profile-avatar" id="profileAvatar">
                       <img src="" alt="Profile Picture" id="profileImage" style="display: none;">
                       <i class="fas fa-user-graduate" id="defaultAvatar"></i>
@@ -89,10 +89,10 @@
                         </label>
                         <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
                     </div>    
-              </div>
+               </div> --> 
               <div class="profile-details">
              <!-- <div class="card"> -->
-              <div class="profile-avatar-container">
+              <!-- <div class="profile-avatar-container">
                     <div class="profile-avatar" id="profileAvatar">
                         <?php if (!empty($profile->profile_photo_url)): ?>
                         <img src="<?= esc($profile->profile_photo_url) ?>" 
@@ -104,7 +104,20 @@
                           <?php endif; ?>
                     </div>
     
-               </div>
+               </div> -->
+
+               <div class="profile-avatar-container">
+                <div class="profile-avatar" id="profileAvatar">
+                  <?php if (!empty($profile->profile_photo_url) && file_exists($_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $profile->profile_photo_url)): ?>
+                    <img src="<?= ROOT ?>/Uploads/<?= esc($profile->profile_photo_url) ?>" 
+                         alt="Profile Picture" 
+                         id="profileImage" 
+                         style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+                  <?php else: ?>
+                    <i class="fas fa-user-graduate" id="defaultAvatar" style="font-size: 4rem; color: #ccc;"></i>
+                  <?php endif; ?>
+                </div>
+              </div>
                      
 
                 <h3 class="profile-name"><?= esc($profile->name) ?></h3>
