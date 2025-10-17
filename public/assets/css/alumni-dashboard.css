@@ -17,10 +17,19 @@
   font-size: var(--font-sm);
 }
 
+/* Header Subtitle Styling */
+.header-subtitle {
+  color: var(--muted-foreground) !important;
+  font-size: var(--font-sm);
+  font-weight: 400;
+  margin: var(--spacing-xs) 0 0 0;
+  line-height: 1.4;
+}
+
 /* Header Button Styling */
 .header-actions {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
   gap: var(--spacing-sm);
 }
 
@@ -33,9 +42,9 @@
   background-color: var(--background);
   color: var(--foreground);
   border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .notification-btn:hover {
@@ -50,8 +59,8 @@
   background-color: #C62828;
   color: white;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
+    width: 20px;
+    height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -100,7 +109,7 @@
 
 /* Profile Badges */
 .profile-badges {
-  display: flex;
+    display: flex;
   gap: var(--spacing-xs);
   margin-top: var(--spacing-sm);
   flex-wrap: wrap;
@@ -171,14 +180,14 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
   align-items: center;
 }
 
 .mentor-info {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
   gap: var(--spacing-md);
   flex: 1;
 }
@@ -187,11 +196,11 @@
   width: 48px;
   height: 48px;
   background-color: var(--primary);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
   font-size: 1.2rem;
 }
 
@@ -199,7 +208,7 @@
   margin: 0 0 var(--spacing-xs) 0;
   color: var(--foreground);
   font-size: var(--font-md);
-  font-weight: 600;
+    font-weight: 600;
 }
 
 .mentor-details p {
@@ -216,7 +225,7 @@
 }
 
 .mentorship-actions {
-  display: flex;
+    display: flex;
   gap: var(--spacing-xs);
 }
 
@@ -240,8 +249,8 @@
 }
 
 .aid-request-header {
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
   align-items: flex-start;
   margin-bottom: var(--spacing-md);
 }
@@ -250,7 +259,7 @@
   margin: 0 0 var(--spacing-xs) 0;
   color: var(--foreground);
   font-size: var(--font-md);
-  font-weight: 600;
+    font-weight: 600;
 }
 
 .request-info p {
@@ -267,8 +276,8 @@
 
 /* Forum Section */
 .forum-preview {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
   gap: var(--spacing-lg);
 }
 
@@ -280,8 +289,8 @@
 }
 
 .post-header {
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
   align-items: flex-start;
   margin-bottom: var(--spacing-sm);
 }
@@ -290,7 +299,7 @@
   margin: 0;
   color: var(--foreground);
   font-size: var(--font-md);
-  font-weight: 600;
+    font-weight: 600;
 }
 
 .post-time {
@@ -302,11 +311,11 @@
   margin: 0 0 var(--spacing-sm) 0;
   color: var(--muted-foreground);
   font-size: var(--font-sm);
-  line-height: 1.5;
+    line-height: 1.5;
 }
 
 .post-stats {
-  display: flex;
+    display: flex;
   justify-content: space-between;
   align-items: center;
 }
@@ -314,7 +323,7 @@
 .post-stats span {
   color: var(--muted-foreground);
   font-size: var(--font-sm);
-  display: flex;
+    display: flex;
   align-items: center;
   gap: 0.25rem;
 }
@@ -334,8 +343,8 @@
 }
 
 .fundraiser-header {
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
   align-items: flex-start;
   margin-bottom: var(--spacing-md);
 }
@@ -344,14 +353,14 @@
   margin: 0;
   color: var(--foreground);
   font-size: var(--font-md);
-  font-weight: 600;
+    font-weight: 600;
 }
 
 .fundraiser-description {
   margin: 0 0 var(--spacing-md) 0;
   color: var(--muted-foreground);
   font-size: var(--font-sm);
-  line-height: 1.5;
+    line-height: 1.5;
 }
 
 .fundraiser-progress {
@@ -375,7 +384,7 @@
 }
 
 .progress-stats {
-  display: flex;
+    display: flex;
   justify-content: space-between;
   font-size: var(--font-sm);
 }
@@ -390,7 +399,7 @@
 }
 
 .fundraiser-actions {
-  display: flex;
+    display: flex;
   gap: var(--spacing-xs);
 }
 
@@ -406,15 +415,15 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
   gap: var(--spacing-md);
 }
 
 .event-date {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   min-width: 60px;
 }
 
@@ -440,7 +449,7 @@
   margin: 0 0 var(--spacing-xs) 0;
   color: var(--foreground);
   font-size: var(--font-md);
-  font-weight: 600;
+    font-weight: 600;
 }
 
 .event-time,
@@ -448,9 +457,9 @@
   margin: 0 0 var(--spacing-xs) 0;
   color: var(--muted-foreground);
   font-size: var(--font-sm);
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 .event-description {
@@ -462,7 +471,7 @@
 
 /* Badges Section */
 .badges-grid {
-  display: grid;
+    display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: var(--spacing-lg);
 }
@@ -472,16 +481,16 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
-  text-align: center;
+    text-align: center;
 }
 
 .badge-icon {
   width: 60px;
   height: 60px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   margin: 0 auto var(--spacing-md) auto;
   font-size: 1.5rem;
   color: white;
@@ -516,33 +525,422 @@
   font-size: var(--font-sm);
 }
 
+/* Mentorship Page Specific Styles */
+.page-header {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.page-title {
+  font-size: var(--font-4xl);
+  font-weight: 700;
+  color: var(--foreground);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.page-description {
+  font-size: var(--font-lg);
+  color: var(--muted-foreground);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Mentorship Requests Section */
+.mentorship-requests-container {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.mentorship-request-card {
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  position: relative;
+}
+
+.mentorship-request-card:last-child {
+  margin-bottom: 0;
+}
+
+.request-header {
+    display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-md);
+}
+
+.request-info h3 {
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--foreground);
+  font-size: var(--font-lg);
+  font-weight: 600;
+}
+
+.guidance-type {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: var(--font-sm);
+}
+
+.request-description {
+  margin-bottom: var(--spacing-lg);
+}
+
+.request-description p {
+  margin: 0;
+  color: var(--foreground);
+  line-height: 1.6;
+}
+
+.request-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.view-all-link {
+  text-align: center;
+  margin-top: var(--spacing-lg);
+}
+
+.view-all-link-text {
+  color: var(--primary);
+  text-decoration: underline;
+  font-size: var(--font-sm);
+}
+
+/* Active Mentorships Section */
+.active-mentorships-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.mentorship-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+}
+
+.mentorship-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-md);
+}
+
+.mentorship-info h3 {
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--foreground);
+  font-size: var(--font-lg);
+  font-weight: 600;
+}
+
+.mentorship-type {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: var(--font-sm);
+}
+
+.mentorship-description {
+  margin-bottom: var(--spacing-lg);
+}
+
+.mentorship-description p {
+  margin: 0;
+  color: var(--foreground);
+  line-height: 1.6;
+}
+
+.mentorship-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+/* Completed Mentorships Section */
+.completed-mentorships-container {
+  display: flex;
+        flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.completed-mentorship-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+}
+
+.completed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  margin-bottom: var(--spacing-md);
+}
+
+.completed-info h3 {
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--foreground);
+  font-size: var(--font-lg);
+    font-weight: 600;
+}
+
+.mentorship-topic {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: var(--font-sm);
+}
+
+.completed-description {
+  margin-bottom: var(--spacing-lg);
+}
+
+.completed-description p {
+  margin: 0;
+  color: var(--foreground);
+  line-height: 1.6;
+}
+
+.completed-footer {
+    display: flex;
+    justify-content: space-between;
+  align-items: center;
+}
+
+.completion-date {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: var(--font-sm);
+}
+
+/* Status Badge Updates */
+.status-completed {
+  background-color: #E5E7EB;
+  color: #374151;
+}
+
+/* Aid Requests Page Specific Styles */
+.pending-requests-container {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.aid-request-card {
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  position: relative;
+}
+
+.aid-request-card:last-child {
+  margin-bottom: 0;
+}
+
+.request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  margin-bottom: var(--spacing-md);
+}
+
+.request-info h3 {
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--foreground);
+  font-size: var(--font-lg);
+    font-weight: 600;
+}
+
+.request-type {
+    margin: 0;
+  color: var(--muted-foreground);
+  font-size: var(--font-sm);
+}
+
+.request-description {
+  margin-bottom: var(--spacing-lg);
+}
+
+.request-description p {
+  margin: 0;
+  color: var(--foreground);
+  line-height: 1.6;
+}
+
+.request-details {
+  background-color: var(--muted);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.detail-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: var(--spacing-xs);
+  text-align: center;
+}
+
+.detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.detail-label {
+  color: var(--muted-foreground);
+  font-size: var(--font-sm);
+  margin-right: var(--spacing-xs);
+}
+
+.detail-value {
+  color: var(--foreground);
+  font-size: var(--font-sm);
+  font-weight: 600;
+}
+
+.request-actions {
+    display: flex;
+  gap: var(--spacing-sm);
+}
+
+.request-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.completion-date {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: var(--font-sm);
+}
+
+/* Approved and Completed Sections */
+.approved-requests-container,
+.completed-requests-container {
+    display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.aid-request-card.approved,
+.aid-request-card.completed {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: 0;
+}
+
+/* Status Badge Colors */
+.status-approved {
+  background-color: #D1FAE5;
+  color: #065F46;
+}
+
+/* Override section title font size for alumni pages */
+.alumni-dashboard .section-title {
+  font-size: var(--font-xl) !important; /* Reduced from var(--font-2xl) */
+}
+
+/* Request Statistics Section */
+.statistics-section {
+  margin-top: var(--spacing-xl);
+}
+
+.statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+}
+
+.stat-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  background-color: var(--primary);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-icon i {
+  color: white;
+  font-size: 1.25rem;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-number {
+  font-size: var(--font-2xl);
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+  margin-bottom: var(--spacing-xs);
+}
+
+.stat-label {
+  font-size: var(--font-sm);
+  color: var(--muted-foreground);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .mentorship-card {
-    flex-direction: column;
+        flex-direction: column;
     align-items: flex-start;
     gap: var(--spacing-md);
-  }
-  
+    }
+    
   .mentorship-status {
     align-items: flex-start;
-    width: 100%;
-  }
-  
+        width: 100%;
+}
+
   .mentorship-actions {
     width: 100%;
     justify-content: flex-start;
-  }
-  
+}
+
   .fundraiser-grid {
     grid-template-columns: 1fr;
-  }
-  
+}
+
   .event-card {
     flex-direction: column;
     text-align: center;
-  }
-  
+}
+
   .badges-grid {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
