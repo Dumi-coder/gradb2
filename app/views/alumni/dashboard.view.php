@@ -1,297 +1,331 @@
-<?php require '../app/views/partials/alumni_header.php'; ?>
-<link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni-dashboard">
-<!-- Alumni Dashboard Content -->
-<div class="dashboard-container">
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <button class="sidebar-toggle" id="sidebarToggle">
-                <span></span>
-                <span></span>
-                <span></span>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alumni Dashboard - GradBridge</title>
+    <meta name="description" content="Alumni Dashboard for GradBridge - Manage your mentorship, aid requests, and community engagement." />
+    <meta name="author" content="GradBridge" />
+    
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni-dashboard.css">
+    
+  </head>
+
+  <body class="alumni-dashboard">
+    <!-- Top Navbar -->
+    <header class="dashboard-header">
+      <div class="container">
+        <div class="header-content">
+          <div class="welcome-section">
+            <h1 class="welcome-text">Welcome, <span class="alumni-name"><?= esc($profile->name) ?></span></h1>
+            <p class="alumni-role"><?= esc($profile->faculty) ?> • Class of <?= esc($profile->graduated_year) ?></p>
+          </div>
+          
+          <div class="header-actions">
+            <button class="btn btn-outline notification-btn" aria-label="Notifications">
+              <i class="fas fa-bell" style="font-size: 1.1rem;"></i>
+              <span class="notification-badge">3</span>
             </button>
+            <a href="<?=ROOT?>/alumni/logout" class="btn btn-primary logout-btn">Logout</a>
+          </div>
         </div>
-        
-        <nav class="sidebar-nav">
-            <ul class="nav-list">
-                <li class="nav-item active">
-                    <a href="#" class="nav-link" data-section="dashboard" data-tooltip="Dashboard">
-                        <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
-                        </svg>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" data-section="mentorship" data-tooltip="Mentorship">
-                        <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.5 1.5 0 0 0 18.54 8H17c-.8 0-1.54.37-2.01 1l-4.7 6.28c-.37.5-.58 1.11-.58 1.73V20h-2v-2h-2v2H4v-2.5c0-1.1.9-2 2-2h3c1.1 0 2-.9 2-2V7h4c1.1 0 2 .9 2 2v6h2v4z"/>
-                        </svg>
-                        <span>Mentorship</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" data-section="aid-requests" data-tooltip="Aid Requests">
-                        <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <span>Aid Requests</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" data-section="forum" data-tooltip="Forum">
-                        <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
-                        </svg>
-                        <span>Forum</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" data-section="fundraiser" data-tooltip="Fundraiser">
-                        <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
-                        </svg>
-                        <span>Fundraiser</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" data-section="events" data-tooltip="Events">
-                        <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
-                        </svg>
-                        <span>Events</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" data-section="resources" data-tooltip="Resources">
-                        <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
-                        </svg>
-                        <span>Resources</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" data-section="faq" data-tooltip="FAQ">
-                        <svg class="nav-icon" viewBox="0 0 24 24">
-                            <path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM12 6c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/>
-                        </svg>
-                        <span>FAQ</span>
-                    </a>
-                </li>
-            </ul>
-            
-            <div class="sidebar-footer">
-                <a href="#" class="nav-link logout-link" data-tooltip="Logout">
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
-                    </svg>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </nav>
-    </aside>
+      </div>
+    </header>
 
-    <!-- Main Content Area -->
-    <main class="main-content">
-        <div class="content-wrapper">
-            <!-- Header -->
-            <header class="dashboard-header">
-                <h1 class="dashboard-title">Dashboard</h1>
-                <p class="dashboard-subtitle">Welcome back! Here's what's happening in your alumni community.</p>
-            </header>
+    <div class="dashboard-container">
+     <!-- sidebar -->
+    <?php require '../app/views/partials/alumni_sidebar.php'; ?>
 
-            <!-- Profile Snapshot -->
-            <section class="profile-section">
-                <div class="profile-card">
-                    <div class="profile-info">
-                        <div class="profile-avatar">
-                            <span class="avatar-text">JD</span>
-                        </div>
-                        <div class="profile-details">
-                            <h3 class="profile-name">John Doe</h3>
-                            <p class="profile-role">Software Engineer at TechCorp</p>
-                            <p class="profile-year">Class of 2020</p>
-                            <div class="profile-badges">
-                                <span class="badge badge-mentor">Mentor</span>
-                                <span class="badge badge-donor">Donor</span>
-                                <span class="badge badge-volunteer">Volunteer</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary edit-profile-btn">
-                        <svg class="btn-icon" viewBox="0 0 24 24">
-                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                        </svg>
-                        Edit Profile
-                    </button>
+      <!-- Main Content Area -->
+      <main class="main-content">
+        <!-- Alumni Profile Section -->
+        <section class="dashboard-section profile-section">
+          <div class="section-header">
+            <h2 class="section-title">Alumni Profile</h2>
+          </div>
+          <div class="profile-card">
+            <div class="profile-info">
+              <div class="profile-avatar-container">
+                <div class="profile-avatar" id="profileAvatar">
+                  <img src="" alt="Profile Picture" id="profileImage" style="display: none;">
+                  <span class="avatar-text"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
                 </div>
-            </section>
-
-            <!-- Dashboard Grid -->
-            <div class="dashboard-grid">
-                <!-- Mentorship Requests -->
-                <section class="dashboard-section" id="mentorship-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Mentorship Requests</h2>
-                        <button class="btn btn-text">View All</button>
-                    </div>
-                    <div class="cards-container" id="mentorship-cards">
-                        <!-- Cards will be populated by JavaScript -->
-                    </div>
-                </section>
-
-                <!-- Aid Requests -->
-                <section class="dashboard-section" id="aid-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Aid Requests</h2>
-                        <button class="btn btn-text">View All</button>
-                    </div>
-                    <div class="cards-container" id="aid-cards">
-                        <!-- Cards will be populated by JavaScript -->
-                    </div>
-                </section>
-
-                <!-- Discussion Forum -->
-                <section class="dashboard-section" id="forum-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Discussion Forum</h2>
-                        <div class="section-actions">
-                            <button class="btn btn-primary">New Post</button>
-                            <button class="btn btn-secondary">All Forums</button>
-                        </div>
-                    </div>
-                    <div class="forum-posts" id="forum-posts">
-                        <!-- Posts will be populated by JavaScript -->
-                    </div>
-                </section>
-
-                <!-- Fundraiser -->
-                <section class="dashboard-section" id="fundraiser-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Fundraising Campaigns</h2>
-                        <div class="section-actions">
-                            <button class="btn btn-primary">Create Campaign</button>
-                            <button class="btn btn-secondary">View All</button>
-                        </div>
-                    </div>
-                    <div class="fundraiser-grid" id="fundraiser-grid">
-                        <div class="fundraiser-card">
-                            <div class="card-header">
-                                <h3 class="card-title">Student Emergency Fund</h3>
-                                <span class="card-badge urgent">Urgent</span>
-                            </div>
-                            <div class="card-content">
-                                <p class="card-description">Supporting students facing financial hardship during their studies.</p>
-                                <div class="progress-section">
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 65%"></div>
-                                    </div>
-                                    <div class="progress-stats">
-                                        <span class="raised">$6,500 raised</span>
-                                        <span class="goal">of $10,000</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-actions">
-                                <button class="btn btn-primary">Donate</button>
-                                <button class="btn btn-text">View Details</button>
-                            </div>
-                        </div>
-                        <div class="fundraiser-card">
-                            <div class="card-header">
-                                <h3 class="card-title">Research Equipment Fund</h3>
-                                <span class="card-badge active">Active</span>
-                            </div>
-                            <div class="card-content">
-                                <p class="card-description">Funding for new laboratory equipment to enhance research capabilities.</p>
-                                <div class="progress-section">
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 40%"></div>
-                                    </div>
-                                    <div class="progress-stats">
-                                        <span class="raised">$8,000 raised</span>
-                                        <span class="goal">of $20,000</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-actions">
-                                <button class="btn btn-primary">Donate</button>
-                                <button class="btn btn-text">View Details</button>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Alumni Events -->
-                <section class="dashboard-section" id="events-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Alumni Events</h2>
-                        <div class="section-actions">
-                            <button class="btn btn-primary">Publish Event</button>
-                            <button class="btn btn-secondary">View All</button>
-                        </div>
-                    </div>
-                    <div class="cards-container" id="events-cards">
-                        <!-- Cards will be populated by JavaScript -->
-                    </div>
-                </section>
-
-                <!-- Shared Resources -->
-                <section class="dashboard-section" id="resources-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Shared Resources</h2>
-                        <button class="btn btn-primary">
-                            <svg class="btn-icon" viewBox="0 0 24 24">
-                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
-                            </svg>
-                            Upload
-                        </button>
-                    </div>
-                    <div class="resources-list" id="resources-list">
-                        <!-- Resources will be populated by JavaScript -->
-                    </div>
-                </section>
-
-                <!-- Badges & Engagement -->
-                <section class="dashboard-section" id="badges-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Your Badges</h2>
-                        <button class="btn btn-text">View All</button>
-                    </div>
-                    <div class="badges-grid" id="badges-grid">
-                        <!-- Badges will be populated by JavaScript -->
-                    </div>
-                </section>
+                <div class="avatar-upload-overlay">
+                  <label for="profilePictureInput" class="avatar-upload-btn" title="Change Profile Picture">
+                    <i class="fas fa-camera"></i>
+                  </label>
+                  <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+              </div>
+              
+              <div class="profile-details">
+                <h3 class="profile-name"><?= esc($profile->name) ?></h3>
+                <p class="profile-faculty"><?= esc($profile->faculty) ?></p>
+                <p class="profile-year">Class of <?= esc($profile->graduated_year) ?></p>
+                <p class="profile-email"><?= esc($profile->email) ?></p>
+                <p class="profile-mobile">mobile <?= esc($profile->mobile) ?></p>
+              </div>
             </div>
-        </div>
-    </main>
-</div>
+            <div class="profile-stats">
+              <div class="stat-item">
+                <span class="stat-number"><?= $stats['mentorship_requests'] ?></span>
+                <span class="stat-label">Active Mentorships</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number"><?= $stats['aid_requests'] ?></span>
+                <span class="stat-label">Resources Shared</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number"><?= $stats['events_attended'] ?></span>
+                <span class="stat-label">Events Attended</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
-<!-- Add CSS and JS links -->
-<link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni-dashboard.css">
+        <!-- Mentorship Requests Section -->
+        <section class="dashboard-section mentorship-section">
+          <div class="section-header">
+            <h2 class="section-title">Mentorship Requests</h2>
+            <button class="btn btn-outline btn-md">
+              <i class="fas fa-external-link-alt"></i>
+              View All
+            </button>
+          </div>
+          
+          <div class="mentorship-grid">
+            <div class="mentorship-card">
+              <div class="mentor-info">
+                <div class="mentor-avatar">
+                  <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="mentor-details">
+                  <h4 class="mentor-name">Sarah Johnson</h4>
+                  <p class="mentor-role">Stanford University</p>
+                  <p class="mentor-specialty">Looking for guidance on career transition to product management</p>
+                </div>
+              </div>
+              <div class="mentorship-status">
+                <span class="status-badge status-new">NEW</span>
+                <div class="mentorship-actions">
+                  <button class="btn btn-primary btn-sm">Accept</button>
+                  <button class="btn btn-outline btn-sm">View Profile</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-<style>
-/* Additional styles to ensure proper header positioning for alumni dashboard */
-body {
-    padding-top: 0; /* Remove any default padding */
-}
+        <!-- Aid Requests Section -->
+        <section class="dashboard-section aid-requests-section">
+          <div class="section-header">
+            <h2 class="section-title">Aid Requests</h2>
+            <button class="btn btn-outline btn-md">
+              <i class="fas fa-external-link-alt"></i>
+              View All
+            </button>
+          </div>
+          
+          <div class="aid-requests-grid">
+            <div class="aid-request-card urgent">
+              <div class="aid-request-header">
+                <div class="request-info">
+                  <h4 class="request-name">Emily Rodriguez</h4>
+                  <p class="request-type">Financial Aid</p>
+                  <p class="request-description">Emergency medical expenses for family member</p>
+                </div>
+                <span class="status-badge status-urgent">URGENT</span>
+              </div>
+              <div class="aid-request-actions">
+                <button class="btn btn-primary btn-sm">Provide Aid</button>
+                <button class="btn btn-outline btn-sm">View Details</button>
+              </div>
+            </div>
+          </div>
+        </section>
 
-.header {
-    position: fixed !important;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1001;
-    background: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
+        <!-- Discussion Forum Section -->
+        <section class="dashboard-section forum-section">
+          <div class="section-header">
+            <h2 class="section-title">Discussion Forum</h2>
+            <button class="btn btn-outline btn-md">
+              <i class="fas fa-external-link-alt"></i>
+              Go to Forum
+            </button>
+          </div>
+          
+          <div class="forum-preview">
+            <div class="forum-post">
+              <div class="post-header">
+                <h4 class="post-title">Career advice for recent graduates</h4>
+                <span class="post-time">2 hours ago</span>
+              </div>
+              <p class="post-excerpt">I'm graduating next month and would love to hear from alumni about their career paths...</p>
+              <div class="post-stats">
+                <span><i class="fas fa-comment"></i> 12 replies</span>
+                <button class="btn btn-outline btn-sm">View Details</button>
+              </div>
+            </div>
+            
+            <div class="forum-post">
+              <div class="post-header">
+                <h4 class="post-title">Networking event in San Francisco</h4>
+                <span class="post-time">1 day ago</span>
+              </div>
+              <p class="post-excerpt">Anyone interested in organizing a networking event</p>
+              <div class="post-stats">
+                <span><i class="fas fa-comment"></i> 8 replies</span>
+                <button class="btn btn-outline btn-sm">View Details</button>
+              </div>
+            </div>
+          </div>
+        </section>
 
-main {
-    margin-top: 0; /* Reset any default margins */
-}
-</style>
+        <!-- Fundraising Campaigns Section -->
+        <section class="dashboard-section fundraiser-section">
+          <div class="section-header">
+            <h2 class="section-title">Fundraising Campaigns</h2>
+            <button class="btn btn-outline btn-md">
+              <i class="fas fa-external-link-alt"></i>
+              View All
+            </button>
+          </div>
+          
+          <div class="fundraiser-grid">
+            <div class="fundraiser-card">
+              <div class="fundraiser-header">
+                <h4 class="fundraiser-title">Student Emergency Fund</h4>
+                <span class="status-badge status-urgent">URGENT</span>
+              </div>
+              <p class="fundraiser-description">Supporting students facing financial hardship during their studies.</p>
+              
+              <div class="fundraiser-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 65%"></div>
+                </div>
+                <div class="progress-stats">
+                  <span class="raised">$6,500 raised</span>
+                  <span class="goal">of $10,000</span>
+                </div>
+              </div>
+              
+              <div class="fundraiser-actions">
+                <button class="btn btn-primary btn-sm">Donate</button>
+                <button class="btn btn-outline btn-sm">View Details</button>
+              </div>
+            </div>
+            
+            <div class="fundraiser-card">
+              <div class="fundraiser-header">
+                <h4 class="fundraiser-title">Research Equipment Fund</h4>
+                <span class="status-badge status-active">ACTIVE</span>
+              </div>
+              <p class="fundraiser-description">Funding for new laboratory equipment to enhance research capabilities.</p>
+              
+              <div class="fundraiser-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 40%"></div>
+                </div>
+                <div class="progress-stats">
+                  <span class="raised">$8,000 raised</span>
+                  <span class="goal">of $20,000</span>
+                </div>
+              </div>
+              
+              <div class="fundraiser-actions">
+                <button class="btn btn-primary btn-sm">Donate</button>
+                <button class="btn btn-outline btn-sm">View Details</button>
+              </div>
+            </div>
+          </div>
+        </section>
 
-<?php require '../app/views/partials/footer.php'; ?>
-<script src="<?=ROOT?>/assets/js/alumni-dashboard.js"></script>
+        <!-- Upcoming Events Section -->
+        <section class="dashboard-section events-section">
+          <div class="section-header">
+            <h2 class="section-title">Upcoming Events</h2>
+            <button class="btn btn-outline btn-md">
+              <i class="fas fa-external-link-alt"></i>
+              View All
+            </button>
+          </div>
+          
+          <div class="events-grid">
+            <div class="event-card">
+              <div class="event-date">
+                <span class="event-day">15</span>
+                <span class="event-month">Dec</span>
+              </div>
+              <div class="event-details">
+                <h4 class="event-title">Mentorship Workshop</h4>
+                <p class="event-time"><i class="fas fa-clock"></i> 2:00 PM</p>
+                <p class="event-location"><i class="fas fa-map-marker-alt"></i> Engineering Building</p>
+                <p class="event-description">Learn how to be an effective mentor and guide students</p>
+              </div>
+              <button class="btn btn-primary btn-sm event-register-btn">Register</button>
+            </div>
+          </div>
+        </section>
 
-<!-- Add JavaScript before closing body -->
+        <!-- Your Badges Section -->
+        <section class="dashboard-section badges-section">
+          <div class="section-header">
+            <h2 class="section-title">Your Badges</h2>
+            <button class="btn btn-outline btn-md">
+              <i class="fas fa-external-link-alt"></i>
+              View All
+            </button>
+          </div>
+          
+          <div class="badges-grid">
+            <div class="badge-card">
+              <div class="badge-icon mentor">
+                <i class="fas fa-user-tie"></i>
+              </div>
+              <h4 class="badge-title">Mentor</h4>
+              <p class="badge-description">Helped 5+ students</p>
+            </div>
+            
+            <div class="badge-card">
+              <div class="badge-icon donor">
+                <i class="fas fa-dollar-sign"></i>
+              </div>
+              <h4 class="badge-title">Donor</h4>
+              <p class="badge-description">Contributed $1000+</p>
+            </div>
+            
+            <div class="badge-card">
+              <div class="badge-icon volunteer">
+                <i class="fas fa-heart"></i>
+              </div>
+              <h4 class="badge-title">Volunteer</h4>
+              <p class="badge-description">50+ hours served</p>
+            </div>
+            
+            <div class="badge-card">
+              <div class="badge-icon speaker">
+                <i class="fas fa-microphone"></i>
+              </div>
+              <h4 class="badge-title">Speaker</h4>
+              <p class="badge-description">Presented at events</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="<?=ROOT?>/assets/js/main.js"></script>
+    <script src="<?=ROOT?>/assets/js/dashboard.js"></script>
+  </body>
+</html>
