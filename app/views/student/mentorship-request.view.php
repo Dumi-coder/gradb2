@@ -33,7 +33,11 @@
               <i class="fas fa-bell"></i>
               <span class="notification-badge">3</span>
             </button>
-            <a href="<?=ROOT?>/student/Logout"><button class="btn btn-primary logout-btn">Logout</button></a>
+           <a href="<?=ROOT?>/student/Logout">
+            <button class="btn btn-primary logout-btn">
+              Logout
+            </button>
+           </a>
 
           </div>
         </div>

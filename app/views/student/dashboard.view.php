@@ -15,10 +15,12 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/edit-profile.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/edit-profile.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
+    
+
     
   </head>
 

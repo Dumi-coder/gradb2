@@ -18,6 +18,7 @@ const categoryTabs = document.querySelectorAll('.category-tab');
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
     initializeEventsBoard();
+    bindRegisterButtons();
 });
 
 function initializeEventsBoard() {
@@ -56,6 +57,20 @@ function initializeEventsBoard() {
     }
 }
 
+// Bind click handlers to Register buttons without relying on inline onclick (CSP-safe)
+function bindRegisterButtons() {
+    const registerButtons = document.querySelectorAll('.event-actions .btn.btn-primary');
+    registerButtons.forEach((btn) => {
+        btn.addEventListener('click', function(e) {
+            // If inline onclick exists, let it proceed too; we still open here for CSP cases
+            const card = btn.closest('.featured-event-card, .my-event-card');
+            const titleEl = card ? card.querySelector('.event-title') : null;
+            const title = titleEl ? titleEl.textContent.trim() : 'Event';
+            openRegisterModal(title);
+        });
+    });
+}
+
 // Modal functions
 function openNewEventModal() {
     newEventModal.style.display = 'block';
@@ -76,6 +91,135 @@ function closeNewEventModal() {
     // Reset form
     resetNewEventForm();
 }
+
+// Register Now Modal
+const registerModal = document.getElementById('registerModal');
+const registerForm = registerModal ? registerModal.querySelector('.new-event-form') : null;
+let currentRegisterEvent = null; // store the event being registered for
+
+// Open register modal
+function openRegisterModal(eventName) {
+    if (!registerModal) return;
+
+    registerModal.style.display = 'block';
+    currentModal = 'register';
+    document.body.style.overflow = 'hidden';
+
+    // Set event name in readonly input
+    const eventNameInput = document.getElementById('eventName');
+    if (eventNameInput) {
+        eventNameInput.value = eventName || '';
+    }
+
+    // Focus on participant name
+    setTimeout(() => {
+        const participantName = document.getElementById('participantName');
+        if (participantName) participantName.focus();
+    }, 100);
+}
+
+// Close register modal
+function closeRegisterModal() {
+    if (!registerModal) return;
+
+    registerModal.style.display = 'none';
+    currentModal = null;
+    document.body.style.overflow = 'auto';
+
+    // Reset form
+    if (registerForm) registerForm.reset();
+    const eventNameInput = document.getElementById('eventName');
+    if (eventNameInput) eventNameInput.value = '';
+}
+
+// Handle form submission
+function handleRegisterSubmit(event) {
+    event.preventDefault();
+    if (!registerForm) return;
+
+    const formData = new FormData(registerForm);
+    const registrationData = {
+        participantName: formData.get('participantName'),
+        participantEmail: formData.get('participantEmail'),
+        participantRole: formData.get('participantRole'),
+        eventName: formData.get('eventName'),
+        specialNotes: formData.get('specialNotes'),
+        timestamp: new Date().toISOString()
+    };
+
+    // Validate input
+    if (!validateRegistrationData(registrationData)) return;
+
+    // Simulate registration API call
+    submitRegistration(registrationData);
+}
+
+// Validate registration form
+function validateRegistrationData(data) {
+    if (!data.participantName.trim()) {
+        showNotification('Please enter your full name', 'error');
+        return false;
+    }
+
+    if (!data.participantEmail.trim() || !data.participantEmail.includes('@')) {
+        showNotification('Please enter a valid email', 'error');
+        return false;
+    }
+
+    if (!data.participantRole) {
+        showNotification('Please select your role', 'error');
+        return false;
+    }
+
+    if (!data.eventName) {
+        showNotification('Event name is missing', 'error');
+        return false;
+    }
+
+    return true;
+}
+
+// Simulate API call for registration
+function submitRegistration(data) {
+    const submitBtn = registerForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
+    submitBtn.disabled = true;
+
+    setTimeout(() => {
+        showNotification('Registration successful!', 'success');
+        closeRegisterModal();
+
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+
+        console.log('Registration data:', data);
+    }, 1200);
+}
+
+// Event listeners
+if (registerForm) {
+    registerForm.addEventListener('submit', handleRegisterSubmit);
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', function(event) {
+    if (event.target === registerModal) {
+        closeRegisterModal();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && currentModal === 'register') {
+        closeRegisterModal();
+    }
+});
+
+// Export functions globally
+window.openRegisterModal = openRegisterModal;
+window.closeRegisterModal = closeRegisterModal;
+
 
 function openFilterModal() {
     filterModal.style.display = 'block';

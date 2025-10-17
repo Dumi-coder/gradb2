@@ -1,5 +1,5 @@
 <?php
-class Resource extends Controller
+class Resources extends Controller
 {
     
     public function index()
