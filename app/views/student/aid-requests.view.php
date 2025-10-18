@@ -27,7 +27,7 @@
         <div class="header-content">
           <div class="welcome-section">
             <h1 class="welcome-text">Aid Requests</h1>
-            <p class="student-role">Financial Support Management</p>
+            <p class="student-role">Aid Review and Approval System</p>
           </div>
           
           <div class="header-actions">
@@ -50,19 +50,21 @@
         <section class="dashboard-section new-request-section">
           <div class="request-form-card">
             <div class="form-intro">
-              <h3 class="form-title">Need Financial Support?</h3>
-              <p class="form-description">Submit a request for financial aid, scholarships, or emergency funding. Our team will review your application and get back to you within 48 hours.</p>
+              <h3 class="form-title">Looking for Help?</h3>
+              <p class="form-description">Whether you need financial aid or physical aid, we’re here to assist you. Send your request, and we’ll get back to you within 48 hours.</p>
             </div>
             
             <div class="form-actions">
-              <button class="btn btn-outline btn-md">
+              <!-- <button class="btn btn-outline btn-md">
                 <i class="fas fa-question-circle"></i>
                 <span>View Guidelines</span>
-              </button>
+              </button> -->
+              <a href="<?=ROOT?>/student/AidReqForm">
               <button class="btn btn-primary btn-md">
                 <i class="fas fa-file-alt"></i>
                 <span>Start Application</span>
               </button>
+              </a>
             </div>
           </div>
         </section>
@@ -72,14 +74,14 @@
           <div class="section-header">
             <h2 class="card-title">Active Requests</h2>
             <div class="section-actions">
-              <button class="btn btn-outline btn-sm">
+              <!-- <button class="btn btn-outline btn-sm">
                 <i class="fas fa-filter"></i>
                 <span>Filter</span>
-              </button>
-              <button class="btn btn-outline btn-sm">
+              </button> -->
+              <!-- <button class="btn btn-outline btn-sm">
                 <i class="fas fa-download"></i>
                 <span>Export</span>
-              </button>
+              </button> -->
             </div>
           </div>
           
@@ -113,10 +115,10 @@
                         <i class="fas fa-eye"></i>
                         <span>View</span>
                       </button>
-                      <button class="btn btn-outline btn-sm">
+                      <!-- <button class="btn btn-outline btn-sm">
                         <i class="fas fa-edit"></i>
                         <span>Edit</span>
-                      </button>
+                      </button> -->
                     </div>
                   </td>
                 </tr>
@@ -137,11 +139,11 @@
                       <button class="btn btn-outline btn-sm">
                         <i class="fas fa-eye"></i>
                         <span>View</span>
-                      </button>
+                      <!-- </button>
                       <button class="btn btn-primary btn-sm">
                         <i class="fas fa-download"></i>
                         <span>Download</span>
-                      </button>
+                      </button> -->
                     </div>
                   </td>
                 </tr>
@@ -174,8 +176,50 @@
             </table>
           </div>
         </section>
+        
+        <!-- Recent Updates Section -->
+        <section class="dashboard-section updates-section">
+          <div class="section-header">
+            <h2 class="card-title">Recent Updates</h2>
+          </div>
+          
+          <div class="updates-list">
+            <div class="update-item">
+              <div class="update-icon">
+                <i class="fas fa-bell"></i>
+              </div>
+              <div class="update-content">
+                <h4 class="update-title">Request #AR-2024-002 Approved</h4>
+                <p class="update-description">Your textbook funding request has been approved. Funds will be disbursed within 3-5 business days.</p>
+                <span class="update-time">2 hours ago</span>
+              </div>
+            </div>
+            
+            <div class="update-item">
+              <div class="update-icon">
+                <i class="fas fa-info-circle"></i>
+              </div>
+              <div class="update-content">
+                <h4 class="update-title">Document Required</h4>
+                <p class="update-description">Please upload your latest bank statement for request #AR-2024-001 to continue processing.</p>
+                <span class="update-time">1 day ago</span>
+              </div>
+            </div>
+            
+            <div class="update-item">
+              <div class="update-icon">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="update-content">
+                <h4 class="update-title">Request #AR-2024-003 Completed</h4>
+                <p class="update-description">Your housing assistance request has been completed. Thank you for using our services.</p>
+                <span class="update-time">3 days ago</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
-        <!-- Request Statistics Section -->
+                <!-- Request Statistics Section -->
         <section class="dashboard-section stats-section">
           <div class="section-header">
             <h2 class="card-title">Request Statistics</h2>
@@ -224,47 +268,6 @@
           </div>
         </section>
 
-        <!-- Recent Updates Section -->
-        <section class="dashboard-section updates-section">
-          <div class="section-header">
-            <h2 class="section-title">Recent Updates</h2>
-          </div>
-          
-          <div class="updates-list">
-            <div class="update-item">
-              <div class="update-icon">
-                <i class="fas fa-bell"></i>
-              </div>
-              <div class="update-content">
-                <h4 class="update-title">Request #AR-2024-002 Approved</h4>
-                <p class="update-description">Your textbook funding request has been approved. Funds will be disbursed within 3-5 business days.</p>
-                <span class="update-time">2 hours ago</span>
-              </div>
-            </div>
-            
-            <div class="update-item">
-              <div class="update-icon">
-                <i class="fas fa-info-circle"></i>
-              </div>
-              <div class="update-content">
-                <h4 class="update-title">Document Required</h4>
-                <p class="update-description">Please upload your latest bank statement for request #AR-2024-001 to continue processing.</p>
-                <span class="update-time">1 day ago</span>
-              </div>
-            </div>
-            
-            <div class="update-item">
-              <div class="update-icon">
-                <i class="fas fa-check"></i>
-              </div>
-              <div class="update-content">
-                <h4 class="update-title">Request #AR-2024-003 Completed</h4>
-                <p class="update-description">Your housing assistance request has been completed. Thank you for using our services.</p>
-                <span class="update-time">3 days ago</span>
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
     </div>
 
