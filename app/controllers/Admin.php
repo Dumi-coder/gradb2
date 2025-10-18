@@ -7,3 +7,4 @@ class Admin extends Controller
         $this->view('auth/admin_login');
     }
 }
+
