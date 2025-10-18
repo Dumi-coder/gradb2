@@ -16,7 +16,7 @@
 }
 
 .hero-title {
-  font-size: 3rem;
+  font-size: var(--font-5xl);
   font-weight: 800;
   color: var(--foreground); /* Black text */
   margin-bottom: var(--spacing-md);
@@ -28,7 +28,7 @@
 }
 
 .hero-subtitle {
-  font-size: 1.25rem;
+  font-size: var(--font-lg);
   color: var(--muted-foreground); /* Muted black for subtitle */
   margin-bottom: var(--spacing-xl);
   max-width: 600px;
@@ -75,7 +75,7 @@
   }
   
   .hero-title {
-    font-size: 4rem;
+    font-size: var(--font-4xl);
   }
   
   .hero-buttons {
@@ -85,6 +85,6 @@
 
 @media (min-width: 1024px) {
   .hero-title {
-    font-size: 5rem;
+    font-size: var(--font-5xl);
   }
 }

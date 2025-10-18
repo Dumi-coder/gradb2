@@ -48,7 +48,7 @@
             border-radius: 5px;
             overflow-x: auto;
             font-family: 'Courier New', monospace;
-            font-size: 14px;
+            font-size: var(--font-sm);
             margin: 10px 0;
         }
         .usage-note {

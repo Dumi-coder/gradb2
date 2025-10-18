@@ -20,7 +20,7 @@
   top: 50%;
   transform: translateY(-50%);
   color: var(--muted-foreground);
-  font-size: 1.1rem;
+  font-size: var(--font-md);
 }
 
 .search-box input {
@@ -83,7 +83,7 @@
 }
 
 .category-btn i {
-  font-size: 1rem;
+  font-size: var(--font-base);
 }
 
 /* FAQ Items */
@@ -134,7 +134,7 @@
 
 .faq-question i {
   color: var(--primary);
-  font-size: 1.1rem;
+  font-size: var(--font-md);
   transition: transform 0.3s ease;
 }
 
@@ -196,7 +196,7 @@
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 1.5rem;
+  font-size: var(--font-xl);
   flex-shrink: 0;
 }
 
@@ -292,7 +292,7 @@
   
   .search-box i {
     left: var(--spacing-sm);
-    font-size: 1rem;
+    font-size: var(--font-base);
   }
   
   .contact-card {

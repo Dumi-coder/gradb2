@@ -233,7 +233,7 @@
   align-items: center;
   justify-content: center;
   color: var(--primary);
-  font-size: 1.25rem;
+  font-size: var(--font-lg);
   flex-shrink: 0;
 }
 
@@ -335,7 +335,7 @@
 .modal-close {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: var(--font-xl);
   color: var(--muted-foreground);
   cursor: pointer;
   padding: var(--spacing-xs);

@@ -346,14 +346,14 @@
         
 //         .modal-header h3 {
 //             margin: 0;
-//             font-size: 1.25rem;
+//             font-size: var(--font-lg);
 //             font-weight: 600;
 //         }
         
 //         .modal-close {
 //             background: none;
 //             border: none;
-//             font-size: 1.5rem;
+//             font-size: var(--font-xl);
 //             cursor: pointer;
 //             color: #6b7280;
 //             padding: 0;
@@ -391,7 +391,7 @@
 //             padding: 12px;
 //             border: 1px solid #d1d5db;
 //             border-radius: 8px;
-//             font-size: 1rem;
+//             font-size: var(--font-base);
 //             font-family: inherit;
 //         }
         
@@ -404,7 +404,7 @@
 //             display: block;
 //             margin-top: 4px;
 //             color: #6b7280;
-//             font-size: 0.875rem;
+//             font-size: var(--font-sm);
 //         }
         
 //         .amount-options {
@@ -632,18 +632,18 @@
         
 //         .notification-content h5 {
 //             margin: 0 0 4px 0;
-//             font-size: 1rem;
+//             font-size: var(--font-base);
 //             font-weight: 600;
 //         }
         
 //         .notification-content p {
 //             margin: 0 0 8px 0;
 //             color: #6b7280;
-//             font-size: 0.875rem;
+//             font-size: var(--font-sm);
 //         }
         
 //         .notification-time {
-//             font-size: 0.75rem;
+//             font-size: var(--font-xs);
 //             color: #9ca3af;
 //         }
 //     `;

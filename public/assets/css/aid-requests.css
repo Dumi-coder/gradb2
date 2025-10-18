@@ -91,7 +91,7 @@
 
 .request-type i {
   color: var(--primary);
-  font-size: 1.1rem;
+  font-size: var(--font-md);
 }
 
 .action-buttons {
@@ -168,7 +168,7 @@
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 1.5rem;
+  font-size: var(--font-xl);
 }
 
 .stat-content {
@@ -176,7 +176,7 @@
 }
 
 .stat-number {
-  font-size: 2rem;
+  font-size: var(--font-3xl);
   font-weight: 700;
   color: var(--primary);
   margin: 0 0 var(--spacing-xs) 0;
@@ -224,7 +224,7 @@
   align-items: center;
   justify-content: center;
   color: var(--primary);
-  font-size: 1.25rem;
+  font-size: var(--font-lg);
   flex-shrink: 0;
 }
 

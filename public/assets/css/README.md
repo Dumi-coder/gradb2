@@ -47,18 +47,52 @@ We've implemented a comprehensive font size system using CSS variables for consi
 ### After (Using variables)
 ```css
 .card-title {
-  font-size: var(--font-xl);
-  line-height: var(--leading-relaxed);
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: var(--spacing-sm);
+  line-height: var(--leading-tight);
 }
 
-.description {
-  font-size: var(--font-sm);
+.card-description {
+  font-size: var(--font-base);
+  color: var(--muted-foreground);
   line-height: var(--leading-normal);
+  margin-bottom: var(--spacing-md);
+}
+```
+
+## Centralized Card Components
+
+Card components are now centralized in `Main.css` for consistency:
+
+```css
+.card-title {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: var(--spacing-sm);
+  line-height: var(--leading-tight);
+}
+
+.card-subtitle {
+  font-size: var(--font-sm);
+  color: var(--muted-foreground);
+  margin-bottom: var(--spacing-xs);
+  line-height: var(--leading-normal);
+}
+
+.card-description {
+  font-size: var(--font-base);
+  color: var(--muted-foreground);
+  line-height: var(--leading-normal);
+  margin-bottom: var(--spacing-md);
 }
 ```
 
 ## Common Use Cases
 
+- **Card Titles**: Use centralized `.card-title` class
 - **Headings**: Use `--font-xl`, `--font-2xl`, `--font-3xl`
 - **Body Text**: Use `--font-base` or `--font-md`
 - **Small Text**: Use `--font-sm` or `--font-xs`
