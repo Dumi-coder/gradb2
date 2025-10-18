@@ -135,9 +135,22 @@ class Profile extends Controller
     //         $errors['profile_picture'] = "Profile picture must be less than 5MB";
     //     }
     // }
+
+    // Define upload directory (used for both upload and deletion)
+    // Using constant is better - but fallback to relative path if not defined
+    // Define upload directory (used for both upload and deletion)
+    $project_root = '/opt/lampp/htdocs/gradb2';
+    $upload_dir = $project_root . '/public/assets/uploads/profiles/';
+
     $profile_photo_url = $current_profile->profile_photo_url;
     $new_file_uploaded = false;
 
+    error_log("=== UPLOAD DEBUG ===");
+    error_log("Project root: $project_root");
+    error_log("Upload directory: $upload_dir");
+    error_log("Upload directory exists: " . (is_dir($upload_dir) ? 'yes' : 'no'));
+    error_log("Upload directory writable: " . (is_writable($upload_dir) ? 'yes' : 'no'));
+    // Validate and handle profile picture upload
      if ($profile_picture && $profile_picture['error'] != UPLOAD_ERR_NO_FILE) {
             if ($profile_picture['error'] != UPLOAD_ERR_OK) {
                 $errors['profile_picture'] = "Upload error occurred";
@@ -156,7 +169,7 @@ class Profile extends Controller
                 else {
                 // File is valid, proceed with upload
                 // Use absolute path to avoid issues
-                $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/assets/uploads/profiles/';
+                // $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/assets/uploads/profiles/';
                 
                 // Create directory if it doesn't exist with more permissive permissions
                 if (!is_dir($upload_dir)) {
@@ -168,11 +181,20 @@ class Profile extends Controller
                         error_log("Directory created successfully: $upload_dir");
                     }
                 }
+
+                // // Add this in your handleUpdate method right after defining $upload_dir
+                // error_log("Controller file location: " . __FILE__);
+                // error_log("Upload directory: $upload_dir");
+                // error_log("Directory exists: " . (is_dir($upload_dir) ? 'yes' : 'no'));
+                // error_log("Parent directory exists: " . (is_dir(dirname($upload_dir)) ? 'yes' : 'no'));
+                
                 // Only proceed if directory exists or was created successfully
                 if (!isset($errors['profile_picture'])) {
                     // Generate unique filename
                     $file_extension = pathinfo($profile_picture['name'], PATHINFO_EXTENSION);
-                    $file_name = 'profile_' . $_SESSION['student_id'] . '_' . time() . '.' . $file_extension;
+                    // Sanitize student ID - replace slashes with underscores
+                    $safe_student_id = str_replace('/', '_', $_SESSION['student_id']);
+                    $file_name = 'profile_' . $safe_student_id . '_' . time() . '.' . $file_extension;
                     $target_file = $upload_dir . $file_name;
 
                     if (move_uploaded_file($profile_picture['tmp_name'], $target_file)) {
@@ -261,6 +283,6 @@ class Profile extends Controller
     ];
     ob_end_flush();
     $this->view('student/profile/edit', $data);
-}
+ }
 
 }
