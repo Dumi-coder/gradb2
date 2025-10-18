@@ -25,7 +25,7 @@ $isActive = function(string $path) use ($current): string {
               <i class="fas fa-comments"></i>
               <span>Discussion Forum</span>
             </a>
-            <a href="<?=ROOT?>/Alumni/EventsBoard" class="nav-item<?= $isActive('alumni/eventsboard') ?>">
+            <a href="<?=ROOT?>/Alumni/EventBoard" class="nav-item<?= $isActive('alumni/eventboard') ?>">
               <i class="fas fa-calendar-alt"></i>
               <span>Events Board</span>
             </a>
