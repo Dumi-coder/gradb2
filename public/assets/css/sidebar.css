@@ -20,7 +20,7 @@
 
 /* Navigation Section Titles */
 .nav-section-title {
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   font-weight: 600;
   color: var(--muted-foreground);
   text-transform: uppercase;
@@ -60,12 +60,12 @@
 .nav-item i {
   width: 20px;
   text-align: center;
-  font-size: 1rem;
+  font-size: var(--font-base);
 }
 
 /* Navigation Item Text */
 .nav-item span {
-  font-size: 0.95rem;
+  font-size: var(--font-sm);
   line-height: 1.2;
 }
 

@@ -97,6 +97,29 @@ body {
   padding: 0 var(--spacing-md);
 }
 
+/* Centralized Card Component Styles */
+.card-title {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: var(--spacing-sm);
+  line-height: var(--leading-tight);
+}
+
+.card-subtitle {
+  font-size: var(--font-sm);
+  color: var(--muted-foreground);
+  margin-bottom: var(--spacing-xs);
+  line-height: var(--leading-normal);
+}
+
+.card-description {
+  font-size: var(--font-base);
+  color: var(--muted-foreground);
+  line-height: var(--leading-normal);
+  margin-bottom: var(--spacing-md);
+}
+
 .gradient-hero {
   background: var(--background); /* Changed to white background */
 }
@@ -113,7 +136,7 @@ body {
   }
   
   .hero-title {
-    font-size: 4rem;
+    font-size: var(--font-4xl);
   }
   
   .hero-buttons {
@@ -130,11 +153,11 @@ body {
   }
   
   .point-title {
-    font-size: 2.5rem; /* Larger title on desktop */
+    font-size: var(--font-4xl); /* Larger title on desktop */
   }
   
   .point-subtitle {
-    font-size: 1.375rem; /* Larger subtitle on desktop */
+    font-size: var(--font-md); /* Larger subtitle on desktop */
   }
   
   .features-grid {
@@ -142,11 +165,11 @@ body {
   }
   
   .section-title {
-    font-size: 3rem;
+    font-size: var(--font-5xl);
   }
   
   .cta-title {
-    font-size: 3rem;
+    font-size: var(--font-5xl);
   }
   
   .footer-content {
@@ -162,7 +185,7 @@ body {
   }
   
   .hero-title {
-    font-size: 5rem;
+    font-size: var(--font-5xl);
   }
 }
 

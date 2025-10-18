@@ -19,7 +19,7 @@
 }
 
 .auth-title {
-  font-size: 1.75rem;
+  font-size: var(--font-2xl);
   font-weight: 700;
   color: var(--foreground);
   text-align: center;
@@ -57,7 +57,7 @@
 .auth-meta {
   text-align: center;
   color: var(--muted-foreground);
-  font-size: 0.9rem;
+  font-size: var(--font-sm);
   margin-top: var(--spacing-md);
 }
 
@@ -67,7 +67,7 @@
 }
 
 @media (min-width: 768px) {
-  .auth-title { font-size: 2rem; }
+  .auth-title { font-size: var(--font-3xl); }
 }
 
 

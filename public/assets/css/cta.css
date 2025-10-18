@@ -30,14 +30,14 @@
 }
 
 .cta-title {
-  font-size: 2.5rem;
+  font-size: var(--font-4xl);
   font-weight: 700;
   color: var(--background); /* White text on blue background */
   margin-bottom: var(--spacing-lg);
 }
 
 .cta-subtitle {
-  font-size: 1.25rem;
+  font-size: var(--font-lg);
   color: rgba(255, 255, 255, 0.9); /* Semi-transparent white */
   margin-bottom: var(--spacing-xl);
 }
@@ -45,6 +45,6 @@
 /* Responsive CTA */
 @media (min-width: 768px) {
   .cta-title {
-    font-size: 3rem;
+    font-size: var(--font-5xl);
   }
 }

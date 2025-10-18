@@ -38,7 +38,7 @@
           
           <div class="header-actions">
             <button class="btn btn-outline notification-btn" aria-label="Notifications">
-              <i class="fas fa-bell" style="font-size: 1.1rem;"></i>
+              <i class="fas fa-bell" style="font-size: var(--font-md);"></i>
               <span class="notification-badge">3</span>
             </button>
             <a href="<?=ROOT?>/student/Logout"><button class="btn btn-primary logout-btn">Logout</button></a>
@@ -100,7 +100,7 @@
                             id="profileImage" 
                             style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
                           <?php else: ?>
-                                <i class="fas fa-user-graduate" id="defaultAvatar" style="font-size: 4rem; color: #ccc;"></i>
+                                <i class="fas fa-user-graduate" id="defaultAvatar" style="font-size: var(--font-4xl); color: #ccc;"></i>
                           <?php endif; ?>
                     </div>
     

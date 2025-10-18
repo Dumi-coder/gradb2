@@ -79,7 +79,7 @@
 
 .step.completed .step-number::after {
   content: '✓';
-  font-size: 0.8rem;
+  font-size: var(--font-xs);
 }
 
 .step.active .step-label {
@@ -219,7 +219,7 @@
 }
 
 .upload-placeholder i {
-  font-size: 2rem;
+  font-size: var(--font-3xl);
   color: var(--primary);
   margin-bottom: var(--spacing-sm);
 }
@@ -307,7 +307,7 @@
 .checkbox-label input[type="checkbox"]:checked + .checkmark::after {
   content: '✓';
   color: white;
-  font-size: 0.8rem;
+  font-size: var(--font-xs);
   font-weight: 600;
 }
 
@@ -460,7 +460,7 @@
   }
   
   .upload-placeholder i {
-    font-size: 1.5rem;
+    font-size: var(--font-xl);
   }
 }
 
@@ -504,7 +504,7 @@
   justify-content: center;
   margin: 0 auto var(--spacing-lg) auto;
   color: white;
-  font-size: 2rem;
+  font-size: var(--font-3xl);
 }
 
 .form-submitted h3 {
