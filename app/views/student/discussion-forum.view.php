@@ -19,10 +19,115 @@
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/discussion-forum.css">
-
     
-    <!-- Optional page styles (kept simple) -->
-    <link rel="stylesheet" href="assets/css/discussion-forum.css">
+    <style>
+    /* Force discussion forum styles */
+    .discussion-item {
+      background-color: white !important;
+      border: 1px solid #E5E7EB !important;
+      border-radius: 12px !important;
+      padding: 20px !important;
+      margin-bottom: 16px !important;
+      display: flex !important;
+      gap: 16px !important;
+      transition: all 0.3s ease !important;
+    }
+
+    .discussion-item:hover {
+      border-color: #0E2072 !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+      transform: translateY(-2px) !important;
+    }
+
+    .discussion-avatar {
+      width: 50px !important;
+      height: 50px !important;
+      background: linear-gradient(135deg, #0E2072, #1e40af) !important;
+      border-radius: 50% !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      color: white !important;
+      font-size: 20px !important;
+      flex-shrink: 0 !important;
+    }
+
+    .discussion-content {
+      flex: 1 !important;
+    }
+
+    .discussion-header {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: flex-start !important;
+      margin-bottom: 8px !important;
+    }
+
+    .discussion-title {
+      font-size: 18px !important;
+      font-weight: 600 !important;
+      color: #1F2937 !important;
+      margin: 0 !important;
+    }
+
+    .discussion-category {
+      background-color: #E3F2FD !important;
+      color: #1976D2 !important;
+      padding: 4px 8px !important;
+      border-radius: 6px !important;
+      font-size: 12px !important;
+      font-weight: 600 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.5px !important;
+    }
+
+    .discussion-excerpt {
+      color: #6B7280 !important;
+      margin: 8px 0 12px 0 !important;
+      line-height: 1.5 !important;
+    }
+
+    .discussion-meta {
+      display: flex !important;
+      gap: 16px !important;
+      font-size: 14px !important;
+      color: #6B7280 !important;
+    }
+
+    .discussion-meta span {
+      display: flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+    }
+
+    .discussion-actions {
+      display: flex !important;
+      align-items: flex-start !important;
+      flex-shrink: 0 !important;
+    }
+
+    .discussions-list {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 16px !important;
+    }
+
+    .forum-header-section {
+      background: white !important;
+      border: 2px solid #E5E7EB !important;
+      border-radius: 12px !important;
+      padding: 24px !important;
+      margin-bottom: 20px !important;
+    }
+
+    .recent-discussions-section {
+      background: white !important;
+      border: 2px solid #E5E7EB !important;
+      border-radius: 12px !important;
+      padding: 24px !important;
+      margin-bottom: 20px !important;
+    }
+    </style>
   </head>
 
   <body>
