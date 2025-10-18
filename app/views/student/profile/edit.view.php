@@ -53,7 +53,7 @@
                             <?php endif; ?>
 
                             <div class="form-grid">
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label for="profile_picture" class="form-label">
                                     <i class="fas fa-image"></i>
                                     Profile Picture
@@ -65,6 +65,29 @@
                                     class="form-input <?= isset($errors['profile_picture']) ? 'error' : '' ?>"
                                     accept="image/*"
                                 >
+                                <?php if (isset($errors['profile_picture'])): ?>
+                                    <span class="error-message"><?= esc($errors['profile_picture']) ?></span>
+                                <?php endif; ?>
+                            </div> -->
+
+                             <div class="form-group">
+                                <label for="profile_picture" class="form-label">
+                                    <i class="fas fa-image"></i>
+                                    Profile Picture
+                                </label>
+                                <?php if (!empty($profile->profile_photo_url) && file_exists($_SERVER['DOCUMENT_ROOT'] . '/Uploads/' . $profile->profile_photo_url)): ?>
+                                    <img src="<?= ROOT ?>/Uploads/<?= esc($profile->profile_photo_url) ?>" 
+                                         alt="Current Profile Picture" 
+                                         style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;">
+                                <?php endif; ?>
+                                <input 
+                                    type="file" 
+                                    id="profile_picture"
+                                    name="profile_picture" 
+                                    class="form-input <?= isset($errors['profile_picture']) ? 'error' : '' ?>"
+                                    accept="image/*"
+                                >
+                                <div id="imagePreview" style="margin-top: 10px;"></div>
                                 <?php if (isset($errors['profile_picture'])): ?>
                                     <span class="error-message"><?= esc($errors['profile_picture']) ?></span>
                                 <?php endif; ?>
@@ -225,5 +248,27 @@
             </section>
         </main>
     </div>
+
+    <script>
+        // Image preview for profile picture
+        document.getElementById('profile_picture').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '100px';
+                    img.style.height = '100px';
+                    img.style.borderRadius = '50%';
+                    img.style.objectFit = 'cover';
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 </body>
 </html>
