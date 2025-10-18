@@ -39,12 +39,21 @@
             <a href="<?=ROOT?>/home" class="nav-link">Home</a>
             <a href="<?=ROOT?>/about" class="nav-link">About</a>
             <a href="<?=ROOT?>/features" class="nav-link">Features</a>
+            <?php 
+            // Hide login/register buttons on admin pages
+            $current_url = $_GET['url'] ?? '';
+            $is_admin_page = strpos($current_url, 'FacultyAdmin') !== false || strpos($current_url, 'SuperAdmin') !== false || strpos($current_url, 'AdminLogin') !== false || $current_url === 'admin';
+            if (!$is_admin_page): 
+            ?>
             <a href="<?=ROOT?>/login" class="nav-link">Login</a>
+            <?php endif; ?>
           </nav>
 
+          <?php if (!$is_admin_page): ?>
           <a class="btn btn-primary" href="<?=ROOT?>/signup">
             Register
           </a>
+          <?php endif; ?>
         </div>
       </div>
     </header>
