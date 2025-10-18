@@ -30,8 +30,8 @@
           <div class="welcome-section">
             <h1 class="welcome-text">Welcome, <span class="alumni-name"><?= esc($profile->name) ?></span></h1>
             <p class="alumni-role"><?= esc($profile->faculty) ?> • Class of <?= esc($profile->graduated_year) ?></p>
-          </div>
-          
+        </div>
+        
           <div class="header-actions">
             <button class="btn btn-outline notification-btn" aria-label="Notifications">
               <i class="fas fa-bell" style="font-size: 1.1rem;"></i>
@@ -47,15 +47,15 @@
      <!-- sidebar -->
     <?php require '../app/views/partials/alumni_sidebar.php'; ?>
 
-      <!-- Main Content Area -->
-      <main class="main-content">
+    <!-- Main Content Area -->
+    <main class="main-content">
         <!-- Alumni Profile Section -->
         <section class="dashboard-section profile-section">
           <div class="section-header">
             <h2 class="section-title">Alumni Profile</h2>
           </div>
-          <div class="profile-card">
-            <div class="profile-info">
+                <div class="profile-card">
+                    <div class="profile-info">
               <div class="profile-avatar-container">
                 <div class="profile-avatar" id="profileAvatar">
                   <img src="" alt="Profile Picture" id="profileImage" style="display: none;">
@@ -67,9 +67,9 @@
                   </label>
                   <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
                 </div>
-              </div>
+                        </div>
               
-              <div class="profile-details">
+                        <div class="profile-details">
                 <h3 class="profile-name"><?= esc($profile->name) ?></h3>
                 <p class="profile-faculty"><?= esc($profile->faculty) ?></p>
                 <p class="profile-year">Class of <?= esc($profile->graduated_year) ?></p>
@@ -89,15 +89,15 @@
               <div class="stat-item">
                 <span class="stat-number"><?= $stats['events_attended'] ?></span>
                 <span class="stat-label">Events Attended</span>
-              </div>
-            </div>
-          </div>
-        </section>
+                            </div>
+                        </div>
+                </div>
+            </section>
 
         <!-- Mentorship Requests Section -->
         <section class="dashboard-section mentorship-section">
-          <div class="section-header">
-            <h2 class="section-title">Mentorship Requests</h2>
+                    <div class="section-header">
+                        <h2 class="section-title">Mentorship Requests</h2>
             <button class="btn btn-outline btn-md">
               <i class="fas fa-external-link-alt"></i>
               View All
@@ -123,14 +123,14 @@
                   <button class="btn btn-outline btn-sm">View Profile</button>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
+                    </div>
+                    </div>
+                </section>
 
         <!-- Aid Requests Section -->
         <section class="dashboard-section aid-requests-section">
-          <div class="section-header">
-            <h2 class="section-title">Aid Requests</h2>
+                    <div class="section-header">
+                        <h2 class="section-title">Aid Requests</h2>
             <button class="btn btn-outline btn-md">
               <i class="fas fa-external-link-alt"></i>
               View All
@@ -151,14 +151,14 @@
                 <button class="btn btn-primary btn-sm">Provide Aid</button>
                 <button class="btn btn-outline btn-sm">View Details</button>
               </div>
-            </div>
-          </div>
-        </section>
+                    </div>
+                    </div>
+                </section>
 
         <!-- Discussion Forum Section -->
         <section class="dashboard-section forum-section">
-          <div class="section-header">
-            <h2 class="section-title">Discussion Forum</h2>
+                    <div class="section-header">
+                        <h2 class="section-title">Discussion Forum</h2>
             <button class="btn btn-outline btn-md">
               <i class="fas fa-external-link-alt"></i>
               Go to Forum
@@ -187,101 +187,101 @@
               <div class="post-stats">
                 <span><i class="fas fa-comment"></i> 8 replies</span>
                 <button class="btn btn-outline btn-sm">View Details</button>
-              </div>
-            </div>
-          </div>
-        </section>
+                        </div>
+                    </div>
+                    </div>
+                </section>
 
         <!-- Fundraising Campaigns Section -->
         <section class="dashboard-section fundraiser-section">
-          <div class="section-header">
-            <h2 class="section-title">Fundraising Campaigns</h2>
+                    <div class="section-header">
+                        <h2 class="section-title">Fundraising Campaigns</h2>
             <button class="btn btn-outline btn-md">
               <i class="fas fa-external-link-alt"></i>
               View All
             </button>
-          </div>
+                        </div>
           
           <div class="fundraiser-grid">
-            <div class="fundraiser-card">
+                        <div class="fundraiser-card">
               <div class="fundraiser-header">
                 <h4 class="fundraiser-title">Student Emergency Fund</h4>
                 <span class="status-badge status-urgent">URGENT</span>
-              </div>
+                            </div>
               <p class="fundraiser-description">Supporting students facing financial hardship during their studies.</p>
               
               <div class="fundraiser-progress">
-                <div class="progress-bar">
-                  <div class="progress-fill" style="width: 65%"></div>
-                </div>
-                <div class="progress-stats">
-                  <span class="raised">$6,500 raised</span>
-                  <span class="goal">of $10,000</span>
-                </div>
-              </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 65%"></div>
+                                    </div>
+                                    <div class="progress-stats">
+                                        <span class="raised">$6,500 raised</span>
+                                        <span class="goal">of $10,000</span>
+                                    </div>
+                                </div>
               
               <div class="fundraiser-actions">
                 <button class="btn btn-primary btn-sm">Donate</button>
                 <button class="btn btn-outline btn-sm">View Details</button>
-              </div>
-            </div>
+                            </div>
+                        </div>
             
-            <div class="fundraiser-card">
+                        <div class="fundraiser-card">
               <div class="fundraiser-header">
                 <h4 class="fundraiser-title">Research Equipment Fund</h4>
                 <span class="status-badge status-active">ACTIVE</span>
-              </div>
+                            </div>
               <p class="fundraiser-description">Funding for new laboratory equipment to enhance research capabilities.</p>
               
               <div class="fundraiser-progress">
-                <div class="progress-bar">
-                  <div class="progress-fill" style="width: 40%"></div>
-                </div>
-                <div class="progress-stats">
-                  <span class="raised">$8,000 raised</span>
-                  <span class="goal">of $20,000</span>
-                </div>
-              </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 40%"></div>
+                                    </div>
+                                    <div class="progress-stats">
+                                        <span class="raised">$8,000 raised</span>
+                                        <span class="goal">of $20,000</span>
+                                    </div>
+                                </div>
               
               <div class="fundraiser-actions">
                 <button class="btn btn-primary btn-sm">Donate</button>
                 <button class="btn btn-outline btn-sm">View Details</button>
-              </div>
-            </div>
-          </div>
-        </section>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
         <!-- Upcoming Events Section -->
         <section class="dashboard-section events-section">
-          <div class="section-header">
+                    <div class="section-header">
             <h2 class="section-title">Upcoming Events</h2>
             <button class="btn btn-outline btn-md">
               <i class="fas fa-external-link-alt"></i>
               View All
             </button>
-          </div>
+                        </div>
           
           <div class="events-grid">
             <div class="event-card">
               <div class="event-date">
                 <span class="event-day">15</span>
                 <span class="event-month">Dec</span>
-              </div>
+                    </div>
               <div class="event-details">
                 <h4 class="event-title">Mentorship Workshop</h4>
                 <p class="event-time"><i class="fas fa-clock"></i> 2:00 PM</p>
                 <p class="event-location"><i class="fas fa-map-marker-alt"></i> Engineering Building</p>
                 <p class="event-description">Learn how to be an effective mentor and guide students</p>
-              </div>
+                    </div>
               <button class="btn btn-primary btn-sm event-register-btn">Register</button>
-            </div>
-          </div>
-        </section>
+                    </div>
+                    </div>
+                </section>
 
         <!-- Your Badges Section -->
         <section class="dashboard-section badges-section">
-          <div class="section-header">
-            <h2 class="section-title">Your Badges</h2>
+                    <div class="section-header">
+                        <h2 class="section-title">Your Badges</h2>
             <button class="btn btn-outline btn-md">
               <i class="fas fa-external-link-alt"></i>
               View All
@@ -311,19 +311,19 @@
               </div>
               <h4 class="badge-title">Volunteer</h4>
               <p class="badge-description">50+ hours served</p>
-            </div>
+                    </div>
             
             <div class="badge-card">
               <div class="badge-icon speaker">
                 <i class="fas fa-microphone"></i>
-              </div>
+                    </div>
               <h4 class="badge-title">Speaker</h4>
               <p class="badge-description">Presented at events</p>
             </div>
-          </div>
+        </div>
         </section>
-      </main>
-    </div>
+    </main>
+</div>
 
     <script src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/dashboard.js"></script>
