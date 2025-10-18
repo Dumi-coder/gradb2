@@ -64,13 +64,13 @@
 
 .stat-number {
   display: block;
-  font-size: 1.5rem;
+  font-size: var(--font-xl);
   font-weight: 700;
   color: var(--primary);
 }
 
 .stat-label {
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   color: var(--muted-foreground);
 }
 
@@ -106,7 +106,7 @@
   align-items: center;
   justify-content: center;
   color: var(--primary);
-  font-size: 1.5rem;
+  font-size: var(--font-xl);
 }
 
 .mentor-details h4 {
@@ -117,7 +117,7 @@
 .mentor-details p {
   margin: 0 0 var(--spacing-xs) 0;
   color: var(--muted-foreground);
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
 }
 
 .mentorship-status {
@@ -125,7 +125,7 @@
 }
 
 .next-session {
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   color: var(--muted-foreground);
   margin: var(--spacing-xs) 0 0 0;
 }
@@ -135,7 +135,7 @@
   display: inline-block;
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-full);
-  font-size: 0.75rem;
+  font-size: var(--font-xs);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -228,7 +228,7 @@
 }
 
 .post-time {
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   color: var(--muted-foreground);
 }
 
@@ -245,7 +245,7 @@
 .post-stats {
   display: flex;
   gap: var(--spacing-md);
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   color: var(--muted-foreground);
 }
 
@@ -279,14 +279,14 @@
 
 .event-day {
   display: block;
-  font-size: 2rem;
+  font-size: var(--font-3xl);
   font-weight: 700;
   color: var(--primary);
   line-height: 1;
 }
 
 .event-month {
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   color: var(--muted-foreground);
   text-transform: uppercase;
 }
@@ -304,7 +304,7 @@
 .event-location {
   margin: 0 0 var(--spacing-xs) 0;
   color: var(--muted-foreground);
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
@@ -313,7 +313,7 @@
 .event-description {
   margin: var(--spacing-sm) 0 0 0;
   color: var(--muted-foreground);
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
 }
 
 /* Resources Section */
@@ -342,7 +342,7 @@
   align-items: center;
   justify-content: center;
   color: var(--primary);
-  font-size: 1.25rem;
+  font-size: var(--font-lg);
 }
 
 .resource-info {
@@ -358,7 +358,7 @@
 .resource-size {
   margin: 0 0 var(--spacing-xs) 0;
   color: var(--muted-foreground);
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
 }
 
 /* Fundraiser Section */
@@ -402,7 +402,7 @@
 .progress-stats {
   display: flex;
   justify-content: space-between;
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
 }
 
 .raised {
@@ -418,7 +418,7 @@
   display: flex;
   gap: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   color: var(--muted-foreground);
 }
 
@@ -432,19 +432,19 @@
 .btn-sm {
   height: 36px;
   padding: 0 var(--spacing-md);
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
 }
 
 .btn-md {
   height: var(--button-height);
   padding: 0 var(--spacing-lg);
-  font-size: 1rem;
+  font-size: var(--font-base);
 }
 
 .btn-lg {
   height: 56px;
   padding: 0 var(--spacing-xl);
-  font-size: 1.125rem;
+  font-size: var(--font-md);
 }
 
 /* Dashboard Button Width Standardization */

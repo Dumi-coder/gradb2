@@ -36,7 +36,7 @@
           
           <div class="header-actions">
             <button class="btn btn-outline notification-btn" aria-label="Notifications">
-              <i class="fas fa-bell" style="font-size: 1.1rem;"></i>
+              <i class="fas fa-bell" style="font-size: var(--font-md);"></i>
               <span class="notification-badge">3</span>
             </button>
             <!-- <button class="btn btn-primary logout-btn">  -->

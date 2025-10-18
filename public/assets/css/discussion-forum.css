@@ -37,7 +37,7 @@
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 1.5rem;
+  font-size: var(--font-xl);
   flex-shrink: 0;
 }
 
@@ -115,7 +115,7 @@
   align-items: center;
   justify-content: center;
   color: var(--primary);
-  font-size: 1.25rem;
+  font-size: var(--font-lg);
   flex-shrink: 0;
 }
 
@@ -214,7 +214,7 @@
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 1.25rem;
+  font-size: var(--font-lg);
 }
 
 .stat-content {
@@ -222,7 +222,7 @@
 }
 
 .stat-number {
-  font-size: 1.75rem;
+  font-size: var(--font-2xl);
   font-weight: 700;
   color: var(--primary);
   margin: 0 0 var(--spacing-xs) 0;
@@ -392,7 +392,7 @@
 .modal-close {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: var(--font-xl);
   color: var(--muted-foreground);
   cursor: pointer;
   padding: var(--spacing-xs);
@@ -493,7 +493,7 @@
   border: none;
   color: white;
   cursor: pointer;
-  font-size: 0.75rem;
+  font-size: var(--font-xs);
   padding: 0;
   width: 16px;
   height: 16px;
@@ -646,7 +646,7 @@
 }
 
 .notification-content i {
-  font-size: 1.1rem;
+  font-size: var(--font-md);
   flex-shrink: 0;
 }
 
@@ -666,7 +666,7 @@
   cursor: pointer;
   padding: var(--spacing-xs);
   border-radius: var(--radius-sm);
-  font-size: 0.75rem;
+  font-size: var(--font-xs);
   transition: all 0.2s ease;
 }
 

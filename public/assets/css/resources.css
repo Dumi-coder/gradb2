@@ -56,7 +56,7 @@
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 1.5rem;
+  font-size: var(--font-xl);
   flex-shrink: 0;
 }
 
@@ -129,7 +129,7 @@
   align-items: center;
   justify-content: center;
   color: var(--primary);
-  font-size: 1.25rem;
+  font-size: var(--font-lg);
   flex-shrink: 0;
 }
 
@@ -191,7 +191,7 @@
 }
 
 .upload-placeholder i {
-  font-size: 2rem;
+  font-size: var(--font-3xl);
   color: var(--primary);
   margin-bottom: var(--spacing-sm);
 }
@@ -262,7 +262,7 @@
 .modal-close {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: var(--font-xl);
   color: var(--muted-foreground);
   cursor: pointer;
   padding: var(--spacing-xs);
