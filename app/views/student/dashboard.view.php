@@ -66,18 +66,21 @@
           
           <div class="profile-card">
             <div class="profile-info">
-              <div class="profile-avatar-container">
-                <div class="profile-avatar" id="profileAvatar">
-                  <img src="" alt="Profile Picture" id="profileImage" style="display: none;">
-                  <i class="fas fa-user-graduate" id="defaultAvatar"></i>
-                </div>
-                <div class="avatar-upload-overlay">
-                  <label for="profilePictureInput" class="avatar-upload-btn" title="Change Profile Picture">
-                    <i class="fas fa-camera"></i>
-                  </label>
-                  <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
-                </div>
-              </div>
+              
+ <div class="profile-avatar-container">
+    <div class="profile-avatar" id="profileAvatar">
+        <?php if (!empty($profile->profile_photo_url)): ?>
+            <img src="<?= ROOT ?>/assets/uploads/profiles/<?= esc($profile->profile_photo_url) ?>" 
+                 alt="Profile Picture" 
+                 id="profileImage" 
+                 style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;"
+                 onerror="this.style.display='none'; document.getElementById('defaultAvatar').style.display='inline-block';">
+        <?php else: ?>
+            <i class="fas fa-user-graduate" id="defaultAvatar" style="font-size: 4rem; color: #ccc;"></i>
+        <?php endif; ?>
+    </div>
+</div>
+
               
               <!-- <?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
                 <div class="alert-success">Profile updated successfully!</div>
