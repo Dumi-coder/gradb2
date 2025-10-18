@@ -72,7 +72,7 @@
 .logout-btn {
   background-color: var(--foreground);
   color: var(--background);
-  border: none;
+    border: none;
   border-radius: 10px;
   padding: 0 var(--spacing-lg);
   height: 48px;
@@ -117,12 +117,12 @@
 
 .badge {
   display: inline-flex;
-  align-items: center;
+    align-items: center;
   gap: 0.25rem;
   padding: 0.25rem 0.5rem;
   border-radius: 6px;
   font-size: var(--font-xs);
-  font-weight: 500;
+    font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -317,14 +317,14 @@
 .post-stats {
     display: flex;
   justify-content: space-between;
-  align-items: center;
+    align-items: center;
 }
 
 .post-stats span {
   color: var(--muted-foreground);
   font-size: var(--font-sm);
     display: flex;
-  align-items: center;
+    align-items: center;
   gap: 0.25rem;
 }
 
@@ -405,7 +405,7 @@
 
 /* Events Section */
 .events-grid {
-  display: grid;
+    display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: var(--spacing-lg);
 }
@@ -466,7 +466,7 @@
   margin: 0;
   color: var(--muted-foreground);
   font-size: var(--font-sm);
-  line-height: 1.5;
+    line-height: 1.5;
 }
 
 /* Badges Section */
@@ -493,7 +493,7 @@
     justify-content: center;
   margin: 0 auto var(--spacing-md) auto;
   font-size: 1.5rem;
-  color: white;
+    color: white;
 }
 
 .badge-icon.mentor {
@@ -568,7 +568,7 @@
 
 .request-header {
     display: flex;
-  justify-content: space-between;
+    justify-content: space-between;
   align-items: flex-start;
   margin-bottom: var(--spacing-md);
 }
@@ -577,7 +577,7 @@
   margin: 0 0 var(--spacing-xs) 0;
   color: var(--foreground);
   font-size: var(--font-lg);
-  font-weight: 600;
+    font-weight: 600;
 }
 
 .guidance-type {
@@ -597,7 +597,7 @@
 }
 
 .request-actions {
-  display: flex;
+    display: flex;
   gap: var(--spacing-sm);
 }
 
@@ -614,7 +614,7 @@
 
 /* Active Mentorships Section */
 .active-mentorships-container {
-  display: flex;
+    display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
 }
@@ -657,7 +657,7 @@
 }
 
 .mentorship-actions {
-  display: flex;
+    display: flex;
   gap: var(--spacing-sm);
 }
 
@@ -708,7 +708,7 @@
 .completed-footer {
     display: flex;
     justify-content: space-between;
-  align-items: center;
+    align-items: center;
 }
 
 .completion-date {
@@ -787,7 +787,7 @@
   justify-content: center;
   align-items: center;
   margin-bottom: var(--spacing-xs);
-  text-align: center;
+    text-align: center;
 }
 
 .detail-item:last-child {
@@ -812,13 +812,13 @@
 }
 
 .request-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .completion-date {
-  margin: 0;
+    margin: 0;
   color: var(--muted-foreground);
   font-size: var(--font-sm);
 }
@@ -849,6 +849,272 @@
 /* Override section title font size for alumni pages */
 .alumni-dashboard .section-title {
   font-size: var(--font-xl) !important; /* Reduced from var(--font-2xl) */
+}
+
+/* Discussion Forum Specific Styles */
+.quick-actions-container {
+  margin-top: var(--spacing-lg);
+}
+
+.action-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.action-content {
+  flex: 1;
+}
+
+.action-title {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.action-description {
+  font-size: var(--font-sm);
+  color: var(--muted-foreground);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  white-space: nowrap;
+}
+
+/* Forum Statistics Grid */
+.statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+}
+
+.stat-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+        text-align: center;
+    }
+    
+.stat-content {
+  display: flex;
+        flex-direction: column;
+  align-items: center;
+}
+
+.stat-label {
+  font-size: var(--font-sm);
+  color: var(--muted-foreground);
+  margin-bottom: var(--spacing-xs);
+}
+
+.stat-number {
+  font-size: var(--font-3xl);
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+/* Forum Topics Section */
+.section-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+        width: 100%;
+}
+
+.filter-controls {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.filter-select {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background-color: var(--background);
+  color: var(--foreground);
+  font-size: var(--font-sm);
+  cursor: pointer;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.topics-container {
+  margin-top: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.topic-card {
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.topic-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.topic-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-md);
+}
+
+.topic-info {
+  flex: 1;
+}
+
+.topic-title {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--foreground);
+  margin: 0 0 var(--spacing-xs) 0;
+  line-height: 1.3;
+}
+
+.topic-creator {
+  font-size: var(--font-sm);
+  color: var(--muted-foreground);
+  margin: 0;
+  font-weight: 400;
+}
+
+.topic-description {
+  margin-bottom: var(--spacing-md);
+}
+
+.topic-description p {
+  font-size: var(--font-base);
+  color: var(--foreground);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.topic-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+}
+
+.topic-tag {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tag-career {
+  background-color: #E3F2FD;
+  color: #1976D2;
+}
+
+.tag-mentorship {
+  background-color: #E8F5E8;
+  color: #2E7D32;
+}
+
+.tag-general {
+  background-color: #F5F5F5;
+  color: #616161;
+}
+
+.tag-networking {
+  background-color: #FFF3E0;
+  color: #F57C00;
+}
+
+.tag-hot {
+  background-color: #FFEBEE;
+  color: #D32F2F;
+}
+
+.tag-trending {
+  background-color: #FFF8E1;
+  color: #F57C00;
+}
+
+.topic-footer {
+    display: flex;
+    justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-md);
+}
+
+.topic-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.topic-views,
+.topic-activity {
+  font-size: var(--font-sm);
+  color: var(--muted-foreground);
+  font-weight: 400;
+}
+
+.topic-views strong {
+  color: var(--foreground);
+  font-weight: 700;
+}
+
+.join-btn {
+  white-space: nowrap;
+    font-weight: 600;
+  padding: var(--spacing-sm) var(--spacing-lg);
+}
+
+/* Status Badge Colors */
+.status-badge {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-xs);
+  font-weight: 700;
+    text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.status-hot {
+  background-color: #FFCDD2;
+  color: #D32F2F;
+}
+
+.status-active {
+  background-color: #C8E6C9;
+  color: #2E7D32;
+}
+
+.status-trending {
+  background-color: #FFE0B2;
+  color: #F57C00;
 }
 
 /* Request Statistics Section */
@@ -884,8 +1150,8 @@
   height: 48px;
   background-color: var(--primary);
   border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
