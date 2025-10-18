@@ -13,7 +13,7 @@
 
 .category-card {
   background-color: var(--card);
-  border: 1px solid var(--border);
+  border: 1px solid transparent; /* was var(--border) */
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   display: flex;
@@ -93,7 +93,7 @@
 
 .discussion-item {
   background-color: var(--card);
-  border: 1px solid var(--border);
+  border: 1px solid transparent; /* was var(--border) */
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   display: flex;
@@ -190,7 +190,7 @@
 
 .stat-card {
   background-color: var(--card);
-  border: 1px solid var(--border);
+  border: 1px solid transparent; /* was var(--border) */
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   display: flex;
