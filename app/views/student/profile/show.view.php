@@ -105,19 +105,21 @@
                     </div>
     
                </div> -->
+             
+ <div class="profile-avatar-container">
+    <div class="profile-avatar" id="profileAvatar">
+        <?php if (!empty($profile->profile_photo_url)): ?>
+            <img src="<?= ROOT ?>/assets/uploads/profiles/<?= esc($profile->profile_photo_url) ?>" 
+                 alt="Profile Picture" 
+                 id="profileImage" 
+                 style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;"
+                 onerror="this.style.display='none'; document.getElementById('defaultAvatar').style.display='inline-block';">
+        <?php else: ?>
+            <i class="fas fa-user-graduate" id="defaultAvatar" style="font-size: 4rem; color: #ccc;"></i>
+        <?php endif; ?>
+    </div>
+</div>
 
-               <div class="profile-avatar-container">
-                <div class="profile-avatar" id="profileAvatar">
-                  <?php if (!empty($profile->profile_photo_url) && file_exists($_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $profile->profile_photo_url)): ?>
-                    <img src="<?= ROOT ?>/Uploads/<?= esc($profile->profile_photo_url) ?>" 
-                         alt="Profile Picture" 
-                         id="profileImage" 
-                         style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
-                  <?php else: ?>
-                    <i class="fas fa-user-graduate" id="defaultAvatar" style="font-size: 4rem; color: #ccc;"></i>
-                  <?php endif; ?>
-                </div>
-              </div>
                      
 
                 <h3 class="profile-name"><?= esc($profile->name) ?></h3>
