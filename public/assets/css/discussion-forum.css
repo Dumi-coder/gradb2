@@ -16,6 +16,84 @@
   transform: translateY(-2px);
 }
 
+.category-icon {
+  width: 60px;
+  height: 60px;
+  background-color: var(--primary);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.category-info {
+  flex: 1;
+}
+
+.category-name {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.category-description {
+  color: var(--muted-foreground);
+  margin: 0 0 var(--spacing-sm) 0;
+  line-height: var(--leading-normal);
+}
+
+.category-stats {
+  display: flex;
+  gap: var(--spacing-md);
+  font-size: var(--font-sm);
+  color: var(--muted-foreground);
+}
+
+.category-stats .stat {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.category-stats i {
+  color: var(--primary);
+}
+
+/* Recent Discussions Section */
+.recent-discussions-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.section-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.discussions-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.discussion-item {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  gap: var(--spacing-md);
+  transition: all 0.3s ease;
+}
+
+.discussion-item:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
 .discussion-avatar {
   width: 50px;
   height: 50px;
@@ -24,8 +102,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 20px;
+  color: var(--primary);
+  font-size: 1.25rem;
   flex-shrink: 0;
 }
 
@@ -83,7 +161,70 @@
   flex-shrink: 0;
 }
 
-.discussions-list {
+/* Forum Statistics Section */
+.forum-stats-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.stat-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.stat-icon {
+  width: 50px;
+  height: 50px;
+  background-color: var(--primary);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.25rem;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-number {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 var(--spacing-xs) 0;
+  line-height: 1;
+}
+
+.stat-label {
+  color: var(--muted-foreground);
+  font-size: var(--font-sm);
+  margin: 0;
+}
+
+/* Popular Tags Section */
+.tags-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.tags-container {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -161,8 +302,8 @@
 .modal-close {
   background: none;
   border: none;
-  font-size: 24px;
-  color: #6B7280;
+  font-size: 1.5rem;
+  color: var(--muted-foreground);
   cursor: pointer;
   padding: 8px;
   border-radius: 6px;
@@ -294,7 +435,19 @@
 
 .tag-remove {
   cursor: pointer;
-  font-weight: bold;
+  font-size: 0.75rem;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.tag-item .remove-tag:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 #tagInput {
@@ -349,8 +502,9 @@
   font-weight: 400 !important;
 }
 
-.alumni-dashboard .topic-description {
-  margin-bottom: 16px !important;
+.notification-content i {
+  font-size: 1.1rem;
+  flex-shrink: 0;
 }
 
 .alumni-dashboard .topic-description p {
@@ -361,20 +515,18 @@
   font-weight: 400 !important;
 }
 
-.alumni-dashboard .topic-tags {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  gap: 8px !important;
-  margin-bottom: 16px !important;
-}
-
-.alumni-dashboard .topic-tag {
-  padding: 4px 8px !important;
-  border-radius: 6px !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.5px !important;
+.notification-close {
+  position: absolute;
+  top: var(--spacing-xs);
+  right: var(--spacing-xs);
+  background: none;
+  border: none;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  transition: all 0.2s ease;
 }
 
 .alumni-dashboard .tag-career {
