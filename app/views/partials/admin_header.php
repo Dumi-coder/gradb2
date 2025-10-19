@@ -22,6 +22,26 @@
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/admin-dashboard.css">
 </head>
 <body>
+    <script>
+        function logout() {
+            // Create a form to submit logout request
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?=ROOT?>/admin/logout';
+            form.style.display = 'none';
+            
+            // Add a hidden input to indicate logout
+            const logoutInput = document.createElement('input');
+            logoutInput.type = 'hidden';
+            logoutInput.name = 'logout';
+            logoutInput.value = '1';
+            form.appendChild(logoutInput);
+            
+            // Submit the form
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
     <!-- Admin Dashboard Header -->
     <header class="dashboard-header">
         <div class="container">
@@ -36,9 +56,7 @@
                         <i class="fas fa-bell" style="font-size: var(--font-md);"></i>
                         <span class="notification-badge">3</span>
                     </button>
-                    <a href="<?=ROOT?>/admin/logout">
-                        <button class="btn btn-primary logout-btn">Logout</button>
-                    </a>
+                    <button class="btn btn-primary logout-btn" onclick="logout()">Logout</button>
                 </div>
             </div>
         </div>
