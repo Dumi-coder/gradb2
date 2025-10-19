@@ -42,7 +42,7 @@
             <?php 
             // Hide login/register buttons on admin pages
             $current_url = $_GET['url'] ?? '';
-            $is_admin_page = strpos($current_url, 'FacultyAdmin') !== false || strpos($current_url, 'SuperAdmin') !== false || strpos($current_url, 'AdminLogin') !== false || $current_url === 'admin';
+            $is_admin_page = strpos($current_url, 'FacultyAdmin') !== false || strpos($current_url, 'SuperAdmin') !== false || strpos($current_url, 'AdminLogin') !== false;
             if (!$is_admin_page): 
             ?>
             <a href="<?=ROOT?>/login" class="nav-link">Login</a>

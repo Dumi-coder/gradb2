@@ -23,8 +23,8 @@
         define('DBNAME','gradb2_gradb2');
         define('DBPORT','3306');
         define('DBHOST','mysql-gradb2.alwaysdata.net');
-        define('DBUSER','gradb2');
-        define('DBPASS','passwordmysql');
+        define('DBUSER','gradb2_thejan');
+        define('DBPASS','thejangradb2');
         define('DBDRIVER','');
 
         // define('ROOT','https://www.GradBridge.com');

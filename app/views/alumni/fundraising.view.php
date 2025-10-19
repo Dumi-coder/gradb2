@@ -20,6 +20,113 @@
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/fundraising.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni-dashboard.css">
+    
+    <style>
+    /* Alumni Fundraising Specific Overrides */
+    .btn-primary {
+      background-color: #000000 !important;
+      color: white !important;
+      border: none !important;
+    }
+    
+    .btn-primary:hover {
+      background-color: #333333 !important;
+    }
+    
+    .btn-outline:hover {
+      background-color: #000000 !important;
+      color: white !important;
+      border-color: #000000 !important;
+    }
+    
+    /* Section Boundaries */
+    .create-section {
+      border: 2px solid #E5E7EB !important;
+      border-radius: 12px !important;
+      padding: 24px !important;
+      background-color: white !important;
+      margin-bottom: 20px !important;
+    }
+    
+    .campaigns-section {
+      border: 2px solid #E5E7EB !important;
+      border-radius: 12px !important;
+      padding: 24px !important;
+      background-color: white !important;
+      margin-bottom: 20px !important;
+    }
+    
+    .donations-section {
+      border: 2px solid #E5E7EB !important;
+      border-radius: 12px !important;
+      padding: 24px !important;
+      background-color: white !important;
+      margin-bottom: 20px !important;
+    }
+    
+    /* Fundraising Activity Statistics Section */
+    .fundraising-stats-section {
+      border: 2px solid #E5E7EB !important;
+      border-radius: 12px !important;
+      padding: 24px !important;
+      background-color: white !important;
+      margin-bottom: 20px !important;
+    }
+    
+    .stats-grid {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+      gap: 24px !important;
+    }
+    
+    .stat-card {
+      background-color: white !important;
+      border: 1px solid #E5E7EB !important;
+      border-radius: 12px !important;
+      padding: 24px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 16px !important;
+      transition: all 0.3s ease !important;
+    }
+    
+    .stat-card:hover {
+      border-color: #0E2072 !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+      transform: translateY(-2px) !important;
+    }
+    
+    .stat-icon {
+      width: 50px !important;
+      height: 50px !important;
+      background-color: #0E2072 !important;
+      border-radius: 8px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      color: white !important;
+      font-size: var(--font-lg) !important;
+    }
+    
+    .stat-content {
+      flex: 1 !important;
+    }
+    
+    .stat-number {
+      font-size: var(--font-2xl) !important;
+      font-weight: 700 !important;
+      color: #0E2072 !important;
+      margin: 0 0 4px 0 !important;
+      line-height: 1 !important;
+    }
+    
+    .stat-label {
+      color: #6B7280 !important;
+      font-size: var(--font-sm) !important;
+      margin: 0 !important;
+      font-weight: 500 !important;
+    }
+    </style>
   </head>
 
   <body class="alumni-dashboard">
