@@ -29,7 +29,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+        </div>
         </section>
         
         <!-- Faculty Stats Section -->
@@ -85,10 +85,10 @@
                         <div class="stat-content">
                             <div class="stat-number"><?= $stats['password_verification_requests'] ?? 7 ?></div>
                             <div class="stat-label">No of Password Verification Requests</div>
-                        </div>
-                    </div>
-                </div>
-                
+        </div>
+    </div>
+</div>
+
                 <!-- Right Column -->
                 <div class="stats-column">
                     <div class="stat-card">

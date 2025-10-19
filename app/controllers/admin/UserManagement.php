@@ -19,6 +19,8 @@ class UserManagement extends Controller
 
         $data = [
             'title' => 'Suspend/Reactivate Users - GradBridge',
+            'page_title' => 'Suspend/Reactivate Users',
+            'page_subtitle' => 'Manage user accounts and access permissions.',
             'user' => $_SESSION,
             'userData' => $userData
         ];

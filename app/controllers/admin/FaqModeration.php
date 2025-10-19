@@ -19,6 +19,8 @@ class FaqModeration extends Controller
 
         $data = [
             'title' => 'FAQ Moderation - GradBridge',
+            'page_title' => 'FAQ Moderation',
+            'page_subtitle' => 'Manage frequently asked questions and answers.',
             'user' => $_SESSION,
             'faqData' => $faqData
         ];

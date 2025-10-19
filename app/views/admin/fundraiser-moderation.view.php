@@ -222,7 +222,6 @@
     color: #1F2937;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid #E5E7EB;
 }
 
 .reported-fundraisers-container, .recent-fundraisers-container {

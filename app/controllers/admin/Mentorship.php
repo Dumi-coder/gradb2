@@ -19,6 +19,8 @@ class Mentorship extends Controller
 
         $data = [
             'title' => 'Approve Mentorships - GradBridge',
+            'page_title' => 'Approve Mentorships',
+            'page_subtitle' => 'Review and approve mentorship requests from students and alumni.',
             'user' => $_SESSION,
             'mentorshipData' => $mentorshipData
         ];

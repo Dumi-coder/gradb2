@@ -19,6 +19,8 @@ class Events extends Controller
 
         $data = [
             'title' => 'Approve Events - GradBridge',
+            'page_title' => 'Approve Events',
+            'page_subtitle' => 'Review and approve event requests and manage approved events.',
             'user' => $_SESSION,
             'eventsData' => $eventsData
         ];

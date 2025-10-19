@@ -19,6 +19,8 @@ class FacultyAnnouncements extends Controller
 
         $data = [
             'title' => 'Faculty Announcements - GradBridge',
+            'page_title' => 'Faculty Announcements',
+            'page_subtitle' => 'Create and manage announcements for faculty and students.',
             'user' => $_SESSION,
             'announcementsData' => $announcementsData
         ];

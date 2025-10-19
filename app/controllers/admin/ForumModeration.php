@@ -19,6 +19,8 @@ class ForumModeration extends Controller
 
         $data = [
             'title' => 'Forum Moderation - GradBridge',
+            'page_title' => 'Forum Moderation',
+            'page_subtitle' => 'Moderate forum posts and manage community discussions.',
             'user' => $_SESSION,
             'forumData' => $forumData
         ];

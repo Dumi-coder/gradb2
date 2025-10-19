@@ -41,6 +41,8 @@ class Profile extends Controller
 
         $data = [
             'title' => 'Admin Profile - GradBridge',
+            'page_title' => 'Admin Profile',
+            'page_subtitle' => 'View and manage your faculty admin profile information.',
             'profile' => $admin,
             'stats' => $stats
         ];
@@ -78,6 +80,8 @@ class Profile extends Controller
 
         $data = [
             'title' => 'Edit Admin Profile - GradBridge',
+            'page_title' => 'Edit Profile',
+            'page_subtitle' => 'Update your faculty admin profile information and settings.',
             'profile' => $admin
         ];
 

@@ -19,6 +19,8 @@ class ResourceModeration extends Controller
 
         $data = [
             'title' => 'Resource Moderation - GradBridge',
+            'page_title' => 'Resource Moderation',
+            'page_subtitle' => 'Moderate and manage shared resources from students and alumni.',
             'user' => $_SESSION,
             'resourceData' => $resourceData
         ];

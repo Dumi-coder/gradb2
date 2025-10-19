@@ -19,6 +19,8 @@ class AidRequests extends Controller
 
         $data = [
             'title' => 'Approve Aid Requests - GradBridge',
+            'page_title' => 'Approve Aid Requests',
+            'page_subtitle' => 'Review and approve financial aid requests from students.',
             'user' => $_SESSION,
             'aidRequestsData' => $aidRequestsData
         ];

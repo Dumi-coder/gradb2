@@ -19,6 +19,8 @@ class FundraiserModeration extends Controller
 
         $data = [
             'title' => 'Moderate Fundraisers - GradBridge',
+            'page_title' => 'Moderate Fundraisers',
+            'page_subtitle' => 'Review and moderate fundraising campaigns from students and alumni.',
             'user' => $_SESSION,
             'fundraiserData' => $fundraiserData
         ];

@@ -47,8 +47,20 @@
         <div class="container">
             <div class="header-content">
                 <div class="welcome-section">
-                    <h1 class="welcome-text">Welcome, <span class="student-name"><?= esc($_SESSION['name'] ?? 'Admin') ?></span></h1>
-                    <p class="student-role">Faculty Admin • Faculty ID: <?= $_SESSION['faculty_id'] ?? '1' ?></p>
+                    <?php 
+                    // Make variables available in header scope
+                    $page_title = $page_title ?? null;
+                    $page_subtitle = $page_subtitle ?? null;
+                    ?>
+                    <?php if (!empty($page_title)): ?>
+                        <h1 class="welcome-text"><?= esc($page_title) ?></h1>
+                        <?php if (!empty($page_subtitle)): ?>
+                            <p class="header-subtitle"><?= esc($page_subtitle) ?></p>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <h1 class="welcome-text">Welcome, <span class="student-name"><?= esc($_SESSION['name'] ?? 'Admin') ?></span></h1>
+                        <p class="student-role">Faculty Admin • Faculty ID: <?= $_SESSION['faculty_id'] ?? '1' ?></p>
+                    <?php endif; ?>
                 </div>
                 
                 <div class="header-actions">
