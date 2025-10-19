@@ -167,7 +167,7 @@
                       </button>
                       <button class="btn btn-outline btn-sm">
                         <i class="fas fa-star"></i>
-                        <span>Rate</span>
+                        <span>Follow up</span>
                       </button>
                     </div>
                   </td>
