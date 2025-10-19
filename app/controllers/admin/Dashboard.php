@@ -9,16 +9,16 @@ class Dashboard extends Controller
             session_start();
         }
 
-        // Check if user is logged in as counselor
-        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'counselor') {
-            redirect('counselor');
+        // Check if user is logged in as admin
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'faculty_admin') {
+            redirect('admin');
         }
 
         $data = [
-            'title' => 'Counselor Dashboard - GradBridge',
+            'title' => 'Admin Dashboard - GradBridge',
             'user' => $_SESSION
         ];
 
-        $this->view('counselor/dashboard', $data);
+        $this->view('admin/dashboard', $data);
     }
 }

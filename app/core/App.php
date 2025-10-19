@@ -9,8 +9,28 @@ class App// This is the main application class that handles routing and loading 
 
     private function splitURL()// This function splits the URL into an array
     {
-        $URL=$_GET['url'] ?? 'Home';// Get the URL from the query string, default to 'home' if not set
+        $URL=$_GET['url'] ?? '';// Get the URL from the query string, default to empty if not set
         $URL=explode("/", trim($URL,"/"));// Split the URL by slashes
+        
+        // If URL is empty, determine default controller based on current directory
+        if (empty($URL[0]) || $URL[0] === '') {
+            $currentDir = basename(dirname($_SERVER['SCRIPT_NAME']));
+            
+            // Map directory names to default controllers
+            $defaultControllers = [
+                'admin' => 'admin/Auth',
+                'counselor' => 'counselor/Auth', 
+                'superadmin' => 'superadmin/Auth',
+                'public' => 'Home'
+            ];
+            
+            if (isset($defaultControllers[$currentDir])) {
+                $URL = explode("/", $defaultControllers[$currentDir]);
+            } else {
+                $URL = ['Home']; // Fallback to Home
+            }
+        }
+        
         // Debug: log the URL segments
         error_log("URL segments: " . print_r($URL, true));
         return $URL;       // Return the array of URL segments

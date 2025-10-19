@@ -2,14 +2,14 @@
 
 <div class="dashboard-container">
     <div class="dashboard-header">
-        <h1>Counselor Dashboard</h1>
+        <h1>Super Admin Dashboard</h1>
         <p>Welcome back, <?= esc($_SESSION['name']) ?>!</p>
     </div>
     
     <div class="dashboard-content">
         <div class="dashboard-card">
-            <h2>Student Support</h2>
-            <p>Manage student requests and provide guidance.</p>
+            <h2>System Administration</h2>
+            <p>Full system control and user management.</p>
         </div>
         
         <div class="dashboard-actions">
