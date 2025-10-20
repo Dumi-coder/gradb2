@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Counselor Dashboard - GradBridge</title>
-    <meta name="description" content="Review and manage student aid requests as a counselor." />
+    <title>Pending Requests - Counselor Dashboard - GradBridge</title>
+    <meta name="description" content="Review and manage pending student aid requests as a counselor." />
     <meta name="author" content="GradBridge" />
     
     <!-- Google Fonts - Poppins -->
@@ -26,14 +26,14 @@
       <div class="container">
         <div class="header-content">
           <div class="welcome-section">
-            <h1 class="welcome-text">Counselor Dashboard</h1>
-            <p class="counselor-role">Aid Request Review & Management</p>
+            <h1 class="welcome-text">Pending Requests</h1>
+            <p class="counselor-role">Review and manage pending aid requests</p>
           </div>
           
           <div class="header-actions">
             <button class="btn btn-outline notification-btn" aria-label="Notifications">
               <i class="fas fa-bell"></i>
-              <span class="notification-badge">5</span>
+              <span class="notification-badge">8</span>
             </button>
             <a href="<?=ROOT?>/counselor/Logout">
             <button class="btn btn-primary logout-btn">
@@ -52,49 +52,6 @@
 
       <!-- Main Content Area -->
       <main class="main-content">
-        <!-- Dashboard Overview Section -->
-        <section class="dashboard-section overview-section">
-          <div class="section-header">
-            <h2 class="card-title">Request Overview</h2>
-            <button class="btn btn-outline btn-sm" id="refreshBtn">
-              <i class="fas fa-sync-alt"></i>
-              <span>Refresh</span>
-            </button>
-          </div>
-          
-          <div class="overview-stats">
-            <div class="stat-card urgent">
-              <div class="stat-icon">
-                <i class="fas fa-exclamation-triangle"></i>
-              </div>
-              <div class="stat-content">
-                <h3 class="stat-number">8</h3>
-                <p class="stat-label">Urgent Requests</p>
-              </div>
-            </div>
-            
-            <div class="stat-card pending">
-              <div class="stat-icon">
-                <i class="fas fa-clock"></i>
-              </div>
-              <div class="stat-content">
-                <h3 class="stat-number">24</h3>
-                <p class="stat-label">Pending Review</p>
-              </div>
-            </div>
-            
-            <div class="stat-card approved">
-              <div class="stat-icon">
-                <i class="fas fa-check-circle"></i>
-              </div>
-              <div class="stat-content">
-                <h3 class="stat-number">156</h3>
-                <p class="stat-label">Approved This Month</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <!-- Pending Requests Section -->
         <section class="dashboard-section pending-requests-section">
           <div class="section-header">
@@ -107,6 +64,10 @@
                 <option value="medium">Medium</option>
                 <option value="low">Low</option>
               </select>
+              <button class="btn btn-outline btn-sm" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i>
+                <span>Refresh</span>
+              </button>
             </div>
           </div>
           
@@ -439,8 +400,7 @@
       </div>
     </div>
 
-    <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
+    <<script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/counselor-dashboard.js"></script>
   </body>
 </html>
-
