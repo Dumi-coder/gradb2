@@ -354,10 +354,10 @@
           
           <div class="header-actions">
             <button class="btn btn-outline notification-btn" aria-label="Notifications">
-              <i class="fas fa-bell" style="font-size: 1.1rem;"></i>
+              <i class="fas fa-bell"></i>
               <span class="notification-badge">3</span>
             </button>
-            <a href="<?=ROOT?>/alumni/logout"><button class="btn btn-primary logout-btn">Logout</button></a>
+            <a href="<?=ROOT?>/alumni/logout" class="btn btn-primary logout-btn">Logout</a>
           </div>
         </div>
       </div>
