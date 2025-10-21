@@ -1,0 +1,3 @@
+# Keep the resources upload folder in git, but ignore uploaded files
+*
+!.gitignore

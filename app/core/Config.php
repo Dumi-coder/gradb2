@@ -31,8 +31,9 @@
 // }
 
 // File system paths
-// APPROOT is the root directory of the application (where app/, public/ folders are)
-define('APPROOT', dirname(__DIR__));
+// APPROOT should point to the project root which contains both `app/` and `public/`.
+// Since this file lives in app/core, go two levels up.
+define('APPROOT', dirname(__DIR__, 2));
 
 // Public directory path (for file uploads)
 define('PUBLICPATH', APPROOT . '/public');
@@ -40,6 +41,8 @@ define('PUBLICPATH', APPROOT . '/public');
 // Upload directory paths
 define('UPLOAD_PATH', PUBLICPATH . '/assets/uploads/');
 define('PROFILE_UPLOAD_PATH', UPLOAD_PATH . 'profiles/');
+// Standard upload path for shared resources (documents uploaded from Resources page)
+define('RESOURCE_UPLOAD_PATH', UPLOAD_PATH . 'resources/');
 
 
 define('APP_NAME','GradBridge');// This is the name of the application, used in the title tag and other places.

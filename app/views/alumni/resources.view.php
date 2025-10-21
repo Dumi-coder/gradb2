@@ -96,55 +96,56 @@ require '../app/views/partials/alumni_header.php';
               <i class="fas fa-folder"></i>
               My Resources
             </h2>
-            <span class="resource-count">4 resources</span>
+            <span class="resource-count"><span id="my-resources-count"><?= isset($my_resources) && is_array($my_resources) ? count($my_resources) : 0 ?></span> resources</span>
           </div>
           
-          <div class="my-resources-grid">
-            <div class="my-resource-card">
-              <h3 class="resource-title">Business Plan Template</h3>
-              <div class="resource-meta">
-                <span class="resource-category">Tools</span>
-                <span class="resource-size">0.8 MB</span>
+          <div class="my-resources-grid" id="my-resources-grid">
+            <?php if(isset($my_resources) && is_array($my_resources) && count($my_resources)): ?>
+              <?php foreach($my_resources as $res): ?>
+                <div class="my-resource-card" 
+                     data-id="<?= $res->resource_id ?? '' ?>"
+                     data-title="<?= htmlspecialchars($res->title ?? '', ENT_QUOTES) ?>"
+                     data-description="<?= htmlspecialchars($res->description ?? '', ENT_QUOTES) ?>"
+                     data-category="<?= htmlspecialchars($res->category ?? '', ENT_QUOTES) ?>"
+                     data-file-path="<?= htmlspecialchars($res->file_path ?? '', ENT_QUOTES) ?>"
+                     data-file-size="<?= (int)($res->file_size ?? 0) ?>"
+                     data-created-at="<?= htmlspecialchars($res->created_at ?? '', ENT_QUOTES) ?>">
+                  <h3 class="resource-title"><?= htmlspecialchars($res->title ?? '') ?></h3>
+                  <div class="resource-meta">
+                    <?php 
+                      $cat = isset($res->category) ? ucwords(str_replace('-', ' ', $res->category)) : ''; 
+                    ?>
+                    <span class="resource-category"><?= htmlspecialchars($cat) ?></span>
+                    <span class="resource-size"><?= isset($res->file_size) ? number_format(($res->file_size/1024/1024), 1) . ' MB' : '' ?></span>
+                  </div>
+                  <p class="resource-description"><?= htmlspecialchars($res->description ?? '') ?></p>
+                  <div class="resource-details">
+                    <span class="upload-date">Uploaded: <?= isset($res->created_at) ? date('M j, Y', strtotime($res->created_at)) : '' ?></span>
+                  </div>
+                  <div class="resource-actions">
+                    <button class="btn btn-primary btn-sm" data-action="edit" data-id="<?= $res->resource_id ?? '' ?>">
+                      <i class="fas fa-edit"></i>
+                      <span>Edit</span>
+                    </button>
+                    <a class="btn btn-outline btn-sm" href="<?= htmlspecialchars($res->file_path ?? '#') ?>" target="_blank" rel="noopener">
+                      <i class="fas fa-download"></i>
+                      <span>Open</span>
+                    </a>
+                    <button class="btn btn-outline btn-sm" data-action="delete" data-id="<?= $res->resource_id ?? '' ?>">
+                      <i class="fas fa-trash"></i>
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </div>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <div id="my-resources-empty" class="my-resource-card" style="opacity:.8">
+                <h3 class="resource-title">No resources yet</h3>
+                <p class="resource-description">Upload your first resource to see it here.</p>
               </div>
-              <p class="resource-description">Professional business plan template for startups</p>
-              <div class="resource-details">
-                <span class="upload-date">Uploaded: Aug 10, 2025</span>
-                <span class="engagement-stats">Downloads: 73 • Likes: 12</span>
-              </div>
-              <div class="resource-actions">
-                <button class="btn btn-primary btn-sm">
-                  <i class="fas fa-edit"></i>
-                  <span>Edit</span>
-                </button>
-                <button class="btn btn-outline btn-sm">
-                  <i class="fas fa-trash"></i>
-                  <span>Delete</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="my-resource-card">
-              <h3 class="resource-title">Python Data Analysis Notebook</h3>
-              <div class="resource-meta">
-                <span class="resource-category">Projects</span>
-                <span class="resource-size">1.9 MB</span>
-              </div>
-              <p class="resource-description">Jupyter notebook with data analysis examples using pandas and matplotlib</p>
-              <div class="resource-details">
-                <span class="upload-date">Uploaded: Aug 8, 2025</span>
-                <span class="engagement-stats">Downloads: 67 • Likes: 14</span>
-              </div>
-              <div class="resource-actions">
-                <button class="btn btn-primary btn-sm">
-                  <i class="fas fa-edit"></i>
-                  <span>Edit</span>
-                </button>
-                <button class="btn btn-outline btn-sm">
-                  <i class="fas fa-trash"></i>
-                  <span>Delete</span>
-                </button>
-              </div>
-            </div>
+            <?php endif; ?>
+          </div>
+        </section>
 
         <!-- Recent Resources -->
         <section class="dashboard-section recent-section">
@@ -290,7 +291,9 @@ require '../app/views/partials/alumni_header.php';
           </button>
         </div>
 
-        <form class="upload-form">
+        <form class="upload-form" enctype="multipart/form-data">
+          <input type="hidden" id="resourceId" name="resourceId" value="">
+          <input type="hidden" id="resourceMode" name="resourceMode" value="create">
           <div class="form-group">
             <label for="resourceTitle">Resource Title *</label>
             <input type="text" id="resourceTitle" name="resourceTitle" placeholder="Enter a descriptive title" required>
@@ -315,11 +318,11 @@ require '../app/views/partials/alumni_header.php';
           <div class="form-group">
             <label for="resourceFile">File *</label>
             <div class="file-upload-area" onclick="document.getElementById('resourceFile').click()">
-              <input type="file" id="resourceFile" name="resourceFile" accept=".pdf,.doc,.docx,.txt,.zip,.rar" style="display: none;" required>
+              <input type="file" id="resourceFile" name="resourceFile" accept=".pdf,.doc,.docx,.txt,.zip,.rar,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.gif,image/*" style="display: none;" required>
               <div class="upload-placeholder">
                 <i class="fas fa-cloud-upload-alt"></i>
                 <p>Click to select file or drag and drop</p>
-                <small>Supported: PDF, DOC, DOCX, TXT, ZIP, RAR</small>
+                <small>Supported: PDF, DOC, DOCX, TXT, ZIP, RAR, PPT, PPTX, XLS, XLSX, PNG, JPG, JPEG, GIF</small>
               </div>
             </div>
           </div>
@@ -337,7 +340,53 @@ require '../app/views/partials/alumni_header.php';
       </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+      <div class="modal-content modal-small">
+        <div class="modal-header">
+          <h2 class="modal-title">
+            <i class="fas fa-exclamation-circle"></i>
+            Confirm Delete
+          </h2>
+          <button class="modal-close" onclick="closeDeleteModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="delete-warning">
+            <div class="warning-icon-wrapper">
+              <i class="fas fa-trash-alt"></i>
+            </div>
+            <h3>Are you sure you want to delete this resource?</h3>
+            <p class="delete-resource-name" id="deleteResourceName"></p>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline btn-md" onclick="closeDeleteModal()">
+            <i class="fas fa-times"></i>
+            <span>Cancel</span>
+          </button>
+          <button type="button" class="btn btn-danger btn-md" id="confirmDeleteBtn">
+            <i class="fas fa-trash"></i>
+            <span>Delete Resource</span>
+          </button>
+        </div>
+
+        <div class="modal-footer">
+          <p class="warning-text">
+            <i class="fas fa-info-circle"></i>
+            This action cannot be undone. The file will be permanently deleted from the system.
+          </p>
+        </div>
+      </div>
+    </div>
+
     <!-- JS -->
+    <script>
+      window.APP_ROOT = '<?=ROOT?>';
+    </script>
     <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/resources.js"></script>
   </body>
