@@ -14,6 +14,11 @@ class Dashboard extends Controller
             redirect('counselor');
         }
 
+        // Prevent caching of dashboard pages
+        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Pragma: no-cache");
+
         $data = [
             'title' => 'Counselor Dashboard - GradBridge',
             'user' => $_SESSION

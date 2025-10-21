@@ -15,6 +15,11 @@ class Auth extends Controller
             exit();
         }
 
+        // Prevent caching of auth pages
+        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Pragma: no-cache");
+
         $data = [];
         
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -24,10 +29,11 @@ class Auth extends Controller
                 $this->handleLogin();
             }
         } else {
-            if (isset($_GET['action']) && $_GET['action'] == 'login') {
-                $this->view('auth/student_login', $data);
-            } else {
+            // Default to login page instead of signup
+            if (isset($_GET['action']) && $_GET['action'] == 'signup') {
                 $this->view('auth/student_signup', $data);
+            } else {
+                $this->view('auth/student_login', $data);
             }
         }
     }

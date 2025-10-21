@@ -41,6 +41,11 @@ class Dashboard extends Controller
             redirect('student/auth');
         }
 
+        // Prevent caching of dashboard pages
+        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Pragma: no-cache");
+
         // Get fresh profile data from database
         $student = new Student();
         $profile = $student->getStudentProfile($_SESSION['student_id']);
