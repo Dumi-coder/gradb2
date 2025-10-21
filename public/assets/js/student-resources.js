@@ -1,4 +1,4 @@
-// resources.js - Resources Page Functionality
+// student-resources.js - Student Resources Page Functionality
 
 // Global variables
 let currentFilter = 'all';
@@ -329,7 +329,7 @@ function submitResource(resourceData, mode = 'create', resourceId = '') {
 
     // Determine endpoint
     const base = (typeof window.APP_ROOT !== 'undefined') ? window.APP_ROOT : '';
-    const url = base + (mode === 'edit' ? '/alumni/resources/update' : '/alumni/resources/upload');
+    const url = base + (mode === 'edit' ? '/student/resources/update' : '/student/resources/upload');
 
     fetch(url, {
         method: 'POST',
@@ -469,7 +469,7 @@ function closeDeleteModal() {
 
 function deleteResource(resourceId, card) {
     const base = (typeof window.APP_ROOT !== 'undefined') ? window.APP_ROOT : '';
-    const url = base + '/alumni/resources/delete';
+    const url = base + '/student/resources/delete';
     
     const fd = new FormData();
     fd.set('resourceId', resourceId);
@@ -638,6 +638,6 @@ function getNotificationIcon(type) {
 // Export functions for global access
 window.openUploadModal = openUploadModal;
 window.closeUploadModal = closeUploadModal;
+window.closeDeleteModal = closeDeleteModal;
 window.filterResources = filterResources;
 window.viewAllResources = viewAllResources;
-
