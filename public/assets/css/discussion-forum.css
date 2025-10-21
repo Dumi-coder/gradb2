@@ -417,7 +417,8 @@
 }
 
 /* New Post Form Styles */
-.new-post-form {
+.new-post-form,
+.edit-post-form {
   padding: var(--spacing-lg);
 }
 
@@ -620,6 +621,7 @@
   
   .modal-header,
   .new-post-form,
+  .edit-post-form,
   .quick-tags-content,
   .modal-footer {
     padding: var(--spacing-md);
