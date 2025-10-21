@@ -99,6 +99,8 @@
   display: flex;
   gap: var(--spacing-md);
   transition: all 0.3s ease;
+  overflow: hidden;
+  max-width: 100%;
 }
 
 .discussion-item:hover {
@@ -121,6 +123,8 @@
 
 .discussion-content {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .discussion-header {
@@ -136,6 +140,9 @@
   font-weight: 600;
   color: var(--foreground);
   margin: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .discussion-category {
@@ -151,6 +158,9 @@
   color: var(--muted-foreground);
   margin: 0 0 var(--spacing-sm) 0;
   line-height: var(--leading-normal);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .discussion-meta {
@@ -173,6 +183,7 @@
 
 .discussion-actions {
   display: flex;
+  gap: var(--spacing-sm);
   align-items: flex-start;
   flex-shrink: 0;
 }
