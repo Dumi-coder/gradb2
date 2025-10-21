@@ -12,7 +12,13 @@ class Logout extends Controller
         // Destroy the session
         session_destroy();
         
-        // Redirect directly to the clean admin login view
-        $this->view('auth/admin-login', []);
+        // Clear any existing output
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+        
+        // Redirect to admin login page
+        header("Location: http://localhost/gradb2/admin/");
+        exit();
     }
 }

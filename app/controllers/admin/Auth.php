@@ -71,18 +71,4 @@ class Auth extends Controller
         $this->view('auth/admin-login', $data);
     }
 
-    public function logout()
-    {
-        // Start session if not started
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        
-        // Destroy the session
-        session_destroy();
-        
-        // Redirect to admin login
-        header("Location: http://localhost/gradb2/admin/");
-        exit();
-    }
 }

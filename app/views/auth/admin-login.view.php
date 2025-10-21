@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Login - GradBridge</title>
+    <title>Faculty Admin Login - GradBridge</title>
     
     <!-- Google Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +23,7 @@
 <section class="auth-section gradient-hero">
   <div class="container">
     <div class="auth-card">
-      <h1 class="auth-title">Admin <span class="brand">Login</span></h1>
+      <h1 class="auth-title">Faculty Admin <span class="brand">Login</span></h1>
       
       <form class="auth-form" method="POST">
         <?php if(!empty($errors)):?>
