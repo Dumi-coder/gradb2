@@ -1,5 +1,8 @@
 <?php require '../app/views/partials/superadmin_header.php'; ?>
 
+<!-- Unified Profile Styles -->
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/profile.css">
+
 <div class="dashboard-container">
     <!-- Sidebar -->
     <?php require '../app/views/partials/superadmin_sidebar.php'; ?>
@@ -138,23 +141,5 @@
     </main>
 </div>
 
-<script>
-function previewImage(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const preview = document.getElementById('profilePreview');
-            const initials = document.getElementById('profileInitials');
-            
-            if (preview) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            }
-            if (initials) {
-                initials.style.display = 'none';
-            }
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-</script>
+<!-- Unified Profile JavaScript -->
+<script src="<?=ROOT?>/assets/js/profile.js"></script>

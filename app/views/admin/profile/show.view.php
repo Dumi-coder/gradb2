@@ -1,5 +1,8 @@
 <?php require '../app/views/partials/admin_header.php'; ?>
 
+<!-- Unified Profile Styles -->
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/profile.css">
+
 <div class="dashboard-container">
     <!-- Sidebar -->
     <?php require '../app/views/partials/admin_sidebar.php'; ?>
