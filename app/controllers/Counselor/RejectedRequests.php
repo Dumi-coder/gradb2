@@ -7,3 +7,4 @@ class RejectedRequests extends Controller
         $this->view('counselor/rejected-requests');
     }
 }
+

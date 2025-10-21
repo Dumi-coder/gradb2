@@ -7,3 +7,4 @@ class ApprovedRequests extends Controller
         $this->view('counselor/approved-requests');
     }
 }
+
