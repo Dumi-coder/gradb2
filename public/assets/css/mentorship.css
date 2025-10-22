@@ -166,6 +166,92 @@
   color: #dc2626;
 }
 
+.status-pending-verification {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-open {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.status-accepted {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+/* Request Category */
+.request-category {
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--muted);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+  color: var(--muted-foreground);
+}
+
+.request-category strong {
+  color: var(--foreground);
+}
+
+/* Request Meta */
+.request-meta {
+  margin-top: var(--spacing-sm);
+  color: var(--muted-foreground);
+  font-size: var(--font-sm);
+}
+
+.request-date {
+  display: block;
+  margin-top: var(--spacing-xs);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-xl) var(--spacing-md);
+  color: var(--muted-foreground);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-md);
+  color: var(--muted-foreground);
+}
+
+.empty-state h3 {
+  margin-bottom: var(--spacing-sm);
+  color: var(--foreground);
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: var(--font-base);
+}
+
+/* Alert Messages */
+.alert {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.alert-success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.alert-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .main-content {
