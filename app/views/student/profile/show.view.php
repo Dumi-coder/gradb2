@@ -42,7 +42,7 @@ require '../app/views/partials/student_header.php';
                         </div>
                         <div class="profile-details">
                             <h3><?= esc($profile->name) ?></h3>
-                            <p>Student</p>
+                            <!-- <p>Student</p> -->
                             <p>Student ID: <?= esc($profile->student_id) ?></p>
                             <div class="profile-meta">
                                 <p><strong>Faculty:</strong> <?= esc($profile->faculty) ?></p>
