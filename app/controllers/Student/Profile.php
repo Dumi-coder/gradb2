@@ -173,7 +173,7 @@ class Profile extends Controller
                 
                 // Create directory if it doesn't exist with more permissive permissions
                 if (!is_dir($upload_dir)) {
-                    if (!mkdir($upload_dir, 0777, true)) {
+                    if (!mkdir($upload_dir, 0775, true)) {
                         $errors['profile_picture'] = "Failed to create upload directory: $upload_dir";
                         error_log("Failed to create directory: $upload_dir");
                         error_log("Document root: " . $_SERVER['DOCUMENT_ROOT']);
