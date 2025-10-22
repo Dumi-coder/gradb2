@@ -1,6 +1,6 @@
 <?php 
 $page_title = "Welcome, " . esc($profile->name);
-$page_subtitle = esc($profile->degree) . " • Batch " . esc($profile->graduation_year);
+$page_subtitle = esc($profile->degrees ?? 'Alumni') . " • Batch " . esc($profile->graduation_year ?? 'N/A');
 require '../app/views/partials/alumni_header.php'; 
 ?>
 
@@ -39,14 +39,20 @@ require '../app/views/partials/alumni_header.php';
                         </div>
                         <div class="profile-details">
                             <h3><?= esc($profile->name) ?></h3>
-                            <p><?= esc($profile->current_job ?? 'Alumni') ?></p>
-                            <p>Alumni ID: ALU<?= str_pad($profile->user_id, 3, '0', STR_PAD_LEFT) ?></p>
+                            <p><?= esc($profile->current_workplace ?? $profile->current_job ?? 'Alumni') ?></p>
+                            <p>Alumni ID: <?= esc($profile->alumni_id) ?></p>
                             <div class="profile-meta">
                                 <p><strong>Email:</strong> <?= esc($profile->email) ?></p>
-                                <p><strong>Graduation Year:</strong> <?= esc($profile->graduation_year) ?></p>
-                                <p><strong>Degree:</strong> <?= esc($profile->degree) ?></p>
-                                <?php if (!empty($profile->location)): ?>
-                                    <p><strong>Location:</strong> <?= esc($profile->location) ?></p>
+                                <?php if (!empty($profile->mobile)): ?>
+                                    <p><strong>Mobile:</strong> +94 <?= esc($profile->mobile) ?></p>
+                                <?php endif; ?>
+                                <p><strong>Graduation Year:</strong> <?= esc($profile->graduation_year ?? 'N/A') ?></p>
+                                <p><strong>Degree:</strong> <?= esc($profile->degrees ?? 'N/A') ?></p>
+                                <?php if (!empty($profile->expertise_area)): ?>
+                                    <p><strong>Expertise:</strong> <?= esc($profile->expertise_area) ?></p>
+                                <?php endif; ?>
+                                <?php if (!empty($profile->current_workplace)): ?>
+                                    <p><strong>Current Workplace:</strong> <?= esc($profile->current_workplace) ?></p>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -135,7 +141,7 @@ require '../app/views/partials/alumni_header.php';
                             </div>
                             <div class="bio-title">
                                 <h3>About <?= esc($profile->name) ?></h3>
-                                <p><?= esc($profile->current_job ?? 'Alumni Member') ?></p>
+                                <p><?= esc($profile->current_workplace ?? $profile->current_job ?? 'Alumni Member') ?></p>
                             </div>
                         </div>
                         <div class="bio-content">
@@ -150,8 +156,8 @@ require '../app/views/partials/alumni_header.php';
                             </div>
                             <div class="experience-content">
                                 <h4>Education</h4>
-                                <p><?= esc($profile->degree) ?></p>
-                                <span class="experience-period"><?= esc($profile->graduation_year) ?></span>
+                                <p><?= esc($profile->degrees ?? 'N/A') ?></p>
+                                <span class="experience-period"><?= esc($profile->graduation_year ?? 'N/A') ?></span>
                             </div>
                         </div>
                         
@@ -160,20 +166,20 @@ require '../app/views/partials/alumni_header.php';
                                 <i class="fas fa-briefcase"></i>
                             </div>
                             <div class="experience-content">
-                                <h4>Current Position</h4>
-                                <p><?= esc($profile->current_job ?? 'Professional') ?></p>
+                                <h4>Current Workplace</h4>
+                                <p><?= esc($profile->current_workplace ?? $profile->current_job ?? 'Not specified') ?></p>
                                 <span class="experience-period">Present</span>
                             </div>
                         </div>
                         
                         <div class="experience-card">
                             <div class="experience-icon">
-                                <i class="fas fa-map-marker-alt"></i>
+                                <i class="fas fa-user-tie"></i>
                             </div>
                             <div class="experience-content">
-                                <h4>Location</h4>
-                                <p><?= esc($profile->location ?? 'Not specified') ?></p>
-                                <span class="experience-period">Current</span>
+                                <h4>Expertise Area</h4>
+                                <p><?= esc($profile->expertise_area ?? 'Not specified') ?></p>
+                                <span class="experience-period">Professional</span>
                             </div>
                         </div>
                     </div>
@@ -211,8 +217,8 @@ require '../app/views/partials/alumni_header.php';
                     </a>
                     <?php endif; ?>
                     
-                    <?php if (!empty($profile->website_url)): ?>
-                    <a href="<?= esc($profile->website_url) ?>" target="_blank" class="social-link-card">
+                    <?php if (!empty($profile->personal_website)): ?>
+                    <a href="<?= esc($profile->personal_website) ?>" target="_blank" class="social-link-card">
                         <div class="social-link-icon website">
                             <i class="fas fa-globe"></i>
                         </div>
@@ -220,7 +226,7 @@ require '../app/views/partials/alumni_header.php';
                     </a>
                     <?php endif; ?>
                     
-                    <?php if (empty($profile->linkedin_url) && empty($profile->github_url) && empty($profile->twitter_url) && empty($profile->website_url)): ?>
+                    <?php if (empty($profile->linkedin_url) && empty($profile->github_url) && empty($profile->twitter_url) && empty($profile->personal_website)): ?>
                     <div class="no-social-links">
                         <p>No social media links added yet. <a href="<?=ROOT?>/alumni/profile?action=edit&id=<?= $profile->alumni_id ?>">Edit your profile</a> to add social media links.</p>
                     </div>

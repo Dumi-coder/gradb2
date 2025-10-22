@@ -38,11 +38,23 @@ class Alumni
         'user_id',
         'faculty_id',
         'expertise_area',
+        'degrees',
+        'current_workplace',
         'linkedin_url',
         'graduated_year',
         'bio',
         'profile_photo_url',
-        'mobile'
+        'mobile',
+        'is_verified_mentor',
+        'mentorship_availability_status',
+        'mentorship_preferences',
+        'mentorships_completed_count',
+        'aid_requests_completed_count',
+        'total_contributed_amount',
+        'github_url',
+        'twitter_url',
+        'personal_website',
+        'current_job'
     ];
 
     public function validate($data)
@@ -106,7 +118,10 @@ class Alumni
      */
     public function getalumniProfile($alumni_id)
     {
-        $query = "SELECT a.*, u.name, u.email, f.faculty_name as faculty
+        $query = "SELECT a.*, 
+                  a.graduated_year as graduation_year,
+                  u.name, u.email, 
+                  f.faculty_name as faculty
                   FROM $this->table a
                   JOIN users u ON a.user_id = u.user_id
                   JOIN faculties f ON a.faculty_id = f.faculty_id
@@ -167,7 +182,21 @@ class Alumni
     public function updateProfile($alumni_id, $data)
     {
         // Remove unwanted data
-        $allowed_fields = ['faculty_id','expertise_area','linkedin_url','graduated_year', 'bio', 'profile_photo_url', 'mobile'];
+        $allowed_fields = [
+            'faculty_id',
+            'expertise_area',
+            'degrees',
+            'current_workplace',
+            'linkedin_url',
+            'graduated_year',
+            'bio',
+            'profile_photo_url',
+            'mobile',
+            'github_url',
+            'twitter_url',
+            'personal_website',
+            'current_job'
+        ];
         $filtered_data = [];
         
         foreach ($data as $key => $value) {

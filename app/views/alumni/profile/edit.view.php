@@ -56,39 +56,61 @@ require '../app/views/partials/alumni_header.php';
                             <?php endif; ?>
                         </div>
 
-                        <!-- Degree -->
+                        <!-- Degrees -->
                         <div class="form-group">
-                            <label for="degree" class="form-label">Degree *</label>
-                            <input type="text" id="degree" name="degree" class="form-input" value="<?= esc($profile->degree) ?>" required>
-                            <?php if (isset($errors['degree'])): ?>
-                                <div class="error-message"><?= esc($errors['degree']) ?></div>
+                            <label for="degrees" class="form-label">Degree *</label>
+                            <input type="text" id="degrees" name="degrees" class="form-input" value="<?= esc($profile->degrees ?? '') ?>" required>
+                            <?php if (isset($errors['degrees'])): ?>
+                                <div class="error-message"><?= esc($errors['degrees']) ?></div>
                             <?php endif; ?>
                         </div>
 
                         <!-- Graduation Year -->
                         <div class="form-group">
                             <label for="graduation_year" class="form-label">Graduation Year *</label>
-                            <input type="number" id="graduation_year" name="graduation_year" class="form-input" value="<?= esc($profile->graduation_year) ?>" min="1950" max="<?= date('Y') ?>" required>
+                            <input type="number" id="graduation_year" name="graduation_year" class="form-input" value="<?= esc($profile->graduation_year ?? '') ?>" min="1950" max="<?= date('Y') ?>" required>
                             <?php if (isset($errors['graduation_year'])): ?>
                                 <div class="error-message"><?= esc($errors['graduation_year']) ?></div>
                             <?php endif; ?>
                         </div>
 
-                        <!-- Current Job -->
+                        <!-- Current Workplace -->
                         <div class="form-group">
-                            <label for="current_job" class="form-label">Current Job</label>
+                            <label for="current_workplace" class="form-label">Current Workplace</label>
+                            <input type="text" id="current_workplace" name="current_workplace" class="form-input" value="<?= esc($profile->current_workplace ?? '') ?>">
+                            <?php if (isset($errors['current_workplace'])): ?>
+                                <div class="error-message"><?= esc($errors['current_workplace']) ?></div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Current Job Title -->
+                        <div class="form-group">
+                            <label for="current_job" class="form-label">Current Job Title</label>
                             <input type="text" id="current_job" name="current_job" class="form-input" value="<?= esc($profile->current_job ?? '') ?>">
                             <?php if (isset($errors['current_job'])): ?>
                                 <div class="error-message"><?= esc($errors['current_job']) ?></div>
                             <?php endif; ?>
                         </div>
 
-                        <!-- Location -->
+                        <!-- Expertise Area -->
                         <div class="form-group">
-                            <label for="location" class="form-label">Location</label>
-                            <input type="text" id="location" name="location" class="form-input" value="<?= esc($profile->location ?? '') ?>">
-                            <?php if (isset($errors['location'])): ?>
-                                <div class="error-message"><?= esc($errors['location']) ?></div>
+                            <label for="expertise_area" class="form-label">Expertise Area</label>
+                            <input type="text" id="expertise_area" name="expertise_area" class="form-input" value="<?= esc($profile->expertise_area ?? '') ?>" placeholder="e.g., Web Development, Data Science">
+                            <?php if (isset($errors['expertise_area'])): ?>
+                                <div class="error-message"><?= esc($errors['expertise_area']) ?></div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Mobile Number -->
+                        <div class="form-group">
+                            <label for="mobile" class="form-label">Mobile Number</label>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="padding: 12px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; font-weight: 500;">+94</span>
+                                <input type="tel" id="mobile" name="mobile" class="form-input" style="flex: 1;" value="<?= esc($profile->mobile ?? '') ?>" placeholder="771234567" maxlength="9">
+                            </div>
+                            <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">Enter 9 digits without leading 0 (e.g., 771234567)</small>
+                            <?php if (isset($errors['mobile'])): ?>
+                                <div class="error-message"><?= esc($errors['mobile']) ?></div>
                             <?php endif; ?>
                         </div>
 
@@ -131,10 +153,10 @@ require '../app/views/partials/alumni_header.php';
                             </div>
 
                             <div class="form-group">
-                                <label for="website_url" class="form-label">Personal Website</label>
-                                <input type="url" id="website_url" name="website_url" class="form-input" value="<?= esc($profile->website_url ?? '') ?>" placeholder="https://yourwebsite.com">
-                                <?php if (isset($errors['website_url'])): ?>
-                                    <div class="error-message"><?= esc($errors['website_url']) ?></div>
+                                <label for="personal_website" class="form-label">Personal Website</label>
+                                <input type="url" id="personal_website" name="personal_website" class="form-input" value="<?= esc($profile->personal_website ?? '') ?>" placeholder="https://yourwebsite.com">
+                                <?php if (isset($errors['personal_website'])): ?>
+                                    <div class="error-message"><?= esc($errors['personal_website']) ?></div>
                                 <?php endif; ?>
                             </div>
                         </div>

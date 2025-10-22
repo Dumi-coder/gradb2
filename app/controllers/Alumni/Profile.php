@@ -66,11 +66,17 @@ class Profile extends Controller
         // Get form data
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
-        $degree = trim($_POST['degree'] ?? '');
+        $degrees = trim($_POST['degrees'] ?? '');
         $graduation_year = trim($_POST['graduation_year'] ?? '');
+        $current_workplace = trim($_POST['current_workplace'] ?? '');
         $current_job = trim($_POST['current_job'] ?? '');
-        $location = trim($_POST['location'] ?? '');
+        $expertise_area = trim($_POST['expertise_area'] ?? '');
+        $mobile = trim($_POST['mobile'] ?? '');
         $bio = trim($_POST['bio'] ?? '');
+        $linkedin_url = trim($_POST['linkedin_url'] ?? '');
+        $github_url = trim($_POST['github_url'] ?? '');
+        $twitter_url = trim($_POST['twitter_url'] ?? '');
+        $personal_website = trim($_POST['personal_website'] ?? '');
         $profile_picture = $_FILES['profile_picture'] ?? null;
 
         // Validation
@@ -80,14 +86,17 @@ class Profile extends Controller
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = "Valid email is required";
         }
-        if (empty($degree)) {
-            $errors['degree'] = "Degree is required";
+        if (empty($degrees)) {
+            $errors['degrees'] = "Degree is required";
         }
         if (empty($graduation_year) || !is_numeric($graduation_year) || $graduation_year < 1950 || $graduation_year > date('Y')) {
             $errors['graduation_year'] = "Graduation year must be between 1950 and current year";
         }
-        if (strlen($bio) > 500) {
-            $errors['bio'] = "Bio must be less than 500 characters";
+        if (!empty($mobile) && !preg_match('/^[7][0-9]{8}$/', $mobile)) {
+            $errors['mobile'] = "Mobile number must be 9 digits starting with 7";
+        }
+        if (strlen($bio) > 1000) {
+            $errors['bio'] = "Bio must be less than 1000 characters";
         }
 
         // Validate profile picture
@@ -124,11 +133,17 @@ class Profile extends Controller
                 $alumni = new Alumni();
                 $alumni_data = [];
 
-                if ($degree !== $current_profile->degree) $alumni_data['degree'] = $degree;
-                if ($graduation_year != $current_profile->graduation_year) $alumni_data['graduation_year'] = $graduation_year;
-                if ($current_job !== $current_profile->current_job) $alumni_data['current_job'] = $current_job ?: null;
-                if ($location !== $current_profile->location) $alumni_data['location'] = $location ?: null;
-                if ($bio !== $current_profile->bio) $alumni_data['bio'] = $bio ?: null;
+                if ($degrees !== ($current_profile->degrees ?? '')) $alumni_data['degrees'] = $degrees;
+                if ($graduation_year != $current_profile->graduation_year) $alumni_data['graduated_year'] = $graduation_year;
+                if ($current_workplace !== ($current_profile->current_workplace ?? '')) $alumni_data['current_workplace'] = $current_workplace ?: null;
+                if ($current_job !== ($current_profile->current_job ?? '')) $alumni_data['current_job'] = $current_job ?: null;
+                if ($expertise_area !== ($current_profile->expertise_area ?? '')) $alumni_data['expertise_area'] = $expertise_area ?: null;
+                if ($mobile !== ($current_profile->mobile ?? '')) $alumni_data['mobile'] = $mobile ?: null;
+                if ($bio !== ($current_profile->bio ?? '')) $alumni_data['bio'] = $bio ?: null;
+                if ($linkedin_url !== ($current_profile->linkedin_url ?? '')) $alumni_data['linkedin_url'] = $linkedin_url ?: null;
+                if ($github_url !== ($current_profile->github_url ?? '')) $alumni_data['github_url'] = $github_url ?: null;
+                if ($twitter_url !== ($current_profile->twitter_url ?? '')) $alumni_data['twitter_url'] = $twitter_url ?: null;
+                if ($personal_website !== ($current_profile->personal_website ?? '')) $alumni_data['personal_website'] = $personal_website ?: null;
 
                 $profile_photo_url = $current_profile->profile_photo_url; // Keep current if no new upload
 
