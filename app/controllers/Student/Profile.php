@@ -163,8 +163,8 @@ class Profile extends Controller
                 if (!in_array($detected_type, $allowed_types)) {
                     $errors['profile_picture'] = "Only JPEG, PNG, and GIF images are allowed";
                 }
-                elseif ($profile_picture['size'] > 5000000) { // 5MB limit
-                    $errors['profile_picture'] = "Profile picture must be less than 5MB";
+                elseif ($profile_picture['size'] > 10000000) { // 10MB limit
+                    $errors['profile_picture'] = "Profile picture must be less than 10MB";
                 }
                 else {
                 // File is valid, proceed with upload
@@ -173,7 +173,7 @@ class Profile extends Controller
                 
                 // Create directory if it doesn't exist with more permissive permissions
                 if (!is_dir($upload_dir)) {
-                    if (!mkdir($upload_dir, 0777, true)) {
+                    if (!mkdir($upload_dir, 0775, true)) {
                         $errors['profile_picture'] = "Failed to create upload directory: $upload_dir";
                         error_log("Failed to create directory: $upload_dir");
                         error_log("Document root: " . $_SERVER['DOCUMENT_ROOT']);
