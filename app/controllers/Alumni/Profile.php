@@ -15,6 +15,11 @@ class Profile extends Controller
             return;
         }
 
+        if(isset($_GET['action']) && $_GET['action'] === 'delete_photo') {
+            $this->deletePhoto();
+            return;
+        }
+
         $alumni = new Alumni();
         $profile = $alumni->getalumniProfile($_SESSION['alumni_id']);
         
@@ -204,5 +209,34 @@ class Profile extends Controller
             'errors' => $errors
         ];
         $this->view('alumni/profile/edit', $data);
+    }
+
+    private function deletePhoto()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_photo'])) {
+            $alumni = new Alumni();
+            $profile = $alumni->getalumniProfile($_SESSION['alumni_id']);
+            
+            if ($profile && !empty($profile->profile_photo_url)) {
+                // Delete the file from server
+                if (strpos($profile->profile_photo_url, '/assets/uploads/profiles/') !== false) {
+                    $file_path = '../public' . str_replace(ROOT, '', $profile->profile_photo_url);
+                    if (file_exists($file_path)) {
+                        unlink($file_path);
+                    }
+                }
+                
+                // Update database to remove photo URL
+                $alumni_data = ['profile_photo_url' => null];
+                $alumni->update($_SESSION['alumni_id'], $alumni_data, 'alumni_id');
+            }
+        }
+        
+        // Redirect back to edit profile
+        redirect('alumni/profile?action=edit');
     }
 }

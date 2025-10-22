@@ -27,11 +27,19 @@ require '../app/views/partials/alumni_header.php';
                                 <span id="profileInitials"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
                             <?php endif; ?>
                         </div>
-                        <label for="profile_picture" class="profile-picture-upload">
-                            <i class="fas fa-camera"></i>
-                            Change Photo
-                            <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)">
-                        </label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <label for="profile_picture" class="profile-picture-upload">
+                                <i class="fas fa-camera"></i>
+                                Change Photo
+                                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)">
+                            </label>
+                            <?php if (!empty($profile->profile_photo_url)): ?>
+                                <button type="button" onclick="deleteProfilePicture()" class="btn-delete-photo" style="padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                                    <i class="fas fa-trash"></i>
+                                    Delete Photo
+                                </button>
+                            <?php endif; ?>
+                        </div>
                         <?php if (isset($errors['profile_picture'])): ?>
                             <div class="error-message"><?= esc($errors['profile_picture']) ?></div>
                         <?php endif; ?>
@@ -187,7 +195,62 @@ require '../app/views/partials/alumni_header.php';
         </main>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div id="deletePhotoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 10px; padding: 30px; max-width: 400px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+            <div style="font-size: 50px; color: #e74c3c; margin-bottom: 20px;">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 style="margin: 0 0 10px 0; color: #2c3e50; font-size: 24px;">Delete Profile Picture?</h3>
+            <p style="color: #7f8c8d; margin: 0 0 30px 0;">Are you sure you want to delete your profile picture? This action cannot be undone.</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button onclick="closeDeleteModal()" style="padding: 12px 30px; background: #95a5a6; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: 500;">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button onclick="confirmDeletePhoto()" style="padding: 12px 30px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: 500;">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Unified Profile JavaScript -->
     <script src="<?=ROOT?>/assets/js/profile.js"></script>
+    <script>
+        function deleteProfilePicture() {
+            // Show the custom modal
+            document.getElementById('deletePhotoModal').style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            // Hide the modal
+            document.getElementById('deletePhotoModal').style.display = 'none';
+        }
+
+        function confirmDeletePhoto() {
+            // Create a form to submit the delete request
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?=ROOT?>/alumni/profile?action=delete_photo';
+            
+            // Add hidden input for delete action
+            const deleteInput = document.createElement('input');
+            deleteInput.type = 'hidden';
+            deleteInput.name = 'delete_photo';
+            deleteInput.value = '1';
+            form.appendChild(deleteInput);
+            
+            // Submit the form
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('deletePhotoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteModal();
+            }
+        });
+    </script>
 </body>
 </html>

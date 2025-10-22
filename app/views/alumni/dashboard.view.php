@@ -22,17 +22,14 @@ require '../app/views/partials/alumni_header.php';
                 <div class="profile-card">
                     <div class="profile-info">
               <div class="profile-avatar-container">
-                <div class="profile-avatar" id="profileAvatar">
-                  <img src="" alt="Profile Picture" id="profileImage" style="display: none;">
-                  <span class="avatar-text"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
+                <div class="profile-avatar" id="profileAvatar" style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #3498db;">
+                  <?php if (!empty($profile->profile_photo_url)): ?>
+                    <img src="<?= esc($profile->profile_photo_url) ?>" alt="Profile Picture" id="profileImage" style="width: 100%; height: 100%; object-fit: cover;">
+                  <?php else: ?>
+                    <span class="avatar-text" style="font-size: 40px; color: white; font-weight: bold;"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
+                  <?php endif; ?>
                 </div>
-                <div class="avatar-upload-overlay">
-                  <label for="profilePictureInput" class="avatar-upload-btn" title="Change Profile Picture">
-                    <i class="fas fa-camera"></i>
-                  </label>
-                  <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
-                </div>
-                        </div>
+              </div>
               
                         <div class="profile-details">
                 <h3 class="profile-name"><?= esc($profile->name) ?></h3>
