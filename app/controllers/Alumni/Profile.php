@@ -19,6 +19,10 @@ class Profile extends Controller
             $this->deletePhoto();
             return;
         }
+        if(isset($_GET['action']) && $_GET['action'] === 'delete_account') {
+            $this->deleteAccount();
+            return;
+        }
 
         $alumni = new Alumni();
         $profile = $alumni->getalumniProfile($_SESSION['alumni_id']);
@@ -238,5 +242,88 @@ class Profile extends Controller
         
         // Redirect back to edit profile
         redirect('alumni/profile?action=edit');
+    }
+
+    /**
+     * Delete the logged-in alumni account and all related data/resources.
+     */
+    public function deleteAccount()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Only allow alumni
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'alumni') {
+            redirect('alumni/auth');
+        }
+
+        // Only accept POST to perform destructive action
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            // Show confirmation page or redirect back
+            redirect('alumni/profile');
+            return;
+        }
+
+        $user_id = $_SESSION['user_id'];
+        $alumni_id = $_SESSION['alumni_id'] ?? null;
+
+        // Delete uploaded resources files and DB rows
+        try {
+            $resourceModel = new SharedResource();
+            $resources = $resourceModel->where(['user_id' => $user_id]);
+            if ($resources) {
+                foreach ($resources as $r) {
+                    if (!empty($r->file_path)) {
+                        $fileName = basename($r->file_path);
+                        $physicalPath = RESOURCE_UPLOAD_PATH . $fileName;
+                        if (file_exists($physicalPath)) {
+                            @unlink($physicalPath);
+                        }
+                    }
+                    // delete DB row
+                    $resourceModel->delete($r->resource_id, 'resource_id');
+                }
+            }
+
+            // Delete profile photo file if exists
+            if ($alumni_id) {
+                $alumniModel = new Alumni();
+                $profile = $alumniModel->getalumniProfile($alumni_id);
+                if ($profile && !empty($profile->profile_photo_url)) {
+                    if (strpos($profile->profile_photo_url, '/assets/uploads/profiles/') !== false) {
+                        $old_file = '../public' . str_replace(ROOT, '', $profile->profile_photo_url);
+                        if (file_exists($old_file)) {
+                            @unlink($old_file);
+                        }
+                    }
+                }
+
+                // Delete alumni DB row
+                $alumniModel->delete($alumni_id, 'alumni_id');
+            }
+
+            // Delete user row
+            $userModel = new User();
+            $userModel->delete($user_id, 'user_id');
+
+        } catch (Exception $e) {
+            error_log('Account deletion error: ' . $e->getMessage());
+            // Continue to destroy session and redirect to home even if cleanup fails partially
+        }
+
+        // Destroy session and redirect to public home
+        $_SESSION = [];
+        if (ini_get('session.use_cookies')) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params['path'], $params['domain'], $params['secure'], $params['httponly']
+            );
+        }
+        session_destroy();
+
+        // Redirect to public home
+        header('Location: ' . ROOT . '/');
+        exit();
     }
 }

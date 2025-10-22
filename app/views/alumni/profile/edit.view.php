@@ -80,6 +80,8 @@ require '../app/views/partials/alumni_header.php';
                             <?php if (isset($errors['graduation_year'])): ?>
                                 <div class="error-message"><?= esc($errors['graduation_year']) ?></div>
                             <?php endif; ?>
+                            <!-- Client-side validation error placeholder -->
+                            <div id="graduation_year_error" class="error-message" style="display:none;"></div>
                         </div>
 
                         <!-- Current Workplace -->
@@ -195,6 +197,7 @@ require '../app/views/partials/alumni_header.php';
         </main>
     </div>
 
+
     <!-- Delete Confirmation Modal -->
     <div id="deletePhotoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;">
         <div style="background: white; border-radius: 10px; padding: 30px; max-width: 400px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
@@ -252,5 +255,46 @@ require '../app/views/partials/alumni_header.php';
             }
         });
     </script>
+
+    
 </body>
 </html>
+
+<script>
+// Graduation year client-side validation
+(function(){
+    const gradInput = document.getElementById('graduation_year');
+    const errorEl = document.getElementById('graduation_year_error');
+    const form = document.querySelector('form[method="POST"]');
+    const currentYear = new Date().getFullYear();
+
+    if (gradInput) {
+        // Ensure max attribute matches current year
+        gradInput.max = currentYear;
+
+        function validateYear() {
+            const val = parseInt(gradInput.value, 10);
+            if (!isNaN(val) && val > currentYear) {
+                errorEl.style.display = 'block';
+                errorEl.textContent = 'Graduation year cannot be in the future (max ' + currentYear + ').';
+                return false;
+            }
+            errorEl.style.display = 'none';
+            errorEl.textContent = '';
+            return true;
+        }
+
+        gradInput.addEventListener('input', validateYear);
+        gradInput.addEventListener('change', validateYear);
+
+        if (form) {
+            form.addEventListener('submit', function(e){
+                if (!validateYear()) {
+                    e.preventDefault();
+                    gradInput.focus();
+                }
+            });
+        }
+    }
+})();
+</script>

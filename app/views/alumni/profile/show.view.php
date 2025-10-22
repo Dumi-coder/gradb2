@@ -233,7 +233,47 @@ require '../app/views/partials/alumni_header.php';
                     <?php endif; ?>
                 </div>
             </section>
+
+            <!-- Profile Settings Section -->
+            <section class="dashboard-section">
+                <h2 class="section-title">Profile Settings</h2>
+                <div style="padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); max-width: 800px;">
+                    <p style="color:#7f8c8d; margin-bottom:12px;">Manage sensitive account actions. Deleting your account will permanently remove your profile, shared resources and all related data.</p>
+                    <button onclick="confirmAccountDelete()" class="btn btn-danger" style="background:#e74c3c; color:#fff; border:none; padding:10px 16px; border-radius:6px;">
+                        <i class="fas fa-user-times"></i> Delete My Account
+                    </button>
+                </div>
+            </section>
         </main>
     </div>
 </body>
 </html>
+
+<!-- Delete Account Confirmation Modal -->
+<div id="deleteAccountModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:9999;">
+    <div style="background:#fff; padding:24px; border-radius:8px; max-width:480px; width:90%; text-align:center;">
+        <h3 style="margin-top:0; color:#c0392b;">Delete Account</h3>
+        <p>Are you sure you want to delete your account? This will remove your profile, shared resources and all associated data. This action cannot be undone.</p>
+        <div style="display:flex; gap:10px; justify-content:center; margin-top:18px;">
+            <button onclick="closeAccountModal()" style="padding:10px 18px; background:#95a5a6; color:#fff; border:none; border-radius:6px;">Cancel</button>
+            <button onclick="submitDeleteAccount()" style="padding:10px 18px; background:#e74c3c; color:#fff; border:none; border-radius:6px;">Delete Account</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmAccountDelete(){
+    document.getElementById('deleteAccountModal').style.display = 'flex';
+}
+function closeAccountModal(){
+    document.getElementById('deleteAccountModal').style.display = 'none';
+}
+function submitDeleteAccount(){
+    // Create form and submit POST
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '<?=ROOT?>/alumni/profile?action=delete_account';
+    document.body.appendChild(form);
+    form.submit();
+}
+</script>
