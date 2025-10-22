@@ -57,7 +57,7 @@ Trait Model // This trait provides basic database operations for models
         $query .= " limit $this->limit offset $this->offset";// Append limit and offset to the query
         $data = array_merge($data,$data_not);// Merge the data and not data arrays
         $result = $this->query($query,$data);// Execute the query and get the result
-        if($result)
+        if($result && is_array($result) && count($result) > 0)
         {
             return $result[0];// Return the first record if available
         }

@@ -47,8 +47,8 @@
             </div>
             
           </form>
-          
-          <p class="auth-meta">Already have an account? <a href="<?=ROOT?>/alumni/auth">Sign In</a></p>
+
+          <p class="auth-meta">Already have an account? <a href="<?=ROOT?>/alumni/Auth?action=login">Sign In</a></p>
         </div>
       </div>
     </section>

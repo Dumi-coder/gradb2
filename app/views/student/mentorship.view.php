@@ -15,13 +15,9 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    
-    
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/mentorship.css">
-    <!-- <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css"> -->
-    <!-- <link rel="stylesheet" href="<?=ROOT?>/assets/css/edit-profile.css"> -->
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/mentorship.css">
     
   </head>
 
@@ -39,7 +35,11 @@
               <i class="fas fa-bell"></i>
               <span class="notification-badge">3</span>
             </button>
-           <a href="<?=ROOT?>/student/Logout"><button class="btn btn-primary logout-btn">Logout</button></a>
+           <a href="<?=ROOT?>/student/Logout">
+            <button class="btn btn-primary logout-btn">
+              Logout
+            </button>
+           </a>
 
           </div>
         </div>
@@ -59,21 +59,24 @@
           <div class="mentorship-card">
             <h2 class="card-title">Need mentorship?</h2>
             <p class="card-description">Before requesting, please check if your query is already answered.</p>
-            <button class="btn btn-outline btn-md faq-btn">
+            <a href="<?=ROOT?>/student/Faq">
+              <button class="btn btn-outline btn-md faq-btn">
               <i class="fas fa-question-circle"></i>
               <span>View FAQs</span>
-            </button>
+              </button>
+            </a>
             <div class="divider"></div>
             <p class="question-text">Are your questions still unanswered?</p>
             <a href="<?=ROOT?>/student/MentorshipReq">
             <button class="btn btn-primary btn-lg request-btn">
               <i class="fas fa-plus"></i>
               <span>Yes, Request Mentorship</span>
-            </button>
-            </a>
+            </button>  
+            </a>         
           </div>
         </section>
 
+        
         <!-- Your Mentorship Requests Section -->
         <section class="requests-section">
           <h2 class="section-title">Your mentorship requests</h2>
@@ -138,7 +141,6 @@
         </div>
       </main>
     </div>
-
     <script src="<?=ROOT?>/assets/js/main.js"></script>
   </body>
 </html>

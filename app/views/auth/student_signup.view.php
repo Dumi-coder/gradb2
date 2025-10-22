@@ -47,7 +47,7 @@
 
           </form>
 
-          <p class="auth-meta">Already have an account? <a href="<?=ROOT?>/Student/Auth">Sign In</a></p>
+          <p class="auth-meta">Already have an account? <a href="<?=ROOT?>/student/Auth?action=login">Sign In</a></p>
 
         </div>
       </div>

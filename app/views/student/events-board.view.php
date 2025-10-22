@@ -47,26 +47,26 @@
       <!-- Sidebar Navigation -->
       <?php require '../app/views/partials/student_sidebar.php'; ?>
 
-      <!-- Main Content Area -->
+       <!-- Main Content Area -->
       <main class="main-content">
         <!-- Events Header Section -->
         <section class="dashboard-section events-header-section">
           <div class="section-header">
-            <h2 class="section-title">Upcoming Events</h2>
+            <h2 class="card-title">Upcoming Events</h2>
             <div class="header-actions">
-              <button class="btn btn-outline btn-md" onclick="openFilterModal()">
+              <!-- <button class="btn btn-outline btn-md" onclick="openFilterModal()">
                 <i class="fas fa-filter"></i>
                 <span>Filter Events</span>
-              </button>
-              <button class="btn btn-primary btn-md" onclick="openNewEventModal()">
-                <i class="fas fa-plus"></i>
-                <span>Create Event</span>
+              </button> -->
+              <button class="btn btn-outline btn-sm" onclick="viewAllFeatured()">
+                <span>View All</span>
+                <i class="fas fa-arrow-right"></i>
               </button>
             </div>
           </div>
           
           <!-- Event Categories -->
-          <div class="event-categories">
+          <!--<div class="event-categories">
             <div class="category-tab active" data-category="all">
               <i class="fas fa-calendar"></i>
               <span>All Events</span>
@@ -88,17 +88,16 @@
               <span>Workshops</span>
             </div>
           </div>
-        </section>
+        </section> -->
 
         <!-- Featured Events Section -->
         <section class="dashboard-section featured-events-section">
-          <div class="section-header">
-            <h2 class="section-title">Featured Events</h2>
+          <!-- <div class="section-header" style="display:flex; justify-content:flex-end; align-items:center;">
             <button class="btn btn-outline btn-sm" onclick="viewAllFeatured()">
               <span>View All</span>
               <i class="fas fa-arrow-right"></i>
             </button>
-          </div>
+          </div> -->
           
           <div class="featured-events-grid">
             <div class="featured-event-card">
@@ -122,7 +121,7 @@
                   <span class="spots-left"><i class="fas fa-ticket-alt"></i> 44 spots left</span>
                 </div>
                 <div class="event-actions">
-                  <button class="btn btn-primary btn-sm">
+                  <button type="button" class="btn btn-primary btn-md" onclick="openRegisterModal('Tech Workshop 2025')">
                     <i class="fas fa-calendar-plus"></i>
                     <span>Register Now</span>
                   </button>
@@ -155,7 +154,7 @@
                   <span class="spots-left"><i class="fas fa-ticket-alt"></i> 11 spots left</span>
                 </div>
                 <div class="event-actions">
-                  <button class="btn btn-primary btn-sm">
+                  <button type="button" class="btn btn-primary btn-md" onclick="openRegisterModal('Tech Workshop 2025')">
                     <i class="fas fa-calendar-plus"></i>
                     <span>Register Now</span>
                   </button>
@@ -170,7 +169,7 @@
         </section>
 
         <!-- Upcoming Events Section -->
-        <section class="dashboard-section upcoming-events-section">
+        <!--<section class="dashboard-section upcoming-events-section">
           <div class="section-header">
             <h2 class="section-title">This Week's Events</h2>
             <div class="section-actions">
@@ -289,61 +288,12 @@
               </div>
             </div>
           </div>
-        </section>
-
-        <!-- Event Statistics Section -->
-        <section class="dashboard-section event-stats-section">
-          <div class="section-header">
-            <h2 class="section-title">Event Activity</h2>
-          </div>
-          
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-calendar-check"></i>
-              </div>
-              <div class="stat-content">
-                <h3 class="stat-number">24</h3>
-                <p class="stat-label">Events This Month</p>
-              </div>
-            </div>
-            
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-users"></i>
-              </div>
-              <div class="stat-content">
-                <h3 class="stat-number">1,247</h3>
-                <p class="stat-label">Total Registrations</p>
-              </div>
-            </div>
-            
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-star"></i>
-              </div>
-              <div class="stat-content">
-                <h3 class="stat-number">4.8</h3>
-                <p class="stat-label">Average Rating</p>
-              </div>
-            </div>
-            
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-clock"></i>
-              </div>
-              <div class="stat-content">
-                <h3 class="stat-number">8</h3>
-                <p class="stat-label">Upcoming This Week</p>
-              </div>
-            </div>
-          </div>
-        </section>
+        </section>-->
 
         <!-- My Events Section -->
         <section class="dashboard-section my-events-section">
           <div class="section-header">
-            <h2 class="section-title">My Events</h2>
+            <h2 class="card-title">My Events</h2>
             <button class="btn btn-outline btn-sm" onclick="viewAllMyEvents()">
               <span>View All</span>
               <i class="fas fa-arrow-right"></i>
@@ -381,15 +331,54 @@
                   <span class="event-location"><i class="fas fa-map-marker-alt"></i> Computer Lab A</span>
                 </div>
                 <div class="event-actions">
-                  <button class="btn btn-primary btn-sm">
-                    <i class="fas fa-calendar-plus"></i>
-                    <span>Register Now</span>
-                  </button>
+                <button type="button" class="btn btn-primary btn-md" onclick="openRegisterModal('Tech Workshop 2025')">
+                  <i class="fas fa-calendar-plus"></i>
+                  <span>Register Now</span>
+                </button>
                   <button class="btn btn-outline btn-sm">
                     <i class="fas fa-heart-broken"></i>
                     <span>Remove</span>
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Event Statistics Section -->
+        <section class="dashboard-section event-stats-section">
+          <div class="section-header">
+            <h2 class="card-title">Event Activity</h2>
+          </div>
+          
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-calendar-check"></i>
+              </div>
+              <div class="stat-content">
+                <h3 class="stat-number">24</h3>
+                <p class="stat-label">Events This Month</p>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="stat-content">
+                <h3 class="stat-number">1,247</h3>
+                <p class="stat-label">Total Registrations</p>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stat-content">
+                <h3 class="stat-number">8</h3>
+                <p class="stat-label">Upcoming This Week</p>
               </div>
             </div>
           </div>
@@ -478,7 +467,62 @@
       </div>
     </div>
 
-    <!-- Filter Events Modal -->
+    <!-- Register Now Modal -->
+    <div id="registerModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Register for the Event</h2>
+          <button class="modal-close" onclick="closeRegisterModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <form class="new-event-form">
+          <div class="form-row">
+            <div class="form-group">
+          <label for="participantName">Full Name *</label>
+          <input type="text" id="participantName" name="participantName" placeholder="Enter your full name" required>
+          </div>
+
+          <div class="form-group">
+          <label for="participantEmail">Email *</label>
+          <input type="email" id="participantEmail" name="participantEmail" placeholder="Enter your email" required>
+          </div>
+
+          <div class="form-group">
+            <label for="participantRole">Role *</label>
+            <select id="participantRole" name="participantRole" required>
+              <option value="">Select your role</option>
+              <option value="student">Student</option>
+              <option value="alumni">Alumni</option>
+              <option value="guest">Guest</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="eventName">Event Name *</label>
+            <input type="text" id="eventName" name="eventName" placeholder="Event name will appear here" readonly>
+          </div>
+
+          <div class="form-group">
+            <label for="specialNotes">Special Notes</label>
+            <textarea id="specialNotes" name="specialNotes" rows="3" placeholder="Any specific requests or comments?"></textarea>
+          </div>
+
+          <div class="form-actions">
+          <button type="button" class="btn btn-outline btn-md" onclick="closeRegisterModal()">
+            <span>Cancel</span>
+          </button>
+          <button type="submit" class="btn btn-primary btn-md">
+            <span>Register Now</span>
+          </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    
+    <!-- Filter Events Modal
     <div id="filterModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
@@ -561,7 +605,7 @@
           </button>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <script src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/events-board.js"></script>

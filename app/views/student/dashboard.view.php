@@ -15,10 +15,12 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/edit-profile.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/edit-profile.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
+    
+
     
   </head>
 
@@ -34,7 +36,7 @@
           
           <div class="header-actions">
             <button class="btn btn-outline notification-btn" aria-label="Notifications">
-              <i class="fas fa-bell" style="font-size: 1.1rem;"></i>
+              <i class="fas fa-bell" style="font-size: var(--font-md);"></i>
               <span class="notification-badge">3</span>
             </button>
             <!-- <button class="btn btn-primary logout-btn">  -->
@@ -64,18 +66,21 @@
           
           <div class="profile-card">
             <div class="profile-info">
-              <div class="profile-avatar-container">
-                <div class="profile-avatar" id="profileAvatar">
-                  <img src="" alt="Profile Picture" id="profileImage" style="display: none;">
-                  <i class="fas fa-user-graduate" id="defaultAvatar"></i>
-                </div>
-                <div class="avatar-upload-overlay">
-                  <label for="profilePictureInput" class="avatar-upload-btn" title="Change Profile Picture">
-                    <i class="fas fa-camera"></i>
-                  </label>
-                  <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
-                </div>
-              </div>
+              
+ <div class="profile-avatar-container">
+    <div class="profile-avatar" id="profileAvatar">
+        <?php if (!empty($profile->profile_photo_url)): ?>
+            <img src="<?= ROOT ?>/assets/uploads/profiles/<?= esc($profile->profile_photo_url) ?>" 
+                 alt="Profile Picture" 
+                 id="profileImage" 
+                 style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;"
+                 onerror="this.style.display='none'; document.getElementById('defaultAvatar').style.display='inline-block';">
+        <?php else: ?>
+            <i class="fas fa-user-graduate" id="defaultAvatar" style="font-size: 4rem; color: #ccc;"></i>
+        <?php endif; ?>
+    </div>
+</div>
+
               
               <!-- <?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
                 <div class="alert-success">Profile updated successfully!</div>
@@ -119,10 +124,12 @@
         <section class="dashboard-section mentorship-section">
           <div class="section-header">
             <h2 class="section-title">Mentorship</h2>
-            <button class="btn btn-primary btn-md request-mentorship-btn">
+            <a href="<?=ROOT?>/student/Mentorship">
+              <button class="btn btn-primary btn-md request-mentorship-btn">
               <i class="fas fa-plus"></i>
               Request Mentorship
             </button>
+            </a>
           </div>
           
           <div class="mentorship-grid">
@@ -166,10 +173,12 @@
         <section class="dashboard-section aid-requests-section">
           <div class="section-header">
             <h2 class="section-title">Aid Requests</h2>
+            <a href="<?=ROOT?>/student/AidReqForm">
             <button class="btn btn-primary btn-md new-aid-btn">
               <i class="fas fa-plus"></i>
               New Aid Request
             </button>
+            </a>
           </div>
           
           <div class="aid-requests-table">
@@ -220,10 +229,12 @@
         <section class="dashboard-section forum-section">
           <div class="section-header">
             <h2 class="section-title">Discussion Forum</h2>
+            <a href="<?=ROOT?>/student/DiscussionForum">
             <button class="btn btn-outline btn-md go-to-forum-btn">
               <i class="fas fa-external-link-alt"></i>
               Go to Forum
             </button>
+            </a>
           </div>
           
           <div class="forum-preview">
@@ -272,10 +283,12 @@
         <section class="dashboard-section events-section">
           <div class="section-header">
             <h2 class="section-title">Upcoming Events</h2>
+            <a href="<?=ROOT?>/student/EventsBoard">
             <button class="btn btn-outline btn-md view-all-btn">
               <i class="fas fa-calendar"></i>
               View All
             </button>
+            </a>
           </div>
           
           <div class="events-grid">
@@ -313,10 +326,12 @@
         <section class="dashboard-section resources-section">
           <div class="section-header">
             <h2 class="section-title">Shared Resources</h2>
+            <a href="<?=ROOT?>/student/Resources">
             <button class="btn btn-primary btn-md upload-file-btn">
               <i class="fas fa-upload"></i>
               Upload New File
             </button>
+            </a>
           </div>
           
           <div class="resources-grid">

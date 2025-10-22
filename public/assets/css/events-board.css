@@ -46,7 +46,7 @@
 }
 
 .category-tab i {
-  font-size: 0.9rem;
+  font-size: var(--font-sm);
 }
 
 /* Featured Events Section */
@@ -95,7 +95,7 @@
 
 .event-date .day {
   display: block;
-  font-size: 2rem;
+  font-size: var(--font-3xl);
   font-weight: 700;
   line-height: 1;
 }
@@ -380,7 +380,7 @@
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 1.25rem;
+  font-size: var(--font-lg);
 }
 
 .stat-content {
@@ -388,7 +388,7 @@
 }
 
 .stat-number {
-  font-size: 1.75rem;
+  font-size: var(--font-2xl);
   font-weight: 700;
   color: var(--primary);
   margin: 0 0 var(--spacing-xs) 0;
@@ -469,7 +469,7 @@
 .modal {
   display: none;
   position: fixed;
-  z-index: 1000;
+  z-index: 2000;
   left: 0;
   top: 0;
   width: 100%;
@@ -520,7 +520,7 @@
 .modal-close {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: var(--font-xl);
   color: var(--muted-foreground);
   cursor: pointer;
   padding: var(--spacing-xs);

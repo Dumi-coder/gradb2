@@ -1,0 +1,534 @@
+/* fundraising.css - Fundraising Page Component Styles */
+
+/* Create Campaign Section */
+.create-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.create-info {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+.create-info p {
+  color: var(--muted-foreground);
+  margin: 0;
+  line-height: var(--leading-normal);
+}
+
+/* Campaigns Grid */
+.campaigns-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.campaigns-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.campaign-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.campaign-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.campaign-image {
+  height: 120px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--spacing-md);
+}
+
+.campaign-status {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.campaign-status.urgent {
+  background-color: #ef4444;
+  color: white;
+}
+
+.campaign-status.active {
+  background-color: #10b981;
+  color: white;
+}
+
+.campaign-status.completed {
+  background-color: #6b7280;
+  color: white;
+}
+
+.campaign-progress {
+  width: 100%;
+  color: white;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--spacing-xs);
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: white;
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: var(--font-sm);
+  font-weight: 500;
+}
+
+.campaign-content {
+  padding: var(--spacing-lg);
+}
+
+.campaign-category {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: 500;
+  margin-bottom: var(--spacing-sm);
+}
+
+.campaign-category.emergency {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.campaign-category.education {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+
+.campaign-category.community {
+  background-color: #f0fdf4;
+  color: #16a34a;
+}
+
+.campaign-category.research {
+  background-color: #faf5ff;
+  color: #9333ea;
+}
+
+.campaign-title {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 var(--spacing-sm) 0;
+  line-height: var(--leading-tight);
+}
+
+.campaign-description {
+  color: var(--muted-foreground);
+  margin: 0 0 var(--spacing-lg) 0;
+  line-height: var(--leading-normal);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.campaign-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background-color: var(--background);
+  border-radius: var(--radius-md);
+}
+
+.campaign-goal,
+.campaign-raised,
+.campaign-donors {
+  text-align: center;
+}
+
+.goal-amount,
+.raised-amount,
+.donors-count {
+  display: block;
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.goal-label,
+.raised-label,
+.donors-label {
+  display: block;
+  font-size: var(--font-xs);
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: var(--spacing-xs);
+}
+
+.campaign-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+/* Donations List */
+.donations-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.donations-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.donation-item {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  gap: var(--spacing-md);
+  transition: all 0.3s ease;
+}
+
+.donation-item:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.donation-icon {
+  width: 50px;
+  height: 50px;
+  background-color: var(--secondary);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: var(--font-lg);
+  flex-shrink: 0;
+}
+
+.donation-content {
+  flex: 1;
+}
+
+.donation-campaign {
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.donation-amount {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.donation-meta {
+  display: flex;
+  gap: var(--spacing-md);
+  font-size: var(--font-sm);
+  color: var(--muted-foreground);
+}
+
+.donation-status {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: 500;
+}
+
+.donation-status.completed {
+  background-color: #f0fdf4;
+  color: #16a34a;
+}
+
+.donation-actions {
+  display: flex;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background-color: var(--card);
+  margin: 5% auto;
+  padding: 0;
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title {
+  font-size: var(--font-xl);
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: var(--font-xl);
+  color: var(--muted-foreground);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background-color: var(--secondary);
+  color: var(--foreground);
+}
+
+/* Form Styles */
+.campaign-form,
+.donation-form {
+  padding: var(--spacing-lg);
+}
+
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  color: var(--foreground);
+  margin-bottom: var(--spacing-xs);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  background-color: var(--background);
+  color: var(--foreground);
+  transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(14, 32, 114, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Donation Amount Options */
+.amount-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.amount-btn {
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--background);
+  color: var(--foreground);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.amount-btn:hover {
+  border-color: var(--primary);
+  background-color: var(--secondary);
+}
+
+.amount-btn.active {
+  border-color: var(--primary);
+  background-color: var(--primary);
+  color: white;
+}
+
+/* Donation Content */
+.donation-content {
+  padding: var(--spacing-lg);
+}
+
+.campaign-info {
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background-color: var(--background);
+  border-radius: var(--radius-md);
+}
+
+.campaign-info h3 {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .campaigns-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .campaign-meta {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+  
+  .campaign-goal,
+  .campaign-raised,
+  .campaign-donors {
+    text-align: left;
+  }
+}
+
+@media (max-width: 768px) {
+  .campaigns-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .campaign-actions {
+    flex-direction: column;
+  }
+  
+  .donation-item {
+    flex-direction: column;
+  }
+  
+  .donation-icon {
+    align-self: center;
+  }
+  
+  .donation-actions {
+    justify-content: center;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .amount-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .modal-content {
+    width: 95%;
+    margin: 10% auto;
+    max-height: 85vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .campaign-card {
+    margin: 0 var(--spacing-sm);
+  }
+  
+  .campaign-content {
+    padding: var(--spacing-md);
+  }
+  
+  .donation-item {
+    padding: var(--spacing-md);
+  }
+  
+  .modal-content {
+    width: 98%;
+    margin: 5% auto;
+  }
+  
+  .modal-header,
+  .campaign-form,
+  .donation-form,
+  .donation-content {
+    padding: var(--spacing-md);
+  }
+  
+  .amount-options {
+    grid-template-columns: 1fr;
+  }
+}
+

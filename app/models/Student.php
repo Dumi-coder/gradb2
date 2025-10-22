@@ -17,7 +17,7 @@ class Student
         'profile_photo_url',
         'mobile'
     ];
-
+    
     public function validate($data)
     {
         $this->errors = [];
@@ -44,7 +44,7 @@ class Student
         if (empty($data['faculty_id']) || !is_numeric($data['faculty_id'])) {
             $this->errors[] = "Valid faculty ID is required";
         }
-
+        
         // Validate academic_year
         if (empty($data['academic_year']) || !is_numeric($data['academic_year'])) {
             $this->errors[] = "Academic year is required";
@@ -63,6 +63,7 @@ class Student
     /**
      * Get student data along with user data for login
      */
+
     public function getStudentWithUser($student_id)
     {
         $query = "SELECT s.*, u.name, u.email, u.password, u.role, u.created_at, u.updated_at
@@ -77,6 +78,7 @@ class Student
     /**
      * Get complete student profile with faculty information
      */
+
     public function getStudentProfile($student_id)
     {
         $query = "SELECT s.*, u.name, u.email, f.faculty_name as faculty
@@ -92,6 +94,7 @@ class Student
     /**
      * Get students by faculty
      */
+
     public function getStudentsByFaculty($faculty_id)
     {
         $query = "SELECT s.*, u.name, u.email
@@ -106,6 +109,7 @@ class Student
     /**
      * Get students by academic year
      */
+
     public function getStudentsByYear($academic_year)
     {
         $query = "SELECT s.*, u.name, u.email, f.faculty_name
@@ -117,10 +121,11 @@ class Student
         
         return $this->query($query, ['academic_year' => $academic_year]);
     }
-
+    
     /**
      * Search students
      */
+
     public function searchStudents($search_term)
     {
         $query = "SELECT s.*, u.name, u.email, f.faculty_name
@@ -133,10 +138,11 @@ class Student
         $search_param = '%' . $search_term . '%';
         return $this->query($query, ['search' => $search_param]);
     }
-
+    
     /**
      * Update student profile
      */
+
     public function updateProfile($student_id, $data)
     {
         // Remove unwanted data
@@ -155,20 +161,22 @@ class Student
         
         return false;
     }
-
+    
     /**
      * Get total student count
      */
+
     public function getStudentCount()
     {
         $query = "SELECT COUNT(*) as total FROM $this->table";
         $result = $this->query($query);
         return $result ? $result[0]->total : 0;
     }
-
+     
     /**
      * Get student count by faculty
      */
+     
     public function getStudentCountByFaculty()
     {
         $query = "SELECT f.faculty_name, COUNT(s.student_id) as student_count

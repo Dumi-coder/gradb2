@@ -38,7 +38,7 @@
           
           <div class="header-actions">
             <button class="btn btn-outline notification-btn" aria-label="Notifications">
-              <i class="fas fa-bell" style="font-size: 1.1rem;"></i>
+              <i class="fas fa-bell" style="font-size: var(--font-md);"></i>
               <span class="notification-badge">3</span>
             </button>
             <a href="<?=ROOT?>/student/Logout"><button class="btn btn-primary logout-btn">Logout</button></a>
@@ -68,17 +68,17 @@
               <i class="fas fa-edit"></i>
               <span>Edit Profile</span>
             </button> -->
-            <a href="<?= ROOT ?>/student/profile/?action=edit&id=<?= $profile->student_id ?>" class="btn btn-primary">
-                    <!-- <i class="fas fa-edit"></i> -->
-                    Edit Profile
-                  </a>
+            <!-- <a href="<?= ROOT ?>/student/profile/?action=edit&id=<?= $profile->student_id ?>" class="btn btn-primary">
+                     <i class="fas fa-edit"></i> -->
+                    <!-- Edit Profile --> 
+                  <!-- </a> -->
           </div>
                     
           <div class="profile-card">
             <div class="profile-info">
-              <div class="profile-avatar-container">
+              <!-- <div class="profile-avatar-container">
             
-                  <!-- <h2 class="profile-header">Profile Information</h2> -->
+                   <h2 class="profile-header">Profile Information</h2> 
                   <div class="profile-avatar" id="profileAvatar">
                       <img src="" alt="Profile Picture" id="profileImage" style="display: none;">
                       <i class="fas fa-user-graduate" id="defaultAvatar"></i>
@@ -89,10 +89,10 @@
                         </label>
                         <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
                     </div>    
-              </div>
+               </div> --> 
               <div class="profile-details">
              <!-- <div class="card"> -->
-              <div class="profile-avatar-container">
+              <!-- <div class="profile-avatar-container">
                     <div class="profile-avatar" id="profileAvatar">
                         <?php if (!empty($profile->profile_photo_url)): ?>
                         <img src="<?= esc($profile->profile_photo_url) ?>" 
@@ -100,11 +100,26 @@
                             id="profileImage" 
                             style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
                           <?php else: ?>
-                                <i class="fas fa-user-graduate" id="defaultAvatar" style="font-size: 4rem; color: #ccc;"></i>
+                                <i class="fas fa-user-graduate" id="defaultAvatar" style="font-size: var(--font-4xl); color: #ccc;"></i>
                           <?php endif; ?>
                     </div>
     
-               </div>
+               </div> -->
+             
+ <div class="profile-avatar-container">
+    <div class="profile-avatar" id="profileAvatar">
+        <?php if (!empty($profile->profile_photo_url)): ?>
+            <img src="<?= ROOT ?>/assets/uploads/profiles/<?= esc($profile->profile_photo_url) ?>" 
+                 alt="Profile Picture" 
+                 id="profileImage" 
+                 style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;"
+                 onerror="this.style.display='none'; document.getElementById('defaultAvatar').style.display='inline-block';">
+        <?php else: ?>
+            <i class="fas fa-user-graduate" id="defaultAvatar" style="font-size: 4rem; color: #ccc;"></i>
+        <?php endif; ?>
+    </div>
+</div>
+
                      
 
                 <h3 class="profile-name"><?= esc($profile->name) ?></h3>

@@ -3,10 +3,11 @@
 /* Sidebar Container */
 .sidebar {
   width: 280px;
-  background-color: var(--card);
-  border-right: 1px solid var(--border);
+  background-color: white; /* White background to match the design */
+  border-right: 1px solid #e5e7eb; /* Light grey border */
   padding: var(--spacing-lg);
   position: fixed;
+  top: 100px; /* Position below the header */
   height: calc(100vh - 100px);
   overflow-y: auto;
 }
@@ -20,7 +21,7 @@
 
 /* Navigation Section Titles */
 .nav-section-title {
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   font-weight: 600;
   color: var(--muted-foreground);
   text-transform: uppercase;
@@ -60,12 +61,12 @@
 .nav-item i {
   width: 20px;
   text-align: center;
-  font-size: 1rem;
+  font-size: var(--font-base);
 }
 
 /* Navigation Item Text */
 .nav-item span {
-  font-size: 0.95rem;
+  font-size: var(--font-sm);
   line-height: 1.2;
 }
 
@@ -83,6 +84,7 @@
     height: auto;
     border-right: none;
     border-bottom: 1px solid var(--border);
+    top: auto; /* Reset top positioning on mobile */
   }
   
   .nav-item {

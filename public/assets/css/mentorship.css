@@ -24,11 +24,9 @@
   align-items: center;
 }
 
-.card-title {
-  font-size: var(--font-xl);
-  font-weight: 600;
-  color: var(--foreground);
-  margin-bottom: var(--spacing-md);
+/* Card title styles now centralized in Main.css */
+/* Mentorship-specific: center alignment for card titles */
+.mentorship-card .card-title {
   text-align: center;
 }
 
@@ -202,7 +200,7 @@
     gap: var(--spacing-sm);
   }
   
-  .card-title {
+  .mentorship-card .card-title {
     font-size: var(--font-xl);
   }
   
