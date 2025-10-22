@@ -14,10 +14,10 @@
             </p>
 
             <div class="hero-buttons">
-              <a class="btn btn-secondary" href="<?=ROOT?>/student/signup">
+              <a class="btn btn-secondary" href="<?=ROOT?>/Student/Auth?action=signup">
                 Join as a Student
               </a>
-              <a class="btn btn-outline" href="<?=ROOT?>/alumni/signup">
+              <a class="btn btn-outline" href="<?=ROOT?>/Alumni/Auth?action=signup">
                 Join as Alumni
               </a>
             </div>
@@ -143,9 +143,9 @@
             Join the GradBridge community and connect with alumni who've been where you're going.
           </p>
 
-          <button class="btn btn-light">
+          <a href="<?=ROOT?>/signup" class="btn btn-light">
             Get Started
-          </button>
+          </a>
         </div>
       </div>
     </section>

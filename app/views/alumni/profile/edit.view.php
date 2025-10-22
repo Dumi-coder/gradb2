@@ -27,11 +27,19 @@ require '../app/views/partials/alumni_header.php';
                                 <span id="profileInitials"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
                             <?php endif; ?>
                         </div>
-                        <label for="profile_picture" class="profile-picture-upload">
-                            <i class="fas fa-camera"></i>
-                            Change Photo
-                            <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)">
-                        </label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <label for="profile_picture" class="profile-picture-upload">
+                                <i class="fas fa-camera"></i>
+                                Change Photo
+                                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)">
+                            </label>
+                            <?php if (!empty($profile->profile_photo_url)): ?>
+                                <button type="button" onclick="deleteProfilePicture()" class="btn-delete-photo" style="padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                                    <i class="fas fa-trash"></i>
+                                    Delete Photo
+                                </button>
+                            <?php endif; ?>
+                        </div>
                         <?php if (isset($errors['profile_picture'])): ?>
                             <div class="error-message"><?= esc($errors['profile_picture']) ?></div>
                         <?php endif; ?>
@@ -56,39 +64,63 @@ require '../app/views/partials/alumni_header.php';
                             <?php endif; ?>
                         </div>
 
-                        <!-- Degree -->
+                        <!-- Degrees -->
                         <div class="form-group">
-                            <label for="degree" class="form-label">Degree *</label>
-                            <input type="text" id="degree" name="degree" class="form-input" value="<?= esc($profile->degree) ?>" required>
-                            <?php if (isset($errors['degree'])): ?>
-                                <div class="error-message"><?= esc($errors['degree']) ?></div>
+                            <label for="degrees" class="form-label">Degree *</label>
+                            <input type="text" id="degrees" name="degrees" class="form-input" value="<?= esc($profile->degrees ?? '') ?>" required>
+                            <?php if (isset($errors['degrees'])): ?>
+                                <div class="error-message"><?= esc($errors['degrees']) ?></div>
                             <?php endif; ?>
                         </div>
 
                         <!-- Graduation Year -->
                         <div class="form-group">
                             <label for="graduation_year" class="form-label">Graduation Year *</label>
-                            <input type="number" id="graduation_year" name="graduation_year" class="form-input" value="<?= esc($profile->graduation_year) ?>" min="1950" max="<?= date('Y') ?>" required>
+                            <input type="number" id="graduation_year" name="graduation_year" class="form-input" value="<?= esc($profile->graduation_year ?? '') ?>" min="1950" max="<?= date('Y') ?>" required>
                             <?php if (isset($errors['graduation_year'])): ?>
                                 <div class="error-message"><?= esc($errors['graduation_year']) ?></div>
                             <?php endif; ?>
+                            <!-- Client-side validation error placeholder -->
+                            <div id="graduation_year_error" class="error-message" style="display:none;"></div>
                         </div>
 
-                        <!-- Current Job -->
+                        <!-- Current Workplace -->
                         <div class="form-group">
-                            <label for="current_job" class="form-label">Current Job</label>
+                            <label for="current_workplace" class="form-label">Current Workplace</label>
+                            <input type="text" id="current_workplace" name="current_workplace" class="form-input" value="<?= esc($profile->current_workplace ?? '') ?>">
+                            <?php if (isset($errors['current_workplace'])): ?>
+                                <div class="error-message"><?= esc($errors['current_workplace']) ?></div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Current Job Title -->
+                        <div class="form-group">
+                            <label for="current_job" class="form-label">Current Job Title</label>
                             <input type="text" id="current_job" name="current_job" class="form-input" value="<?= esc($profile->current_job ?? '') ?>">
                             <?php if (isset($errors['current_job'])): ?>
                                 <div class="error-message"><?= esc($errors['current_job']) ?></div>
                             <?php endif; ?>
                         </div>
 
-                        <!-- Location -->
+                        <!-- Expertise Area -->
                         <div class="form-group">
-                            <label for="location" class="form-label">Location</label>
-                            <input type="text" id="location" name="location" class="form-input" value="<?= esc($profile->location ?? '') ?>">
-                            <?php if (isset($errors['location'])): ?>
-                                <div class="error-message"><?= esc($errors['location']) ?></div>
+                            <label for="expertise_area" class="form-label">Expertise Area</label>
+                            <input type="text" id="expertise_area" name="expertise_area" class="form-input" value="<?= esc($profile->expertise_area ?? '') ?>" placeholder="e.g., Web Development, Data Science">
+                            <?php if (isset($errors['expertise_area'])): ?>
+                                <div class="error-message"><?= esc($errors['expertise_area']) ?></div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Mobile Number -->
+                        <div class="form-group">
+                            <label for="mobile" class="form-label">Mobile Number</label>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="padding: 12px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; font-weight: 500;">+94</span>
+                                <input type="tel" id="mobile" name="mobile" class="form-input" style="flex: 1;" value="<?= esc($profile->mobile ?? '') ?>" placeholder="771234567" maxlength="9">
+                            </div>
+                            <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">Enter 9 digits without leading 0 (e.g., 771234567)</small>
+                            <?php if (isset($errors['mobile'])): ?>
+                                <div class="error-message"><?= esc($errors['mobile']) ?></div>
                             <?php endif; ?>
                         </div>
 
@@ -131,10 +163,10 @@ require '../app/views/partials/alumni_header.php';
                             </div>
 
                             <div class="form-group">
-                                <label for="website_url" class="form-label">Personal Website</label>
-                                <input type="url" id="website_url" name="website_url" class="form-input" value="<?= esc($profile->website_url ?? '') ?>" placeholder="https://yourwebsite.com">
-                                <?php if (isset($errors['website_url'])): ?>
-                                    <div class="error-message"><?= esc($errors['website_url']) ?></div>
+                                <label for="personal_website" class="form-label">Personal Website</label>
+                                <input type="url" id="personal_website" name="personal_website" class="form-input" value="<?= esc($profile->personal_website ?? '') ?>" placeholder="https://yourwebsite.com">
+                                <?php if (isset($errors['personal_website'])): ?>
+                                    <div class="error-message"><?= esc($errors['personal_website']) ?></div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -165,7 +197,104 @@ require '../app/views/partials/alumni_header.php';
         </main>
     </div>
 
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deletePhotoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 10px; padding: 30px; max-width: 400px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+            <div style="font-size: 50px; color: #e74c3c; margin-bottom: 20px;">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 style="margin: 0 0 10px 0; color: #2c3e50; font-size: 24px;">Delete Profile Picture?</h3>
+            <p style="color: #7f8c8d; margin: 0 0 30px 0;">Are you sure you want to delete your profile picture? This action cannot be undone.</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button onclick="closeDeleteModal()" style="padding: 12px 30px; background: #95a5a6; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: 500;">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button onclick="confirmDeletePhoto()" style="padding: 12px 30px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: 500;">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Unified Profile JavaScript -->
     <script src="<?=ROOT?>/assets/js/profile.js"></script>
+    <script>
+        function deleteProfilePicture() {
+            // Show the custom modal
+            document.getElementById('deletePhotoModal').style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            // Hide the modal
+            document.getElementById('deletePhotoModal').style.display = 'none';
+        }
+
+        function confirmDeletePhoto() {
+            // Create a form to submit the delete request
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?=ROOT?>/alumni/profile?action=delete_photo';
+            
+            // Add hidden input for delete action
+            const deleteInput = document.createElement('input');
+            deleteInput.type = 'hidden';
+            deleteInput.name = 'delete_photo';
+            deleteInput.value = '1';
+            form.appendChild(deleteInput);
+            
+            // Submit the form
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('deletePhotoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteModal();
+            }
+        });
+    </script>
+
+    
 </body>
 </html>
+
+<script>
+// Graduation year client-side validation
+(function(){
+    const gradInput = document.getElementById('graduation_year');
+    const errorEl = document.getElementById('graduation_year_error');
+    const form = document.querySelector('form[method="POST"]');
+    const currentYear = new Date().getFullYear();
+
+    if (gradInput) {
+        // Ensure max attribute matches current year
+        gradInput.max = currentYear;
+
+        function validateYear() {
+            const val = parseInt(gradInput.value, 10);
+            if (!isNaN(val) && val > currentYear) {
+                errorEl.style.display = 'block';
+                errorEl.textContent = 'Graduation year cannot be in the future (max ' + currentYear + ').';
+                return false;
+            }
+            errorEl.style.display = 'none';
+            errorEl.textContent = '';
+            return true;
+        }
+
+        gradInput.addEventListener('input', validateYear);
+        gradInput.addEventListener('change', validateYear);
+
+        if (form) {
+            form.addEventListener('submit', function(e){
+                if (!validateYear()) {
+                    e.preventDefault();
+                    gradInput.focus();
+                }
+            });
+        }
+    }
+})();
+</script>

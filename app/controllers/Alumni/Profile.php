@@ -15,6 +15,15 @@ class Profile extends Controller
             return;
         }
 
+        if(isset($_GET['action']) && $_GET['action'] === 'delete_photo') {
+            $this->deletePhoto();
+            return;
+        }
+        if(isset($_GET['action']) && $_GET['action'] === 'delete_account') {
+            $this->deleteAccount();
+            return;
+        }
+
         $alumni = new Alumni();
         $profile = $alumni->getalumniProfile($_SESSION['alumni_id']);
         
@@ -66,11 +75,17 @@ class Profile extends Controller
         // Get form data
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
-        $degree = trim($_POST['degree'] ?? '');
+        $degrees = trim($_POST['degrees'] ?? '');
         $graduation_year = trim($_POST['graduation_year'] ?? '');
+        $current_workplace = trim($_POST['current_workplace'] ?? '');
         $current_job = trim($_POST['current_job'] ?? '');
-        $location = trim($_POST['location'] ?? '');
+        $expertise_area = trim($_POST['expertise_area'] ?? '');
+        $mobile = trim($_POST['mobile'] ?? '');
         $bio = trim($_POST['bio'] ?? '');
+        $linkedin_url = trim($_POST['linkedin_url'] ?? '');
+        $github_url = trim($_POST['github_url'] ?? '');
+        $twitter_url = trim($_POST['twitter_url'] ?? '');
+        $personal_website = trim($_POST['personal_website'] ?? '');
         $profile_picture = $_FILES['profile_picture'] ?? null;
 
         // Validation
@@ -80,14 +95,17 @@ class Profile extends Controller
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = "Valid email is required";
         }
-        if (empty($degree)) {
-            $errors['degree'] = "Degree is required";
+        if (empty($degrees)) {
+            $errors['degrees'] = "Degree is required";
         }
         if (empty($graduation_year) || !is_numeric($graduation_year) || $graduation_year < 1950 || $graduation_year > date('Y')) {
             $errors['graduation_year'] = "Graduation year must be between 1950 and current year";
         }
-        if (strlen($bio) > 500) {
-            $errors['bio'] = "Bio must be less than 500 characters";
+        if (!empty($mobile) && !preg_match('/^[7][0-9]{8}$/', $mobile)) {
+            $errors['mobile'] = "Mobile number must be 9 digits starting with 7";
+        }
+        if (strlen($bio) > 1000) {
+            $errors['bio'] = "Bio must be less than 1000 characters";
         }
 
         // Validate profile picture
@@ -124,11 +142,17 @@ class Profile extends Controller
                 $alumni = new Alumni();
                 $alumni_data = [];
 
-                if ($degree !== $current_profile->degree) $alumni_data['degree'] = $degree;
-                if ($graduation_year != $current_profile->graduation_year) $alumni_data['graduation_year'] = $graduation_year;
-                if ($current_job !== $current_profile->current_job) $alumni_data['current_job'] = $current_job ?: null;
-                if ($location !== $current_profile->location) $alumni_data['location'] = $location ?: null;
-                if ($bio !== $current_profile->bio) $alumni_data['bio'] = $bio ?: null;
+                if ($degrees !== ($current_profile->degrees ?? '')) $alumni_data['degrees'] = $degrees;
+                if ($graduation_year != $current_profile->graduation_year) $alumni_data['graduated_year'] = $graduation_year;
+                if ($current_workplace !== ($current_profile->current_workplace ?? '')) $alumni_data['current_workplace'] = $current_workplace ?: null;
+                if ($current_job !== ($current_profile->current_job ?? '')) $alumni_data['current_job'] = $current_job ?: null;
+                if ($expertise_area !== ($current_profile->expertise_area ?? '')) $alumni_data['expertise_area'] = $expertise_area ?: null;
+                if ($mobile !== ($current_profile->mobile ?? '')) $alumni_data['mobile'] = $mobile ?: null;
+                if ($bio !== ($current_profile->bio ?? '')) $alumni_data['bio'] = $bio ?: null;
+                if ($linkedin_url !== ($current_profile->linkedin_url ?? '')) $alumni_data['linkedin_url'] = $linkedin_url ?: null;
+                if ($github_url !== ($current_profile->github_url ?? '')) $alumni_data['github_url'] = $github_url ?: null;
+                if ($twitter_url !== ($current_profile->twitter_url ?? '')) $alumni_data['twitter_url'] = $twitter_url ?: null;
+                if ($personal_website !== ($current_profile->personal_website ?? '')) $alumni_data['personal_website'] = $personal_website ?: null;
 
                 $profile_photo_url = $current_profile->profile_photo_url; // Keep current if no new upload
 
@@ -189,5 +213,117 @@ class Profile extends Controller
             'errors' => $errors
         ];
         $this->view('alumni/profile/edit', $data);
+    }
+
+    private function deletePhoto()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_photo'])) {
+            $alumni = new Alumni();
+            $profile = $alumni->getalumniProfile($_SESSION['alumni_id']);
+            
+            if ($profile && !empty($profile->profile_photo_url)) {
+                // Delete the file from server
+                if (strpos($profile->profile_photo_url, '/assets/uploads/profiles/') !== false) {
+                    $file_path = '../public' . str_replace(ROOT, '', $profile->profile_photo_url);
+                    if (file_exists($file_path)) {
+                        unlink($file_path);
+                    }
+                }
+                
+                // Update database to remove photo URL
+                $alumni_data = ['profile_photo_url' => null];
+                $alumni->update($_SESSION['alumni_id'], $alumni_data, 'alumni_id');
+            }
+        }
+        
+        // Redirect back to edit profile
+        redirect('alumni/profile?action=edit');
+    }
+
+    /**
+     * Delete the logged-in alumni account and all related data/resources.
+     */
+    public function deleteAccount()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Only allow alumni
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'alumni') {
+            redirect('alumni/auth');
+        }
+
+        // Only accept POST to perform destructive action
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            // Show confirmation page or redirect back
+            redirect('alumni/profile');
+            return;
+        }
+
+        $user_id = $_SESSION['user_id'];
+        $alumni_id = $_SESSION['alumni_id'] ?? null;
+
+        // Delete uploaded resources files and DB rows
+        try {
+            $resourceModel = new SharedResource();
+            $resources = $resourceModel->where(['user_id' => $user_id]);
+            if ($resources) {
+                foreach ($resources as $r) {
+                    if (!empty($r->file_path)) {
+                        $fileName = basename($r->file_path);
+                        $physicalPath = RESOURCE_UPLOAD_PATH . $fileName;
+                        if (file_exists($physicalPath)) {
+                            @unlink($physicalPath);
+                        }
+                    }
+                    // delete DB row
+                    $resourceModel->delete($r->resource_id, 'resource_id');
+                }
+            }
+
+            // Delete profile photo file if exists
+            if ($alumni_id) {
+                $alumniModel = new Alumni();
+                $profile = $alumniModel->getalumniProfile($alumni_id);
+                if ($profile && !empty($profile->profile_photo_url)) {
+                    if (strpos($profile->profile_photo_url, '/assets/uploads/profiles/') !== false) {
+                        $old_file = '../public' . str_replace(ROOT, '', $profile->profile_photo_url);
+                        if (file_exists($old_file)) {
+                            @unlink($old_file);
+                        }
+                    }
+                }
+
+                // Delete alumni DB row
+                $alumniModel->delete($alumni_id, 'alumni_id');
+            }
+
+            // Delete user row
+            $userModel = new User();
+            $userModel->delete($user_id, 'user_id');
+
+        } catch (Exception $e) {
+            error_log('Account deletion error: ' . $e->getMessage());
+            // Continue to destroy session and redirect to home even if cleanup fails partially
+        }
+
+        // Destroy session and redirect to public home
+        $_SESSION = [];
+        if (ini_get('session.use_cookies')) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params['path'], $params['domain'], $params['secure'], $params['httponly']
+            );
+        }
+        session_destroy();
+
+        // Redirect to public home
+        header('Location: ' . ROOT . '/');
+        exit();
     }
 }

@@ -352,7 +352,7 @@
 .modal {
   display: none;
   position: fixed;
-  z-index: 1000;
+  z-index: 9999;
   left: 0;
   top: 0;
   width: 100%;
@@ -363,10 +363,10 @@
 }
 
 .modal.show {
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-md);
+  padding: 1rem;
 }
 
 .modal-content {
@@ -377,6 +377,8 @@
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  margin: auto;
+  position: relative;
 }
 
 .modal-header {
@@ -663,3 +665,374 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* ============================================
+   MY RESOURCES SECTION - CSS OVERRIDES
+   ============================================
+   All custom overrides for the My Resources section
+   Comment out this section if you want to revert to default styles
+   ============================================ */
+
+/* My Resources Section Container Override */
+.my-resources-section .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.my-resources-section .card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--foreground);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.my-resources-section .card-title i {
+  font-size: 1.5rem;
+  color: var(--foreground);
+}
+
+.my-resources-section .resource-count {
+  background-color: #f3f4f6;
+  padding: 0.375rem 0.875rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+/* My Resources Grid Override */
+.my-resources-section .my-resources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+/* My Resource Card Override */
+.my-resources-section .my-resource-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.my-resources-section .my-resource-card:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Resource Title Override */
+.my-resources-section .my-resource-card .resource-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.4;
+}
+
+/* Resource Meta (Category & Size) Override */
+.my-resources-section .my-resource-card .resource-meta {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.875rem;
+  align-items: center;
+}
+
+.my-resources-section .my-resource-card .resource-category {
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background-color: #f3f4f6;
+  color: #374151;
+  letter-spacing: 0.025em;
+}
+
+.my-resources-section .my-resource-card .resource-size {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Resource Description Override */
+.my-resources-section .my-resource-card .resource-description {
+  font-size: 0.9375rem;
+  color: #6b7280;
+  margin: 0 0 1rem 0;
+  line-height: 1.6;
+}
+
+/* Resource Details (Upload Date & Stats) Override */
+.my-resources-section .my-resource-card .resource-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.my-resources-section .my-resource-card .upload-date {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.my-resources-section .my-resource-card .engagement-stats {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Resource Actions (Buttons) Override */
+.my-resources-section .my-resource-card .resource-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.my-resources-section .my-resource-card .resource-actions .btn {
+  flex: 1;
+  padding: 0.5rem 0.75rem; /* smaller */
+  border-radius: 0.5rem;
+  font-size: 0.875rem; /* smaller */
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+  height: 34px; /* smaller height */
+  min-width: 0; /* override dashboard wide buttons */
+}
+
+/* Ensure the small size also applies despite global .btn-sm */
+.my-resources-section .my-resource-card .resource-actions .btn.btn-sm {
+  height: 32px;
+  padding: 0 0.75rem;
+  font-size: 0.85rem;
+}
+
+/* Edit Button - Black Background, White Text */
+.my-resources-section .my-resource-card .resource-actions .btn-primary {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+.my-resources-section .my-resource-card .resource-actions .btn-primary:hover {
+  background-color: #1f2937;
+  border-color: #1f2937;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Delete Button - White Background, Black Border */
+.my-resources-section .my-resource-card .resource-actions .btn-outline {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+}
+
+.my-resources-section .my-resource-card .resource-actions .btn-outline:hover {
+  background-color: #000000;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Button Icons */
+.my-resources-section .my-resource-card .resource-actions .btn i {
+  font-size: 0.875rem;
+}
+
+/* Responsive Design for My Resources */
+@media (max-width: 1024px) {
+  .my-resources-section .my-resources-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .my-resources-section .my-resources-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .my-resources-section .my-resource-card .resource-actions {
+    flex-direction: row;
+  }
+  
+  .my-resources-section .section-header {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .my-resources-section .my-resource-card .resource-actions {
+    flex-direction: column;
+  }
+  
+  .my-resources-section .my-resource-card .resource-actions .btn {
+    width: 100%;
+  }
+}
+
+/* ============================================
+   END OF MY RESOURCES CSS OVERRIDES
+   ============================================ */
+
+/* ============================================
+   DELETE CONFIRMATION MODAL
+   ============================================ */
+.modal-small {
+  max-width: 500px;
+  width: 90%;
+}
+
+.modal-small .modal-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--spacing-md);
+  margin-bottom: 0;
+}
+
+.modal-small .modal-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--foreground);
+}
+
+.modal-small .modal-title i {
+  color: #f59e0b;
+  font-size: 1.2em;
+}
+
+.modal-body {
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
+}
+
+.delete-warning {
+  text-align: center;
+}
+
+.warning-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto var(--spacing-md);
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+
+.warning-icon-wrapper i {
+  font-size: 32px;
+  color: #f59e0b;
+}
+
+.delete-warning h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 var(--spacing-sm);
+  line-height: 1.4;
+}
+
+.delete-resource-name {
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 1rem;
+  margin: var(--spacing-sm) 0 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--muted);
+  border-radius: var(--radius-md);
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.warning-text i {
+  color: #f59e0b;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.modal-small .form-actions {
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border);
+  margin-top: var(--spacing-md);
+  margin-bottom: 0;
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+}
+
+.modal-small .modal-footer {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--muted);
+  border-top: 1px solid var(--border);
+  margin: 0;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.modal-small .modal-footer .warning-text {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  text-align: left;
+  max-width: 100%;
+}
+
+.modal-small .modal-footer .warning-text i {
+  color: #f59e0b;
+  margin-top: 2px;
+  flex-shrink: 0;
+  font-size: 0.875rem;
+}
+
+.btn-danger {
+  background-color: #dc2626;
+  color: white;
+  border: 1px solid #dc2626;
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.btn-danger:active {
+  background-color: #991b1b;
+  border-color: #991b1b;
+  transform: translateY(0);
+}
+
+.btn-danger i {
+  margin-right: var(--spacing-xs);
+}
+
+
+

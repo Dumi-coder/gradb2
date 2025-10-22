@@ -55,6 +55,8 @@ class App// This is the main application class that handles routing and loading 
                 require $filename;
                 $this->controller=ucfirst($URL[1]);
                 unset($URL[0],$URL[1]);
+                // Re-index after selecting a nested controller so method can be detected reliably
+                $URL = array_values($URL);
             }else{
                 $filename="../app/controllers/_404.php";
                 require $filename;

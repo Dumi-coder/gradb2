@@ -24,7 +24,7 @@
               <button type="submit" class="btn btn-primary" style="width:100%">Sign In</button>
             </div>
           </form>
-          <p class="auth-meta">Don't have an account? <a href="<?=ROOT?>/Student/Auth">Sign Up</a></p>
+          <p class="auth-meta">Don't have an account? <a href="<?=ROOT?>/Student/Auth?action=signup">Sign Up</a></p>
         </div>
       </div>
     </section>
