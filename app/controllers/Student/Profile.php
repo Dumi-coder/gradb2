@@ -163,8 +163,8 @@ class Profile extends Controller
                 if (!in_array($detected_type, $allowed_types)) {
                     $errors['profile_picture'] = "Only JPEG, PNG, and GIF images are allowed";
                 }
-                elseif ($profile_picture['size'] > 5000000) { // 5MB limit
-                    $errors['profile_picture'] = "Profile picture must be less than 5MB";
+                elseif ($profile_picture['size'] > 10000000) { // 10MB limit
+                    $errors['profile_picture'] = "Profile picture must be less than 10MB";
                 }
                 else {
                 // File is valid, proceed with upload
