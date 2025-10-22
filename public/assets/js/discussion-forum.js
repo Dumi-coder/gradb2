@@ -1,274 +1,275 @@
-// discussion-forum.js - Discussion Forum Page Functionality
+// Discussion Forum JavaScript with REAL AJAX
 
 // Global variables
-let selectedTags = [];
-let currentModal = null;
-
-// DOM elements
-const newPostModal = document.getElementById('newPostModal');
-const quickTagsModal = document.getElementById('quickTagsModal');
-const tagInput = document.getElementById('tagInput');
-const tagsDisplay = document.getElementById('tagsDisplay');
-const newPostForm = document.querySelector('.new-post-form');
-
-// Initialize the page
-document.addEventListener('DOMContentLoaded', function() {
-    initializeDiscussionForum();
-});
-
-function initializeDiscussionForum() {
-    // Add event listeners
-    if (tagInput) {
-        tagInput.addEventListener('keydown', handleTagInput);
-        tagInput.addEventListener('blur', handleTagInputBlur);
-    }
-    
-    if (newPostForm) {
-        newPostForm.addEventListener('submit', handleNewPostSubmit);
-    }
-    
-    // Close modals when clicking outside
-    window.addEventListener('click', function(event) {
-        if (event.target.classList.contains('modal')) {
-            closeAllModals();
-        }
-    });
-    
-    // Close modals with Escape key
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            closeAllModals();
-        }
-    });
-}
+let currentTags = [];
+let editTags = [];
+let currentEditPostId = null;
 
 // Modal functions
 function openNewPostModal() {
-    newPostModal.style.display = 'block';
-    currentModal = 'newPost';
-    document.body.style.overflow = 'hidden';
-    
-    // Focus on title input
-    setTimeout(() => {
-        document.getElementById('postTitle').focus();
-    }, 100);
+    document.getElementById('newPostModal').style.display = 'block';
+    currentTags = [];
+    document.getElementById('tagsDisplay').innerHTML = '';
 }
 
 function closeNewPostModal() {
-    newPostModal.style.display = 'none';
-    currentModal = null;
-    document.body.style.overflow = 'auto';
-    
-    // Reset form
-    resetNewPostForm();
+    document.getElementById('newPostModal').style.display = 'none';
+    document.querySelector('.new-post-form').reset();
+    currentTags = [];
+    document.getElementById('tagsDisplay').innerHTML = '';
+}
+
+function openEditPostModal() {
+    document.getElementById('editPostModal').style.display = 'block';
+}
+
+function closeEditPostModal() {
+    document.getElementById('editPostModal').style.display = 'none';
+    document.getElementById('editPostForm').reset();
+    editTags = [];
+    document.getElementById('editTagsDisplay').innerHTML = '';
+    currentEditPostId = null;
 }
 
 function openQuickTagsModal() {
-    quickTagsModal.style.display = 'block';
-    currentModal = 'quickTags';
-    document.body.style.overflow = 'hidden';
+    document.getElementById('quickTagsModal').style.display = 'block';
 }
 
 function closeQuickTagsModal() {
-    quickTagsModal.style.display = 'none';
-    currentModal = null;
-    document.body.style.overflow = 'auto';
+    document.getElementById('quickTagsModal').style.display = 'none';
 }
 
-function closeAllModals() {
-    if (currentModal === 'newPost') {
-        closeNewPostModal();
-    } else if (currentModal === 'quickTags') {
-        closeQuickTagsModal();
-    }
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const newPostModal = document.getElementById('newPostModal');
+    const editPostModal = document.getElementById('editPostModal');
+    const quickTagsModal = document.getElementById('quickTagsModal');
+    
+    if (event.target === newPostModal) closeNewPostModal();
+    if (event.target === editPostModal) closeEditPostModal();
+    if (event.target === quickTagsModal) closeQuickTagsModal();
 }
 
-// Tag management functions
-function handleTagInput(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-        const tagValue = tagInput.value.trim();
-        
-        if (tagValue) {
-            addTag(tagValue);
-            tagInput.value = '';
-        }
-    }
-}
-
-function handleTagInputBlur() {
-    const tagValue = tagInput.value.trim();
-    if (tagValue) {
-        addTag(tagValue);
-        tagInput.value = '';
-    }
-}
-
-function addTag(tagText) {
-    // Clean tag text (remove # if present, trim whitespace)
-    let cleanTag = tagText.replace(/^#/, '').trim().toLowerCase();
-    
-    // Validate tag
-    if (cleanTag.length < 2) {
-        showNotification('Tag must be at least 2 characters long', 'error');
-        return;
-    }
-    
-    if (cleanTag.length > 20) {
-        showNotification('Tag must be less than 20 characters', 'error');
-        return;
-    }
-    
-    // Check if tag already exists
-    if (selectedTags.includes(cleanTag)) {
-        showNotification('Tag already added', 'warning');
-        return;
-    }
-    
-    // Add tag
-    selectedTags.push(cleanTag);
-    renderTags();
-    
-    // Show success notification
-    showNotification(`Tag "#${cleanTag}" added`, 'success');
-}
-
-function addQuickTag(tagName) {
-    if (!selectedTags.includes(tagName)) {
-        selectedTags.push(tagName);
-        renderTags();
-        showNotification(`Tag "#${tagName}" added`, 'success');
-    } else {
-        showNotification('Tag already added', 'warning');
-    }
-}
-
-function removeTag(tagName) {
-    const index = selectedTags.indexOf(tagName);
-    if (index > -1) {
-        selectedTags.splice(index, 1);
-        renderTags();
-        showNotification(`Tag "#${tagName}" removed`, 'info');
-    }
-}
-
-function renderTags() {
-    if (!tagsDisplay) return;
-    
-    tagsDisplay.innerHTML = '';
-    
-    selectedTags.forEach(tag => {
-        const tagElement = document.createElement('span');
-        tagElement.className = 'tag-item';
-        tagElement.innerHTML = `
+// Tag Management
+function renderTags(container, tags, type) {
+    container.innerHTML = '';
+    tags.forEach((tag, index) => {
+        const tagItem = document.createElement('div');
+        tagItem.className = 'tag-item';
+        tagItem.innerHTML = `
             #${tag}
-            <button class="remove-tag" onclick="removeTag('${tag}')" title="Remove tag">
+            <button type="button" class="remove-tag" onclick="removeTag(${index}, '${type}')">
                 <i class="fas fa-times"></i>
             </button>
         `;
-        tagsDisplay.appendChild(tagElement);
+        container.appendChild(tagItem);
     });
-    
-    // Update tag input placeholder
-    if (tagInput) {
-        tagInput.placeholder = selectedTags.length === 0 
-            ? 'Type a tag and press Enter (e.g., #python, #machine-learning)'
-            : 'Add more tags...';
+}
+
+function removeTag(index, type) {
+    if (type === 'new') {
+        currentTags.splice(index, 1);
+        renderTags(document.getElementById('tagsDisplay'), currentTags, 'new');
+    } else if (type === 'edit') {
+        editTags.splice(index, 1);
+        renderTags(document.getElementById('editTagsDisplay'), editTags, 'edit');
     }
 }
 
-// Form handling
-function handleNewPostSubmit(event) {
-    event.preventDefault();
+function addQuickTag(tag) {
+    if (!currentTags.includes(tag)) {
+        currentTags.push(tag);
+        renderTags(document.getElementById('tagsDisplay'), currentTags, 'new');
+    }
+    closeQuickTagsModal();
+}
+
+// When page loads
+document.addEventListener('DOMContentLoaded', function() {
     
-    // Get form data
-    const formData = new FormData(newPostForm);
-    const postData = {
-        title: formData.get('postTitle'),
-        category: formData.get('postCategory'),
-        content: formData.get('postContent'),
-        priority: formData.get('postPriority'),
-        tags: selectedTags,
-        timestamp: new Date().toISOString()
-    };
+    // Tag input for new post
+    const tagInput = document.getElementById('tagInput');
+    const tagsDisplay = document.getElementById('tagsDisplay');
     
-    // Validate form
-    if (!validatePostData(postData)) {
+    if (tagInput) {
+        tagInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const tag = this.value.trim().replace('#', '');
+                if (tag && !currentTags.includes(tag)) {
+                    currentTags.push(tag);
+                    renderTags(tagsDisplay, currentTags, 'new');
+                    this.value = '';
+                }
+            }
+        });
+    }
+
+    // Tag input for edit post
+    const editTagInput = document.getElementById('editTagInput');
+    const editTagsDisplay = document.getElementById('editTagsDisplay');
+    
+    if (editTagInput) {
+        editTagInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const tag = this.value.trim().replace('#', '');
+                if (tag && !editTags.includes(tag)) {
+                    editTags.push(tag);
+                    renderTags(editTagsDisplay, editTags, 'edit');
+                    this.value = '';
+                }
+            }
+        });
+    }
+
+    // Form submission handlers
+    const newPostForm = document.querySelector('.new-post-form');
+    if (newPostForm) {
+        newPostForm.addEventListener('submit', handleNewPostSubmit);
+    }
+
+    const editPostForm = document.getElementById('editPostForm');
+    if (editPostForm) {
+        editPostForm.addEventListener('submit', handleEditPostSubmit);
+    }
+});
+
+// CREATE NEW POST (REAL AJAX)
+async function handleNewPostSubmit(e) {
+    e.preventDefault();
+    
+    const formData = new FormData();
+    formData.append('title', document.getElementById('postTitle').value);
+    formData.append('content', document.getElementById('postContent').value);
+    formData.append('category', document.getElementById('postCategory').value);
+    formData.append('priority', document.getElementById('postPriority').value);
+    formData.append('tags', currentTags.join(','));
+    
+    try {
+        // FIXED URL with /public/Student/DiscussionForum/
+        const response = await fetch(window.location.origin + '/gradb2/public/Student/DiscussionForum/create', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showNotification('success', result.message);
+            closeNewPostModal();
+            setTimeout(() => window.location.reload(), 1000);
+        } else {
+            showNotification('error', result.message);
+        }
+    } catch (error) {
+        showNotification('error', 'An error occurred. Please try again.');
+        console.error('Error:', error);
+    }
+}
+
+// EDIT POST (Load data)
+async function editPost(postId) {
+    currentEditPostId = postId;
+    
+    try {
+        // FIXED URL
+        const response = await fetch(window.location.origin + `/gradb2/public/Student/DiscussionForum/get?post_id=${postId}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            const post = result.post;
+            
+            document.getElementById('editPostId').value = post.post_id;
+            document.getElementById('editPostTitle').value = post.title;
+            document.getElementById('editPostContent').value = post.content;
+            document.getElementById('editPostCategory').value = post.category;
+            document.getElementById('editPostPriority').value = post.priority;
+            
+            editTags = post.tags ? post.tags.split(',').filter(t => t.trim()) : [];
+            renderTags(document.getElementById('editTagsDisplay'), editTags, 'edit');
+            
+            openEditPostModal();
+        } else {
+            showNotification('error', result.message);
+        }
+    } catch (error) {
+        showNotification('error', 'Failed to load post data.');
+        console.error('Error:', error);
+    }
+}
+
+// UPDATE POST (REAL AJAX)
+async function handleEditPostSubmit(e) {
+    e.preventDefault();
+    
+    const formData = new FormData();
+    formData.append('post_id', currentEditPostId);
+    formData.append('title', document.getElementById('editPostTitle').value);
+    formData.append('content', document.getElementById('editPostContent').value);
+    formData.append('category', document.getElementById('editPostCategory').value);
+    formData.append('priority', document.getElementById('editPostPriority').value);
+    formData.append('tags', editTags.join(','));
+    
+    try {
+        // FIXED URL
+        const response = await fetch(window.location.origin + '/gradb2/public/Student/DiscussionForum/update', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showNotification('success', result.message);
+            closeEditPostModal();
+            setTimeout(() => window.location.reload(), 1000);
+        } else {
+            showNotification('error', result.message);
+        }
+    } catch (error) {
+        showNotification('error', 'An error occurred. Please try again.');
+        console.error('Error:', error);
+    }
+}
+
+// DELETE POST (REAL AJAX)
+async function deletePost(postId) {
+    if (!confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
         return;
     }
     
-    // Submit post (simulate API call)
-    submitPost(postData);
-}
-
-function validatePostData(postData) {
-    if (!postData.title.trim()) {
-        showNotification('Please enter a post title', 'error');
-        return false;
-    }
+    const formData = new FormData();
+    formData.append('post_id', postId);
     
-    if (!postData.category) {
-        showNotification('Please select a category', 'error');
-        return false;
-    }
-    
-    if (!postData.content.trim()) {
-        showNotification('Please enter post content', 'error');
-        return false;
-    }
-    
-    if (postData.title.length < 10) {
-        showNotification('Title must be at least 10 characters long', 'error');
-        return false;
-    }
-    
-    if (postData.content.length < 50) {
-        showNotification('Post content must be at least 50 characters long', 'error');
-        return false;
-    }
-    
-    return true;
-}
-
-function submitPost(postData) {
-    // Show loading state
-    const submitBtn = newPostForm.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publishing...';
-    submitBtn.disabled = true;
-    
-    // Simulate API call
-    setTimeout(() => {
-        // Success
-        showNotification('Post published successfully!', 'success');
-        closeNewPostModal();
+    try {
+        // FIXED URL
+        const response = await fetch(window.location.origin + '/gradb2/public/Student/DiscussionForum/delete', {
+            method: 'POST',
+            body: formData
+        });
         
-        // Reset button
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
+        const result = await response.json();
         
-        // TODO: Add post to discussions list
-        console.log('Post data:', postData);
-        
-    }, 1500);
-}
-
-function resetNewPostForm() {
-    if (newPostForm) {
-        newPostForm.reset();
+        if (result.success) {
+            showNotification('success', result.message);
+            setTimeout(() => window.location.reload(), 1000);
+        } else {
+            showNotification('error', result.message);
+        }
+    } catch (error) {
+        showNotification('error', 'An error occurred. Please try again.');
+        console.error('Error:', error);
     }
-    selectedTags = [];
-    renderTags();
 }
 
-// Notification system
-function showNotification(message, type = 'info') {
-    // Create notification element
+// NOTIFICATION SYSTEM
+function showNotification(type, message) {
     const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
+    notification.className = `notification notification-${type} show`;
     notification.innerHTML = `
         <div class="notification-content">
-            <i class="fas fa-${getNotificationIcon(type)}"></i>
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
             <span>${message}</span>
         </div>
         <button class="notification-close" onclick="this.parentElement.remove()">
@@ -276,51 +277,10 @@ function showNotification(message, type = 'info') {
         </button>
     `;
     
-    // Add to page
     document.body.appendChild(notification);
     
-    // Show notification
-    setTimeout(() => {
-        notification.classList.add('show');
-    }, 100);
-    
-    // Auto remove after 5 seconds
     setTimeout(() => {
         notification.classList.remove('show');
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.remove();
-            }
-        }, 300);
-    }, 5000);
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
 }
-
-function getNotificationIcon(type) {
-    switch (type) {
-        case 'success': return 'check-circle';
-        case 'error': return 'exclamation-circle';
-        case 'warning': return 'exclamation-triangle';
-        case 'info': return 'info-circle';
-        default: return 'info-circle';
-    }
-}
-
-// Search and filter functionality
-function searchDiscussions(query) {
-    // TODO: Implement search functionality
-    console.log('Searching for:', query);
-}
-
-function filterDiscussions(category) {
-    // TODO: Implement filter functionality
-    console.log('Filtering by category:', category);
-}
-
-// Export functions for global access
-window.openNewPostModal = openNewPostModal;
-window.closeNewPostModal = closeNewPostModal;
-window.openQuickTagsModal = openQuickTagsModal;
-window.closeQuickTagsModal = closeQuickTagsModal;
-window.addQuickTag = addQuickTag;
-window.removeTag = removeTag;
-

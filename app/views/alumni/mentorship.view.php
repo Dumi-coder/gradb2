@@ -1,49 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mentorship - GradBridge</title>
-    <meta name="description" content="Manage mentorship requests and connect with students seeking guidance." />
-    <meta name="author" content="GradBridge" />
-    
-    <!-- Google Fonts - Poppins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/mentorship.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni-dashboard.css">
-    
-  </head>
+<?php 
+$page_title = "Mentorship";
+$page_subtitle = "Connect with students seeking guidance";
+require '../app/views/partials/alumni_header.php'; 
+?>
 
-  <body class="alumni-dashboard">
-    <!-- Top Navbar -->
-    <header class="dashboard-header">
-      <div class="container">
-        <div class="header-content">
-          <div class="welcome-section">
-            <h1 class="welcome-text">Mentorship</h1>
-            <p class="header-subtitle">Connect with students seeking guidance and make a difference in their academic and career journey.</p>
-          </div>
-          
-          <div class="header-actions">
-            <button class="btn btn-outline notification-btn" aria-label="Notifications">
-              <i class="fas fa-bell"></i>
-              <span class="notification-badge">3</span>
-            </button>
-            <a href="<?=ROOT?>/alumni/logout" class="btn btn-primary logout-btn">Logout</a>
-          </div>
-        </div>
-      </div>
-    </header>
+<!-- Page-specific CSS -->
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/mentorship.css">
 
-    <div class="dashboard-container">
+<body class="alumni-dashboard">
+<div class="dashboard-container">
      <!-- sidebar -->
     <?php require '../app/views/partials/alumni_sidebar.php'; ?>
 

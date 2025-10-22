@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $title ?? 'Alumni Dashboard - GradBridge' ?></title>
+    <title><?= $title ?? 'Student Dashboard - GradBridge' ?></title>
     
     <!-- Google Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,15 +19,14 @@
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/sidebar.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard-header.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni-dashboard.css">
 </head>
-<body class="alumni-dashboard">
+<body>
     <script>
         function logout() {
             // Create a form to submit logout request
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '<?=ROOT?>/alumni/logout';
+            form.action = '<?=ROOT?>/student/logout';
             form.style.display = 'none';
             
             // Add a hidden input to indicate logout
@@ -42,7 +41,7 @@
             form.submit();
         }
     </script>
-    <!-- Alumni Dashboard Header -->
+    <!-- Student Dashboard Header -->
     <header class="dashboard-header">
         <div class="container">
             <div class="header-content">
@@ -58,8 +57,8 @@
                             <p class="header-subtitle"><?= esc($page_subtitle) ?></p>
                         <?php endif; ?>
                     <?php else: ?>
-                        <h1 class="welcome-text">Welcome, <span class="alumni-name"><?= esc($_SESSION['name'] ?? 'Alumni') ?></span></h1>
-                        <p class="alumni-role">Alumni Member</p>
+                        <h1 class="welcome-text">Welcome, <span class="student-name"><?= esc($_SESSION['name'] ?? 'Student') ?></span></h1>
+                        <p class="student-role">Student</p>
                     <?php endif; ?>
                 </div>
                 
@@ -73,3 +72,4 @@
             </div>
         </div>
     </header>
+
