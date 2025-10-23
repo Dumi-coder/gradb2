@@ -1,6 +1,13 @@
 <?php
 class Mentorship extends Controller
 {
+    private $mentorshipRequestModel;
+
+    public function __construct()
+    {
+        $this->mentorshipRequestModel = new MentorshipRequest();
+    }
+
     public function index()
     {
         // Start session if not started
@@ -23,7 +30,7 @@ class Mentorship extends Controller
             redirect('alumni/auth');
         }
 
-        // Get mentorship data (you can expand this to get real data)
+        // Get real mentorship data from database
         $mentorshipData = $this->getMentorshipData();
 
         $data = [
@@ -36,93 +43,108 @@ class Mentorship extends Controller
         $this->view('alumni/mentorship', $data);
     }
 
+    public function accept($requestId = null)
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'alumni') {
+            redirect('Alumni/Auth');
+        }
+
+        if (!$requestId) {
+            $_SESSION['error'] = 'Invalid request ID.';
+            redirect('Alumni/Mentorship');
+        }
+
+        $alumnusId = $_SESSION['user_id'];
+        $result = $this->mentorshipRequestModel->acceptRequest($requestId, $alumnusId);
+        
+        if ($result) {
+            $_SESSION['success'] = 'Mentorship request accepted successfully!';
+        } else {
+            $_SESSION['error'] = 'Failed to accept mentorship request.';
+        }
+        
+        redirect('Alumni/Mentorship');
+    }
+
+    public function reject($requestId = null)
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'alumni') {
+            redirect('Alumni/Auth');
+        }
+
+        if (!$requestId) {
+            $_SESSION['error'] = 'Invalid request ID.';
+            redirect('Alumni/Mentorship');
+        }
+
+        $alumnusId = $_SESSION['user_id'];
+        $result = $this->mentorshipRequestModel->rejectRequest($requestId, $alumnusId);
+        
+        if ($result) {
+            $_SESSION['success'] = 'Mentorship request rejected.';
+        } else {
+            $_SESSION['error'] = 'Failed to reject mentorship request.';
+        }
+        
+        redirect('Alumni/Mentorship');
+    }
+
     private function getMentorshipData()
     {
-        // You can expand this to get real mentorship data from database
+        $alumnusId = $_SESSION['user_id'];
+        
+        // Get pending mentorship requests from students in the same faculty
+        $pendingRequests = $this->mentorshipRequestModel->getRequestsForAlumnusFaculty($alumnusId);
+        
+        // Get accepted mentorship requests
+        $acceptedRequests = $this->mentorshipRequestModel->getAcceptedRequestsForAlumnus($alumnusId);
+        
+        // Format pending requests for display
+        $formattedPendingRequests = [];
+        foreach ($pendingRequests as $request) {
+            $formattedPendingRequests[] = [
+                'id' => $request['request_id'],
+                'student_name' => $request['student_name'],
+                'student_email' => $request['student_email'],
+                'student_id' => $request['student_id'],
+                'academic_year' => $request['academic_year'],
+                'faculty_name' => $request['faculty_name'],
+                'guidance_type' => $request['mentorship_category'] === 'other' ? $request['other_category'] : $request['mentorship_category'],
+                'description' => $request['request_reason'],
+                'status' => 'pending',
+                'created_at' => $request['created_at']
+            ];
+        }
+        
+        // Format accepted requests for display
+        $formattedAcceptedRequests = [];
+        foreach ($acceptedRequests as $request) {
+            $formattedAcceptedRequests[] = [
+                'id' => $request['request_id'],
+                'student_name' => $request['student_name'],
+                'student_email' => $request['student_email'],
+                'student_id' => $request['student_id'],
+                'academic_year' => $request['academic_year'],
+                'faculty_name' => $request['faculty_name'],
+                'mentorship_type' => $request['mentorship_category'] === 'other' ? $request['other_category'] : $request['mentorship_category'],
+                'description' => $request['request_reason'],
+                'status' => 'active',
+                'created_at' => $request['created_at']
+            ];
+        }
+        
         return [
-            'requests' => [
-                [
-                    'id' => 1,
-                    'student_name' => 'Michael Chen',
-                    'guidance_type' => 'Startup Guidance',
-                    'description' => "I'm planning to start my own tech startup after graduation and need mentorship on business planning and funding strategies from experienced professionals.",
-                    'status' => 'urgent'
-                ],
-                [
-                    'id' => 2,
-                    'student_name' => 'Emily Rodriguez',
-                    'guidance_type' => 'Research Guidance',
-                    'description' => "I'm working on my thesis project in data science and machine learning. I need guidance on research methodology and data analysis techniques.",
-                    'status' => 'urgent'
-                ],
-                [
-                    'id' => 3,
-                    'student_name' => 'Sarah Johnson',
-                    'guidance_type' => 'Career Guidance',
-                    'description' => "I'm a final year computer science student looking for guidance on transitioning into the tech industry. I would appreciate advice on career paths and interview preparation.",
-                    'status' => 'pending'
-                ],
-                [
-                    'id' => 4,
-                    'student_name' => 'David Kim',
-                    'guidance_type' => 'Industry Transition',
-                    'description' => "I'm currently in mechanical engineering but interested in transitioning to software development. I need advice on skill development and portfolio building.",
-                    'status' => 'pending'
-                ]
-            ],
-            'active' => [
-                [
-                    'id' => 1,
-                    'student_name' => 'Sarah Johnson',
-                    'mentorship_type' => 'Career Development',
-                    'description' => "Currently working on interview preparation and professional skill development. Making excellent progress with resume optimization and technical interview practice.",
-                    'status' => 'active'
-                ],
-                [
-                    'id' => 2,
-                    'student_name' => 'Michael Chen',
-                    'mentorship_type' => 'Startup Strategy',
-                    'description' => "Developing business plan and exploring funding opportunities for tech startup. Regular sessions focusing on market research and product development strategies.",
-                    'status' => 'active'
-                ],
-                [
-                    'id' => 3,
-                    'student_name' => 'Lisa Wang',
-                    'mentorship_type' => 'Graduate School Preparation',
-                    'description' => "Preparing for graduate school applications and research opportunities. Working on statement of purpose and research proposal development.",
-                    'status' => 'active'
-                ]
-            ],
-            'completed' => [
-                [
-                    'id' => 1,
-                    'student_name' => 'Emily Rodriguez',
-                    'topic' => 'Research Methodology',
-                    'description' => "Successfully completed thesis project in data science and machine learning. Published research paper and secured PhD position at prestigious university.",
-                    'completed_date' => 'Aug 25, 2025'
-                ],
-                [
-                    'id' => 2,
-                    'student_name' => 'David Kim',
-                    'topic' => 'Career Transition',
-                    'description' => "Successfully transitioned from mechanical engineering to software development. Secured full-time position as junior developer at major tech company.",
-                    'completed_date' => 'Jul 18, 2025'
-                ],
-                [
-                    'id' => 3,
-                    'student_name' => 'Alex Thompson',
-                    'topic' => 'Professional Networking',
-                    'description' => "Built strong professional network and improved communication skills. Successfully launched marketing career with increased confidence and connections.",
-                    'completed_date' => 'Jun 30, 2025'
-                ],
-                [
-                    'id' => 4,
-                    'student_name' => 'Jessica Martinez',
-                    'topic' => 'Entrepreneurship',
-                    'description' => "Launched successful e-commerce business with comprehensive mentorship support. Achieved break-even within 6 months and expanding to new markets.",
-                    'completed_date' => 'May 15, 2025'
-                ]
-            ]
+            'requests' => $formattedPendingRequests,
+            'active' => $formattedAcceptedRequests,
+            'completed' => [] // TODO: Implement completed mentorships tracking
         ];
     }
 }

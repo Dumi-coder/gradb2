@@ -198,10 +198,63 @@
   border: 1px solid #a7f3d0;
 }
 
+.alert-danger {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
 .alert-error {
   background-color: #fee2e2;
   color: #991b1b;
   border: 1px solid #fca5a5;
+}
+
+/* Student Details in Request Cards */
+.student-details {
+  margin-top: var(--spacing-xs);
+  color: var(--muted-foreground);
+  font-size: var(--font-sm);
+}
+
+.student-details small {
+  color: var(--muted-foreground);
+}
+
+/* No Requests/Active Mentorships Messages */
+.no-requests-message,
+.no-active-mentorships {
+  text-align: center;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  background-color: var(--muted);
+  border-radius: var(--radius-lg);
+  border: 2px dashed var(--border);
+}
+
+.no-requests-icon,
+.no-active-icon {
+  font-size: 4rem;
+  color: var(--muted-foreground);
+  margin-bottom: var(--spacing-lg);
+}
+
+.no-requests-message h3,
+.no-active-mentorships h3 {
+  color: var(--foreground);
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-xl);
+}
+
+.no-requests-message p,
+.no-active-mentorships p {
+  color: var(--muted-foreground);
+  margin-bottom: var(--spacing-sm);
+  line-height: var(--leading-relaxed);
+}
+
+.no-requests-message p:last-child,
+.no-active-mentorships p:last-child {
+  margin-bottom: 0;
 }
 
 /* Responsive Design */
