@@ -1,4 +1,6 @@
 <?php require '../app/views/partials/header.php'; ?>
+    <!-- Password Validation Script -->
+    <script src="<?=ROOT?>/assets/js/password-validation.js"></script>
 
     <!-- Alumni Signup Form -->
     <section class="auth-section gradient-hero">
@@ -38,9 +40,10 @@
                 </select>
             </div>
             
-            <input class="input" type="password" name="password" placeholder="Password" required />
-            
-            <input class="input" type="password" name="confirm_password" placeholder="Confirm password" required />
+            <div id="alumni-password-container">
+                <input class="input" type="password" id="alumni-password" name="password" placeholder="Password" required />
+                <input class="input" type="password" id="alumni-confirm-password" name="confirm_password" placeholder="Confirm password" required />
+            </div>
             
             <div class="auth-actions">
               <button type="submit" class="btn btn-primary" style="width:100%">Create Account</button>

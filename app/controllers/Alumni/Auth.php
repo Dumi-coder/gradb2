@@ -62,7 +62,14 @@ class Auth extends Controller
 
         if (empty($faculty)) $errors[] = "Faculty is required";
 
-        if (empty($password) || strlen($password) < 6) $errors[] = "Password must be at least 6 characters";
+        if (empty($password)) {
+            $errors[] = "Password is required";
+        } else {
+            $passwordValidation = validatePasswordStrength($password);
+            if (!$passwordValidation['valid']) {
+                $errors = array_merge($errors, $passwordValidation['errors']);
+            }
+        }
 
 
         if (empty($errors)) {
