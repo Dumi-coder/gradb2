@@ -29,7 +29,7 @@ require '../app/views/partials/student_header.php';
  <div class="profile-avatar-container">
     <div class="profile-avatar" id="profileAvatar">
         <?php if (!empty($profile->profile_photo_url)): ?>
-            <img src="<?= ROOT ?>/assets/uploads/profiles/<?= esc($profile->profile_photo_url) ?>" 
+            <img src="<?= esc($profile->profile_photo_url) ?>" 
                  alt="Profile Picture" 
                  id="profileImage" 
                  style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;"

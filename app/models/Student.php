@@ -15,7 +15,9 @@ class Student
         'academic_year',
         'bio',
         'profile_photo_url',
-        'mobile'
+        'mobile',
+        'LinkedIn',
+        'GitHub'
     ];
     
     public function validate($data)
