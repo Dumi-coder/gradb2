@@ -154,12 +154,10 @@
 
                     <div class="form-group">
                         <label for="password">Password *</label>
-                        <input type="password" id="password" name="password" placeholder="Minimum 6 characters" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="confirm_password">Confirm Password *</label>
-                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter password" required>
+                        <div id="admin-password-container">
+                            <input type="password" id="admin-password" name="password" placeholder="Enter secure password" required>
+                            <input type="password" id="admin-confirm-password" name="confirm_password" placeholder="Re-enter password" required>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn-submit">
@@ -170,6 +168,9 @@
         </main>
     </div>
 
+    <!-- Password Validation Script -->
+    <script src="<?= ROOT ?>/assets/js/password-validation.js"></script>
+    
     <script>
         function logout() {
             window.location.href = '<?= ROOT ?>/admin/logout';

@@ -55,3 +55,51 @@ function time_elapsed_string($datetime, $full = false) {
         return 'unknown';
     }
 }
+
+/**
+ * Validate password strength according to security requirements
+ * Password must be at least 8 characters and contain:
+ * - At least one letter (a-z or A-Z)
+ * - At least one number (0-9)
+ * - At least one special character (!@#$%^&*()_+-=[]{}|;':",./<>?)
+ * 
+ * @param string $password The password to validate
+ * @return array Array with 'valid' boolean and 'message' string
+ */
+function validatePasswordStrength($password) {
+    $errors = [];
+    
+    // Check minimum length
+    if (strlen($password) < 8) {
+        $errors[] = "Password must be at least 8 characters long";
+    }
+    
+    // Check for at least one letter
+    if (!preg_match('/[a-zA-Z]/', $password)) {
+        $errors[] = "Password must contain at least one letter";
+    }
+    
+    // Check for at least one number
+    if (!preg_match('/[0-9]/', $password)) {
+        $errors[] = "Password must contain at least one number";
+    }
+    
+    // Check for at least one special character
+    if (!preg_match('/[!@#$%^&*()_+\-=\[\]{}|;\':",.\/<>?]/', $password)) {
+        $errors[] = "Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;':\",./<>?)";
+    }
+    
+    return [
+        'valid' => empty($errors),
+        'errors' => $errors,
+        'message' => empty($errors) ? 'Password meets security requirements' : implode(', ', $errors)
+    ];
+}
+
+/**
+ * Get password strength requirements as a formatted string for display
+ * @return string Formatted requirements text
+ */
+function getPasswordRequirements() {
+    return "Password must be at least 8 characters and include: at least one letter, one number, and one special character (!@#$%^&*()_+-=[]{}|;':\",./<>?)";
+}
