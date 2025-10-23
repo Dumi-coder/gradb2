@@ -120,35 +120,9 @@
   margin-top: var(--spacing-lg);
 }
 
+/* Submit button inherits from .btn .btn-primary in buttons.css */
 .submit-btn {
-  min-width: 280px;
-  height: 56px;
-  font-size: var(--font-md);
-  font-weight: 600;
-  background-color: var(--foreground);
-  color: var(--background);
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm);
-}
-
-.submit-btn:hover {
-  background-color: rgba(0, 0, 0, 0.8);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-}
-
-.submit-btn:active {
-  transform: translateY(0);
-}
-
-.submit-btn i {
-  font-size: var(--font-base);
+  min-width: 280px; /* Wider to accommodate text */
 }
 
 /* Header styles moved to dashboard-header.css component */
@@ -170,8 +144,7 @@
   }
   
   .submit-btn {
-    min-width: 100%;
-    height: 48px;
+    min-width: 100%; /* Full width on mobile */
   }
   
   /* Footer styles removed */

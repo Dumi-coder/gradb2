@@ -57,10 +57,6 @@
               <h3>For Alumni</h3>
               <p>Give back to your community, share your expertise, and stay connected with your alma mater.</p>
             </div>
-            <div class="benefit-item institution-benefit">
-              <h3>For Institutions</h3>
-              <p>Foster a strong alumni network, track engagement, and provide better support for your students.</p>
-            </div>
           </div>
         </div>
       </div>
