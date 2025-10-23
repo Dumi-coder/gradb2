@@ -123,6 +123,15 @@
 /* Submit button inherits from .btn .btn-primary in buttons.css */
 .submit-btn {
   min-width: 280px; /* Wider to accommodate text */
+  font-size: var(--font-base) !important; /* Ensure consistent font size */
+  font-weight: 600 !important; /* Ensure consistent font weight */
+  font-family: inherit !important; /* Use the same font as other buttons */
+}
+
+.submit-btn span {
+  font-size: var(--font-base) !important;
+  font-weight: 600 !important;
+  font-family: inherit !important;
 }
 
 /* Header styles moved to dashboard-header.css component */

@@ -4,13 +4,13 @@
    BASE BUTTON STYLES
    ============================================ */
 
-/* Default button - Large size (48px) */
+/* Default button - Medium size (44px) */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--spacing-xs);
-  height: 48px; /* Large button size - same as logout button */
+  height: 44px; /* Medium button size - reduced from 48px */
   padding: 0 var(--spacing-lg);
   border-radius: 10px;
   font-weight: 600;
@@ -23,7 +23,7 @@
   position: relative;
   overflow: hidden;
   white-space: nowrap;
-  min-width: 120px; /* Ensure consistent minimum width for large buttons */
+  min-width: 120px; /* Ensure consistent minimum width for buttons */
 }
 
 /* Ensure icons and text are properly spaced and have consistent font-weight */
@@ -75,7 +75,7 @@
   font-weight: 600 !important;
 }
 
-/* Large buttons - default size, no class needed (48px) */
+/* Default buttons - medium size, no class needed (44px) */
 /* Use for: Request Mentorship, Submit forms, Logout, etc. */
 
 /* ============================================
@@ -254,7 +254,7 @@
 /* Logout button - consistent styling */
 .logout-btn {
   /* Uses default btn-primary styling */
-  height: 48px;
+  height: 44px;
 }
 
 .logout-btn a {
@@ -293,7 +293,7 @@
 
 @media (max-width: 768px) {
   .btn {
-    height: 44px;
+    height: 40px; /* Slightly smaller on mobile */
     padding: 0 var(--spacing-md);
     font-size: 0.9rem;
   }

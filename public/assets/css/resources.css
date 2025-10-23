@@ -682,8 +682,8 @@
 }
 
 .my-resources-section .card-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: var(--font-lg);
+  font-weight: 600;
   color: var(--foreground);
   display: flex;
   align-items: center;
@@ -691,7 +691,7 @@
 }
 
 .my-resources-section .card-title i {
-  font-size: 1.5rem;
+  font-size: var(--font-lg);
   color: var(--foreground);
 }
 
@@ -731,8 +731,8 @@
 /* Resource Title Override */
 .my-resources-section .my-resource-card .resource-title {
   font-size: 1.25rem;
-  font-weight: 700;
-  color: #111827;
+  font-weight: 600;
+  color: var(--foreground);
   margin: 0 0 0.75rem 0;
   line-height: 1.4;
 }

@@ -57,11 +57,11 @@ require '../app/views/partials/student_header.php';
                 <p class="campaign-description">Support students facing unexpected financial hardships due to family emergencies or medical expenses.</p>
                 <div class="campaign-meta">
                   <div class="campaign-goal">
-                    <span class="goal-amount">$15,000</span>
+                    <span class="goal-amount">Rs. 15,000</span>
                     <span class="goal-label">Goal</span>
                   </div>
                   <div class="campaign-raised">
-                    <span class="raised-amount">$11,250</span>
+                    <span class="raised-amount">Rs. 11,250</span>
                     <span class="raised-label">Raised</span>
                   </div>
                   <div class="campaign-donors">
@@ -74,7 +74,7 @@ require '../app/views/partials/student_header.php';
                     <i class="fas fa-heart"></i>
                     <span>Donate Now</span>
                   </button>
-                  <button class="btn btn-outline btn-sm">
+                  <button class="btn btn-outline">
                     <i class="fas fa-share"></i>
                     <span>Share</span>
                   </button>
@@ -98,11 +98,11 @@ require '../app/views/partials/student_header.php';
                 <p class="campaign-description">Provide laptops to students who cannot afford them for online learning and coursework.</p>
                 <div class="campaign-meta">
                   <div class="campaign-goal">
-                    <span class="goal-amount">$25,000</span>
+                    <span class="goal-amount">Rs. 25,000</span>
                     <span class="goal-label">Goal</span>
                   </div>
                   <div class="campaign-raised">
-                    <span class="raised-amount">$11,250</span>
+                    <span class="raised-amount">Rs. 11,250</span>
                     <span class="raised-label">Raised</span>
                   </div>
                   <div class="campaign-donors">
@@ -115,7 +115,7 @@ require '../app/views/partials/student_header.php';
                     <i class="fas fa-heart"></i>
                     <span>Donate Now</span>
                   </button>
-                  <button class="btn btn-outline btn-sm">
+                  <button class="btn btn-outline">
                     <i class="fas fa-share"></i>
                     <span>Share</span>
                   </button>
@@ -139,11 +139,11 @@ require '../app/views/partials/student_header.php';
                 <p class="campaign-description">Renovate the main study room with new furniture, lighting, and technology equipment.</p>
                 <div class="campaign-meta">
                   <div class="campaign-goal">
-                    <span class="goal-amount">$8,000</span>
+                    <span class="goal-amount">Rs. 8,000</span>
                     <span class="goal-label">Goal</span>
                   </div>
                   <div class="campaign-raised">
-                    <span class="raised-amount">$8,000</span>
+                    <span class="raised-amount">Rs. 8,000</span>
                     <span class="raised-label">Raised</span>
                   </div>
                   <div class="campaign-donors">
@@ -156,7 +156,7 @@ require '../app/views/partials/student_header.php';
                     <i class="fas fa-check"></i>
                     <span>Completed</span>
                   </button>
-                  <button class="btn btn-outline btn-sm">
+                  <button class="btn btn-outline">
                     <i class="fas fa-eye"></i>
                     <span>View Results</span>
                   </button>
@@ -179,7 +179,7 @@ require '../app/views/partials/student_header.php';
               </div>
               <div class="donation-content">
                 <h3 class="donation-campaign">Student Emergency Fund</h3>
-                <p class="donation-amount">$50.00</p>
+                <p class="donation-amount">Rs. 50.00</p>
                 <div class="donation-meta">
                   <span class="donation-date">Dec 10, 2024</span>
                   <span class="donation-status completed">Completed</span>
@@ -193,7 +193,7 @@ require '../app/views/partials/student_header.php';
               </div>
               <div class="donation-content">
                 <h3 class="donation-campaign">Laptop Loan Program</h3>
-                <p class="donation-amount">$25.00</p>
+                <p class="donation-amount">Rs. 25.00</p>
                 <div class="donation-meta">
                   <span class="donation-date">Dec 5, 2024</span>
                   <span class="donation-status completed">Completed</span>
@@ -233,13 +233,19 @@ require '../app/views/partials/student_header.php';
           </div>
 
           <div class="form-group">
-            <label for="campaignGoal">Fundraising Goal *</label>
-            <input type="number" id="campaignGoal" name="campaignGoal" placeholder="Enter amount in USD" min="100" required>
+            <label for="campaignGoal">Fundraising Goal (Rs.) *</label>
+            <input type="number" id="campaignGoal" name="campaignGoal" placeholder="Enter amount in Rs." min="100" required>
           </div>
 
           <div class="form-group">
             <label for="campaignDescription">Description *</label>
             <textarea id="campaignDescription" name="campaignDescription" rows="4" placeholder="Describe your campaign and how funds will be used..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="authorizationLetter">Director/Board Authorization Letter *</label>
+            <input type="file" id="authorizationLetter" name="authorizationLetter" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
+            <small style="display: block; margin-top: var(--spacing-xs); color: var(--muted-foreground);">Upload the approval letter from your director, dean, or club board (PDF, DOC, or Image)</small>
           </div>
 
           <div class="form-group">
@@ -278,21 +284,21 @@ require '../app/views/partials/student_header.php';
                 <div id="donateProgressFill" class="progress-fill"></div>
               </div>
               <div class="progress-text">
-                <span id="donateRaised">$0</span> raised of <span id="donateGoal">$0</span>
+                <span id="donateRaised">Rs. 0</span> raised of <span id="donateGoal">Rs. 0</span>
               </div>
             </div>
           </div>
 
           <form class="donation-form">
             <div class="form-group">
-              <label>Donation Amount *</label>
+              <label>Donation Amount (Rs.) *</label>
               <div class="amount-options">
-                <button type="button" class="amount-btn" data-amount="10">$10</button>
-                <button type="button" class="amount-btn" data-amount="25">$25</button>
-                <button type="button" class="amount-btn" data-amount="50">$50</button>
-                <button type="button" class="amount-btn" data-amount="100">$100</button>
+                <button type="button" class="amount-btn" data-amount="100">Rs. 100</button>
+                <button type="button" class="amount-btn" data-amount="250">Rs. 250</button>
+                <button type="button" class="amount-btn" data-amount="500">Rs. 500</button>
+                <button type="button" class="amount-btn" data-amount="1000">Rs. 1000</button>
               </div>
-              <input type="number" id="donationAmount" name="donationAmount" placeholder="Enter custom amount" min="1" required>
+              <input type="number" id="donationAmount" name="donationAmount" placeholder="Enter custom amount in Rs." min="1" required>
             </div>
 
             <div class="form-group">

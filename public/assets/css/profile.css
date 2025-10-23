@@ -15,7 +15,7 @@
 .section-title {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #374151;
+    color: var(--foreground);
     margin: 0 0 1.5rem 0;
 }
 
@@ -85,7 +85,7 @@
 .profile-name {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #374151;
+    color: var(--foreground);
     margin: 0 0 0.5rem 0;
 }
 
@@ -95,7 +95,7 @@
 .profile-year,
 .profile-email,
 .profile-bio {
-    color: #6b7280;
+    color: var(--muted-foreground);
     margin: 0 0 0.25rem 0;
     font-size: 0.9rem;
 }
@@ -168,12 +168,12 @@
 .stat-number {
     font-size: 2rem;
     font-weight: 700;
-    color: #374151;
+    color: var(--foreground);
     margin: 0 0 0.25rem 0;
 }
 
 .stat-label {
-    color: #6b7280;
+    color: var(--muted-foreground);
     font-size: 0.85rem;
     margin: 0;
     line-height: 1.3;
@@ -219,20 +219,20 @@
 
 .bio-title h3 {
     margin: 0 0 0.25rem 0;
-    color: #374151;
+    color: var(--foreground);
     font-size: 1.5rem;
     font-weight: 700;
 }
 
 .bio-title p {
     margin: 0;
-    color: #6b7280;
+    color: var(--muted-foreground);
     font-size: 1rem;
 }
 
 .bio-content p {
     margin: 0;
-    color: #4b5563;
+    color: var(--muted-foreground);
     font-size: 1rem;
     line-height: 1.6;
 }
@@ -279,14 +279,14 @@
 
 .experience-content h4 {
     margin: 0 0 0.5rem 0;
-    color: #374151;
+    color: var(--foreground);
     font-size: 1.1rem;
     font-weight: 600;
 }
 
 .experience-content p {
     margin: 0 0 0.5rem 0;
-    color: #6b7280;
+    color: var(--muted-foreground);
     font-size: 0.9rem;
     line-height: 1.5;
 }
@@ -294,7 +294,7 @@
 .experience-period {
     display: inline-block;
     background-color: #f3f4f6;
-    color: #6b7280;
+    color: var(--muted-foreground);
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.8rem;
@@ -362,7 +362,7 @@
 .social-link-label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #374151;
+    color: var(--foreground);
 }
 
 .no-social-links {
@@ -372,7 +372,7 @@
     background: #F9FAFB;
     border: 2px dashed #D1D5DB;
     border-radius: 12px;
-    color: #6B7280;
+    color: var(--muted-foreground);
 }
 
 .no-social-links a {
@@ -414,7 +414,7 @@
 .form-label {
     display: block;
     font-weight: 600;
-    color: #374151;
+    color: var(--foreground);
     margin-bottom: 8px;
     font-size: 14px;
 }
@@ -441,7 +441,7 @@ select.form-input:focus {
 
 .form-input:disabled {
     background-color: #f9fafb;
-    color: #6b7280;
+    color: var(--muted-foreground);
     cursor: not-allowed;
 }
 
@@ -457,14 +457,14 @@ select.form-input:focus {
 .form-help {
     display: block;
     font-size: 12px;
-    color: #6B7280;
+    color: var(--muted-foreground);
     margin-top: 4px;
 }
 
 .form-section-title {
     font-size: 18px;
     font-weight: 600;
-    color: #1F2937;
+    color: var(--foreground);
     margin-bottom: 16px;
     padding-bottom: 8px;
 }
@@ -518,7 +518,7 @@ select.form-input:focus {
 #profileInitials {
     font-size: 48px;
     font-weight: 700;
-    color: #6B7280;
+    color: var(--muted-foreground);
 }
 
 /* Profile picture upload button now uses standard .btn .btn-primary classes */
