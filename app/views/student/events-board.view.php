@@ -67,11 +67,7 @@ require '../app/views/partials/student_header.php';
           <div class="featured-events-grid">
             <div class="featured-event-card">
               <div class="event-image">
-                <div class="event-date">
-                  <span class="day">15</span>
-                  <span class="month">Dec</span>
-                </div>
-                <div class="event-status featured">Featured</div>
+                <!-- Empty for demo - plain background only -->
               </div>
               <div class="event-content">
                 <div class="event-category academic">Academic</div>
@@ -79,11 +75,11 @@ require '../app/views/partials/student_header.php';
                 <p class="event-description">Connect with top tech companies and discover internship opportunities in software development, AI, and data science.</p>
                 <div class="event-meta">
                   <span class="event-time"><i class="fas fa-clock"></i> 10:00 AM - 4:00 PM</span>
-                  <span class="event-location"><i class="fas fa-map-marker-alt"></i> Main Campus Hall</span>
+                  <span class="event-location"><i class="fas fa-map-marker-alt"></i> E401 Hall</span>
                 </div>
                 <div class="event-stats">
-                  <span class="attendees"><i class="fas fa-users"></i> 156 registered</span>
-                  <span class="spots-left"><i class="fas fa-ticket-alt"></i> 44 spots left</span>
+                  <span class="attendees"><i class="fas fa-users"></i> 56 registered</span>
+                  <span class="spots-left"><i class="fas fa-ticket-alt"></i> 10 spots left</span>
                 </div>
                 <div class="event-actions">
                   <button type="button" class="btn btn-primary btn-sm" onclick="openRegisterModal('Tech Workshop 2025')">
@@ -100,11 +96,7 @@ require '../app/views/partials/student_header.php';
             
             <div class="featured-event-card">
               <div class="event-image">
-                <div class="event-date">
-                  <span class="day">18</span>
-                  <span class="month">Dec</span>
-                </div>
-                <div class="event-status workshop">Workshop</div>
+                <!-- Empty for demo - plain background only -->
               </div>
               <div class="event-content">
                 <div class="event-category workshop">Workshop</div>
@@ -115,8 +107,8 @@ require '../app/views/partials/student_header.php';
                   <span class="event-location"><i class="fas fa-map-marker-alt"></i> Computer Lab A</span>
                 </div>
                 <div class="event-stats">
-                  <span class="attendees"><i class="fas fa-users"></i> 89 registered</span>
-                  <span class="spots-left"><i class="fas fa-ticket-alt"></i> 11 spots left</span>
+                  <span class="attendees"><i class="fas fa-users"></i> 10 registered</span>
+                  <span class="spots-left"><i class="fas fa-ticket-alt"></i> 5s spots left</span>
                 </div>
                 <div class="event-actions">
                   <button type="button" class="btn btn-primary btn-sm" onclick="openRegisterModal('Tech Workshop 2025')">
@@ -272,7 +264,7 @@ require '../app/views/partials/student_header.php';
                 <h3 class="event-title">Computer Science Career Fair 2024</h3>
                 <div class="event-meta">
                   <span class="event-time"><i class="fas fa-clock"></i> Dec 15, 10:00 AM</span>
-                  <span class="event-location"><i class="fas fa-map-marker-alt"></i> Main Campus Hall</span>
+                  <span class="event-location"><i class="fas fa-map-marker-alt"></i> E401 Hall</span>
                 </div>
                 <div class="event-actions">
                   <button class="btn btn-outline btn-sm">

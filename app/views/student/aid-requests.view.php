@@ -69,12 +69,12 @@ require '../app/views/partials/student_header.php';
                   <td>
                     <div class="request-type">
                       <i class="fas fa-graduation-cap"></i>
-                      <span>Tuition Fee</span>
+                      <span>Medical Fee</span>
                     </div>
                   </td>
-                  <td>$2,500</td>
+                  <td>Rs. 25,000</td>
                   <td><span class="status-badge status-pending">Under Review</span></td>
-                  <td>Dec 15, 2024</td>
+                  <td>Oct 15, 2025</td>
                   <td>
                     <div class="action-buttons">
                       <button class="btn btn-outline btn-sm">
@@ -97,9 +97,9 @@ require '../app/views/partials/student_header.php';
                       <span>Textbooks</span>
                     </div>
                   </td>
-                  <td>$350</td>
+                  <td>Rs. 3500</td>
                   <td><span class="status-badge status-approved">Approved</span></td>
-                  <td>Dec 10, 2024</td>
+                  <td>Oct 10, 2025</td>
                   <td>
                     <div class="action-buttons">
                       <button class="btn btn-outline btn-sm">
@@ -122,9 +122,9 @@ require '../app/views/partials/student_header.php';
                       <span>Housing</span>
                     </div>
                   </td>
-                  <td>$1,200</td>
+                  <td>Rs. 12,000</td>
                   <td><span class="status-badge status-completed">Completed</span></td>
-                  <td>Nov 28, 2024</td>
+                  <td>Sep 28, 2025</td>
                   <td>
                     <div class="action-buttons">
                       <button class="btn btn-outline btn-sm">
@@ -217,7 +217,7 @@ require '../app/views/partials/student_header.php';
                 <i class="fas fa-dollar-sign"></i>
               </div>
               <div class="stat-content">
-                <h3 class="stat-number">$12,450</h3>
+                <h3 class="stat-number">Rs. 12,450</h3>
                 <p class="stat-label">Total Aid Received</p>
               </div>
             </div>

@@ -244,7 +244,7 @@ require '../app/views/partials/student_header.php';
           <input type="hidden" id="editPostId" name="editPostId">
           
           <div class="form-group">
-            <label for="editPostTitle">Title *</label>
+            <label for="editPostTitle">Title of the forum*</label>
             <input type="text" id="editPostTitle" name="editPostTitle" placeholder="e.g., Help with data structures" required>
             <div class="form-help">At least 10 characters.</div>
           </div>

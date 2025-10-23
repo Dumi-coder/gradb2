@@ -27,67 +27,6 @@ require '../app/views/partials/student_header.php';
           </div>
         </section>
 
-        <!-- Resource Categories -->
-        <section class="dashboard-section categories-section">
-          <div class="section-header">
-            <h2 class="card-title">Browse by Category</h2>
-          </div>
-          
-          <div class="categories-grid">
-            <div class="category-card" onclick="filterResources('lecture-notes')">
-              <div class="category-icon">
-                <i class="fas fa-file-alt"></i>
-              </div>
-              <div class="category-info">
-                <h3 class="category-name">Lecture Notes</h3>
-                <p class="category-description">Class notes and study guides</p>
-                <div class="category-stats">
-                  <span class="stat"><i class="fas fa-file"></i> 45 files</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="category-card" onclick="filterResources('assignments')">
-              <div class="category-icon">
-                <i class="fas fa-tasks"></i>
-              </div>
-              <div class="category-info">
-                <h3 class="category-name">Assignments</h3>
-                <p class="category-description">Sample solutions and templates</p>
-                <div class="category-stats">
-                  <span class="stat"><i class="fas fa-file"></i> 32 files</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="category-card" onclick="filterResources('textbooks')">
-              <div class="category-icon">
-                <i class="fas fa-book"></i>
-              </div>
-              <div class="category-info">
-                <h3 class="category-name">Textbooks</h3>
-                <p class="category-description">Digital books and references</p>
-                <div class="category-stats">
-                  <span class="stat"><i class="fas fa-file"></i> 18 files</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="category-card" onclick="filterResources('software')">
-              <div class="category-icon">
-                <i class="fas fa-code"></i>
-              </div>
-              <div class="category-info">
-                <h3 class="category-name">Software & Tools</h3>
-                <p class="category-description">Development tools and software</p>
-                <div class="category-stats">
-                  <span class="stat"><i class="fas fa-file"></i> 12 files</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <!-- My Resources -->
         <section class="dashboard-section my-resources-section">
           <div class="section-header">
@@ -146,6 +85,67 @@ require '../app/views/partials/student_header.php';
           </div>
         </section>
 
+        <!-- Browse by Category -->
+        <section class="dashboard-section categories-section">
+          <div class="section-header">
+            <h2 class="card-title">Browse by Category</h2>
+          </div>
+          
+          <div class="categories-grid">
+            <div class="category-card" onclick="filterResources('lecture-notes')">
+              <div class="category-icon">
+                <i class="fas fa-file-alt"></i>
+              </div>
+              <div class="category-info">
+                <h3 class="category-name">Lecture Notes</h3>
+                <p class="category-description">Class notes and study guides</p>
+                <div class="category-stats">
+                  <span class="stat"><i class="fas fa-file"></i> 45 files</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="category-card" onclick="filterResources('assignments')">
+              <div class="category-icon">
+                <i class="fas fa-tasks"></i>
+              </div>
+              <div class="category-info">
+                <h3 class="category-name">Exercises</h3>
+                <p class="category-description">Sample solutions and templates</p>
+                <div class="category-stats">
+                  <span class="stat"><i class="fas fa-file"></i> 32 files</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="category-card" onclick="filterResources('textbooks')">
+              <div class="category-icon">
+                <i class="fas fa-book"></i>
+              </div>
+              <div class="category-info">
+                <h3 class="category-name">Textbooks</h3>
+                <p class="category-description">Digital books and references</p>
+                <div class="category-stats">
+                  <span class="stat"><i class="fas fa-file"></i> 18 files</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="category-card" onclick="filterResources('software')">
+              <div class="category-icon">
+                <i class="fas fa-code"></i>
+              </div>
+              <div class="category-info">
+                <h3 class="category-name">Software & Tools</h3>
+                <p class="category-description">Development tools and software</p>
+                <div class="category-stats">
+                  <span class="stat"><i class="fas fa-file"></i> 12 files</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- Recent Resources -->
         <section class="dashboard-section recent-section">
           <div class="section-header">
@@ -168,7 +168,7 @@ require '../app/views/partials/student_header.php';
                 <p class="resource-description">Comprehensive reference for common data structures and algorithms</p>
                 <div class="resource-meta">
                   <span class="resource-category">Lecture Notes</span>
-                  <span class="resource-author">by Alex Chen</span>
+                  <span class="resource-author">by Dumindu Hashen</span>
                   <span class="resource-date">2 hours ago</span>
                 </div>
               </div>
@@ -193,7 +193,7 @@ require '../app/views/partials/student_header.php';
                 <p class="resource-description">Starter template for Python web applications with Flask</p>
                 <div class="resource-meta">
                   <span class="resource-category">Software & Tools</span>
-                  <span class="resource-author">by Sarah Johnson</span>
+                  <span class="resource-author">by Nethmi Perera</span>
                   <span class="resource-date">1 day ago</span>
                 </div>
               </div>
@@ -217,8 +217,8 @@ require '../app/views/partials/student_header.php';
                 <h3 class="resource-title">Database Design Guidelines</h3>
                 <p class="resource-description">Best practices for designing efficient database schemas</p>
                 <div class="resource-meta">
-                  <span class="resource-category">Assignments</span>
-                  <span class="resource-author">by Dr. Martinez</span>
+                  <span class="resource-category">Exercises</span>
+                  <span class="resource-author">by Prasad Manoj</span>
                   <span class="resource-date">3 days ago</span>
                 </div>
               </div>

@@ -87,16 +87,16 @@ require '../app/views/partials/student_header.php';
                             ><?= isset($data['request']) ? htmlspecialchars($data['request']['request_reason']) : '' ?></textarea>
                         </div>
                         
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary submit-btn">
-                                <i class="fas fa-paper-plane"></i>
-                                <span><?= isset($data['is_edit']) && $data['is_edit'] ? 'Update Request' : 'Submit Mentorship Request' ?></span>
-                            </button>
-                            
+                        <div class="form-actions" style="display: flex; gap: var(--spacing-md); justify-content: center; margin-top: var(--spacing-xl);">
                             <a href="<?=ROOT?>/student/Mentorship" class="btn btn-outline">
                                 <i class="fas fa-arrow-left"></i>
                                 <span>Back to Mentorship</span>
                             </a>
+                            
+                            <button type="submit" class="btn btn-primary submit-btn">
+                                <i class="fas fa-paper-plane"></i>
+                                <span><?= isset($data['is_edit']) && $data['is_edit'] ? 'Update Request' : 'Submit Mentorship Request' ?></span>
+                            </button>
                         </div>
                     </form>
                 </div>

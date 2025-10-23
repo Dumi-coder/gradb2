@@ -41,6 +41,10 @@ require '../app/views/partials/student_header.php';
               <i class="fas fa-cog"></i>
               <span>Technical</span>
             </button>
+            <button class="category-btn" data-category="fundraiser">
+              <i class="fas fa-hand-holding-usd"></i>
+              <span>Fundraiser</span>
+            </button>
           </div>
         </section>
 
@@ -54,62 +58,122 @@ require '../app/views/partials/student_header.php';
             <!-- General Questions -->
             <div class="faq-item" data-category="general">
               <div class="faq-question" onclick="toggleFAQ(this)">
-                <h3>What is GradBridge?</h3>
+                <h3>What is GradBridge and how does it work?</h3>
                 <i class="fas fa-chevron-down"></i>
               </div>
               <div class="faq-answer">
-                <p>GradBridge is a comprehensive platform designed to connect students with alumni mentors, provide access to financial aid resources, and foster a supportive academic community. We help students navigate their educational journey through mentorship, resource sharing, and community support.</p>
+                <p>GradBridge is a comprehensive platform that connects students with verified alumni for mentorship, financial aid, and community support. The system allows students to request mentorship guidance, apply for financial aid, participate in discussion forums, access shared resources, and register for alumni networking events. All interactions are monitored by counselors and administrators to ensure quality and safety.</p>
               </div>
             </div>
 
             <div class="faq-item" data-category="general">
               <div class="faq-question" onclick="toggleFAQ(this)">
-                <h3>How do I create an account?</h3>
+                <h3>How do I navigate the dashboard?</h3>
                 <i class="fas fa-chevron-down"></i>
               </div>
               <div class="faq-answer">
-                <p>To create an account, click the "Sign Up" button on the homepage and choose whether you're a student or alumni. Fill in your basic information, verify your email address, and complete your profile. Students will need to provide their university email and student ID for verification.</p>
+                <p>Your dashboard is divided into sections accessible through the sidebar: Profile (view/edit your information), Mentorship (request and track mentorship), Aid Requests (apply for financial aid), Discussion Forum (engage with community), Events (register for alumni events), Resources (access shared materials), and Fundraising (view/support fundraising campaigns). Each section provides relevant actions and information specific to your needs.</p>
               </div>
             </div>
 
             <div class="faq-item" data-category="general">
               <div class="faq-question" onclick="toggleFAQ(this)">
-                <h3>Is GradBridge free to use?</h3>
+                <h3>Who can see my profile and information?</h3>
                 <i class="fas fa-chevron-down"></i>
               </div>
               <div class="faq-answer">
-                <p>Yes, GradBridge is completely free for students and alumni. We believe in providing accessible support for education and career development without financial barriers.</p>
+                <p>Your basic profile (name, faculty, year) is visible to verified alumni and other students within the platform. Sensitive information like your student ID, contact details, and aid request details are only accessible to authorized counselors, administrators, and alumni who have accepted your mentorship requests. You can update your profile privacy settings at any time.</p>
               </div>
             </div>
 
-            <!-- Mentorship Questions -->
-            <div class="faq-item" data-category="mentorship">
+            <div class="faq-item" data-category="general">
               <div class="faq-question" onclick="toggleFAQ(this)">
-                <h3>How does the mentorship program work?</h3>
+                <h3>How long does it take for requests to be approved?</h3>
                 <i class="fas fa-chevron-down"></i>
               </div>
               <div class="faq-answer">
-                <p>Students can browse available alumni mentors based on their field of study, career interests, and location. Once you find a suitable mentor, you can send a mentorship request explaining your goals and what you hope to learn. Mentors review requests and can accept or decline based on their availability and expertise.</p>
+                <p>Mentorship requests are typically reviewed by alumni within 3-5 business days. Aid requests go through counselor verification first (2-3 days), then are presented to alumni for acceptance (3-7 days). You'll receive email notifications at each stage of the process and can track the status in your dashboard.</p>
+              </div>
+            </div>
+
+            <!-- Mentorship/Career Guidance Questions -->
+            <div class="faq-item" data-category="mentorship">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <h3>How should I prepare for a job interview?</h3>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                <p>Research the company thoroughly, understand their products/services, culture, and recent news. Practice common interview questions like "Tell me about yourself," "Why this company?", and behavioral questions using the STAR method (Situation, Task, Action, Result). Prepare 2-3 specific examples from your projects or experiences. Dress professionally, arrive 10-15 minutes early, bring extra copies of your resume, and prepare thoughtful questions to ask the interviewer about the role and team.</p>
               </div>
             </div>
 
             <div class="faq-item" data-category="mentorship">
               <div class="faq-question" onclick="toggleFAQ(this)">
-                <h3>What should I include in my mentorship request?</h3>
+                <h3>How do I answer "Tell me about yourself" in an interview?</h3>
                 <i class="fas fa-chevron-down"></i>
               </div>
               <div class="faq-answer">
-                <p>Your mentorship request should include: your academic background, career goals, specific areas where you need guidance, your availability for meetings, and what you hope to achieve through the mentorship. Be clear about your expectations and respectful of the mentor's time.</p>
+                <p>Keep your answer to 1-2 minutes focusing on your professional journey. Start with your current status (e.g., "I'm a final year Computer Science student"), mention 2-3 relevant achievements or experiences, explain why you're interested in this role/company, and end with what you're looking for next. Structure: Present (who you are now) → Past (relevant experiences) → Future (why this role). Avoid personal details like hobbies unless directly relevant to the job.</p>
               </div>
             </div>
 
             <div class="faq-item" data-category="mentorship">
               <div class="faq-question" onclick="toggleFAQ(this)">
-                <h3>How often should I meet with my mentor?</h3>
+                <h3>What should I include in my resume as a student?</h3>
                 <i class="fas fa-chevron-down"></i>
               </div>
               <div class="faq-answer">
-                <p>The frequency of meetings depends on your mentor's availability and your needs. Most successful mentorship relationships involve monthly or bi-weekly meetings. You can discuss and agree on a schedule that works for both parties during your initial conversation.</p>
+                <p>Include: Contact information, education (GPA if above 3.5), relevant coursework, technical skills, internships/work experience (use action verbs and quantify achievements), academic projects (describe what you built and technologies used), leadership roles in clubs/organizations, certifications, and awards. Keep it to 1 page, use clear formatting, and tailor it to each job by highlighting relevant experiences. Avoid: photos, personal information (age, marital status), irrelevant hobbies, or vague descriptions.</p>
+              </div>
+            </div>
+
+            <div class="faq-item" data-category="mentorship">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <h3>How can I build my professional network while still in university?</h3>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                <p>Attend career fairs, industry conferences, and university alumni events. Join professional organizations related to your field. Connect with professors, guest speakers, and classmates on LinkedIn. Participate in hackathons, workshops, and competitions. Reach out to alumni for informational interviews (15-20 minute conversations to learn about their career). Engage meaningfully on LinkedIn by sharing insights and commenting on industry topics. Join student chapters of professional organizations. Remember: networking is about building genuine relationships, not just collecting contacts.</p>
+              </div>
+            </div>
+
+            <div class="faq-item" data-category="mentorship">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <h3>How do I choose between multiple job offers or career paths?</h3>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                <p>Evaluate each option based on: (1) Learning opportunities - which role helps you develop more relevant skills? (2) Career growth - does the company have clear advancement paths? (3) Company culture and values alignment (4) Work-life balance and location (5) Compensation package (salary, benefits, bonuses) (6) Team and manager quality (7) Industry growth potential (8) First role impact on future opportunities. Don't just chase the highest salary - prioritize learning and growth early in your career. Talk to current employees if possible and trust your instincts about where you'll thrive.</p>
+              </div>
+            </div>
+
+            <div class="faq-item" data-category="mentorship">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <h3>What technical skills should I focus on developing for my career?</h3>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                <p>For Software/IT: Master programming fundamentals (data structures, algorithms), learn version control (Git), database management (SQL), and at least one modern framework relevant to your field (React, Django, Spring, etc.). For Business: Excel/data analysis, presentation skills, financial modeling, project management tools. For all fields: Communication skills (written and verbal), problem-solving, time management, and collaboration tools (Slack, Teams, Jira). Build a portfolio of projects that demonstrate your skills. Stay updated with industry trends by following tech blogs, taking online courses, and contributing to open-source projects.</p>
+              </div>
+            </div>
+
+            <div class="faq-item" data-category="mentorship">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <h3>How do I get my first internship with no experience?</h3>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                <p>Start by building your skills through personal projects, online courses, and contributing to open-source projects. Create a strong portfolio showcasing these projects on GitHub and a personal website. Network actively - attend career fairs, join LinkedIn, and reach out to alumni. Apply broadly and don't just focus on big companies; startups and smaller companies often provide better learning opportunities. Tailor your resume to each application, emphasizing coursework and projects relevant to the role. Consider voluntary positions, research assistantships, or club projects to build initial experience. Quality applications (10 well-targeted) are better than 100 generic ones.</p>
+              </div>
+            </div>
+
+            <div class="faq-item" data-category="mentorship">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <h3>What should I ask at the end of an interview?</h3>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                <p>Ask thoughtful questions that show genuine interest: "What does a typical day look like in this role?", "What are the biggest challenges facing the team right now?", "How do you measure success in this position?", "What opportunities are there for learning and professional development?", "Can you describe the team culture and dynamics?", "What are the next steps in the hiring process?". Avoid asking about salary/benefits in the first interview unless they bring it up. Prepare 5-7 questions as some might be answered during the interview.</p>
               </div>
             </div>
 
@@ -172,6 +236,47 @@ require '../app/views/partials/student_header.php';
               </div>
               <div class="faq-answer">
                 <p>Yes, GradBridge is fully responsive and works on all devices including smartphones and tablets. You can access all features through your mobile browser. We're also working on a dedicated mobile app for an even better experience.</p>
+              </div>
+            </div>
+
+            <!-- Fundraiser Questions -->
+            <div class="faq-item" data-category="fundraiser">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <h3>What is the process for starting a fundraiser?</h3>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                <p>To start a fundraiser, you must first obtain proof of request or documentation for the cause of the fundraiser. If the fundraiser is from a club or organization, get an official letter from the club. Next, submit your proposal for approval by the student board. Once approved by the board, obtain the director or dean's approval. Finally, upload the signed approval letter along with your fundraiser details in the system. The fundraiser will go live after admin verification.</p>
+              </div>
+            </div>
+
+            <div class="faq-item" data-category="fundraiser">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <h3>What documents do I need to submit for fundraiser approval?</h3>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                <p>Required documents include: (1) Proof of request or cause documentation explaining the purpose, (2) Official letter from your club/organization if applicable, (3) Board approval letter, (4) Director or Dean's signed approval letter, (5) Detailed budget breakdown, and (6) Timeline for the fundraising campaign. All documents must be uploaded in PDF format.</p>
+              </div>
+            </div>
+
+            <div class="faq-item" data-category="fundraiser">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <h3>How long does it take for a fundraiser to be approved?</h3>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                <p>The approval process typically takes 7-14 business days. Board approval may take 3-5 days, director/dean approval another 3-5 days, and final admin verification 2-3 days. Plan ahead and submit your fundraiser request well in advance of when you need it to go live. You'll receive notifications at each approval stage.</p>
+              </div>
+            </div>
+
+            <div class="faq-item" data-category="fundraiser">
+              <div class="faq-question" onclick="toggleFAQ(this)">
+                <h3>Can individuals start fundraisers or only clubs?</h3>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="faq-answer">
+                <p>Both individuals and clubs can start fundraisers, but the approval process differs slightly. Individual fundraisers require stronger justification and additional verification. Club fundraisers need the official club letter. All fundraisers must have a legitimate educational or community purpose and require director/dean approval regardless of who initiates them.</p>
               </div>
             </div>
           </div>

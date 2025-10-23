@@ -265,7 +265,7 @@
 /* Events Section */
 .events-grid {
   display: grid;
-  grid-template-columns: 1fr; /* Single column - row-wise layout */
+  grid-template-columns: repeat(2, 1fr); /* Two columns - 2 events per row */
   gap: var(--spacing-lg);
 }
 

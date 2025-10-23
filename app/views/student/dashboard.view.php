@@ -298,7 +298,7 @@ require '../app/views/partials/student_header.php';
               </div>
               <div class="resource-info">
                 <h4 class="resource-name">Study Guide - Data Structures</h4>
-                <p class="resource-meta">Shared by Dr. Chen • 2 days ago</p>
+                <p class="resource-meta">Shared by Disuri Gihansa</br> 2 days ago</p>
                 <p class="resource-size">2.4 MB</p>
               </div>
               <button class="btn btn-outline btn-sm">Download</button>
@@ -310,7 +310,7 @@ require '../app/views/partials/student_header.php';
               </div>
               <div class="resource-info">
                 <h4 class="resource-name">Resume Template</h4>
-                <p class="resource-meta">Shared by Career Services • 1 week ago</p>
+                <p class="resource-meta">Shared by Bhasu Jayaweera </br> 1 week ago</p>
                 <p class="resource-size">156 KB</p>
               </div>
               <button class="btn btn-outline btn-sm">Download</button>
@@ -322,7 +322,7 @@ require '../app/views/partials/student_header.php';
               </div>
               <div class="resource-info">
                 <h4 class="resource-name">Interview Preparation Slides</h4>
-                <p class="resource-meta">Shared by Alumni Panel • 2 weeks ago</p>
+                <p class="resource-meta">Shared by Alumni Panel </br> 2 weeks ago</p>
                 <p class="resource-size">4.1 MB</p>
               </div>
               <button class="btn btn-outline btn-sm">Download</button>
@@ -342,16 +342,16 @@ require '../app/views/partials/student_header.php';
           
           <div class="fundraiser-content">
             <div class="active-fundraiser">
-              <h3 class="fundraiser-title">Computer Science Department Equipment Fund</h3>
-              <p class="fundraiser-description">Help us upgrade our computer lab with the latest hardware and software for students.</p>
+              <h3 class="fundraiser-title">IEEE Student Branch - Sustainable Tech Drive</h3>
+              <p class="fundraiser-description">Help us promote eco-friendly practices by recycling old tech and upgrading to energy-efficient systems.</p>
               
               <div class="fundraiser-progress">
                 <div class="progress-bar">
                   <div class="progress-fill" style="width: 75%"></div>
                 </div>
                 <div class="progress-stats">
-                  <span class="raised">$7,500 raised</span>
-                  <span class="goal">of $10,000 goal</span>
+                  <span class="raised">Rs. 15000 raised</span>
+                  <span class="goal">of Rs. 20000 goal</span>
                 </div>
               </div>
               

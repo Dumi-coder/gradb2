@@ -46,7 +46,7 @@
 
 .campaign-image {
   height: 120px;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background: #E0EBF9;
   position: relative;
   display: flex;
   align-items: flex-end;
@@ -81,13 +81,13 @@
 
 .campaign-progress {
   width: 100%;
-  color: white;
+  color: var(--foreground);
 }
 
 .progress-bar {
   width: 100%;
   height: 6px;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(0, 0, 0, 0.1);
   border-radius: var(--radius-full);
   overflow: hidden;
   margin-bottom: var(--spacing-xs);
@@ -95,7 +95,7 @@
 
 .progress-fill {
   height: 100%;
-  background-color: white;
+  background-color: var(--primary);
   border-radius: var(--radius-full);
   transition: width 0.3s ease;
 }
@@ -164,19 +164,24 @@
   padding: var(--spacing-md);
   background-color: var(--background);
   border-radius: var(--radius-md);
+  align-items: start;
 }
 
 .campaign-goal,
 .campaign-raised,
 .campaign-donors {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .goal-amount,
 .raised-amount,
 .donors-count {
   display: block;
-  font-size: var(--font-lg);
+  font-size: var(--font-base);
   font-weight: 700;
   color: var(--primary);
   line-height: 1;
@@ -212,10 +217,10 @@
 .donation-item {
   background-color: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
   display: flex;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
   transition: all 0.3s ease;
 }
 
@@ -225,15 +230,15 @@
 }
 
 .donation-icon {
-  width: 50px;
-  height: 50px;
+  width: 36px;
+  height: 36px;
   background-color: var(--secondary);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--primary);
-  font-size: var(--font-lg);
+  font-size: var(--font-sm);
   flex-shrink: 0;
 }
 
@@ -242,23 +247,23 @@
 }
 
 .donation-campaign {
-  font-size: var(--font-md);
+  font-size: var(--font-sm);
   font-weight: 600;
   color: var(--foreground);
   margin: 0 0 var(--spacing-xs) 0;
 }
 
 .donation-amount {
-  font-size: var(--font-lg);
+  font-size: var(--font-sm);
   font-weight: 700;
   color: var(--primary);
-  margin: 0 0 var(--spacing-sm) 0;
+  margin: 0 0 4px 0;
 }
 
 .donation-meta {
   display: flex;
-  gap: var(--spacing-md);
-  font-size: var(--font-sm);
+  gap: var(--spacing-sm);
+  font-size: var(--font-xs);
   color: var(--muted-foreground);
 }
 
@@ -376,6 +381,11 @@
   background-color: var(--background);
   color: var(--foreground);
   transition: border-color 0.2s ease;
+}
+
+.form-group input[type="file"] {
+  padding: var(--spacing-xs);
+  cursor: pointer;
 }
 
 .form-group input:focus,
