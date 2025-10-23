@@ -63,7 +63,14 @@ require '../app/views/partials/student_header.php';
               </div>
               <p class="request-description">Need help with the machine learning implementation</p>
               <div class="request-actions">
-                <button class="btn btn-outline btn-sm">
+                <button class="btn btn-outline btn-sm view-alumni-profile-btn"
+                        data-alumni-name="Dr. Sarah Mitchell"
+                        data-alumni-title="Senior ML Engineer at Google"
+                        data-alumni-graduation="Class of 2015"
+                        data-alumni-expertise="Machine Learning, Data Science, Cloud AI"
+                        data-alumni-company="Google"
+                        data-alumni-experience="8 years"
+                        data-alumni-email="sarah.mitchell@alumni.edu">
                   <i class="fas fa-user"></i>
                   <span>View Alumni Profile</span>
                 </button>
@@ -102,6 +109,90 @@ require '../app/views/partials/student_header.php';
         </div>
       </main>
     </div>
+
+    <!-- Alumni Profile Modal -->
+    <div id="alumniProfileModal" class="profile-modal" style="display: none;">
+      <div class="profile-modal-content">
+        <div class="profile-modal-header">
+          <h3><i class="fas fa-user-tie"></i> Alumni Profile</h3>
+          <button class="profile-modal-close">&times;</button>
+        </div>
+        
+        <div class="profile-modal-body">
+          <div class="profile-avatar alumni-avatar">
+            <div class="avatar-circle">
+              <i class="fas fa-user-tie"></i>
+            </div>
+          </div>
+          
+          <div class="profile-info-section">
+            <h2 class="profile-name" id="alumniProfileName"></h2>
+            <p class="profile-subtitle" id="alumniProfileTitle"></p>
+          </div>
+
+          <div class="profile-details-grid">
+            <div class="profile-detail-item">
+              <div class="detail-icon">
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Graduation</span>
+                <span class="detail-value" id="alumniProfileGraduation"></span>
+              </div>
+            </div>
+
+            <div class="profile-detail-item">
+              <div class="detail-icon">
+                <i class="fas fa-building"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Company</span>
+                <span class="detail-value" id="alumniProfileCompany"></span>
+              </div>
+            </div>
+
+            <div class="profile-detail-item">
+              <div class="detail-icon">
+                <i class="fas fa-briefcase"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Experience</span>
+                <span class="detail-value" id="alumniProfileExperience"></span>
+              </div>
+            </div>
+
+            <div class="profile-detail-item">
+              <div class="detail-icon">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Email</span>
+                <span class="detail-value" id="alumniProfileEmail"></span>
+              </div>
+            </div>
+
+            <div class="profile-detail-item full-width">
+              <div class="detail-icon">
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Expertise & Skills</span>
+                <span class="detail-value" id="alumniProfileExpertise"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="profile-modal-footer">
+          <button class="btn btn-outline close-profile-btn">Close</button>
+          <button class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i> Send Message
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="<?=ROOT?>/assets/js/main.js"></script>
+    <script src="<?=ROOT?>/assets/js/profile-modals.js"></script>
   </body>
 </html>

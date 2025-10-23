@@ -21,7 +21,24 @@ require '../app/views/partials/alumni_header.php';
           </div>
           
           <div class="mentorship-requests-container">
-            <?php foreach ($mentorshipData['requests'] as $request): ?>
+            <?php 
+            // Demo hardcoded mentorship request data
+            $demoMentorshipRequests = [
+              [
+                'id' => 1,
+                'student_name' => 'Alex Thompson',
+                'student_major' => 'Computer Science',
+                'student_year' => '3rd Year',
+                'student_gpa' => '3.7',
+                'student_email' => 'alex.thompson@university.edu',
+                'student_interests' => 'Web Development, AI/ML, Cloud Computing',
+                'guidance_type' => 'Career Guidance & Technical Skills',
+                'description' => 'Looking for guidance on transitioning from academic projects to real-world software development. Interested in learning about industry best practices and building a strong portfolio.',
+                'status' => 'pending'
+              ]
+            ];
+            
+            foreach ($demoMentorshipRequests as $request): ?>
             <div class="mentorship-request-card">
               <div class="request-header">
                 <div class="request-info">
@@ -40,6 +57,15 @@ require '../app/views/partials/alumni_header.php';
               </div>
               
               <div class="request-actions">
+                <button class="btn btn-secondary btn-sm view-student-profile-btn"
+                        data-student-name="<?= esc($request['student_name']) ?>"
+                        data-student-major="<?= esc($request['student_major']) ?>"
+                        data-student-year="<?= esc($request['student_year']) ?>"
+                        data-student-gpa="<?= esc($request['student_gpa']) ?>"
+                        data-student-email="<?= esc($request['student_email']) ?>"
+                        data-student-interests="<?= esc($request['student_interests']) ?>">
+                  <i class="fas fa-user"></i> View Student Profile
+                </button>
                 <button class="btn btn-primary btn-sm accept-btn">Accept</button>
                 <button class="btn btn-outline btn-sm decline-btn">Decline</button>
               </div>
@@ -118,7 +144,80 @@ require '../app/views/partials/alumni_header.php';
       </main>
     </div>
 
+    <!-- Student Profile Modal -->
+    <div id="studentProfileModal" class="profile-modal" style="display: none;">
+      <div class="profile-modal-content">
+        <div class="profile-modal-header">
+          <h3><i class="fas fa-user-graduate"></i> Student Profile</h3>
+          <button class="profile-modal-close">&times;</button>
+        </div>
+        
+        <div class="profile-modal-body">
+          <div class="profile-avatar">
+            <div class="avatar-circle">
+              <i class="fas fa-user-graduate"></i>
+            </div>
+          </div>
+          
+          <div class="profile-info-section">
+            <h2 class="profile-name" id="studentProfileName"></h2>
+            <p class="profile-subtitle" id="studentProfileMajor"></p>
+          </div>
+
+          <div class="profile-details-grid">
+            <div class="profile-detail-item">
+              <div class="detail-icon">
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Academic Year</span>
+                <span class="detail-value" id="studentProfileYear"></span>
+              </div>
+            </div>
+
+            <div class="profile-detail-item">
+              <div class="detail-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">GPA</span>
+                <span class="detail-value" id="studentProfileGPA"></span>
+              </div>
+            </div>
+
+            <div class="profile-detail-item">
+              <div class="detail-icon">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Email</span>
+                <span class="detail-value" id="studentProfileEmail"></span>
+              </div>
+            </div>
+
+            <div class="profile-detail-item full-width">
+              <div class="detail-icon">
+                <i class="fas fa-heart"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Interests & Goals</span>
+                <span class="detail-value" id="studentProfileInterests"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="profile-modal-footer">
+          <button class="btn btn-outline close-profile-btn">Close</button>
+          <button class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i> Send Message
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/mentorship.js"></script>
+    <script src="<?=ROOT?>/assets/js/profile-modals.js"></script>
   </body>
 </html>
