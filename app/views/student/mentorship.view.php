@@ -114,5 +114,6 @@ require '../app/views/partials/student_header.php';
     </div>
     <script src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/profile-modals.js"></script>
+    <script src="<?=ROOT?>/assets/js/profile-modals.js"></script>
   </body>
 </html>
