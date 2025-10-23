@@ -17,6 +17,16 @@ class Profile extends Controller
             return;
         }
 
+        if(isset($_GET['action']) && $_GET['action'] === 'delete_photo') {
+            $this->deletePhoto();
+            return;
+        }
+        
+        if(isset($_GET['action']) && $_GET['action'] === 'delete_account') {
+            $this->deleteAccount();
+            return;
+        }
+
         $student = new Student();
         $profile = $student->getStudentProfile($_SESSION['student_id']);
         
@@ -74,6 +84,8 @@ class Profile extends Controller
     $student_id = trim($_POST['student_id'] ?? '');
     $mobile = trim($_POST['mobile'] ?? '');
     $bio = trim($_POST['bio'] ?? '');
+    $linkedin_url = trim($_POST['linkedin_url'] ?? '');
+    $github_url = trim($_POST['github_url'] ?? '');
     $profile_picture = $_FILES['profile_picture'] ?? null;
 
     // Validation
@@ -92,11 +104,11 @@ class Profile extends Controller
     if (empty($student_id)) {
         $errors['student_id'] = "Student ID is required";
     }
-    if (!empty($mobile) && !is_numeric($mobile)) {
-        $errors['mobile'] = "Mobile number must be numeric";
+    if (!empty($mobile) && !preg_match('/^[7][0-9]{8}$/', $mobile)) {
+        $errors['mobile'] = "Mobile number must be 9 digits starting with 7";
     }
-    if (strlen($bio) > 500) {
-        $errors['bio'] = "Bio must be less than 500 characters";
+    if (strlen($bio) > 1000) {
+        $errors['bio'] = "Bio must be less than 1000 characters";
     }
 
     // Validate faculty exists
@@ -137,20 +149,16 @@ class Profile extends Controller
     // }
 
     // Define upload directory (used for both upload and deletion)
-    // Using constant is better - but fallback to relative path if not defined
-    // Define upload directory (used for both upload and deletion)
-    $project_root = '/opt/lampp/htdocs/gradb2';
-    $upload_dir = $project_root . '/public/assets/uploads/profiles/';
+    $upload_dir = '../public/assets/uploads/profiles/';
 
-    $profile_photo_url = $current_profile->profile_photo_url;
+    $profile_photo_url = $current_profile->profile_photo_url; // Keep current if no new upload
     $new_file_uploaded = false;
 
     error_log("=== UPLOAD DEBUG ===");
-    error_log("Project root: $project_root");
     error_log("Upload directory: $upload_dir");
     error_log("Upload directory exists: " . (is_dir($upload_dir) ? 'yes' : 'no'));
     error_log("Upload directory writable: " . (is_writable($upload_dir) ? 'yes' : 'no'));
-    // Validate and handle profile picture upload
+     // Validate and handle profile picture upload
      if ($profile_picture && $profile_picture['error'] != UPLOAD_ERR_NO_FILE) {
             if ($profile_picture['error'] != UPLOAD_ERR_OK) {
                 $errors['profile_picture'] = "Upload error occurred";
@@ -163,56 +171,40 @@ class Profile extends Controller
                 if (!in_array($detected_type, $allowed_types)) {
                     $errors['profile_picture'] = "Only JPEG, PNG, and GIF images are allowed";
                 }
-                elseif ($profile_picture['size'] > 10000000) { // 10MB limit
-                    $errors['profile_picture'] = "Profile picture must be less than 10MB";
+                elseif ($profile_picture['size'] > 5000000) { // 5MB limit
+                    $errors['profile_picture'] = "Profile picture must be less than 5MB";
                 }
                 else {
-                // File is valid, proceed with upload
-                // Use absolute path to avoid issues
-                // $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/assets/uploads/profiles/';
-                
-                // Create directory if it doesn't exist with more permissive permissions
-                if (!is_dir($upload_dir)) {
-                    if (!mkdir($upload_dir, 0775, true)) {
-                        $errors['profile_picture'] = "Failed to create upload directory: $upload_dir";
-                        error_log("Failed to create directory: $upload_dir");
-                        error_log("Document root: " . $_SERVER['DOCUMENT_ROOT']);
-                    } else {
-                        error_log("Directory created successfully: $upload_dir");
+                    // Create directory if it doesn't exist
+                    if (!is_dir($upload_dir)) {
+                        mkdir($upload_dir, 0775, true);
                     }
-                }
 
-                // // Add this in your handleUpdate method right after defining $upload_dir
-                // error_log("Controller file location: " . __FILE__);
-                // error_log("Upload directory: $upload_dir");
-                // error_log("Directory exists: " . (is_dir($upload_dir) ? 'yes' : 'no'));
-                // error_log("Parent directory exists: " . (is_dir(dirname($upload_dir)) ? 'yes' : 'no'));
-                
-                // Only proceed if directory exists or was created successfully
-                if (!isset($errors['profile_picture'])) {
                     // Generate unique filename
                     $file_extension = pathinfo($profile_picture['name'], PATHINFO_EXTENSION);
-                    // Sanitize student ID - replace slashes with underscores
                     $safe_student_id = str_replace('/', '_', $_SESSION['student_id']);
                     $file_name = 'profile_' . $safe_student_id . '_' . time() . '.' . $file_extension;
                     $target_file = $upload_dir . $file_name;
 
                     if (move_uploaded_file($profile_picture['tmp_name'], $target_file)) {
-                        $profile_photo_url = $file_name;
+                        $profile_photo_url = ROOT . '/assets/uploads/profiles/' . $file_name;
                         $new_file_uploaded = true;
                         error_log("File uploaded successfully: $target_file");
+                        
+                        // Delete old profile picture if it exists
+                        if ($current_profile->profile_photo_url && 
+                            strpos($current_profile->profile_photo_url, '/assets/uploads/profiles/') !== false) {
+                            $old_file = '../public' . str_replace(ROOT, '', $current_profile->profile_photo_url);
+                            if (file_exists($old_file)) {
+                                unlink($old_file);
+                            }
+                        }
                     } else {
-                        $errors['profile_picture'] = "Failed to move uploaded file. Check directory permissions.";
-                        error_log("Failed to move file from {$profile_picture['tmp_name']} to $target_file");
-                        error_log("Upload directory writable: " . (is_writable($upload_dir) ? 'yes' : 'no'));
-                        error_log("Upload directory exists: " . (is_dir($upload_dir) ? 'yes' : 'no'));
+                        $errors['profile_picture'] = "Failed to upload profile picture";
                     }
                 }
             }
-        }
-    }
-
-    if (empty($errors)) {
+    }    if (empty($errors)) {
         try {
             // Update user table (name and email)
             $user = new User();
@@ -230,28 +222,19 @@ class Profile extends Controller
             if ($student_id !== $current_profile->student_id) $student_data['student_id'] = $student_id;
             if (isset($faculty_record) && $faculty_record->faculty_id != $current_profile->faculty_id) $student_data['faculty_id'] = $faculty_record->faculty_id;
             if ($academic_year != $current_profile->academic_year) $student_data['academic_year'] = $academic_year;
-            if ($mobile !== $current_profile->mobile) $student_data['mobile'] = $mobile ?: null;
-            if ($bio !== $current_profile->bio) $student_data['bio'] = $bio ?: null;
+            if ($mobile !== ($current_profile->mobile ?? '')) $student_data['mobile'] = $mobile ?: null;
+            if ($bio !== ($current_profile->bio ?? '')) $student_data['bio'] = $bio ?: null;
+            if ($linkedin_url !== ($current_profile->LinkedIn ?? '')) $student_data['LinkedIn'] = $linkedin_url ?: null;
+            if ($github_url !== ($current_profile->GitHub ?? '')) $student_data['GitHub'] = $github_url ?: null;
 
-
-            // Add profile photo URL if a new file was uploaded
-            if ($new_file_uploaded) {
+            if ($profile_photo_url !== $current_profile->profile_photo_url) {
                 $student_data['profile_photo_url'] = $profile_photo_url;
             }
 
-            // Update student data if there are changes
+            // Ensure at least one field is updated
             if (!empty($student_data)) {
                 if (!$student->logUpdate($_SESSION['student_id'], $student_data, 'student_id')) {
                     throw new Exception("Failed to update student data for student_id: {$_SESSION['student_id']}");
-                }
-            }
-
-            // Delete old profile picture ONLY after successful database update
-            if ($new_file_uploaded && $current_profile->profile_photo_url) {
-                $old_file = $upload_dir . $current_profile->profile_photo_url;
-                if (file_exists($old_file)) {
-                    unlink($old_file);
-                    error_log("Deleted old profile picture: $old_file");
                 }
             }
            
@@ -284,5 +267,117 @@ class Profile extends Controller
     ob_end_flush();
     $this->view('student/profile/edit', $data);
  }
+
+    private function deletePhoto()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_photo'])) {
+            $student = new Student();
+            $profile = $student->getStudentProfile($_SESSION['student_id']);
+            
+            if ($profile && !empty($profile->profile_photo_url)) {
+                // Delete the file from server
+                if (strpos($profile->profile_photo_url, '/assets/uploads/profiles/') !== false) {
+                    $file_path = '../public' . str_replace(ROOT, '', $profile->profile_photo_url);
+                    if (file_exists($file_path)) {
+                        unlink($file_path);
+                    }
+                }
+                
+                // Update database to remove photo URL
+                $student_data = ['profile_photo_url' => null];
+                $student->update($_SESSION['student_id'], $student_data, 'student_id');
+            }
+        }
+        
+        // Redirect back to edit profile
+        redirect('student/profile?action=edit');
+    }
+
+    /**
+     * Delete the logged-in student account and all related data/resources.
+     */
+    public function deleteAccount()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Only allow students
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+            redirect('student/auth');
+        }
+
+        // Only accept POST to perform destructive action
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            // Show confirmation page or redirect back
+            redirect('student/profile');
+            return;
+        }
+
+        $user_id = $_SESSION['user_id'];
+        $student_id = $_SESSION['student_id'] ?? null;
+
+        // Delete uploaded resources files and DB rows
+        try {
+            $resourceModel = new SharedResource();
+            $resources = $resourceModel->where(['user_id' => $user_id]);
+            if ($resources) {
+                foreach ($resources as $r) {
+                    if (!empty($r->file_path)) {
+                        $fileName = basename($r->file_path);
+                        $physicalPath = RESOURCE_UPLOAD_PATH . $fileName;
+                        if (file_exists($physicalPath)) {
+                            @unlink($physicalPath);
+                        }
+                    }
+                    // delete DB row
+                    $resourceModel->delete($r->resource_id, 'resource_id');
+                }
+            }
+
+            // Delete profile photo file if exists
+            if ($student_id) {
+                $studentModel = new Student();
+                $profile = $studentModel->getStudentProfile($student_id);
+                if ($profile && !empty($profile->profile_photo_url)) {
+                    if (strpos($profile->profile_photo_url, '/assets/uploads/profiles/') !== false) {
+                        $old_file = '../public' . str_replace(ROOT, '', $profile->profile_photo_url);
+                        if (file_exists($old_file)) {
+                            @unlink($old_file);
+                        }
+                    }
+                }
+
+                // Delete student DB row
+                $studentModel->delete($student_id, 'student_id');
+            }
+
+            // Delete user row
+            $userModel = new User();
+            $userModel->delete($user_id, 'user_id');
+
+        } catch (Exception $e) {
+            error_log('Account deletion error: ' . $e->getMessage());
+            // Continue to destroy session and redirect to home even if cleanup fails partially
+        }
+
+        // Destroy session and redirect to public home
+        $_SESSION = [];
+        if (ini_get('session.use_cookies')) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params['path'], $params['domain'], $params['secure'], $params['httponly']
+            );
+        }
+        session_destroy();
+
+        // Redirect to public home
+        header('Location: ' . ROOT . '/');
+        exit();
+    }
 
 }

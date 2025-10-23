@@ -27,25 +27,27 @@ require '../app/views/partials/student_header.php';
                     <!-- Profile Picture Section -->
                     <div class="profile-picture-section">
                         <div class="profile-picture-preview">
-                            <?php if (!empty($profile->profile_photo_url) && file_exists($_SERVER['DOCUMENT_ROOT'] . '/assets/uploads/profiles/' . basename($profile->profile_photo_url))): ?>
-                                <img src="<?= ROOT . '/assets/uploads/profiles/' . basename($profile->profile_photo_url) ?>" 
-                                     alt="Current Profile Picture" 
-                                     id="profilePreview">
+                            <?php if (!empty($profile->profile_photo_url)): ?>
+                                <img src="<?= esc($profile->profile_photo_url) ?>" alt="Profile Picture" id="profilePreview">
                             <?php else: ?>
                                 <span id="profileInitials"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
                             <?php endif; ?>
                         </div>
-                        <label for="profile_picture" class="profile-picture-upload">
-                            <i class="fas fa-camera"></i>
-                            Change Photo
-                            <input type="file" 
-                                   id="profile_picture"
-                                   name="profile_picture" 
-                                   accept="image/*"
-                                   onchange="previewImage(this)">
-                        </label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <label for="profile_picture" class="profile-picture-upload">
+                                <i class="fas fa-camera"></i>
+                                Change Photo
+                                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)">
+                            </label>
+                            <?php if (!empty($profile->profile_photo_url)): ?>
+                                <button type="button" onclick="deleteProfilePicture()" class="btn-delete-photo" style="padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                                    <i class="fas fa-trash"></i>
+                                    Delete Photo
+                                </button>
+                            <?php endif; ?>
+                        </div>
                         <?php if (isset($errors['profile_picture'])): ?>
-                            <span class="error-message"><?= esc($errors['profile_picture']) ?></span>
+                            <div class="error-message"><?= esc($errors['profile_picture']) ?></div>
                         <?php endif; ?>
                     </div>
 
@@ -136,17 +138,16 @@ require '../app/views/partials/student_header.php';
                             <?php endif; ?>
                         </div>
 
+                        <!-- Mobile Number -->
                         <div class="form-group">
-                            <label for="mobile" class="form-label">Mobile</label>
-                            <input
-                                type="text"
-                                id="mobile"
-                                name="mobile" 
-                                class="form-input <?= isset($errors['mobile']) ? 'error' : '' ?>"
-                                value="<?= esc($profile->mobile) ?>"
-                            >
+                            <label for="mobile" class="form-label">Mobile Number</label>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="padding: 12px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; font-weight: 500;">+94</span>
+                                <input type="tel" id="mobile" name="mobile" class="form-input" style="flex: 1;" value="<?= esc($profile->mobile ?? '') ?>" placeholder="771234567" maxlength="9">
+                            </div>
+                            <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">Enter 9 digits without leading 0 (e.g., 771234567)</small>
                             <?php if (isset($errors['mobile'])): ?>
-                                <span class="error-message"><?= esc($errors['mobile']) ?></span>
+                                <div class="error-message"><?= esc($errors['mobile']) ?></div>
                             <?php endif; ?>
                         </div>
 
@@ -171,7 +172,7 @@ require '../app/views/partials/student_header.php';
                         <div class="social-form-grid">
                             <div class="form-group">
                                 <label for="linkedin_url" class="form-label">LinkedIn URL</label>
-                                <input type="url" id="linkedin_url" name="linkedin_url" class="form-input" value="<?= esc($profile->linkedin_url ?? '') ?>" placeholder="https://linkedin.com/in/yourprofile">
+                                <input type="url" id="linkedin_url" name="linkedin_url" class="form-input" value="<?= esc($profile->LinkedIn ?? '') ?>" placeholder="https://linkedin.com/in/yourprofile">
                                 <?php if (isset($errors['linkedin_url'])): ?>
                                     <div class="error-message"><?= esc($errors['linkedin_url']) ?></div>
                                 <?php endif; ?>
@@ -179,25 +180,9 @@ require '../app/views/partials/student_header.php';
 
                             <div class="form-group">
                                 <label for="github_url" class="form-label">GitHub URL</label>
-                                <input type="url" id="github_url" name="github_url" class="form-input" value="<?= esc($profile->github_url ?? '') ?>" placeholder="https://github.com/yourusername">
+                                <input type="url" id="github_url" name="github_url" class="form-input" value="<?= esc($profile->GitHub ?? '') ?>" placeholder="https://github.com/yourusername">
                                 <?php if (isset($errors['github_url'])): ?>
                                     <div class="error-message"><?= esc($errors['github_url']) ?></div>
-                                <?php endif; ?>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="twitter_url" class="form-label">Twitter URL</label>
-                                <input type="url" id="twitter_url" name="twitter_url" class="form-input" value="<?= esc($profile->twitter_url ?? '') ?>" placeholder="https://twitter.com/yourusername">
-                                <?php if (isset($errors['twitter_url'])): ?>
-                                    <div class="error-message"><?= esc($errors['twitter_url']) ?></div>
-                                <?php endif; ?>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="website_url" class="form-label">Personal Website</label>
-                                <input type="url" id="website_url" name="website_url" class="form-input" value="<?= esc($profile->website_url ?? '') ?>" placeholder="https://yourwebsite.com">
-                                <?php if (isset($errors['website_url'])): ?>
-                                    <div class="error-message"><?= esc($errors['website_url']) ?></div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -220,8 +205,63 @@ require '../app/views/partials/student_header.php';
         </main>
     </div>
     
+    <!-- Delete Confirmation Modal -->
+    <div id="deletePhotoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 10px; padding: 30px; max-width: 400px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+            <div style="font-size: 50px; color: #e74c3c; margin-bottom: 20px;">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 style="margin: 0 0 10px 0; color: #2c3e50; font-size: 24px;">Delete Profile Picture?</h3>
+            <p style="color: #7f8c8d; margin: 0 0 30px 0;">Are you sure you want to delete your profile picture? This action cannot be undone.</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button onclick="closeDeleteModal()" style="padding: 12px 30px; background: #95a5a6; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: 500;">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button onclick="confirmDeletePhoto()" style="padding: 12px 30px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: 500;">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Unified Profile JavaScript -->
     <script src="<?=ROOT?>/assets/js/profile.js"></script>
+    <script>
+        function deleteProfilePicture() {
+            // Show the custom modal
+            document.getElementById('deletePhotoModal').style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            // Hide the modal
+            document.getElementById('deletePhotoModal').style.display = 'none';
+        }
+
+        function confirmDeletePhoto() {
+            // Create a form to submit the delete request
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?=ROOT?>/student/profile?action=delete_photo';
+            
+            // Add hidden input for delete action
+            const deleteInput = document.createElement('input');
+            deleteInput.type = 'hidden';
+            deleteInput.name = 'delete_photo';
+            deleteInput.value = '1';
+            form.appendChild(deleteInput);
+            
+            // Submit the form
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('deletePhotoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteModal();
+            }
+        });
+    </script>
     
 </body>
 </html>
