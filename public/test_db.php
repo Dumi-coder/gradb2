@@ -37,33 +37,33 @@
 
 
 // test_connection.php
-require '../app/init.php';
+// require '../app/init.php';
 
-echo "<h2>Database Connection Test</h2>";
+// echo "<h2>Database Connection Test</h2>";
 
-try {
-    // Test connection
-    $string = "mysql:hostname=" . DBHOST . ";dbname=" . DBNAME;
-    $con = new PDO($string, DBUSER, DBPASS);
-    echo "✅ Database connection successful<br>";
+// try {
+//     // Test connection
+//     $string = "mysql:hostname=" . DBHOST . ";dbname=" . DBNAME;
+//     $con = new PDO($string, DBUSER, DBPASS);
+//     echo "✅ Database connection successful<br>";
     
-    // Test SELECT query
-    $student = new Student();
-    $result = $student->query("SELECT COUNT(*) as count FROM students");
-    echo "✅ SELECT query test: " . ($result ? "SUCCESS" : "FAILED") . "<br>";
+//     // Test SELECT query
+//     $student = new Student();
+//     $result = $student->query("SELECT COUNT(*) as count FROM students");
+//     echo "✅ SELECT query test: " . ($result ? "SUCCESS" : "FAILED") . "<br>";
     
-    // Test UPDATE query
-    $test_result = $student->query("UPDATE students SET academic_year = 3 WHERE student_id = :student_id", [
-        'student_id' => 'test123' // Use a non-existent ID to avoid actual changes
-    ]);
-    echo "✅ UPDATE query test: " . ($test_result !== false ? "SUCCESS" : "FAILED") . "<br>";
+//     // Test UPDATE query
+//     $test_result = $student->query("UPDATE students SET academic_year = 3 WHERE student_id = :student_id", [
+//         'student_id' => 'test123' // Use a non-existent ID to avoid actual changes
+//     ]);
+//     echo "✅ UPDATE query test: " . ($test_result !== false ? "SUCCESS" : "FAILED") . "<br>";
     
-    // Show database info
-    echo "<h3>Database Info:</h3>";
-    echo "Host: " . DBHOST . "<br>";
-    echo "Database: " . DBNAME . "<br>";
-    echo "User: " . DBUSER . "<br>";
+//     // Show database info
+//     echo "<h3>Database Info:</h3>";
+//     echo "Host: " . DBHOST . "<br>";
+//     echo "Database: " . DBNAME . "<br>";
+//     echo "User: " . DBUSER . "<br>";
     
-} catch (PDOException $e) {
-    echo "❌ Database connection failed: " . $e->getMessage() . "<br>";
-}
+// } catch (PDOException $e) {
+//     echo "❌ Database connection failed: " . $e->getMessage() . "<br>";
+// }
