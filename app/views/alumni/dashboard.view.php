@@ -60,32 +60,55 @@ require '../app/views/partials/alumni_header.php';
         <section class="dashboard-section mentorship-section">
                     <div class="section-header">
                         <h2 class="section-title">Mentorship Requests</h2>
-            <button class="btn btn-outline">
+            <a href="<?= ROOT ?>/Alumni/Mentorship" class="btn btn-outline">
               <i class="fas fa-external-link-alt"></i>
               View All
-            </button>
+            </a>
           </div>
           
           <div class="mentorship-grid">
-            <div class="mentorship-card">
-              <div class="mentor-info">
-                <div class="mentor-avatar">
+            <?php if (!empty($mentorshipData['requests'])): ?>
+              <?php foreach ($mentorshipData['requests'] as $request): ?>
+              <div class="mentorship-card">
+                <div class="mentor-info">
+                  <div class="mentor-avatar">
+                    <i class="fas fa-user-graduate"></i>
+                  </div>
+                  <div class="mentor-details">
+                    <h4 class="mentor-name"><?= esc($request['student_name']) ?></h4>
+                    <p class="mentor-role"><?= esc($request['guidance_type']) ?></p>
+                    <p class="mentor-specialty"><?= esc($request['description']) ?></p>
+                  </div>
+                </div>
+                <div class="mentorship-status">
+                  <span class="status-badge status-new">NEW</span>
+                  <div class="mentorship-actions">
+                    <a href="<?= ROOT ?>/Alumni/Mentorship/accept/<?= $request['id'] ?>" 
+                       class="btn btn-success btn-sm"
+                       onclick="return confirm('Are you sure you want to accept this mentorship request?')">
+                      Accept
+                    </a>
+                    <button class="btn btn-outline btn-sm view-student-profile-btn"
+                            data-student-name="<?= esc($request['student_name']) ?>"
+                            data-student-id="<?= esc($request['student_id']) ?>"
+                            data-student-year="<?= esc($request['academic_year']) ?>"
+                            data-student-email="<?= esc($request['student_email']) ?>"
+                            data-faculty-name="<?= esc($request['faculty_name']) ?>">
+                      View Profile
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <div class="no-requests-message">
+                <div class="no-requests-icon">
                   <i class="fas fa-user-graduate"></i>
                 </div>
-                <div class="mentor-details">
-                  <h4 class="mentor-name">Sarah Johnson</h4>
-                  <p class="mentor-role">Stanford University</p>
-                  <p class="mentor-specialty">Looking for guidance on career transition to product management</p>
-                </div>
+                <h3>No Pending Mentorship Requests</h3>
+                <p>There are currently no mentorship requests from students in your faculty.</p>
               </div>
-              <div class="mentorship-status">
-                <span class="status-badge status-new">NEW</span>
-                <div class="mentorship-actions">
-                  <button class="btn btn-success btn-sm">Accept</button>
-                  <button class="btn btn-outline btn-sm">View Profile</button>
-                </div>
-              </div>
-                    </div>
+            <?php endif; ?>
                     </div>
                 </section>
 
@@ -287,7 +310,80 @@ require '../app/views/partials/alumni_header.php';
     </main>
 </div>
 
+    <!-- Student Profile Modal -->
+    <div id="studentProfileModal" class="profile-modal" style="display: none;">
+      <div class="profile-modal-content">
+        <div class="profile-modal-header">
+          <h3><i class="fas fa-user-graduate"></i> Student Profile</h3>
+          <button class="profile-modal-close">&times;</button>
+        </div>
+        
+        <div class="profile-modal-body">
+          <div class="profile-avatar">
+            <div class="avatar-circle">
+              <i class="fas fa-user-graduate"></i>
+            </div>
+          </div>
+          
+          <div class="profile-info-section">
+            <h2 class="profile-name" id="studentProfileName"></h2>
+            <p class="profile-subtitle" id="studentProfileMajor"></p>
+          </div>
+
+          <div class="profile-details-grid">
+            <div class="profile-detail-item">
+              <div class="detail-icon">
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Academic Year</span>
+                <span class="detail-value" id="studentProfileYear"></span>
+              </div>
+            </div>
+
+            <div class="profile-detail-item">
+              <div class="detail-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">GPA</span>
+                <span class="detail-value" id="studentProfileGPA"></span>
+              </div>
+            </div>
+
+            <div class="profile-detail-item">
+              <div class="detail-icon">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Email</span>
+                <span class="detail-value" id="studentProfileEmail"></span>
+              </div>
+            </div>
+
+            <div class="profile-detail-item full-width">
+              <div class="detail-icon">
+                <i class="fas fa-heart"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Interests & Goals</span>
+                <span class="detail-value" id="studentProfileInterests"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="profile-modal-footer">
+          <button class="btn btn-outline close-profile-btn">Close</button>
+          <button class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i> Send Message
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/dashboard.js"></script>
+    <script src="<?=ROOT?>/assets/js/profile-modals.js"></script>
   </body>
 </html>

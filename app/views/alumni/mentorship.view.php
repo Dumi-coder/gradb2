@@ -74,11 +74,6 @@ require '../app/views/partials/alumni_header.php';
                      onclick="return confirm('Are you sure you want to accept this mentorship request?')">
                     <i class="fas fa-check"></i> Accept
                   </a>
-                  <!-- <a href="<?= ROOT ?>/Alumni/Mentorship/reject/<?= $request['id'] ?>" 
-                     class="btn btn-danger btn-sm decline-btn"
-                     onclick="return confirm('Are you sure you want to reject this mentorship request?')">
-                    <i class="fas fa-times"></i> Decline
-                  </a> -->
                 </div>
               </div>
               <?php endforeach; ?>
