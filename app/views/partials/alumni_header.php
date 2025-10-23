@@ -22,6 +22,9 @@
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/sidebar.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard-header.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni-dashboard.css">
+    
+    <!-- JavaScript Files -->
+    <script src="<?=ROOT?>/assets/js/sidebar-toggle.js"></script>
 </head>
 <body class="alumni-dashboard">
     <script>

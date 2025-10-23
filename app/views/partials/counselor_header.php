@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $title ?? 'Super Admin Dashboard - GradBridge' ?></title>
+    <title><?= $title ?? 'Counselor Dashboard - GradBridge' ?></title>
     
     <!-- Google Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/sidebar.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard-header.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/admin-dashboard.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/counselor-dashboard.css">
     
     <!-- JavaScript Files -->
     <script src="<?=ROOT?>/assets/js/sidebar-toggle.js"></script>
@@ -32,7 +32,7 @@
             // Create a form to submit logout request
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '<?=ROOT?>/superadmin/logout';
+            form.action = '<?=ROOT?>/counselor/logout';
             form.style.display = 'none';
             
             // Add a hidden input to indicate logout
@@ -47,7 +47,7 @@
             form.submit();
         }
     </script>
-    <!-- Super Admin Dashboard Header -->
+    <!-- Counselor Dashboard Header -->
     <header class="dashboard-header">
         <div class="container">
             <div class="header-content">
@@ -63,8 +63,8 @@
                             <p class="header-subtitle"><?= esc($page_subtitle) ?></p>
                         <?php endif; ?>
                     <?php else: ?>
-                        <h1 class="welcome-text">Welcome, <span class="student-name"><?= esc($_SESSION['name'] ?? 'Super Admin') ?></span></h1>
-                        <p class="student-role">Super Administrator • System-wide Access</p>
+                        <h1 class="welcome-text">Welcome, <span class="counselor-name"><?= esc($_SESSION['name'] ?? 'Counselor') ?></span></h1>
+                        <p class="counselor-role">Counselor</p>
                     <?php endif; ?>
                 </div>
                 

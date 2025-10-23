@@ -5,7 +5,13 @@ $isActive = function(string $path) use ($current): string {
 };
 ?>
 <!-- Sidebar Navigation -->
-      <aside class="sidebar">
+      <aside class="sidebar" id="sidebar">
+        <!-- Sidebar Toggle Button -->
+        <div class="sidebar-toggle">
+            <button class="toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
         <nav class="sidebar-nav">
           <div class="nav-section">
             <h3 class="nav-section-title">Main</h3>

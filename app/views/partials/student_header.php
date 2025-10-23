@@ -21,6 +21,9 @@
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/sidebar.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard-header.css">
+    
+    <!-- JavaScript Files -->
+    <script src="<?=ROOT?>/assets/js/sidebar-toggle.js"></script>
 </head>
 <body>
     <script>

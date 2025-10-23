@@ -1,18 +1,32 @@
 /* layout.css - Essential Dashboard Layout Structure */
 
-/* Dashboard Container - Creates flexbox layout for sidebar + content */
+/* Dashboard Container - Creates layout for fixed sidebar + content */
 .dashboard-container {
-  display: flex;
   min-height: 100vh;
   padding-top: 100px; /* Accounts for fixed header height */
+  position: relative; /* Ensure proper positioning context */
 }
 
-/* Main Content - Positioned to the right of sidebar */
+/* Main Content - Positioned to the right of fixed sidebar */
 .main-content {
-  flex: 1;
   margin-left: 280px; /* Pushes content right of sidebar (280px = sidebar width) */
   padding: 0 var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
   background-color: var(--background);
+  transition: margin-left 0.3s ease;
+  min-height: calc(100vh - 100px); /* Full height minus header */
+}
+
+/* Adjust main content when sidebar is collapsed */
+.sidebar.collapsed ~ .main-content,
+.dashboard-container:has(.sidebar.collapsed) .main-content {
+  margin-left: 80px;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 80px; /* Always collapsed on mobile */
+  }
 }
 
 /* Dashboard Sections - Basic spacing for content sections */
