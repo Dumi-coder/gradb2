@@ -4,12 +4,23 @@
 let currentFilter = 'all';
 const ALLOWED_EXTENSIONS = ['pdf','doc','docx','txt','zip','rar','ppt','pptx','xls','xlsx','png','jpg','jpeg','gif'];
 
-// Initialize the page
-document.addEventListener('DOMContentLoaded', function() {
+// Initialize the page (robust to scripts loaded after DOMContentLoaded)
+// The upload button was intermittently unresponsive when this script loaded
+// after the DOM had already fired or when initializeResources ran multiple
+// times; add a readiness check and an initialization guard to ensure
+// event listeners are attached exactly once.
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeResources);
+} else {
+    // DOM already ready
     initializeResources();
-});
+}
 
 function initializeResources() {
+    // Prevent double-initialization
+    if (initializeResources._initialized) return;
+    initializeResources._initialized = true;
+
     // Get DOM elements after DOM is loaded
     const uploadForm = document.querySelector('.upload-form');
     const fileUploadArea = document.querySelector('.file-upload-area');

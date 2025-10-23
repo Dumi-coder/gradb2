@@ -5,7 +5,8 @@ require '../app/views/partials/student_header.php';
 ?>
 
 <!-- Dashboard-specific CSS -->
-<link rel="stylesheet" href="<?=ROOT?>/assets/css/edit-profile.css">
+<!-- Using unified profile.css so avatar sizing and styles match the student profile view -->
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/profile.css">
 
 <div class="dashboard-container">
      <!-- sidebar -->
@@ -27,17 +28,17 @@ require '../app/views/partials/student_header.php';
             <div class="profile-info">
               
  <div class="profile-avatar-container">
-    <div class="profile-avatar" id="profileAvatar">
-        <?php if (!empty($profile->profile_photo_url)): ?>
-            <img src="<?= esc($profile->profile_photo_url) ?>" 
-                 alt="Profile Picture" 
-                 id="profileImage" 
-                 style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;"
-                 onerror="this.style.display='none'; document.getElementById('defaultAvatar').style.display='inline-block';">
-        <?php else: ?>
-            <i class="fas fa-user-graduate" id="defaultAvatar" style="font-size: 4rem; color: #ccc;"></i>
-        <?php endif; ?>
-    </div>
+  <div class="profile-avatar">
+    <?php if (!empty($profile->profile_photo_url)): ?>
+      <img src="<?= esc($profile->profile_photo_url) ?>" 
+         alt="Profile Picture" 
+         id="profileImage"
+         onerror="this.style.display='none'; document.getElementById('avatarInitials').style.display='inline-block';">
+      <span id="avatarInitials" class="avatar-initials" style="display:none;"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
+    <?php else: ?>
+      <span id="avatarInitials" class="avatar-initials"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
+    <?php endif; ?>
+  </div>
 </div>
 
               
