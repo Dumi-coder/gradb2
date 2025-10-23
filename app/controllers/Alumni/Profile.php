@@ -161,7 +161,7 @@ class Profile extends Controller
                     // Create upload directory in public folder
                     $upload_dir = '../public/assets/uploads/profiles/';
                     if (!is_dir($upload_dir)) {
-                        mkdir($upload_dir, 0755, true);
+                        mkdir($upload_dir, 0775, true);
                     }
 
                     // Generate unique filename

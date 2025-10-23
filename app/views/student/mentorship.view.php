@@ -41,157 +41,77 @@ require '../app/views/partials/student_header.php';
         <!-- Your Mentorship Requests Section -->
         <section class="requests-section">
           <h2 class="section-title">Your mentorship requests</h2>
-          <div class="requests-grid">
-            <div class="request-card">
-              <div class="request-header">
-                <h3 class="request-title">Career guidance</h3>
-                <span class="status-badge status-pending">Pending</span>
-              </div>
-              <p class="request-description">Seeking advice to transition from academia to industry roles...</p>
-              <div class="request-actions">
-                <button class="btn btn-outline btn-sm">
-                  <i class="fas fa-eye"></i>
-                  <span>View Details</span>
-                </button>
-              </div>
-            </div>
-            
-            <div class="request-card">
-              <div class="request-header">
-                <h3 class="request-title">Final Year Project</h3>
-                <span class="status-badge status-approved">Approved</span>
-              </div>
-              <p class="request-description">Need help with the machine learning implementation</p>
-              <div class="request-actions">
-                <button class="btn btn-outline btn-sm view-alumni-profile-btn"
-                        data-alumni-name="Dr. Sarah Mitchell"
-                        data-alumni-title="Senior ML Engineer at Google"
-                        data-alumni-graduation="Class of 2015"
-                        data-alumni-expertise="Machine Learning, Data Science, Cloud AI"
-                        data-alumni-company="Google"
-                        data-alumni-experience="8 years"
-                        data-alumni-email="sarah.mitchell@alumni.edu">
-                  <i class="fas fa-user"></i>
-                  <span>View Alumni Profile</span>
-                </button>
-              </div>
-            </div>
-            
-            <div class="request-card">
-              <div class="request-header">
-                <h3 class="request-title">Technical Skills Development</h3>
-                <span class="status-badge status-completed">Completed</span>
-              </div>
-              <p class="request-description">Looking for guidance on advanced programming concepts</p>
-              <div class="request-actions">
-                <button class="btn btn-outline btn-sm">
-                  <i class="fas fa-user"></i>
-                  <span>View Alumni Profile</span>
-                </button>
-              </div>
-            </div>
-            
-            <div class="request-card">
-              <div class="request-header">
-                <h3 class="request-title">Leadership Training</h3>
-                <span class="status-badge status-waiting">Waiting</span>
-              </div>
-              <p class="request-description">Want to develop leadership skills for student organizations</p>
-              <div class="request-actions">
-                <button class="btn btn-outline btn-sm">
-                  <i class="fas fa-eye"></i>
-                  <span>View Details</span>
-                </button>
-              </div>
-            </div>
-          </div>
-                  </section>
-        </div>
-      </main>
-    </div>
-
-    <!-- Alumni Profile Modal -->
-    <div id="alumniProfileModal" class="profile-modal" style="display: none;">
-      <div class="profile-modal-content">
-        <div class="profile-modal-header">
-          <h3><i class="fas fa-user-tie"></i> Alumni Profile</h3>
-          <button class="profile-modal-close">&times;</button>
-        </div>
-        
-        <div class="profile-modal-body">
-          <div class="profile-avatar alumni-avatar">
-            <div class="avatar-circle">
-              <i class="fas fa-user-tie"></i>
-            </div>
-          </div>
           
-          <div class="profile-info-section">
-            <h2 class="profile-name" id="alumniProfileName"></h2>
-            <p class="profile-subtitle" id="alumniProfileTitle"></p>
-          </div>
-
-          <div class="profile-details-grid">
-            <div class="profile-detail-item">
-              <div class="detail-icon">
-                <i class="fas fa-graduation-cap"></i>
-              </div>
-              <div class="detail-content">
-                <span class="detail-label">Graduation</span>
-                <span class="detail-value" id="alumniProfileGraduation"></span>
-              </div>
+          <?php if (isset($data['requests']) && !empty($data['requests'])): ?>
+            <div class="requests-grid">
+              <?php foreach ($data['requests'] as $request): ?>
+                <div class="request-card">
+                  <div class="request-header">
+                    <h3 class="request-title">Mentorship Request #<?= htmlspecialchars($request['request_id']) ?></h3>
+                    <span class="status-badge status-<?= strtolower(str_replace('_', '-', $request['status'])) ?>">
+                      <?= ucfirst(str_replace('_', ' ', $request['status'])) ?>
+                    </span>
+                  </div>
+                  <?php 
+                    // Get category display name
+                    $categoryDisplay = '';
+                    if ($request['mentorship_category'] === 'other' && !empty($request['other_category'])) {
+                      $categoryDisplay = $request['other_category'];
+                    } else {
+                      $categoryMap = [
+                        'academic' => 'Academic Guidance',
+                        'career' => 'Career Development',
+                        'research' => 'Research & Projects',
+                        'networking' => 'Professional Networking',
+                        'skills' => 'Technical Skills',
+                        'leadership' => 'Leadership & Management',
+                        'entrepreneurship' => 'Entrepreneurship'
+                      ];
+                      $categoryDisplay = $categoryMap[$request['mentorship_category']] ?? ucfirst($request['mentorship_category']);
+                    }
+                  ?>
+                  <div class="request-category">
+                    <strong>Category:</strong> <?= htmlspecialchars($categoryDisplay) ?>
+                  </div>
+                  <p class="request-description"><?= htmlspecialchars($request['request_reason']) ?></p>
+                  <div class="request-meta">
+                    <small class="request-date">Created: <?= date('M j, Y', strtotime($request['created_at'])) ?></small>
+                  </div>
+                  <div class="request-actions">
+                    <?php if (in_array($request['status'], ['pending_verification', 'open'])): ?>
+                      <a href="<?=ROOT?>/student/MentorshipReq/edit/<?= $request['request_id'] ?>" class="btn btn-outline btn-sm">
+                        <i class="fas fa-edit"></i>
+                        <span>Edit</span>
+                      </a>
+                      <a href="<?=ROOT?>/student/MentorshipReq/delete/<?= $request['request_id'] ?>" 
+                         class="btn btn-danger btn-sm" 
+                         onclick="return confirm('Are you sure you want to delete this mentorship request?')">
+                        <i class="fas fa-trash"></i>
+                        <span>Delete</span>
+                      </a>
+                    <?php else: ?>
+                      <button class="btn btn-outline btn-sm" disabled>
+                        <i class="fas fa-eye"></i>
+                        <span>View Details</span>
+                      </button>
+                    <?php endif; ?>
+                  </div>
+                </div>
+              <?php endforeach; ?>
             </div>
-
-            <div class="profile-detail-item">
-              <div class="detail-icon">
-                <i class="fas fa-building"></i>
+          <?php else: ?>
+            <div class="empty-state">
+              <div class="empty-icon">
+                <i class="fas fa-inbox"></i>
               </div>
-              <div class="detail-content">
-                <span class="detail-label">Company</span>
-                <span class="detail-value" id="alumniProfileCompany"></span>
-              </div>
+              <h3>No mentorship requests yet</h3>
+              <p>You haven't submitted any mentorship requests. Click the button above to get started!</p>
             </div>
-
-            <div class="profile-detail-item">
-              <div class="detail-icon">
-                <i class="fas fa-briefcase"></i>
-              </div>
-              <div class="detail-content">
-                <span class="detail-label">Experience</span>
-                <span class="detail-value" id="alumniProfileExperience"></span>
-              </div>
-            </div>
-
-            <div class="profile-detail-item">
-              <div class="detail-icon">
-                <i class="fas fa-envelope"></i>
-              </div>
-              <div class="detail-content">
-                <span class="detail-label">Email</span>
-                <span class="detail-value" id="alumniProfileEmail"></span>
-              </div>
-            </div>
-
-            <div class="profile-detail-item full-width">
-              <div class="detail-icon">
-                <i class="fas fa-star"></i>
-              </div>
-              <div class="detail-content">
-                <span class="detail-label">Expertise & Skills</span>
-                <span class="detail-value" id="alumniProfileExpertise"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="profile-modal-footer">
-          <button class="btn btn-outline close-profile-btn">Close</button>
-          <button class="btn btn-primary">
-            <i class="fas fa-paper-plane"></i> Send Message
-          </button>
+          <?php endif; ?>
+        </section>
         </div>
       </div>
     </div>
-
     <script src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/profile-modals.js"></script>
   </body>
