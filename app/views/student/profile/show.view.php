@@ -22,7 +22,7 @@ require '../app/views/partials/student_header.php';
             <section class="dashboard-section profile-section">
                 <div class="section-header">
                     <h2 class="section-title">Student Profile</h2>
-                    <a href="<?= ROOT ?>/student/profile/?action=edit&id=<?= $profile->student_id ?>" class="btn btn-outline btn-md">
+                    <a href="<?= ROOT ?>/student/profile/?action=edit&id=<?= $profile->student_id ?>" class="btn btn-outline">
                         <i class="fas fa-edit"></i>
                         <span>Edit Profile</span>
                     </a>

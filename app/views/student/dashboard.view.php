@@ -17,7 +17,7 @@ require '../app/views/partials/student_header.php';
         <section class="dashboard-section profile-section">
           <div class="section-header">
             <h2 class="section-title">Student Profile</h2>
-            <!-- <button class="btn btn-outline btn-md edit-profile-btn">
+            <!-- <button class="btn btn-outline  edit-profile-btn">
               <i class="fas fa-edit"></i>
               <span>Edit Profile</span>
             </button> -->
@@ -84,7 +84,7 @@ require '../app/views/partials/student_header.php';
           <div class="section-header">
             <h2 class="section-title">Mentorship</h2>
             <a href="<?=ROOT?>/student/Mentorship">
-              <button class="btn btn-primary btn-md request-mentorship-btn">
+              <button class="btn btn-primary  request-mentorship-btn">
               <i class="fas fa-plus"></i>
               Request Mentorship
             </button>
@@ -133,7 +133,7 @@ require '../app/views/partials/student_header.php';
           <div class="section-header">
             <h2 class="section-title">Aid Requests</h2>
             <a href="<?=ROOT?>/student/AidReqForm">
-            <button class="btn btn-primary btn-md new-aid-btn">
+            <button class="btn btn-primary  new-aid-btn">
               <i class="fas fa-plus"></i>
               New Aid Request
             </button>
@@ -189,7 +189,7 @@ require '../app/views/partials/student_header.php';
           <div class="section-header">
             <h2 class="section-title">Discussion Forum</h2>
             <a href="<?=ROOT?>/student/DiscussionForum">
-            <button class="btn btn-outline btn-md go-to-forum-btn">
+            <button class="btn btn-outline  go-to-forum-btn">
               <i class="fas fa-external-link-alt"></i>
               Go to Forum
             </button>
@@ -243,7 +243,7 @@ require '../app/views/partials/student_header.php';
           <div class="section-header">
             <h2 class="section-title">Upcoming Events</h2>
             <a href="<?=ROOT?>/student/EventsBoard">
-            <button class="btn btn-outline btn-md view-all-btn">
+            <button class="btn btn-outline  view-all-btn">
               <i class="fas fa-calendar"></i>
               View All
             </button>
@@ -286,7 +286,7 @@ require '../app/views/partials/student_header.php';
           <div class="section-header">
             <h2 class="section-title">Shared Resources</h2>
             <a href="<?=ROOT?>/student/Resources">
-            <button class="btn btn-primary btn-md upload-file-btn">
+            <button class="btn btn-primary  upload-file-btn">
               <i class="fas fa-upload"></i>
               Upload New File
             </button>
@@ -336,7 +336,7 @@ require '../app/views/partials/student_header.php';
         <section class="dashboard-section fundraiser-section">
           <div class="section-header">
             <h2 class="section-title">Fundraisers</h2>
-            <button class="btn btn-primary btn-md request-fundraiser-btn">
+            <button class="btn btn-primary  request-fundraiser-btn">
               <i class="fas fa-plus"></i>
               Request Fundraiser
             </button>
@@ -362,7 +362,7 @@ require '../app/views/partials/student_header.php';
                 <span class="donors"><i class="fas fa-users"></i> 47 donors</span>
               </div>
               
-              <button class="btn btn-primary btn-md donate-btn">Donate Now</button>
+              <button class="btn btn-primary  donate-btn">Donate Now</button>
             </div>
             
             <div class="no-fundraiser-message" style="display: none;">

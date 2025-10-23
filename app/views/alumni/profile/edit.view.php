@@ -34,7 +34,7 @@ require '../app/views/partials/alumni_header.php';
                                 <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)">
                             </label>
                             <?php if (!empty($profile->profile_photo_url)): ?>
-                                <button type="button" onclick="deleteProfilePicture()" class="btn-delete-photo" style="padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                                <button type="button" onclick="deleteProfilePicture()" class="btn btn-danger btn-sm">
                                     <i class="fas fa-trash"></i>
                                     Delete Photo
                                 </button>

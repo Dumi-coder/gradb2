@@ -15,6 +15,8 @@
     
     <!-- CSS Files -->
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/buttons.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/badges.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/sidebar.css">

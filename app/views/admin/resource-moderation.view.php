@@ -205,10 +205,10 @@
             </div>
 
             <div class="form-actions">
-                <button type="button" class="btn btn-outline btn-md" onclick="closeAddResourceModal()">
+                <button type="button" class="btn btn-outline" onclick="closeAddResourceModal()">
                     <span>Cancel</span>
                 </button>
-                <button type="submit" class="btn btn-primary btn-md">
+                <button type="submit" class="btn btn-primary">
                     <i class="fas fa-plus-circle"></i>
                     <span>Add Resource</span>
                 </button>
@@ -349,19 +349,7 @@
     flex-wrap: wrap;
 }
 
-.btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+/* Button styles are now in buttons.css - removed to prevent override */
 
 .btn-success {
     background-color: #10B981;
@@ -566,7 +554,7 @@
     border-top: 1px solid #E5E7EB;
 }
 
-.btn-md {
+. {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
 }

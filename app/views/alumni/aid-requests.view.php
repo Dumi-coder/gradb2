@@ -82,7 +82,7 @@ require '../app/views/partials/alumni_header.php';
               
               <div class="request-actions">
                 <?php if ($request['aid_type'] === 'Monetary'): ?>
-                <button class="btn btn-primary btn-sm approve-pay-btn" 
+                <button class="btn btn-success btn-sm approve-pay-btn" 
                         data-request-id="<?= $request['id'] ?>" 
                         data-amount="<?= esc($request['amount_requested']) ?>"
                         data-student="<?= esc($request['student_name']) ?>"
@@ -90,9 +90,9 @@ require '../app/views/partials/alumni_header.php';
                   <i class="fas fa-credit-card"></i> Approve & Pay
                 </button>
                 <?php else: ?>
-                <button class="btn btn-primary btn-sm approve-btn">Approve</button>
+                <button class="btn btn-success btn-sm approve-btn">Approve</button>
                 <?php endif; ?>
-                <button class="btn btn-outline btn-sm decline-btn">Decline</button>
+                <button class="btn btn-danger btn-sm decline-btn">Decline</button>
               </div>
             </div>
             <?php endforeach; ?>

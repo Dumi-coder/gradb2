@@ -151,10 +151,10 @@
           </p>
 
           <div class="cta-buttons">
-            <a href="<?=ROOT?>/Student/Auth?action=signup" class="btn btn-light btn-lg">
+            <a href="<?=ROOT?>/Student/Auth?action=signup" class="btn btn-light ">
               Sign Up as Student
             </a>
-            <a href="<?=ROOT?>/Alumni/Auth?action=signup" class="btn btn-outline-light btn-lg">
+            <a href="<?=ROOT?>/Alumni/Auth?action=signup" class="btn btn-outline-light ">
               Sign Up as Alumni
             </a>
           </div>

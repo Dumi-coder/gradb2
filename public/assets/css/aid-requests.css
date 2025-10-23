@@ -101,35 +101,7 @@
 }
 
 /* Status Badges */
-.status-badge {
-  display: inline-block;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-full);
-  font-size: var(--font-xs);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.status-pending {
-  background-color: #fef3c7;
-  color: #92400e;
-}
-
-.status-approved {
-  background-color: #d1fae5;
-  color: #065f46;
-}
-
-.status-completed {
-  background-color: #dbeafe;
-  color: #1e40af;
-}
-
-.status-rejected {
-  background-color: #fee2e2;
-  color: #dc2626;
-}
+/* Status badges moved to badges.css for consistency */
 
 /* Statistics Section */
 .stats-section {

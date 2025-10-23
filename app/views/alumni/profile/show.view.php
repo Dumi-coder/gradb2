@@ -22,7 +22,7 @@ require '../app/views/partials/alumni_header.php';
             <section class="dashboard-section profile-section">
                 <div class="section-header">
                     <h2 class="section-title">Alumni Profile</h2>
-                    <a href="<?=ROOT?>/alumni/profile?action=edit&id=<?= $profile->alumni_id ?>" class="btn btn-outline btn-md">
+                    <a href="<?=ROOT?>/alumni/profile?action=edit&id=<?= $profile->alumni_id ?>" class="btn btn-outline">
                         <i class="fas fa-edit"></i>
                         <span>Edit Profile</span>
                     </a>
@@ -239,7 +239,7 @@ require '../app/views/partials/alumni_header.php';
                 <h2 class="section-title">Profile Settings</h2>
                 <div style="padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); max-width: 800px;">
                     <p style="color:#7f8c8d; margin-bottom:12px;">Manage sensitive account actions. Deleting your account will permanently remove your profile, shared resources and all related data.</p>
-                    <button onclick="confirmAccountDelete()" class="btn btn-danger" style="background:#e74c3c; color:#fff; border:none; padding:10px 16px; border-radius:6px;">
+                    <button onclick="confirmAccountDelete()" class="btn btn-danger">
                         <i class="fas fa-user-times"></i> Delete My Account
                     </button>
                 </div>

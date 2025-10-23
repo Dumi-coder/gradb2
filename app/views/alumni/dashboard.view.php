@@ -60,7 +60,7 @@ require '../app/views/partials/alumni_header.php';
         <section class="dashboard-section mentorship-section">
                     <div class="section-header">
                         <h2 class="section-title">Mentorship Requests</h2>
-            <button class="btn btn-outline btn-md">
+            <button class="btn btn-outline">
               <i class="fas fa-external-link-alt"></i>
               View All
             </button>
@@ -81,7 +81,7 @@ require '../app/views/partials/alumni_header.php';
               <div class="mentorship-status">
                 <span class="status-badge status-new">NEW</span>
                 <div class="mentorship-actions">
-                  <button class="btn btn-primary btn-sm">Accept</button>
+                  <button class="btn btn-success btn-sm">Accept</button>
                   <button class="btn btn-outline btn-sm">View Profile</button>
                 </div>
               </div>
@@ -93,7 +93,7 @@ require '../app/views/partials/alumni_header.php';
         <section class="dashboard-section aid-requests-section">
                     <div class="section-header">
                         <h2 class="section-title">Aid Requests</h2>
-            <button class="btn btn-outline btn-md">
+            <button class="btn btn-outline">
               <i class="fas fa-external-link-alt"></i>
               View All
             </button>
@@ -121,7 +121,7 @@ require '../app/views/partials/alumni_header.php';
         <section class="dashboard-section forum-section">
                     <div class="section-header">
                         <h2 class="section-title">Discussion Forum</h2>
-            <button class="btn btn-outline btn-md">
+            <button class="btn btn-outline">
               <i class="fas fa-external-link-alt"></i>
               Go to Forum
             </button>
@@ -158,7 +158,7 @@ require '../app/views/partials/alumni_header.php';
         <section class="dashboard-section fundraiser-section">
                     <div class="section-header">
                         <h2 class="section-title">Fundraising Campaigns</h2>
-            <button class="btn btn-outline btn-md">
+            <button class="btn btn-outline">
               <i class="fas fa-external-link-alt"></i>
               View All
             </button>
@@ -217,7 +217,7 @@ require '../app/views/partials/alumni_header.php';
         <section class="dashboard-section events-section">
                     <div class="section-header">
             <h2 class="section-title">Upcoming Events</h2>
-            <button class="btn btn-outline btn-md">
+            <button class="btn btn-outline">
               <i class="fas fa-external-link-alt"></i>
               View All
             </button>
@@ -244,7 +244,7 @@ require '../app/views/partials/alumni_header.php';
         <section class="dashboard-section badges-section">
                     <div class="section-header">
                         <h2 class="section-title">Your Badges</h2>
-            <button class="btn btn-outline btn-md">
+            <button class="btn btn-outline">
               <i class="fas fa-external-link-alt"></i>
               View All
             </button>

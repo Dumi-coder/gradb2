@@ -1,14 +1,18 @@
-/* buttons.css - Button Component Styles */
+/* buttons.css - Standardized Button Component Styles */
 
-/* Button Styles - Standardized with 10px border radius */
+/* ============================================
+   BASE BUTTON STYLES
+   ============================================ */
+
+/* Default button - Large size (48px) */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xs); /* Add spacing between icon and text */
-  height: var(--button-height);
+  gap: var(--spacing-xs);
+  height: 48px; /* Large button size - same as logout button */
   padding: 0 var(--spacing-lg);
-  border-radius: 10px; /* Changed to 10px for all buttons */
+  border-radius: 10px;
   font-weight: 600;
   font-size: var(--font-base);
   text-decoration: none;
@@ -18,16 +22,26 @@
   transform: scale(1);
   position: relative;
   overflow: hidden;
-  
+  white-space: nowrap;
+  min-width: 120px; /* Ensure consistent minimum width for large buttons */
 }
 
-/* Ensure icons and text are properly spaced */
+/* Ensure icons and text are properly spaced and have consistent font-weight */
 .btn i {
-  margin-right: 0; /* Remove default margin since we're using gap */
+  margin-right: 0;
+  font-size: inherit;
+  font-weight: 600; /* Ensure consistent weight for icons */
 }
 
 .btn span {
-  margin-left: 0; /* Remove default margin since we're using gap */
+  margin-left: 0;
+  font-weight: 600; /* Ensure consistent weight for text */
+}
+
+/* Ensure all text within buttons has consistent weight */
+.btn,
+.btn * {
+  font-weight: 600 !important; /* Force consistent font-weight across all button content */
 }
 
 .btn:hover {
@@ -35,45 +49,226 @@
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
 }
 
-.btn-primary {
-  background-color: var(--foreground); /* Black background */
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: scale(1) !important;
+}
+
+/* ============================================
+   BUTTON SIZES - Only 2 Sizes
+   ============================================ */
+
+/* Small buttons - for edit, delete, view actions in cards (32px) */
+.btn-sm {
+  height: 32px;
+  padding: 0 0.75rem;
+  font-size: 0.85rem;
+  min-width: 80px; /* Ensure consistent minimum width for uniformity */
+  font-weight: 600; /* Explicitly set font-weight for small buttons */
+}
+
+/* Ensure small button text is also consistent */
+.btn-sm *,
+.btn-sm span,
+.btn-sm i {
+  font-weight: 600 !important;
+}
+
+/* Large buttons - default size, no class needed (48px) */
+/* Use for: Request Mentorship, Submit forms, Logout, etc. */
+
+/* ============================================
+   BUTTON COLORS - Standardized
+   ============================================ */
+
+/* Black button - for primary actions and Edit buttons */
+.btn-primary,
+.btn-edit {
+  background-color: var(--foreground); /* Black */
   color: var(--background); /* White text */
+  border: 1px solid var(--foreground);
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-edit:hover {
   background-color: rgba(0, 0, 0, 0.8);
+  border-color: rgba(0, 0, 0, 0.8);
 }
 
-.btn-secondary {
-  background-color: var(--foreground); /* Black background */
-  color: var(--background); /* White text */
-  border: none;
-}
-
-.btn-secondary:hover {
-  background-color: rgba(0, 0, 0, 0.8);
-}
-
-.btn-outline {
-  background-color: var(--background); /* White background */
+/* White button with black border - for View and secondary actions */
+.btn-outline,
+.btn-view {
+  background-color: var(--background); /* White */
   color: var(--foreground); /* Black text */
   border: 1px solid var(--foreground); /* Black border */
 }
 
-.btn-outline:hover {
+.btn-outline:hover,
+.btn-view:hover {
   background-color: var(--foreground);
   color: var(--background);
 }
 
+/* Red button - for Delete actions */
+.btn-danger,
+.btn-delete {
+  background-color: #dc2626; /* Red */
+  color: white;
+  border: 1px solid #dc2626;
+}
+
+.btn-danger:hover,
+.btn-delete:hover {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px -10px rgba(220, 38, 38, 0.4);
+}
+
+.btn-danger:active,
+.btn-delete:active {
+  background-color: #991b1b;
+  border-color: #991b1b;
+  transform: scale(1);
+}
+
+/* Green button - for Accept/Success/Approve actions */
+.btn-success,
+.btn-accept,
+.btn-approve {
+  background-color: #16a34a; /* Green */
+  color: white;
+  border: 1px solid #16a34a;
+}
+
+.btn-success:hover,
+.btn-accept:hover,
+.btn-approve:hover {
+  background-color: #15803d;
+  border-color: #15803d;
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px -10px rgba(22, 163, 74, 0.4);
+}
+
+.btn-success:active,
+.btn-accept:active,
+.btn-approve:active {
+  background-color: #166534;
+  border-color: #166534;
+  transform: scale(1);
+}
+
+/* Blue button - for Info actions */
+.btn-info {
+  background-color: #3b82f6; /* Blue */
+  color: white;
+  border: 1px solid #3b82f6;
+}
+
+.btn-info:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.4);
+}
+
+.btn-info:active {
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
+  transform: scale(1);
+}
+
+/* Yellow/Orange button - for Warning actions */
+.btn-warning {
+  background-color: #f59e0b; /* Orange/Yellow */
+  color: white;
+  border: 1px solid #f59e0b;
+}
+
+.btn-warning:hover {
+  background-color: #d97706;
+  border-color: #d97706;
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px -10px rgba(245, 158, 11, 0.4);
+}
+
+.btn-warning:active {
+  background-color: #b45309;
+  border-color: #b45309;
+  transform: scale(1);
+}
+
+/* Red button variations - for Reject/Decline actions */
+.btn-reject,
+.btn-decline {
+  background-color: #dc2626; /* Red - same as btn-danger */
+  color: white;
+  border: 1px solid #dc2626;
+}
+
+.btn-reject:hover,
+.btn-decline:hover {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px -10px rgba(220, 38, 38, 0.4);
+}
+
+.btn-reject:active,
+.btn-decline:active {
+  background-color: #991b1b;
+  border-color: #991b1b;
+  transform: scale(1);
+}
+
+/* Secondary button - Black (same as primary) */
+.btn-secondary {
+  background-color: var(--foreground);
+  color: var(--background);
+  border: 1px solid var(--foreground);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  border-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Light button - for special cases */
 .btn-light {
   background-color: var(--background);
   color: var(--primary);
   font-weight: 600;
+  border: 1px solid var(--border);
 }
 
 .btn-light:hover {
   background-color: rgba(255, 255, 255, 0.9);
+  border-color: var(--foreground);
 }
+
+/* ============================================
+   BUTTON VARIANTS
+   ============================================ */
+
+/* Logout button - consistent styling */
+.logout-btn {
+  /* Uses default btn-primary styling */
+  height: 48px;
+}
+
+.logout-btn a {
+  text-decoration: none;
+}
+
+/* Notification button */
+.notification-btn {
+  position: relative;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
 
 /* Ripple effect */
 .ripple {
@@ -85,14 +280,27 @@
   pointer-events: none;
 }
 
-.logout-btn a{
-  text-decoration: none;    
-}
-
-  
 @keyframes ripple-animation {
   to {
     transform: scale(4);
     opacity: 0;
+  }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+  .btn {
+    height: 44px;
+    padding: 0 var(--spacing-md);
+    font-size: 0.9rem;
+  }
+  
+  .btn-sm {
+    height: 30px;
+    padding: 0 0.65rem;
+    font-size: 0.8rem;
   }
 }

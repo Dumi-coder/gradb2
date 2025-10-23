@@ -20,7 +20,7 @@
             <input class="input" type="password" name="password" placeholder="Password" required />
             
             <div class="auth-actions">
-              <button type="submit" class="btn btn-primary" style="width:100%">Sign In</button>
+              <button type="submit" class="btn btn-primary" style="width:100%; min-width: unset;">Sign In</button>
             </div>
           </form>
           <p class="auth-meta">Don't have an account? <a href="<?=ROOT?>/alumni/auth?action=signup">Sign Up</a></p>

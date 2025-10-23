@@ -238,17 +238,17 @@ require '../app/views/partials/student_header.php';
 
             <!-- Form Navigation -->
             <div class="form-navigation">
-              <button type="button" class="btn btn-outline btn-md" id="prevBtn" onclick="changeStep(-1)" style="display: none;">
+              <button type="button" class="btn btn-outline" id="prevBtn" onclick="changeStep(-1)" style="display: none;">
                 <i class="fas fa-arrow-left"></i>
                 <span>Previous</span>
               </button>
               
-              <button type="button" class="btn btn-primary btn-md" id="nextBtn" onclick="changeStep(1)">
+              <button type="button" class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
                 <span>Next</span>
                 <i class="fas fa-arrow-right"></i>
               </button>
               
-              <button type="submit" class="btn btn-primary btn-md" id="submitBtn" style="display: none;">
+              <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;">
                 <i class="fas fa-paper-plane"></i>
                 <span>Submit Application</span>
               </button>

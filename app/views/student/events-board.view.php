@@ -19,7 +19,7 @@ require '../app/views/partials/student_header.php';
           <div class="section-header">
             <h2 class="card-title">Upcoming Events</h2>
             <div class="header-actions">
-              <!-- <button class="btn btn-outline btn-md" onclick="openFilterModal()">
+              <!-- <button class="btn btn-outline" onclick="openFilterModal()">
                 <i class="fas fa-filter"></i>
                 <span>Filter Events</span>
               </button> -->
@@ -86,7 +86,7 @@ require '../app/views/partials/student_header.php';
                   <span class="spots-left"><i class="fas fa-ticket-alt"></i> 44 spots left</span>
                 </div>
                 <div class="event-actions">
-                  <button type="button" class="btn btn-primary btn-md" onclick="openRegisterModal('Tech Workshop 2025')">
+                  <button type="button" class="btn btn-primary btn-sm" onclick="openRegisterModal('Tech Workshop 2025')">
                     <i class="fas fa-calendar-plus"></i>
                     <span>Register Now</span>
                   </button>
@@ -119,7 +119,7 @@ require '../app/views/partials/student_header.php';
                   <span class="spots-left"><i class="fas fa-ticket-alt"></i> 11 spots left</span>
                 </div>
                 <div class="event-actions">
-                  <button type="button" class="btn btn-primary btn-md" onclick="openRegisterModal('Tech Workshop 2025')">
+                  <button type="button" class="btn btn-primary btn-sm" onclick="openRegisterModal('Tech Workshop 2025')">
                     <i class="fas fa-calendar-plus"></i>
                     <span>Register Now</span>
                   </button>
@@ -296,7 +296,7 @@ require '../app/views/partials/student_header.php';
                   <span class="event-location"><i class="fas fa-map-marker-alt"></i> Computer Lab A</span>
                 </div>
                 <div class="event-actions">
-                <button type="button" class="btn btn-primary btn-md" onclick="openRegisterModal('Tech Workshop 2025')">
+                <button type="button" class="btn btn-primary btn-sm" onclick="openRegisterModal('Tech Workshop 2025')">
                   <i class="fas fa-calendar-plus"></i>
                   <span>Register Now</span>
                 </button>
@@ -420,10 +420,10 @@ require '../app/views/partials/student_header.php';
           </div>
           
           <div class="form-actions">
-            <button type="button" class="btn btn-outline btn-md" onclick="closeNewEventModal()">
+            <button type="button" class="btn btn-outline" onclick="closeNewEventModal()">
               <span>Cancel</span>
             </button>
-            <button type="submit" class="btn btn-primary btn-md">
+            <button type="submit" class="btn btn-primary">
               <i class="fas fa-calendar-plus"></i>
               <span>Create Event</span>
             </button>
@@ -475,10 +475,10 @@ require '../app/views/partials/student_header.php';
           </div>
 
           <div class="form-actions">
-          <button type="button" class="btn btn-outline btn-md" onclick="closeRegisterModal()">
+          <button type="button" class="btn btn-outline" onclick="closeRegisterModal()">
             <span>Cancel</span>
           </button>
-          <button type="submit" class="btn btn-primary btn-md">
+          <button type="submit" class="btn btn-primary">
             <span>Register Now</span>
           </button>
           </div>
@@ -562,10 +562,10 @@ require '../app/views/partials/student_header.php';
         </div>
         
         <div class="modal-footer">
-          <button class="btn btn-outline btn-md" onclick="resetFilters()">
+          <button class="btn btn-outline" onclick="resetFilters()">
             <span>Reset Filters</span>
           </button>
-          <button class="btn btn-primary btn-md" onclick="applyFilters()">
+          <button class="btn btn-primary" onclick="applyFilters()">
             <span>Apply Filters</span>
           </button>
         </div>

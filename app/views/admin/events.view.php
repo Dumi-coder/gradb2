@@ -84,7 +84,7 @@
                             <i class="fas fa-eye"></i>
                             View Details
                         </button>
-                        <button class="btn btn-outline btn-sm edit-btn" data-event-id="<?= $event['id'] ?>">
+                        <button class="btn btn-primary btn-sm edit-btn" data-event-id="<?= $event['id'] ?>">
                             <i class="fas fa-edit"></i>
                             Edit
                         </button>
@@ -116,7 +116,7 @@
                             </div>
                         </div>
                         <div class="event-actions">
-                            <button class="btn btn-outline btn-sm">
+                            <button class="btn btn-primary btn-sm">
                                 <i class="fas fa-edit"></i>
                                 Edit
                             </button>
@@ -199,10 +199,10 @@
             </div>
 
             <div class="form-actions">
-                <button type="button" class="btn btn-outline btn-md" onclick="closeAddEventModal()">
+                <button type="button" class="btn btn-outline" onclick="closeAddEventModal()">
                     <span>Cancel</span>
                 </button>
-                <button type="submit" class="btn btn-primary btn-md">
+                <button type="submit" class="btn btn-primary">
                     <i class="fas fa-calendar-plus"></i>
                     <span>Create Event</span>
                 </button>
@@ -343,19 +343,7 @@
     flex-wrap: wrap;
 }
 
-.btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+/* Button styles are now in buttons.css - removed to prevent override */
 
 .btn-success {
     background-color: #10B981;
@@ -587,7 +575,7 @@
     border-top: 1px solid #E5E7EB;
 }
 
-.btn-md {
+. {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
 }

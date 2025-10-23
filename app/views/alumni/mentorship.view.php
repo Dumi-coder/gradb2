@@ -66,8 +66,8 @@ require '../app/views/partials/alumni_header.php';
                         data-student-interests="<?= esc($request['student_interests']) ?>">
                   <i class="fas fa-user"></i> View Student Profile
                 </button>
-                <button class="btn btn-primary btn-sm accept-btn">Accept</button>
-                <button class="btn btn-outline btn-sm decline-btn">Decline</button>
+                <button class="btn btn-success btn-sm accept-btn">Accept</button>
+                <button class="btn btn-danger btn-sm decline-btn">Decline</button>
               </div>
             </div>
             <?php endforeach; ?>

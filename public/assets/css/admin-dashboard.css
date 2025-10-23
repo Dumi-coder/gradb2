@@ -150,22 +150,7 @@
 }
 
 /* Status Badge */
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.status-active {
-    background-color: #10b981; /* Green color for active status */
-    color: white;
-}
+/* Status badges moved to badges.css for consistency */
 
 /* Section Header */
 .section-header {

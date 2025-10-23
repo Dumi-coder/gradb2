@@ -1,0 +1,301 @@
+/* badges.css - Unified Badge/Tag System */
+
+/* ==================== BASE BADGE STYLES ==================== */
+
+/* Base badge - applies to all badges */
+.badge {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+/* ==================== CATEGORY BADGES (Outline Style) ==================== */
+/* For discussion categories, event categories, etc. */
+
+.category-badge,
+.discussion-category {
+  background-color: rgba(59, 130, 246, 0.1); /* Light blue */
+  color: #2563eb; /* Blue */
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Category variations - all follow outline with colored inside pattern */
+.category-csf,
+.category-cs-help {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.category-studytips,
+.category-study-tips {
+  background-color: rgba(139, 92, 246, 0.1);
+  color: #7c3aed;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.category-general {
+  background-color: rgba(107, 114, 128, 0.1);
+  color: #4b5563;
+  border: 1px solid rgba(107, 114, 128, 0.3);
+}
+
+.category-academic {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.category-career {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.category-research {
+  background-color: rgba(139, 92, 246, 0.1);
+  color: #7c3aed;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.category-networking {
+  background-color: rgba(236, 72, 153, 0.1);
+  color: #db2777;
+  border: 1px solid rgba(236, 72, 153, 0.3);
+}
+
+.category-skills {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.category-leadership {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.category-entrepreneurship {
+  background-color: rgba(168, 85, 247, 0.1);
+  color: #9333ea;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+/* ==================== STATUS BADGES (Solid Style) ==================== */
+/* For request statuses, approval statuses, etc. */
+
+.status-badge {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+/* Pending States - Yellow/Amber */
+.status-pending,
+.status-pending-verification,
+.status-pending-approval {
+  background-color: #fef3c7; /* Light yellow */
+  color: #92400e; /* Dark amber */
+}
+
+/* Open/Active States - Blue */
+.status-open,
+.status-active {
+  background-color: #dbeafe; /* Light blue */
+  color: #1e40af; /* Dark blue */
+}
+
+/* Approved/Accepted/Success States - Green */
+.status-approved,
+.status-accepted,
+.status-matched,
+.status-success {
+  background-color: #d1fae5; /* Light green */
+  color: #065f46; /* Dark green */
+}
+
+/* Completed States - Blue */
+.status-completed,
+.status-fulfilled {
+  background-color: #dbeafe; /* Light blue */
+  color: #1e40af; /* Dark blue */
+}
+
+/* Rejected/Declined/Canceled States - Red */
+.status-rejected,
+.status-declined,
+.status-canceled,
+.status-cancelled {
+  background-color: #fee2e2; /* Light red */
+  color: #991b1b; /* Dark red */
+}
+
+/* Waiting States - Purple */
+.status-waiting,
+.status-in-progress,
+.status-processing {
+  background-color: #f3e8ff; /* Light purple */
+  color: #6b21a8; /* Dark purple */
+}
+
+/* Closed/Archived States - Gray */
+.status-closed,
+.status-archived,
+.status-inactive {
+  background-color: #f3f4f6; /* Light gray */
+  color: #4b5563; /* Dark gray */
+}
+
+/* Draft States - Light Gray */
+.status-draft {
+  background-color: #f9fafb;
+  color: #6b7280;
+}
+
+/* Verified States - Teal */
+.status-verified {
+  background-color: #ccfbf1;
+  color: #115e59;
+}
+
+/* Urgent/Priority States - Orange */
+.status-urgent,
+.status-high-priority {
+  background-color: #ffedd5;
+  color: #9a3412;
+}
+
+/* ==================== PRIORITY BADGES ==================== */
+
+.priority-badge {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.priority-low {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.priority-normal,
+.priority-medium {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.priority-high {
+  background-color: #ffedd5;
+  color: #9a3412;
+}
+
+.priority-urgent,
+.priority-critical {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* ==================== EVENT/ANNOUNCEMENT BADGES ==================== */
+
+.event-badge,
+.announcement-badge {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.event-upcoming {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.event-ongoing {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.event-past {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.event-cancelled {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* ==================== ROLE/USER BADGES ==================== */
+
+.role-badge {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.role-admin,
+.role-superadmin {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.role-faculty {
+  background-color: #f3e8ff;
+  color: #6b21a8;
+}
+
+.role-counselor {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.role-alumni {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.role-student {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 768px) {
+  .badge,
+  .category-badge,
+  .status-badge,
+  .priority-badge,
+  .event-badge,
+  .role-badge,
+  .discussion-category {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+  }
+}
+

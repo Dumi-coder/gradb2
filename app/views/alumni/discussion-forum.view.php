@@ -49,7 +49,7 @@ require '../app/views/partials/alumni_header.php';
                  <i class="fas fa-hashtag"></i>
                  <span>Quick Tags</span>
                </button>
-               <button class="btn btn-primary btn-md" onclick="openNewPostModal()">
+               <button class="btn btn-primary" onclick="openNewPostModal()">
                  <i class="fas fa-plus"></i>
                  <span>New Post</span>
                </button>
@@ -186,14 +186,14 @@ require '../app/views/partials/alumni_header.php';
             <small style="color: #6B7280; font-size: 12px;">Examples: #python, #algorithms, #notes</small>
           </div>
           <div class="form-actions">
-            <button type="button" class="btn btn-outline btn-md" onclick="openQuickTagsModal()">
+            <button type="button" class="btn btn-outline" onclick="openQuickTagsModal()">
               <i class="fas fa-hashtag"></i>
               <span>Quick Tags</span>
             </button>
-            <button type="button" class="btn btn-outline btn-md" onclick="closeNewPostModal()">
+            <button type="button" class="btn btn-outline" onclick="closeNewPostModal()">
               <span>Cancel</span>
             </button>
-            <button type="submit" class="btn btn-primary btn-md">
+            <button type="submit" class="btn btn-primary">
               <i class="fas fa-paper-plane"></i>
               <span>Publish</span>
             </button>
@@ -223,7 +223,7 @@ require '../app/views/partials/alumni_header.php';
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-outline btn-md" onclick="closeQuickTagsModal()">
+          <button class="btn btn-outline" onclick="closeQuickTagsModal()">
             <span>Close</span>
           </button>
         </div>

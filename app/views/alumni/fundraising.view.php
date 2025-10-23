@@ -42,7 +42,7 @@ require '../app/views/partials/alumni_header.php';
         <section class="dashboard-section create-section">
           <div class="section-header">
             <h2 class="card-title">Start a Campaign</h2>
-            <button class="btn btn-primary btn-md" onclick="openCreateCampaignModal()">
+            <button class="btn btn-primary" onclick="openCreateCampaignModal()">
               <i class="fas fa-plus"></i>
               <span>Create Campaign</span>
             </button>
@@ -95,7 +95,7 @@ require '../app/views/partials/alumni_header.php';
                   </div>
                 </div>
                 <div class="campaign-actions">
-                  <button class="btn btn-primary btn-md" onclick="openDonateModal('Student Emergency Fund', 15000, 11250)">
+                  <button class="btn btn-primary" onclick="openDonateModal('Student Emergency Fund', 15000, 11250)">
                     <i class="fas fa-heart"></i>
                     <span>Donate Now</span>
                   </button>
@@ -136,7 +136,7 @@ require '../app/views/partials/alumni_header.php';
                   </div>
                 </div>
                 <div class="campaign-actions">
-                  <button class="btn btn-primary btn-md" onclick="openDonateModal('Laptop Loan Program', 25000, 11250)">
+                  <button class="btn btn-primary" onclick="openDonateModal('Laptop Loan Program', 25000, 11250)">
                     <i class="fas fa-heart"></i>
                     <span>Donate Now</span>
                   </button>
@@ -177,7 +177,7 @@ require '../app/views/partials/alumni_header.php';
                   </div>
                 </div>
                 <div class="campaign-actions">
-                  <button class="btn btn-outline btn-md" disabled>
+                  <button class="btn btn-outline" disabled>
                     <i class="fas fa-check"></i>
                     <span>Completed</span>
                   </button>
@@ -315,10 +315,10 @@ require '../app/views/partials/alumni_header.php';
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn btn-outline btn-md" onclick="closeCreateCampaignModal()">
+            <button type="button" class="btn btn-outline" onclick="closeCreateCampaignModal()">
               <span>Cancel</span>
             </button>
-            <button type="submit" class="btn btn-primary btn-md">
+            <button type="submit" class="btn btn-primary">
               <i class="fas fa-rocket"></i>
               <span>Launch Campaign</span>
             </button>
@@ -378,10 +378,10 @@ require '../app/views/partials/alumni_header.php';
             </div>
 
             <div class="form-actions">
-              <button type="button" class="btn btn-outline btn-md" onclick="closeDonateModal()">
+              <button type="button" class="btn btn-outline" onclick="closeDonateModal()">
                 <span>Cancel</span>
               </button>
-              <button type="submit" class="btn btn-primary btn-md">
+              <button type="submit" class="btn btn-primary">
                 <i class="fas fa-heart"></i>
                 <span>Donate Now</span>
               </button>

@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css?v=<?=time()?>">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/buttons.css?v=<?=time()?>">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/badges.css?v=<?=time()?>">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css?v=<?=time()?>">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/header.css?v=<?=time()?>">
 

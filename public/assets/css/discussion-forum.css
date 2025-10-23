@@ -145,14 +145,7 @@
   word-break: break-word;
 }
 
-.discussion-category {
-  background-color: var(--secondary);
-  color: var(--primary);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-full);
-  font-size: var(--font-xs);
-  font-weight: 500;
-}
+/* Discussion category badges moved to badges.css for consistency */
 
 .discussion-excerpt {
   color: var(--muted-foreground);

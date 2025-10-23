@@ -93,7 +93,7 @@ require '../app/views/partials/student_header.php';
                                 <span><?= isset($data['is_edit']) && $data['is_edit'] ? 'Update Request' : 'Submit Mentorship Request' ?></span>
                             </button>
                             
-                            <a href="<?=ROOT?>/student/Mentorship" class="btn btn-outline btn-lg">
+                            <a href="<?=ROOT?>/student/Mentorship" class="btn btn-outline">
                                 <i class="fas fa-arrow-left"></i>
                                 <span>Back to Mentorship</span>
                             </a>

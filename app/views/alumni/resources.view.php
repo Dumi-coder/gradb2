@@ -17,7 +17,7 @@ require '../app/views/partials/alumni_header.php';
         <section class="dashboard-section upload-section">
           <div class="section-header">
             <h2 class="card-title">Share Resources</h2>
-            <button class="btn btn-primary btn-md" onclick="openUploadModal()">
+            <button class="btn btn-primary" onclick="openUploadModal()">
               <i class="fas fa-upload"></i>
               <span>Upload File</span>
             </button>
@@ -131,7 +131,7 @@ require '../app/views/partials/alumni_header.php';
                       <i class="fas fa-download"></i>
                       <span>Open</span>
                     </a>
-                    <button class="btn btn-outline btn-sm" data-action="delete" data-id="<?= $res->resource_id ?? '' ?>">
+                    <button class="btn btn-danger btn-sm" data-action="delete" data-id="<?= $res->resource_id ?? '' ?>">
                       <i class="fas fa-trash"></i>
                       <span>Delete</span>
                     </button>
@@ -328,10 +328,10 @@ require '../app/views/partials/alumni_header.php';
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn btn-outline btn-md" onclick="closeUploadModal()">
+            <button type="button" class="btn btn-outline" onclick="closeUploadModal()">
               <span>Cancel</span>
             </button>
-            <button type="submit" class="btn btn-primary btn-md">
+            <button type="submit" class="btn btn-primary">
               <i class="fas fa-upload"></i>
               <span>Upload</span>
             </button>
@@ -364,11 +364,11 @@ require '../app/views/partials/alumni_header.php';
         </div>
 
         <div class="form-actions">
-          <button type="button" class="btn btn-outline btn-md" onclick="closeDeleteModal()">
+          <button type="button" class="btn btn-outline btn-sm" onclick="closeDeleteModal()">
             <i class="fas fa-times"></i>
             <span>Cancel</span>
           </button>
-          <button type="button" class="btn btn-danger btn-md" id="confirmDeleteBtn">
+          <button type="button" class="btn btn-danger btn-sm" id="confirmDeleteBtn">
             <i class="fas fa-trash"></i>
             <span>Delete Resource</span>
           </button>

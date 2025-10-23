@@ -21,12 +21,12 @@ require '../app/views/partials/student_header.php';
             </div>
             
             <div class="form-actions">
-              <!-- <button class="btn btn-outline btn-md">
+              <!-- <button class="btn btn-outline">
                 <i class="fas fa-question-circle"></i>
                 <span>View Guidelines</span>
               </button> -->
               <a href="<?=ROOT?>/student/AidReqForm">
-              <button class="btn btn-primary btn-md">
+              <button class="btn btn-primary ">
                 <i class="fas fa-file-alt"></i>
                 <span>Start Application</span>
               </button>

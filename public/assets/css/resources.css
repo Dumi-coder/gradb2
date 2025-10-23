@@ -816,40 +816,7 @@
   min-width: 0; /* override dashboard wide buttons */
 }
 
-/* Ensure the small size also applies despite global .btn-sm */
-.my-resources-section .my-resource-card .resource-actions .btn.btn-sm {
-  height: 32px;
-  padding: 0 0.75rem;
-  font-size: 0.85rem;
-}
-
-/* Edit Button - Black Background, White Text */
-.my-resources-section .my-resource-card .resource-actions .btn-primary {
-  background-color: #000000;
-  color: #ffffff;
-  border-color: #000000;
-}
-
-.my-resources-section .my-resource-card .resource-actions .btn-primary:hover {
-  background-color: #1f2937;
-  border-color: #1f2937;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* Delete Button - White Background, Black Border */
-.my-resources-section .my-resource-card .resource-actions .btn-outline {
-  background-color: #ffffff;
-  color: #000000;
-  border: 1px solid #000000;
-}
-
-.my-resources-section .my-resource-card .resource-actions .btn-outline:hover {
-  background-color: #000000;
-  color: #ffffff;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
+/* Button styling is now handled by buttons.css */
 
 /* Button Icons */
 .my-resources-section .my-resource-card .resource-actions .btn i {
@@ -1010,29 +977,5 @@
   font-size: 0.875rem;
 }
 
-.btn-danger {
-  background-color: #dc2626;
-  color: white;
-  border: 1px solid #dc2626;
-  transition: all 0.3s ease;
-}
-
-.btn-danger:hover {
-  background-color: #b91c1c;
-  border-color: #b91c1c;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-}
-
-.btn-danger:active {
-  background-color: #991b1b;
-  border-color: #991b1b;
-  transform: translateY(0);
-}
-
-.btn-danger i {
-  margin-right: var(--spacing-xs);
-}
-
-
+/* Button styles (btn-danger, etc.) are now in buttons.css */
 

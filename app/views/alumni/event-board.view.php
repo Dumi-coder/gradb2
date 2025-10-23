@@ -825,7 +825,7 @@ require '../app/views/partials/alumni_header.php';
                   <span class="spots-left"><i class="fas fa-ticket-alt"></i> 50 spots left</span>
                 </div>
                 <div class="event-actions">
-                  <button type="button" class="btn btn-primary btn-md">
+                  <button type="button" class="btn btn-primary">
                     <i class="fas fa-calendar-plus"></i>
                     <span>Register Now</span>
                   </button>
@@ -1007,10 +1007,10 @@ require '../app/views/partials/alumni_header.php';
           </div>
           
           <div class="form-actions">
-            <button type="button" class="btn btn-outline btn-md" onclick="closePublishEventModal()">
+            <button type="button" class="btn btn-outline" onclick="closePublishEventModal()">
               <span>Cancel</span>
             </button>
-            <button type="submit" class="btn btn-primary btn-md">
+            <button type="submit" class="btn btn-primary">
               <i class="fas fa-calendar-plus"></i>
               <span>Publish Event</span>
             </button>
