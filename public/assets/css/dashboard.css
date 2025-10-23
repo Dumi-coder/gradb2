@@ -43,21 +43,7 @@
   border: 2px solid var(--background);
 }
 
-.logout-btn {
-  background-color: var(--foreground);
-  color: var(--background);
-  border: none;
-  border-radius: 10px;
-  padding: 0 var(--spacing-lg);
-  height: 48px;
-  font-weight: 600;
-  font-size: var(--font-base);
-}
-
-.logout-btn:hover {
-  background-color: rgba(0, 0, 0, 0.8);
-  color: var(--background);
-}
+/* Logout button styles are now in buttons.css */
 
 /* Dashboard Sections */
 .dashboard-section {
@@ -190,45 +176,7 @@
 }
 
 /* Status Badges */
-.status-badge {
-  display: inline-block;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-full);
-  font-size: var(--font-xs);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.status-active {
-  background-color: #10b981;
-  color: white;
-}
-
-.status-pending {
-  background-color: #f59e0b;
-  color: white;
-}
-
-.status-approved {
-  background-color: #10b981;
-  color: white;
-}
-
-.status-completed {
-  background-color: #6b7280;
-  color: white;
-}
-
-.status-waiting {
-  background-color: #8b5cf6;
-  color: white;
-}
-
-.status-accepted {
-  background-color: #10b981;
-  color: white;
-}
+/* Status badges moved to badges.css for consistency */
 
 /* Aid Requests Table */
 .aid-requests-table {
@@ -487,29 +435,12 @@
   gap: var(--spacing-xs);
 }
 
-/* Button Size Variations - Using existing button system */
-.btn-sm {
-  height: 36px;
-  padding: 0 var(--spacing-md);
-  font-size: var(--font-sm);
-}
-
-.btn-md {
-  height: var(--button-height);
-  padding: 0 var(--spacing-lg);
-  font-size: var(--font-base);
-}
-
-.btn-lg {
-  height: 56px;
-  padding: 0 var(--spacing-xl);
-  font-size: var(--font-md);
-}
-
 /* Dashboard Button Width Standardization */
-.dashboard-section .btn,
-.dashboard-header .btn {
-  min-width: 140px;
+/* Note: Button sizes and base styles are defined in buttons.css */
+/* Slight adjustment for dashboard context, but inherits all button styles */
+.dashboard-section .btn:not(.btn-sm):not(.notification-btn),
+.dashboard-header .btn:not(.btn-sm):not(.notification-btn) {
+  min-width: 120px; /* Consistent with buttons.css */
 }
 
 /* Profile edit button */

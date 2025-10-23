@@ -1,49 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mentorship - GradBridge</title>
-    <meta name="description" content="Manage mentorship requests and connect with students seeking guidance." />
-    <meta name="author" content="GradBridge" />
-    
-    <!-- Google Fonts - Poppins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/mentorship.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni-dashboard.css">
-    
-  </head>
+<?php 
+$page_title = "Mentorship";
+$page_subtitle = "Connect with students seeking guidance";
+require '../app/views/partials/alumni_header.php'; 
+?>
 
-  <body class="alumni-dashboard">
-    <!-- Top Navbar -->
-    <header class="dashboard-header">
-      <div class="container">
-        <div class="header-content">
-          <div class="welcome-section">
-            <h1 class="welcome-text">Mentorship</h1>
-            <p class="header-subtitle">Connect with students seeking guidance and make a difference in their academic and career journey.</p>
-          </div>
-          
-          <div class="header-actions">
-            <button class="btn btn-outline notification-btn" aria-label="Notifications">
-              <i class="fas fa-bell"></i>
-              <span class="notification-badge">3</span>
-            </button>
-            <a href="<?=ROOT?>/alumni/logout" class="btn btn-primary logout-btn">Logout</a>
-          </div>
-        </div>
-      </div>
-    </header>
+<!-- Page-specific CSS -->
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/mentorship.css">
 
-    <div class="dashboard-container">
+<body class="alumni-dashboard">
+<div class="dashboard-container">
      <!-- sidebar -->
     <?php require '../app/views/partials/alumni_sidebar.php'; ?>
 
@@ -56,7 +21,24 @@
           </div>
           
           <div class="mentorship-requests-container">
-            <?php foreach ($mentorshipData['requests'] as $request): ?>
+            <?php 
+            // Demo hardcoded mentorship request data
+            $demoMentorshipRequests = [
+              [
+                'id' => 1,
+                'student_name' => 'Alex Thompson',
+                'student_major' => 'Computer Science',
+                'student_year' => '3rd Year',
+                'student_gpa' => '3.7',
+                'student_email' => 'alex.thompson@university.edu',
+                'student_interests' => 'Web Development, AI/ML, Cloud Computing',
+                'guidance_type' => 'Career Guidance & Technical Skills',
+                'description' => 'Looking for guidance on transitioning from academic projects to real-world software development. Interested in learning about industry best practices and building a strong portfolio.',
+                'status' => 'pending'
+              ]
+            ];
+            
+            foreach ($demoMentorshipRequests as $request): ?>
             <div class="mentorship-request-card">
               <div class="request-header">
                 <div class="request-info">
@@ -75,8 +57,17 @@
               </div>
               
               <div class="request-actions">
-                <button class="btn btn-primary btn-sm accept-btn">Accept</button>
-                <button class="btn btn-outline btn-sm decline-btn">Decline</button>
+                <button class="btn btn-secondary btn-sm view-student-profile-btn"
+                        data-student-name="<?= esc($request['student_name']) ?>"
+                        data-student-major="<?= esc($request['student_major']) ?>"
+                        data-student-year="<?= esc($request['student_year']) ?>"
+                        data-student-gpa="<?= esc($request['student_gpa']) ?>"
+                        data-student-email="<?= esc($request['student_email']) ?>"
+                        data-student-interests="<?= esc($request['student_interests']) ?>">
+                  <i class="fas fa-user"></i> View Student Profile
+                </button>
+                <button class="btn btn-success btn-sm accept-btn">Accept</button>
+                <button class="btn btn-danger btn-sm decline-btn">Decline</button>
               </div>
             </div>
             <?php endforeach; ?>
@@ -153,7 +144,80 @@
       </main>
     </div>
 
+    <!-- Student Profile Modal -->
+    <div id="studentProfileModal" class="profile-modal" style="display: none;">
+      <div class="profile-modal-content">
+        <div class="profile-modal-header">
+          <h3><i class="fas fa-user-graduate"></i> Student Profile</h3>
+          <button class="profile-modal-close">&times;</button>
+        </div>
+        
+        <div class="profile-modal-body">
+          <div class="profile-avatar">
+            <div class="avatar-circle">
+              <i class="fas fa-user-graduate"></i>
+            </div>
+          </div>
+          
+          <div class="profile-info-section">
+            <h2 class="profile-name" id="studentProfileName"></h2>
+            <p class="profile-subtitle" id="studentProfileMajor"></p>
+          </div>
+
+          <div class="profile-details-grid">
+            <div class="profile-detail-item">
+              <div class="detail-icon">
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Academic Year</span>
+                <span class="detail-value" id="studentProfileYear"></span>
+              </div>
+            </div>
+
+            <div class="profile-detail-item">
+              <div class="detail-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">GPA</span>
+                <span class="detail-value" id="studentProfileGPA"></span>
+              </div>
+            </div>
+
+            <div class="profile-detail-item">
+              <div class="detail-icon">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Email</span>
+                <span class="detail-value" id="studentProfileEmail"></span>
+              </div>
+            </div>
+
+            <div class="profile-detail-item full-width">
+              <div class="detail-icon">
+                <i class="fas fa-heart"></i>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Interests & Goals</span>
+                <span class="detail-value" id="studentProfileInterests"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="profile-modal-footer">
+          <button class="btn btn-outline close-profile-btn">Close</button>
+          <button class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i> Send Message
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/mentorship.js"></script>
+    <script src="<?=ROOT?>/assets/js/profile-modals.js"></script>
   </body>
 </html>

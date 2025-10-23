@@ -2,11 +2,32 @@
 
 /* Features Section */
 .features {
-  padding: var(--spacing-2xl) 0;
+  padding: var(--spacing-lg) 0;
+  text-align: center;
+  background-color: var(--background);
+}
+
+/* Features Badge */
+.features-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-full);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.features-badge i {
+  font-size: var(--font-md);
 }
 
 .section-title {
-  font-size: var(--font-4xl);
+  font-size: var(--font-3xl);
   font-weight: 700;
   color: var(--foreground);
   text-align: center;
@@ -17,8 +38,9 @@
   font-size: var(--font-md);
   color: var(--muted-foreground);
   text-align: center;
-  max-width: 600px;
-  margin: 0 auto var(--spacing-xl);
+  max-width: 700px;
+  margin: 0 auto var(--spacing-2xl);
+  line-height: 1.6;
 }
 
 .features-grid {
@@ -31,75 +53,46 @@
 
 .feature-card {
   background-color: var(--card);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-xl);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   text-align: center;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   position: relative;
-  overflow: hidden;
-}
-
-.feature-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(14, 32, 114, 0.05), rgba(14, 32, 114, 0.1));
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  z-index: 1;
-}
-
-.feature-card:hover::before {
-  opacity: 1;
 }
 
 .feature-card:hover {
-  transform: translateY(-15px) scale(1.02);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
   border-color: var(--primary);
 }
 
-.feature-card > * {
-  position: relative;
-  z-index: 2;
-}
-
-/* Icon styling for both feature-icon and point-image classes */
-.feature-icon,
-.point-image {
-  font-size: var(--font-5xl);
-  margin-bottom: var(--spacing-md);
+/* Feature Header - Icon on top, Title below */
+.feature-header {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 80px; /* Ensure consistent height for icons */
+  gap: var(--spacing-sm);
 }
 
-.point-image i {
-  color: var(--primary); /* Use the primary color variable instead of hardcoded #0E2072 */
-  font-size: var(--font-5xl);
-  transition: all 0.3s ease;
-}
-
-.point-image i:hover {
-  transform: scale(1.1);
-  color: var(--primary);
+.feature-icon {
+  font-size: var(--font-3xl);
+  line-height: 1;
+  margin-bottom: var(--spacing-xs);
 }
 
 .feature-title {
-  font-size: var(--font-lg);
-  font-weight: 600;
+  font-size: var(--font-xl);
+  font-weight: 700;
   color: var(--foreground);
-  margin-bottom: var(--spacing-sm);
+  margin: 0 0 var(--spacing-sm) 0;
 }
 
 .feature-description {
   color: var(--muted-foreground);
-  line-height: 1.6;
+  line-height: 1.7;
+  font-size: var(--font-base);
+  margin: 0;
 }
 
 /* Responsive Features */
@@ -109,7 +102,7 @@
   }
   
   .section-title {
-    font-size: var(--font-5xl);
+    font-size: var(--font-4xl);
   }
 }
 

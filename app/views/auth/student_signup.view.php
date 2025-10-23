@@ -42,7 +42,7 @@
             <input class="input" type="password" name="confirm_password" placeholder="Confirm password" required />
 
             <div class="auth-actions">
-              <button type="submit" class="btn btn-primary" style="width:100%">Create Account</button>
+              <button type="submit" class="btn btn-primary" style="width:100%; min-width: unset;">Create Account</button>
             </div>
 
           </form>

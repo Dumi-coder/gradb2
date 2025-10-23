@@ -77,11 +77,11 @@ Trait Model // This trait provides basic database operations for models
                 }
             }
         }
-        $keys=array_keys($data);// Get the keys of the data array
-        $query="insert into $this->table (".implode(",", $keys).") values (:".implode(",:",$keys).")";// Start building the insert query
-        $this->query($query,$data);// Execute the query with the provided data
+        $keys=array_keys($data);
+        $query="insert into $this->table (".implode(",", $keys).") values (:".implode(",:",$keys).")";
+        $result = $this->query($query,$data);  // CHANGED: Store the result
 
-        return false;// Return false to indicate the operation is complete
+        return $result !== false;  // CHANGED: Return true on success, false on failure
     }
 
     public function update($id,$data,$id_column=null)
@@ -118,7 +118,7 @@ Trait Model // This trait provides basic database operations for models
         // return $result !==false;// Return false to indicate the operation is complete
     }
 
-    public function delete($id,$id_column=null)// This method deletes a record based on the provided ID and ID column
+    public function delete($id,$id_column=null)
     {
         if (!$id_column) {
             $id_column = $this->id_column;
@@ -126,8 +126,8 @@ Trait Model // This trait provides basic database operations for models
         
         $data[$id_column]=$id;
         $query="delete from $this->table where $id_column = :$id_column ";
-        $this->query($query,$data);// Execute the query
+        $result = $this->query($query,$data);  // CHANGED: Store the result
 
-        return false;// Return false to indicate the operation is complete
+        return $result !== false;  // CHANGED: Return true on success, false on failure
     }
 }

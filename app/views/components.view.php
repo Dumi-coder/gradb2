@@ -235,10 +235,10 @@
 &lt;button class="btn btn-primary btn-sm"&gt;Small&lt;/button&gt;
 
 &lt;!-- Medium Button (default) --&gt;
-&lt;button class="btn btn-primary btn-md"&gt;Medium&lt;/button&gt;
+&lt;button class="btn btn-primary"&gt;Medium&lt;/button&gt;
 
 &lt;!-- Large Button --&gt;
-&lt;button class="btn btn-primary btn-lg"&gt;Large&lt;/button&gt;
+&lt;button class="btn btn-primary"&gt;Large&lt;/button&gt;
             </div>
             
             <div class="usage-note">

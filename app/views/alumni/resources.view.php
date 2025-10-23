@@ -1,273 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Resources - GradBridge</title>
-    <meta name="description" content="Access shared study materials, documents, and academic resources." />
-    <meta name="author" content="GradBridge" />
-    
-    <!-- Google Fonts - Poppins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Base styles -->
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/resources.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni-dashboard.css">
-    
-    <style>
-    /* Alumni Resources Specific Overrides */
-    .btn-primary {
-      background-color: #000000 !important;
-      color: white !important;
-      border: none !important;
-    }
-    
-    .btn-primary:hover {
-      background-color: #333333 !important;
-    }
-    
-    .btn-outline:hover {
-      background-color: #000000 !important;
-      color: white !important;
-      border-color: #000000 !important;
-    }
-    
-    .category-icon {
-      background-color: #000000 !important;
-    }
-    
-    .resource-icon {
-      background-color: #F3F4F6 !important;
-      color: #000000 !important;
-    }
-    
-    .resource-category {
-      background-color: #F3F4F6 !important;
-      color: #000000 !important;
-    }
-    
-    /* My Resources Section */
-    .my-resources-section {
-      margin-bottom: 32px !important;
-    }
-    
-    .resource-count {
-      background-color: #F3F4F6 !important;
-      color: #374151 !important;
-      padding: 4px 12px !important;
-      border-radius: 20px !important;
-      font-size: 14px !important;
-      font-weight: 500 !important;
-    }
-    
-    .my-resources-grid {
-      display: grid !important;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
-      gap: 20px !important;
-      margin-top: 20px !important;
-    }
-    
-    .my-resource-card {
-      background-color: white !important;
-      border: 1px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      transition: all 0.3s ease !important;
-    }
-    
-    .my-resource-card:hover {
-      border-color: #000000 !important;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-      transform: translateY(-2px) !important;
-    }
-    
-    .my-resource-card .resource-title {
-      font-size: 18px !important;
-      font-weight: 700 !important;
-      color: #1F2937 !important;
-      margin: 0 0 12px 0 !important;
-    }
-    
-    .my-resource-card .resource-meta {
-      display: flex !important;
-      align-items: center !important;
-      gap: 8px !important;
-      margin-bottom: 12px !important;
-    }
-    
-    .my-resource-card .resource-category {
-      background-color: #F3F4F6 !important;
-      color: #000000 !important;
-      padding: 4px 8px !important;
-      border-radius: 6px !important;
-      font-size: 12px !important;
-      font-weight: 600 !important;
-    }
-    
-    .my-resource-card .resource-size {
-      color: #6B7280 !important;
-      font-size: 14px !important;
-    }
-    
-    .my-resource-card .resource-description {
-      color: #6B7280 !important;
-      font-size: 14px !important;
-      line-height: 1.5 !important;
-      margin: 0 0 16px 0 !important;
-    }
-    
-    .my-resource-card .resource-details {
-      display: flex !important;
-      flex-direction: column !important;
-      gap: 8px !important;
-      margin-bottom: 20px !important;
-    }
-    
-    .my-resource-card .upload-date {
-      color: #6B7280 !important;
-      font-size: 14px !important;
-    }
-    
-    .my-resource-card .engagement-stats {
-      color: #6B7280 !important;
-      font-size: 14px !important;
-    }
-    
-    .my-resource-card .resource-actions {
-      display: flex !important;
-      gap: 12px !important;
-    }
-    
-    /* Section Boundaries */
-    .upload-section {
-      border: 2px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      background-color: white !important;
-      margin-bottom: 20px !important;
-    }
-    
-    .categories-section {
-      border: 2px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      background-color: white !important;
-      margin-bottom: 20px !important;
-    }
-    
-    .my-resources-section {
-      border: 2px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      background-color: white !important;
-      margin-bottom: 20px !important;
-    }
-    
-    .recent-section {
-      border: 2px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      background-color: white !important;
-      margin-bottom: 20px !important;
-    }
-    
-    /* Resource Activity Statistics Section */
-    .resource-stats-section {
-      border: 2px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      background-color: white !important;
-      margin-bottom: 20px !important;
-    }
-    
-    .stats-grid {
-      display: grid !important;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
-      gap: 24px !important;
-    }
-    
-    .stat-card {
-      background-color: white !important;
-      border: 1px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      display: flex !important;
-      align-items: center !important;
-      gap: 16px !important;
-      transition: all 0.3s ease !important;
-    }
-    
-    .stat-card:hover {
-      border-color: #0E2072 !important;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-      transform: translateY(-2px) !important;
-    }
-    
-    .stat-icon {
-      width: 50px !important;
-      height: 50px !important;
-      background-color: #0E2072 !important;
-      border-radius: 8px !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      color: white !important;
-      font-size: 20px !important;
-    }
-    
-    .stat-content {
-      flex: 1 !important;
-    }
-    
-    .stat-number {
-      font-size: 28px !important;
-      font-weight: 700 !important;
-      color: #0E2072 !important;
-      margin: 0 0 4px 0 !important;
-      line-height: 1 !important;
-    }
-    
-    .stat-label {
-      color: #6B7280 !important;
-      font-size: 14px !important;
-      margin: 0 !important;
-      font-weight: 500 !important;
-    }
-    </style>
-  </head>
+<?php 
+$page_title = "Resources";
+$page_subtitle = "Share and access study materials";
+require '../app/views/partials/alumni_header.php'; 
+?>
 
-  <body class="alumni-dashboard">
-    <!-- Top Navbar -->
-    <header class="dashboard-header">
-      <div class="container">
-        <div class="header-content">
-          <div class="welcome-section">
-            <h1 class="welcome-text">Resources</h1>
-            <p class="alumni-role">Study materials, documents, and academic resources</p>
-          </div>
-          
-          <div class="header-actions">
-            <button class="btn btn-outline notification-btn" aria-label="Notifications">
-              <i class="fas fa-bell"></i>
-              <span class="notification-badge">3</span>
-            </button>
-            <a href="<?=ROOT?>/alumni/logout"><button class="btn btn-primary logout-btn">
-              <i class="fas fa-sign-out-alt"></i>
-              Logout
-            </button></a>
-          </div>
-        </div>
-      </div>
-    </header>
+<!-- Page-specific CSS -->
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/resources.css">
 
-    <div class="dashboard-container">
+<body class="alumni-dashboard">
+<div class="dashboard-container">
     <!-- sidebar -->
     <?php require '../app/views/partials/alumni_sidebar.php'; ?>
       <!-- Main Content Area -->
@@ -276,7 +17,7 @@
         <section class="dashboard-section upload-section">
           <div class="section-header">
             <h2 class="card-title">Share Resources</h2>
-            <button class="btn btn-primary btn-md" onclick="openUploadModal()">
+            <button class="btn btn-primary" onclick="openUploadModal()">
               <i class="fas fa-upload"></i>
               <span>Upload File</span>
             </button>
@@ -355,101 +96,54 @@
               <i class="fas fa-folder"></i>
               My Resources
             </h2>
-            <span class="resource-count">4 resources</span>
+            <span class="resource-count"><span id="my-resources-count"><?= isset($my_resources) && is_array($my_resources) ? count($my_resources) : 0 ?></span> resources</span>
           </div>
           
-          <div class="my-resources-grid">
-            <div class="my-resource-card">
-              <h3 class="resource-title">Business Plan Template</h3>
-              <div class="resource-meta">
-                <span class="resource-category">Tools</span>
-                <span class="resource-size">0.8 MB</span>
+          <div class="my-resources-grid" id="my-resources-grid">
+            <?php if(isset($my_resources) && is_array($my_resources) && count($my_resources)): ?>
+              <?php foreach($my_resources as $res): ?>
+                <div class="my-resource-card" 
+                     data-id="<?= $res->resource_id ?? '' ?>"
+                     data-title="<?= htmlspecialchars($res->title ?? '', ENT_QUOTES) ?>"
+                     data-description="<?= htmlspecialchars($res->description ?? '', ENT_QUOTES) ?>"
+                     data-category="<?= htmlspecialchars($res->category ?? '', ENT_QUOTES) ?>"
+                     data-file-path="<?= htmlspecialchars($res->file_path ?? '', ENT_QUOTES) ?>"
+                     data-file-size="<?= (int)($res->file_size ?? 0) ?>"
+                     data-created-at="<?= htmlspecialchars($res->created_at ?? '', ENT_QUOTES) ?>">
+                  <h3 class="resource-title"><?= htmlspecialchars($res->title ?? '') ?></h3>
+                  <div class="resource-meta">
+                    <?php 
+                      $cat = isset($res->category) ? ucwords(str_replace('-', ' ', $res->category)) : ''; 
+                    ?>
+                    <span class="resource-category"><?= htmlspecialchars($cat) ?></span>
+                    <span class="resource-size"><?= isset($res->file_size) ? number_format(($res->file_size/1024/1024), 1) . ' MB' : '' ?></span>
+                  </div>
+                  <p class="resource-description"><?= htmlspecialchars($res->description ?? '') ?></p>
+                  <div class="resource-details">
+                    <span class="upload-date">Uploaded: <?= isset($res->created_at) ? date('M j, Y', strtotime($res->created_at)) : '' ?></span>
+                  </div>
+                  <div class="resource-actions">
+                    <button class="btn btn-primary btn-sm" data-action="edit" data-id="<?= $res->resource_id ?? '' ?>">
+                      <i class="fas fa-edit"></i>
+                      <span>Edit</span>
+                    </button>
+                    <a class="btn btn-outline btn-sm" href="<?= htmlspecialchars($res->file_path ?? '#') ?>" target="_blank" rel="noopener">
+                      <i class="fas fa-download"></i>
+                      <span>Open</span>
+                    </a>
+                    <button class="btn btn-danger btn-sm" data-action="delete" data-id="<?= $res->resource_id ?? '' ?>">
+                      <i class="fas fa-trash"></i>
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </div>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <div id="my-resources-empty" class="my-resource-card" style="opacity:.8">
+                <h3 class="resource-title">No resources yet</h3>
+                <p class="resource-description">Upload your first resource to see it here.</p>
               </div>
-              <p class="resource-description">Professional business plan template for startups</p>
-              <div class="resource-details">
-                <span class="upload-date">Uploaded: Aug 10, 2025</span>
-                <span class="engagement-stats">Downloads: 73 • Likes: 12</span>
-              </div>
-              <div class="resource-actions">
-                <button class="btn btn-primary btn-sm">
-                  <i class="fas fa-edit"></i>
-                  <span>Edit</span>
-                </button>
-                <button class="btn btn-outline btn-sm">
-                  <i class="fas fa-trash"></i>
-                  <span>Delete</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="my-resource-card">
-              <h3 class="resource-title">Python Data Analysis Notebook</h3>
-              <div class="resource-meta">
-                <span class="resource-category">Projects</span>
-                <span class="resource-size">1.9 MB</span>
-              </div>
-              <p class="resource-description">Jupyter notebook with data analysis examples using pandas and matplotlib</p>
-              <div class="resource-details">
-                <span class="upload-date">Uploaded: Aug 8, 2025</span>
-                <span class="engagement-stats">Downloads: 67 • Likes: 14</span>
-              </div>
-              <div class="resource-actions">
-                <button class="btn btn-primary btn-sm">
-                  <i class="fas fa-edit"></i>
-                  <span>Edit</span>
-                </button>
-                <button class="btn btn-outline btn-sm">
-                  <i class="fas fa-trash"></i>
-                  <span>Delete</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="my-resource-card">
-              <h3 class="resource-title">Mobile App UI/UX Design Guide</h3>
-              <div class="resource-meta">
-                <span class="resource-category">Guides</span>
-                <span class="resource-size">3.6 MB</span>
-              </div>
-              <p class="resource-description">Best practices and principles for mobile application design</p>
-              <div class="resource-details">
-                <span class="upload-date">Uploaded: Aug 5, 2025</span>
-                <span class="engagement-stats">Downloads: 91 • Likes: 19</span>
-              </div>
-              <div class="resource-actions">
-                <button class="btn btn-primary btn-sm">
-                  <i class="fas fa-edit"></i>
-                  <span>Edit</span>
-                </button>
-                <button class="btn btn-outline btn-sm">
-                  <i class="fas fa-trash"></i>
-                  <span>Delete</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="my-resource-card">
-              <h3 class="resource-title">Cloud Computing Architecture Patterns</h3>
-              <div class="resource-meta">
-                <span class="resource-category">Research</span>
-                <span class="resource-size">2.4 MB</span>
-              </div>
-              <p class="resource-description">Common architectural patterns for cloud-native applications</p>
-              <div class="resource-details">
-                <span class="upload-date">Uploaded: Aug 2, 2025</span>
-                <span class="engagement-stats">Downloads: 54 • Likes: 11</span>
-              </div>
-              <div class="resource-actions">
-                <button class="btn btn-primary btn-sm">
-                  <i class="fas fa-edit"></i>
-                  <span>Edit</span>
-                </button>
-                <button class="btn btn-outline btn-sm">
-                  <i class="fas fa-trash"></i>
-                  <span>Delete</span>
-                </button>
-              </div>
-            </div>
+            <?php endif; ?>
           </div>
         </section>
 
@@ -597,7 +291,9 @@
           </button>
         </div>
 
-        <form class="upload-form">
+        <form class="upload-form" enctype="multipart/form-data">
+          <input type="hidden" id="resourceId" name="resourceId" value="">
+          <input type="hidden" id="resourceMode" name="resourceMode" value="create">
           <div class="form-group">
             <label for="resourceTitle">Resource Title *</label>
             <input type="text" id="resourceTitle" name="resourceTitle" placeholder="Enter a descriptive title" required>
@@ -622,20 +318,20 @@
           <div class="form-group">
             <label for="resourceFile">File *</label>
             <div class="file-upload-area" onclick="document.getElementById('resourceFile').click()">
-              <input type="file" id="resourceFile" name="resourceFile" accept=".pdf,.doc,.docx,.txt,.zip,.rar" style="display: none;" required>
+              <input type="file" id="resourceFile" name="resourceFile" accept=".pdf,.doc,.docx,.txt,.zip,.rar,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.gif,image/*" style="display: none;" required>
               <div class="upload-placeholder">
                 <i class="fas fa-cloud-upload-alt"></i>
                 <p>Click to select file or drag and drop</p>
-                <small>Supported: PDF, DOC, DOCX, TXT, ZIP, RAR</small>
+                <small>Supported: PDF, DOC, DOCX, TXT, ZIP, RAR, PPT, PPTX, XLS, XLSX, PNG, JPG, JPEG, GIF</small>
               </div>
             </div>
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn btn-outline btn-md" onclick="closeUploadModal()">
+            <button type="button" class="btn btn-outline" onclick="closeUploadModal()">
               <span>Cancel</span>
             </button>
-            <button type="submit" class="btn btn-primary btn-md">
+            <button type="submit" class="btn btn-primary">
               <i class="fas fa-upload"></i>
               <span>Upload</span>
             </button>
@@ -644,7 +340,53 @@
       </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+      <div class="modal-content modal-small">
+        <div class="modal-header">
+          <h2 class="modal-title">
+            <i class="fas fa-exclamation-circle"></i>
+            Confirm Delete
+          </h2>
+          <button class="modal-close" onclick="closeDeleteModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="delete-warning">
+            <div class="warning-icon-wrapper">
+              <i class="fas fa-trash-alt"></i>
+            </div>
+            <h3>Are you sure you want to delete this resource?</h3>
+            <p class="delete-resource-name" id="deleteResourceName"></p>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline btn-sm" onclick="closeDeleteModal()">
+            <i class="fas fa-times"></i>
+            <span>Cancel</span>
+          </button>
+          <button type="button" class="btn btn-danger btn-sm" id="confirmDeleteBtn">
+            <i class="fas fa-trash"></i>
+            <span>Delete Resource</span>
+          </button>
+        </div>
+
+        <div class="modal-footer">
+          <p class="warning-text">
+            <i class="fas fa-info-circle"></i>
+            This action cannot be undone. The file will be permanently deleted from the system.
+          </p>
+        </div>
+      </div>
+    </div>
+
     <!-- JS -->
+    <script>
+      window.APP_ROOT = '<?=ROOT?>';
+    </script>
     <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/resources.js"></script>
   </body>

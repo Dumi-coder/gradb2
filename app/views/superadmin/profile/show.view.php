@@ -1,5 +1,8 @@
 <?php require '../app/views/partials/superadmin_header.php'; ?>
 
+<!-- Unified Profile Styles -->
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/profile.css">
+
 <div class="dashboard-container">
     <!-- Sidebar -->
     <?php require '../app/views/partials/superadmin_sidebar.php'; ?>
@@ -10,7 +13,7 @@
         <section class="dashboard-section profile-section">
             <div class="section-header">
                 <h2 class="section-title">Admin Profile</h2>
-                <a href="<?=ROOT?>/superadmin/profile?action=edit" class="btn btn-outline btn-md">
+                <a href="<?=ROOT?>/superadmin/profile?action=edit" class="btn btn-outline">
                     <i class="fas fa-edit"></i>
                     <span>Edit Profile</span>
                 </a>

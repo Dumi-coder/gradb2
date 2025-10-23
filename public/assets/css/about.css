@@ -2,7 +2,7 @@
 
 .about {
   position: relative;
-  padding: var(--spacing-2xl) 0;
+  padding: var(--spacing-md) 0 var(--spacing-lg) 0;
   /* Smooth background that fades back to white */
   background: linear-gradient(
     180deg,
@@ -13,21 +13,119 @@
   );
 }
 
-/* Extra soft fade at the bottom to avoid a harsh cutoff */
-.about::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  height: 72px;
-  background: linear-gradient(180deg, var(--brand-grey), rgba(255, 255, 255, 0));
-  pointer-events: none;
-}
-
 .about .about-content {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
+  text-align: center;
 }
 
+/* About Badge */
+.about-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-full);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.about-badge i {
+  font-size: var(--font-md);
+}
+
+/* Benefits Grid */
+.benefits-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-2xl);
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.benefit-item {
+  background-color: var(--card);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  transition: all 0.3s ease;
+  text-align: left;
+  position: relative;
+}
+
+.benefit-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  border-left-width: 6px;
+}
+
+/* Different colored accents for each benefit type */
+.student-benefit {
+  border-left-color: #3b82f6;
+}
+
+.alumni-benefit {
+  border-left-color: #10b981;
+}
+
+.institution-benefit {
+  border-left-color: #f59e0b;
+}
+
+.benefit-item h3 {
+  font-size: var(--font-xl);
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: var(--spacing-sm);
+  position: relative;
+}
+
+.benefit-item p {
+  color: var(--muted-foreground);
+  line-height: 1.7;
+  margin: 0;
+  font-size: var(--font-base);
+}
+
+/* Add subtle colored backgrounds on hover */
+.student-benefit:hover {
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+}
+
+.alumni-benefit:hover {
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+}
+
+.institution-benefit:hover {
+  background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+}
+
+/* Responsive Benefits Grid */
+@media (min-width: 768px) {
+  .benefits-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .benefit-item {
+    padding: var(--spacing-lg);
+  }
+  
+  .benefit-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .benefit-icon i {
+    font-size: var(--font-xl);
+  }
+}
 

@@ -7,6 +7,11 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* Offset for fixed header */
+}
+
 /* CSS Variables - Design System */
 :root {
   /* GradBridge Design System - Blue, Black, White Theme */
@@ -54,6 +59,9 @@
   --spacing-lg: 2rem;
   --spacing-xl: 3rem;
   --spacing-2xl: 4rem;
+  --spacing-3xl: 6rem;
+  --spacing-4xl: 8rem;
+  --spacing-5xl: 10rem;
   
   /* Border radius */
   --radius-sm: 0.5rem;
@@ -165,11 +173,11 @@ body {
   }
   
   .section-title {
-    font-size: var(--font-5xl);
+    font-size: var(--font-4xl);
   }
   
   .cta-title {
-    font-size: var(--font-5xl);
+    font-size: var(--font-4xl);
   }
   
   .footer-content {

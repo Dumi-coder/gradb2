@@ -1,49 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Alumni Dashboard - GradBridge</title>
-    <meta name="description" content="Alumni Dashboard for GradBridge - Manage your mentorship, aid requests, and community engagement." />
-    <meta name="author" content="GradBridge" />
-    
-    <!-- Google Fonts - Poppins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni-dashboard.css">
-    
-  </head>
+<?php 
+$page_title = "Welcome, " . esc($profile->name);
+$page_subtitle = esc($profile->faculty) . " • Class of " . esc($profile->graduated_year);
+require '../app/views/partials/alumni_header.php'; 
+?>
 
-  <body class="alumni-dashboard">
-    <!-- Top Navbar -->
-    <header class="dashboard-header">
-      <div class="container">
-        <div class="header-content">
-          <div class="welcome-section">
-            <h1 class="welcome-text">Welcome, <span class="alumni-name"><?= esc($profile->name) ?></span></h1>
-            <p class="alumni-role"><?= esc($profile->faculty) ?> • Class of <?= esc($profile->graduated_year) ?></p>
-        </div>
-        
-          <div class="header-actions">
-            <button class="btn btn-outline notification-btn" aria-label="Notifications">
-              <i class="fas fa-bell" style="font-size: 1.1rem;"></i>
-              <span class="notification-badge">3</span>
-            </button>
-            <a href="<?=ROOT?>/alumni/logout" class="btn btn-primary logout-btn">Logout</a>
-          </div>
-        </div>
-      </div>
-    </header>
+<!-- Page-specific CSS -->
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
 
-    <div class="dashboard-container">
+<body class="alumni-dashboard">
+<div class="dashboard-container">
      <!-- sidebar -->
     <?php require '../app/views/partials/alumni_sidebar.php'; ?>
 
@@ -57,17 +22,14 @@
                 <div class="profile-card">
                     <div class="profile-info">
               <div class="profile-avatar-container">
-                <div class="profile-avatar" id="profileAvatar">
-                  <img src="" alt="Profile Picture" id="profileImage" style="display: none;">
-                  <span class="avatar-text"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
+                <div class="profile-avatar" id="profileAvatar" style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #3498db;">
+                  <?php if (!empty($profile->profile_photo_url)): ?>
+                    <img src="<?= esc($profile->profile_photo_url) ?>" alt="Profile Picture" id="profileImage" style="width: 100%; height: 100%; object-fit: cover;">
+                  <?php else: ?>
+                    <span class="avatar-text" style="font-size: 40px; color: white; font-weight: bold;"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
+                  <?php endif; ?>
                 </div>
-                <div class="avatar-upload-overlay">
-                  <label for="profilePictureInput" class="avatar-upload-btn" title="Change Profile Picture">
-                    <i class="fas fa-camera"></i>
-                  </label>
-                  <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
-                </div>
-                        </div>
+              </div>
               
                         <div class="profile-details">
                 <h3 class="profile-name"><?= esc($profile->name) ?></h3>
@@ -98,7 +60,7 @@
         <section class="dashboard-section mentorship-section">
                     <div class="section-header">
                         <h2 class="section-title">Mentorship Requests</h2>
-            <button class="btn btn-outline btn-md">
+            <button class="btn btn-outline">
               <i class="fas fa-external-link-alt"></i>
               View All
             </button>
@@ -119,7 +81,7 @@
               <div class="mentorship-status">
                 <span class="status-badge status-new">NEW</span>
                 <div class="mentorship-actions">
-                  <button class="btn btn-primary btn-sm">Accept</button>
+                  <button class="btn btn-success btn-sm">Accept</button>
                   <button class="btn btn-outline btn-sm">View Profile</button>
                 </div>
               </div>
@@ -131,7 +93,7 @@
         <section class="dashboard-section aid-requests-section">
                     <div class="section-header">
                         <h2 class="section-title">Aid Requests</h2>
-            <button class="btn btn-outline btn-md">
+            <button class="btn btn-outline">
               <i class="fas fa-external-link-alt"></i>
               View All
             </button>
@@ -159,7 +121,7 @@
         <section class="dashboard-section forum-section">
                     <div class="section-header">
                         <h2 class="section-title">Discussion Forum</h2>
-            <button class="btn btn-outline btn-md">
+            <button class="btn btn-outline">
               <i class="fas fa-external-link-alt"></i>
               Go to Forum
             </button>
@@ -196,7 +158,7 @@
         <section class="dashboard-section fundraiser-section">
                     <div class="section-header">
                         <h2 class="section-title">Fundraising Campaigns</h2>
-            <button class="btn btn-outline btn-md">
+            <button class="btn btn-outline">
               <i class="fas fa-external-link-alt"></i>
               View All
             </button>
@@ -255,7 +217,7 @@
         <section class="dashboard-section events-section">
                     <div class="section-header">
             <h2 class="section-title">Upcoming Events</h2>
-            <button class="btn btn-outline btn-md">
+            <button class="btn btn-outline">
               <i class="fas fa-external-link-alt"></i>
               View All
             </button>
@@ -282,7 +244,7 @@
         <section class="dashboard-section badges-section">
                     <div class="section-header">
                         <h2 class="section-title">Your Badges</h2>
-            <button class="btn btn-outline btn-md">
+            <button class="btn btn-outline">
               <i class="fas fa-external-link-alt"></i>
               View All
             </button>

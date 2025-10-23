@@ -1,133 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fundraising - GradBridge</title>
-    <meta name="description" content="Support student initiatives and community fundraising campaigns." />
-    <meta name="author" content="GradBridge" />
-    
-    <!-- Google Fonts - Poppins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Base styles -->
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/fundraising.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni-dashboard.css">
-    
-    <style>
-    /* Alumni Fundraising Specific Overrides */
-    .btn-primary {
-      background-color: #000000 !important;
-      color: white !important;
-      border: none !important;
-    }
-    
-    .btn-primary:hover {
-      background-color: #333333 !important;
-    }
-    
-    .btn-outline:hover {
-      background-color: #000000 !important;
-      color: white !important;
-      border-color: #000000 !important;
-    }
-    
-    /* Section Boundaries */
-    .create-section {
-      border: 2px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      background-color: white !important;
-      margin-bottom: 20px !important;
-    }
-    
-    .campaigns-section {
-      border: 2px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      background-color: white !important;
-      margin-bottom: 20px !important;
-    }
-    
-    .donations-section {
-      border: 2px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      background-color: white !important;
-      margin-bottom: 20px !important;
-    }
-    
-    /* Fundraising Activity Statistics Section */
-    .fundraising-stats-section {
-      border: 2px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      background-color: white !important;
-      margin-bottom: 20px !important;
-    }
-    
-    .stats-grid {
-      display: grid !important;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
-      gap: 24px !important;
-    }
-    
-    .stat-card {
-      background-color: white !important;
-      border: 1px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      display: flex !important;
-      align-items: center !important;
-      gap: 16px !important;
-      transition: all 0.3s ease !important;
-    }
-    
-    .stat-card:hover {
-      border-color: #0E2072 !important;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-      transform: translateY(-2px) !important;
-    }
-    
-    .stat-icon {
-      width: 50px !important;
-      height: 50px !important;
-      background-color: #0E2072 !important;
-      border-radius: 8px !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      color: white !important;
-      font-size: 20px !important;
-    }
-    
-    .stat-content {
-      flex: 1 !important;
-    }
-    
-    .stat-number {
-      font-size: 28px !important;
-      font-weight: 700 !important;
-      color: #0E2072 !important;
-      margin: 0 0 4px 0 !important;
-      line-height: 1 !important;
-    }
-    
-    .stat-label {
-      color: #6B7280 !important;
-      font-size: 14px !important;
-      margin: 0 !important;
-      font-weight: 500 !important;
-    }
-    </style>
-  </head>
+<?php 
+$page_title = "Fundraising";
+$page_subtitle = "Support student initiatives and community campaigns";
+require '../app/views/partials/alumni_header.php'; 
+?>
+
+<!-- Page-specific CSS -->
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/fundraising.css">
+</head>
 
   <body class="alumni-dashboard">
     <!-- Top Navbar -->
@@ -163,7 +42,7 @@
         <section class="dashboard-section create-section">
           <div class="section-header">
             <h2 class="card-title">Start a Campaign</h2>
-            <button class="btn btn-primary btn-md" onclick="openCreateCampaignModal()">
+            <button class="btn btn-primary" onclick="openCreateCampaignModal()">
               <i class="fas fa-plus"></i>
               <span>Create Campaign</span>
             </button>
@@ -216,7 +95,7 @@
                   </div>
                 </div>
                 <div class="campaign-actions">
-                  <button class="btn btn-primary btn-md" onclick="openDonateModal('Student Emergency Fund', 15000, 11250)">
+                  <button class="btn btn-primary" onclick="openDonateModal('Student Emergency Fund', 15000, 11250)">
                     <i class="fas fa-heart"></i>
                     <span>Donate Now</span>
                   </button>
@@ -257,7 +136,7 @@
                   </div>
                 </div>
                 <div class="campaign-actions">
-                  <button class="btn btn-primary btn-md" onclick="openDonateModal('Laptop Loan Program', 25000, 11250)">
+                  <button class="btn btn-primary" onclick="openDonateModal('Laptop Loan Program', 25000, 11250)">
                     <i class="fas fa-heart"></i>
                     <span>Donate Now</span>
                   </button>
@@ -298,7 +177,7 @@
                   </div>
                 </div>
                 <div class="campaign-actions">
-                  <button class="btn btn-outline btn-md" disabled>
+                  <button class="btn btn-outline" disabled>
                     <i class="fas fa-check"></i>
                     <span>Completed</span>
                   </button>
@@ -436,10 +315,10 @@
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn btn-outline btn-md" onclick="closeCreateCampaignModal()">
+            <button type="button" class="btn btn-outline" onclick="closeCreateCampaignModal()">
               <span>Cancel</span>
             </button>
-            <button type="submit" class="btn btn-primary btn-md">
+            <button type="submit" class="btn btn-primary">
               <i class="fas fa-rocket"></i>
               <span>Launch Campaign</span>
             </button>
@@ -499,10 +378,10 @@
             </div>
 
             <div class="form-actions">
-              <button type="button" class="btn btn-outline btn-md" onclick="closeDonateModal()">
+              <button type="button" class="btn btn-outline" onclick="closeDonateModal()">
                 <span>Cancel</span>
               </button>
-              <button type="submit" class="btn btn-primary btn-md">
+              <button type="submit" class="btn btn-primary">
                 <i class="fas fa-heart"></i>
                 <span>Donate Now</span>
               </button>

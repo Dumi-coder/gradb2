@@ -1,51 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fundraising - GradBridge</title>
-    <meta name="description" content="Support student initiatives and community fundraising campaigns." />
-    <meta name="author" content="GradBridge" />
-    
-    <!-- Google Fonts - Poppins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Base styles -->
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/fundraising.css">
-  </head>
+<?php 
+$page_title = "Fundraising";
+$page_subtitle = "Support student initiatives and community campaigns";
+require '../app/views/partials/student_header.php'; 
+?>
 
-  <body>
-    <!-- Top Navbar -->
-    <header class="dashboard-header">
-      <div class="container">
-        <div class="header-content">
-          <div class="welcome-section">
-            <h1 class="welcome-text">Fundraising</h1>
-            <p class="student-role">Support student initiatives and community campaigns</p>
-          </div>
-          
-          <div class="header-actions">
-            <button class="btn btn-outline notification-btn" aria-label="Notifications">
-              <i class="fas fa-bell"></i>
-              <span class="notification-badge">3</span>
-            </button>
-            <button class="btn btn-primary logout-btn">
-              <i class="fas fa-sign-out-alt"></i>
-              Logout
-            </button>
-          </div>
-        </div>
-      </div>
-    </header>
+<!-- Page-specific CSS -->
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/fundraising.css">
 
-    <div class="dashboard-container">
+<div class="dashboard-container">
             <!-- Sidebar Navigation -->
       <?php require '../app/views/partials/student_sidebar.php'; ?>
 
@@ -55,7 +17,7 @@
         <section class="dashboard-section create-section">
           <div class="section-header">
             <h2 class="card-title">Start a Campaign</h2>
-            <button class="btn btn-primary btn-md" onclick="openCreateCampaignModal()">
+            <button class="btn btn-primary" onclick="openCreateCampaignModal()">
               <i class="fas fa-plus"></i>
               <span>Create Campaign</span>
             </button>
@@ -108,7 +70,7 @@
                   </div>
                 </div>
                 <div class="campaign-actions">
-                  <button class="btn btn-primary btn-md" onclick="openDonateModal('Student Emergency Fund', 15000, 11250)">
+                  <button class="btn btn-primary" onclick="openDonateModal('Student Emergency Fund', 15000, 11250)">
                     <i class="fas fa-heart"></i>
                     <span>Donate Now</span>
                   </button>
@@ -149,7 +111,7 @@
                   </div>
                 </div>
                 <div class="campaign-actions">
-                  <button class="btn btn-primary btn-md" onclick="openDonateModal('Laptop Loan Program', 25000, 11250)">
+                  <button class="btn btn-primary" onclick="openDonateModal('Laptop Loan Program', 25000, 11250)">
                     <i class="fas fa-heart"></i>
                     <span>Donate Now</span>
                   </button>
@@ -190,7 +152,7 @@
                   </div>
                 </div>
                 <div class="campaign-actions">
-                  <button class="btn btn-outline btn-md" disabled>
+                  <button class="btn btn-outline" disabled>
                     <i class="fas fa-check"></i>
                     <span>Completed</span>
                   </button>
@@ -286,10 +248,10 @@
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn btn-outline btn-md" onclick="closeCreateCampaignModal()">
+            <button type="button" class="btn btn-outline" onclick="closeCreateCampaignModal()">
               <span>Cancel</span>
             </button>
-            <button type="submit" class="btn btn-primary btn-md">
+            <button type="submit" class="btn btn-primary">
               <i class="fas fa-rocket"></i>
               <span>Launch Campaign</span>
             </button>
@@ -349,10 +311,10 @@
             </div>
 
             <div class="form-actions">
-              <button type="button" class="btn btn-outline btn-md" onclick="closeDonateModal()">
+              <button type="button" class="btn btn-outline" onclick="closeDonateModal()">
                 <span>Cancel</span>
               </button>
-              <button type="submit" class="btn btn-primary btn-md">
+              <button type="submit" class="btn btn-primary">
                 <i class="fas fa-heart"></i>
                 <span>Donate Now</span>
               </button>

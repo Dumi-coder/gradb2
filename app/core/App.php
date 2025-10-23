@@ -55,6 +55,8 @@ class App// This is the main application class that handles routing and loading 
                 require $filename;
                 $this->controller=ucfirst($URL[1]);
                 unset($URL[0],$URL[1]);
+                // Re-index after selecting a nested controller so method can be detected reliably
+                $URL = array_values($URL);
             }else{
                 $filename="../app/controllers/_404.php";
                 require $filename;
@@ -71,13 +73,13 @@ class App// This is the main application class that handles routing and loading 
         
          $controller=new $this->controller;// Create an instance of the controller class
         /**   select method */
-         if(!empty($URL[1]) && method_exists($controller, $URL[1]))
+         // Re-index the URL array after unsets
+         $URL = array_values($URL);
+         
+         if(!empty($URL[0]) && method_exists($controller, $URL[0]))
          {
-            //  if(method_exists($controller,$URL[1]))
-            //  {
-                $this->method = $URL[1];// Set the method to the second segment of the URL if it exists
-                unset($URL[1]);// Remove the second segment from the URL array
-            //  }            
+            $this->method = $URL[0];
+            unset($URL[0]);
          }
         $params=array_values($URL);// Re-index the URL array to get the parameters
         call_user_func_array([$controller,$this->method],$params); // Call the method on the controller instance

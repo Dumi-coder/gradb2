@@ -531,27 +531,7 @@
 }
 
 /* Button Variants */
-.btn-success {
-  background-color: #10b981;
-  color: white;
-  border: 1px solid #10b981;
-}
-
-.btn-success:hover {
-  background-color: #059669;
-  border-color: #059669;
-}
-
-.btn-danger {
-  background-color: #dc2626;
-  color: white;
-  border: 1px solid #dc2626;
-}
-
-.btn-danger:hover {
-  background-color: #b91c1c;
-  border-color: #b91c1c;
-}
+/* Button styles (btn-success, btn-danger, etc.) are now in buttons.css */
 
 /* Responsive Design */
 @media (max-width: 1024px) {

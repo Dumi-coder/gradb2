@@ -15,9 +15,11 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/header.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css?v=<?=time()?>">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/buttons.css?v=<?=time()?>">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/badges.css?v=<?=time()?>">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css?v=<?=time()?>">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/header.css?v=<?=time()?>">
 
     <!-- <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/Main.css">
     <link rel="stylesheet" href="http://localhost/gradb2/public/assets/css/other.css">
@@ -37,8 +39,8 @@
           <button class="menu-toggle" aria-label="Open menu">≡</button>
           <nav class="nav">
             <a href="<?=ROOT?>/home" class="nav-link">Home</a>
-            <a href="<?=ROOT?>/about" class="nav-link">About</a>
-            <a href="<?=ROOT?>/features" class="nav-link">Features</a>
+            <a href="<?=ROOT?>/home#about" class="nav-link">About</a>
+            <a href="<?=ROOT?>/home#features" class="nav-link">Features</a>
             <a href="<?=ROOT?>/login" class="nav-link">Login</a>
           </nav>
 

@@ -47,6 +47,14 @@ $isActive = function(string $path) use ($current): string {
                 <i class="fas fa-user-slash"></i>
                 <span>Suspend/Reactivate Users</span>
             </a>
+            <a href="<?=ROOT?>/admin/AddNewStudents" class="nav-item<?= $isActive('admin/AddNewStudents') ?>">
+                <i class="fas fa-user-plus"></i>
+                <span>Add New Students</span>
+            </a>
+            <a href="<?=ROOT?>/admin/AddNewAlumnies" class="nav-item<?= $isActive('admin/AddNewAlumnies') ?>">
+                <i class="fas fa-user-graduate"></i>
+                <span>Add New Alumnies</span>
+            </a>
             <a href="<?=ROOT?>/admin/FaqModeration" class="nav-item<?= $isActive('admin/FaqModeration') ?>">
                 <i class="fas fa-question-circle"></i>
                 <span>FAQ Moderation</span>

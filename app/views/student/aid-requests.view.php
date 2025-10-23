@@ -1,47 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aid Requests - GradBridge</title>
-    <meta name="description" content="Manage your financial aid requests and track application status." />
-    <meta name="author" content="GradBridge" />
-    
-    <!-- Google Fonts - Poppins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/aid-requests.css">
-  </head>
+<?php 
+$page_title = "Aid Requests";
+$page_subtitle = "Manage your financial aid requests";
+require '../app/views/partials/student_header.php'; 
+?>
 
-  <body>
-    <!-- Top Navbar -->
-    <header class="dashboard-header">
-      <div class="container">
-        <div class="header-content">
-          <div class="welcome-section">
-            <h1 class="welcome-text">Aid Requests</h1>
-            <p class="student-role">Aid Review and Approval System</p>
-          </div>
-          
-          <div class="header-actions">
-            <button class="btn btn-outline notification-btn" aria-label="Notifications">
-              <i class="fas fa-bell"></i>
-              <span class="notification-badge">3</span>
-            </button>
-          <a href="<?=ROOT?>/student/Logout"><button class="btn btn-primary logout-btn">Logout</button></a>
-          </div>
-        </div>
-      </div>
-    </header>
+<!-- Page-specific CSS -->
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/aid-requests.css">
 
-    <div class="dashboard-container">
+<div class="dashboard-container">
       <?php require '../app/views/partials/student_sidebar.php'; ?>
 
       <!-- Main Content Area -->
@@ -55,12 +21,12 @@
             </div>
             
             <div class="form-actions">
-              <!-- <button class="btn btn-outline btn-md">
+              <!-- <button class="btn btn-outline">
                 <i class="fas fa-question-circle"></i>
                 <span>View Guidelines</span>
               </button> -->
               <a href="<?=ROOT?>/student/AidReqForm">
-              <button class="btn btn-primary btn-md">
+              <button class="btn btn-primary ">
                 <i class="fas fa-file-alt"></i>
                 <span>Start Application</span>
               </button>

@@ -1,52 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mentorship - GradBridge</title>
-    <meta name="description" content="Request mentorship from experienced alumni and track your mentorship requests." />
-    <meta name="author" content="GradBridge" />
-    
-    <!-- Google Fonts - Poppins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/Main.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
-    <link rel="stylesheet" href="<?=ROOT?>/assets/css/mentorship.css">
-    
-  </head>
+<?php 
+$page_title = "Mentorship";
+$page_subtitle = "Connect with alumni mentors";
+require '../app/views/partials/student_header.php'; 
+?>
 
-  <body>
-    <!-- Top Navbar -->
-    <header class="dashboard-header">
-      <div class="container">
-        <div class="header-content">
-          <div class="welcome-section">
-            <h1 class="welcome-text">Mentorship</h1>
-          </div>
-          
-          <div class="header-actions">
-            <button class="btn btn-outline notification-btn" aria-label="Notifications">
-              <i class="fas fa-bell"></i>
-              <span class="notification-badge">3</span>
-            </button>
-           <a href="<?=ROOT?>/student/Logout">
-            <button class="btn btn-primary logout-btn">
-              Logout
-            </button>
-           </a>
+<!-- Page-specific CSS -->
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/mentorship.css">
 
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <div class="dashboard-container">
+<div class="dashboard-container">
 
       <!-- sidebar -->
       <?php require '../app/views/partials/student_sidebar.php'; ?>
@@ -80,67 +41,79 @@
         <!-- Your Mentorship Requests Section -->
         <section class="requests-section">
           <h2 class="section-title">Your mentorship requests</h2>
-          <div class="requests-grid">
-            <div class="request-card">
-              <div class="request-header">
-                <h3 class="request-title">Career guidance</h3>
-                <span class="status-badge status-pending">Pending</span>
-              </div>
-              <p class="request-description">Seeking advice to transition from academia to industry roles...</p>
-              <div class="request-actions">
-                <button class="btn btn-outline btn-sm">
-                  <i class="fas fa-eye"></i>
-                  <span>View Details</span>
-                </button>
-              </div>
+          
+          <?php if (isset($data['requests']) && !empty($data['requests'])): ?>
+            <div class="requests-grid">
+              <?php foreach ($data['requests'] as $request): ?>
+                <div class="request-card">
+                  <div class="request-header">
+                    <h3 class="request-title">Mentorship Request</h3>
+                    <span class="status-badge status-<?= strtolower(str_replace('_', '-', $request['status'])) ?>">
+                      <?= ucfirst(str_replace('_', ' ', $request['status'])) ?>
+                    </span>
+                  </div>
+                  <?php 
+                    // Get category display name
+                    $categoryDisplay = '';
+                    if ($request['mentorship_category'] === 'other' && !empty($request['other_category'])) {
+                      $categoryDisplay = $request['other_category'];
+                    } else {
+                      $categoryMap = [
+                        'academic' => 'Academic Guidance',
+                        'career' => 'Career Development',
+                        'research' => 'Research & Projects',
+                        'networking' => 'Professional Networking',
+                        'skills' => 'Technical Skills',
+                        'leadership' => 'Leadership & Management',
+                        'entrepreneurship' => 'Entrepreneurship'
+                      ];
+                      $categoryDisplay = $categoryMap[$request['mentorship_category']] ?? ucfirst($request['mentorship_category']);
+                    }
+                  ?>
+                  <div class="request-category">
+                    <strong>Category:</strong> <?= htmlspecialchars($categoryDisplay) ?>
+                  </div>
+                  <p class="request-description"><?= htmlspecialchars($request['request_reason']) ?></p>
+                  <div class="request-meta">
+                    <small class="request-date">Created: <?= date('M j, Y', strtotime($request['created_at'])) ?></small>
+                  </div>
+                  <div class="request-actions">
+                    <?php if (in_array($request['status'], ['pending_verification', 'open'])): ?>
+                      <a href="<?=ROOT?>/student/MentorshipReq/edit/<?= $request['request_id'] ?>" class="btn btn-outline btn-sm">
+                        <i class="fas fa-edit"></i>
+                        <span>Edit</span>
+                      </a>
+                      <a href="<?=ROOT?>/student/MentorshipReq/delete/<?= $request['request_id'] ?>" 
+                         class="btn btn-danger btn-sm" 
+                         onclick="return confirm('Are you sure you want to delete this mentorship request?')">
+                        <i class="fas fa-trash"></i>
+                        <span>Delete</span>
+                      </a>
+                    <?php else: ?>
+                      <button class="btn btn-outline btn-sm" disabled>
+                        <i class="fas fa-eye"></i>
+                        <span>View Details</span>
+                      </button>
+                    <?php endif; ?>
+                  </div>
+                </div>
+              <?php endforeach; ?>
             </div>
-            
-            <div class="request-card">
-              <div class="request-header">
-                <h3 class="request-title">Final Year Project</h3>
-                <span class="status-badge status-approved">Approved</span>
+          <?php else: ?>
+            <div class="empty-state">
+              <div class="empty-icon">
+                <i class="fas fa-inbox"></i>
               </div>
-              <p class="request-description">Need help with the machine learning implementation</p>
-              <div class="request-actions">
-                <button class="btn btn-outline btn-sm">
-                  <i class="fas fa-user"></i>
-                  <span>View Alumni Profile</span>
-                </button>
-              </div>
+              <h3>No mentorship requests yet</h3>
+              <p>You haven't submitted any mentorship requests. Click the button above to get started!</p>
             </div>
-            
-            <div class="request-card">
-              <div class="request-header">
-                <h3 class="request-title">Technical Skills Development</h3>
-                <span class="status-badge status-completed">Completed</span>
-              </div>
-              <p class="request-description">Looking for guidance on advanced programming concepts</p>
-              <div class="request-actions">
-                <button class="btn btn-outline btn-sm">
-                  <i class="fas fa-user"></i>
-                  <span>View Alumni Profile</span>
-                </button>
-              </div>
-            </div>
-            
-            <div class="request-card">
-              <div class="request-header">
-                <h3 class="request-title">Leadership Training</h3>
-                <span class="status-badge status-waiting">Waiting</span>
-              </div>
-              <p class="request-description">Want to develop leadership skills for student organizations</p>
-              <div class="request-actions">
-                <button class="btn btn-outline btn-sm">
-                  <i class="fas fa-eye"></i>
-                  <span>View Details</span>
-                </button>
-              </div>
-            </div>
-          </div>
-                  </section>
+          <?php endif; ?>
+        </section>
         </div>
-      </main>
+      </div>
     </div>
     <script src="<?=ROOT?>/assets/js/main.js"></script>
+    <script src="<?=ROOT?>/assets/js/profile-modals.js"></script>
+    <script src="<?=ROOT?>/assets/js/profile-modals.js"></script>
   </body>
 </html>

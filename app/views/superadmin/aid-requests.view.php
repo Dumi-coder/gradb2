@@ -199,19 +199,7 @@
     flex-wrap: wrap;
 }
 
-.btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+/* Button styles are now in buttons.css - removed to prevent override */
 
 .btn-success {
     background-color: #10B981;

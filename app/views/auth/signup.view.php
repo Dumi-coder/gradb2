@@ -6,8 +6,8 @@
         <div class="auth-card" style="max-width:520px">
           <h1 class="auth-title">How would you like to register?</h1>
           <div style="display:grid; gap: 1rem; grid-template-columns: 1fr;">
-            <a class="btn btn-secondary" href="<?=ROOT?>/Student/Auth">I am a Student</a>
-            <a class="btn btn-outline" href="<?=ROOT?>/Alumni/Auth">I am an Alumni</a>
+            <a class="btn btn-secondary" href="<?=ROOT?>/Student/Auth?action=signup">I am a Student</a>
+            <a class="btn btn-outline" href="<?=ROOT?>/Alumni/Auth?action=signup">I am an Alumni</a>
           </div>
         </div>
       </div>
