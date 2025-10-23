@@ -158,15 +158,19 @@ class Profile extends Controller
 
                 // Handle profile picture upload
                 if ($profile_picture && $profile_picture['error'] == UPLOAD_ERR_OK) {
-                    // Create upload directory in public folder
-                    $upload_dir = '../public/assets/uploads/profiles/';
-                    if (!is_dir($upload_dir)) {
-                        mkdir($upload_dir, 0775, true);
-                    }
+                        // Create upload directory in public folder (use absolute path from project root)
+                        $projectRoot = dirname(__DIR__, 3);
+                        $upload_dir = $projectRoot . '/public/assets/uploads/profiles/';
+                        if (!is_dir($upload_dir)) {
+                            if (!mkdir($upload_dir, 0775, true)) {
+                                $errors['profile_picture'] = "Failed to create upload directory";
+                            }
+                        }
 
-                    // Generate unique filename
-                    $file_extension = pathinfo($profile_picture['name'], PATHINFO_EXTENSION);
-                    $file_name = 'profile_' . $_SESSION['alumni_id'] . '_' . time() . '.' . $file_extension;
+                    // Generate unique filename (sanitize alumni id to avoid path separators / special chars)
+                    $file_extension = strtolower(pathinfo($profile_picture['name'], PATHINFO_EXTENSION));
+                    $safe_alumni_id = isset($_SESSION['alumni_id']) ? preg_replace('/[^A-Za-z0-9_\-]/', '_', $_SESSION['alumni_id']) : 'unknown';
+                    $file_name = 'profile_' . $safe_alumni_id . '_' . time() . '.' . $file_extension;
                     $target_file = $upload_dir . $file_name;
 
                     if (move_uploaded_file($profile_picture['tmp_name'], $target_file)) {
@@ -175,12 +179,14 @@ class Profile extends Controller
                         // Delete old profile picture if it exists
                         if ($current_profile->profile_photo_url && 
                             strpos($current_profile->profile_photo_url, '/assets/uploads/profiles/') !== false) {
-                            $old_file = '../public' . str_replace(ROOT, '', $current_profile->profile_photo_url);
+                            // Build absolute path to the old file safely
+                            $old_file = $upload_dir . basename($current_profile->profile_photo_url);
                             if (file_exists($old_file)) {
                                 unlink($old_file);
                             }
                         }
                     } else {
+                        error_log("move_uploaded_file failed for target: $target_file, tmp: " . ($profile_picture['tmp_name'] ?? '')); 
                         $errors['profile_picture'] = "Failed to upload profile picture";
                     }
                 }
@@ -228,7 +234,8 @@ class Profile extends Controller
             if ($profile && !empty($profile->profile_photo_url)) {
                 // Delete the file from server
                 if (strpos($profile->profile_photo_url, '/assets/uploads/profiles/') !== false) {
-                    $file_path = '../public' . str_replace(ROOT, '', $profile->profile_photo_url);
+                    $projectRoot = dirname(__DIR__, 3);
+                    $file_path = $projectRoot . '/public/assets/uploads/profiles/' . basename($profile->profile_photo_url);
                     if (file_exists($file_path)) {
                         unlink($file_path);
                     }
