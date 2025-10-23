@@ -31,3 +31,7 @@ The system provides networking opportunities, mentoring, career guidance, and al
    ```bash
    git clone git@github.com:Dumi-coder/gradb2.git
    cd gradb2
+
+  ---
+
+  Note: Student dashboard avatar sizing was updated to use the unified `profile.css` so the picture displays the same size and style as the student profile page.
