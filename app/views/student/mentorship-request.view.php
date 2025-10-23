@@ -22,13 +22,13 @@ require '../app/views/partials/student_header.php';
                     </p>
                     
                     <!-- Display success/error messages -->
-                    <?php if (isset($_SESSION['success'])): ?>
+                    <!-- <?php if (isset($_SESSION['success'])): ?>
                         <div class="alert alert-success">
                             <i class="fas fa-check-circle"></i>
                             <?= htmlspecialchars($_SESSION['success']) ?>
                         </div>
                         <?php unset($_SESSION['success']); ?>
-                    <?php endif; ?>
+                    <?php endif; ?> -->
                     
                     <?php if (isset($_SESSION['error'])): ?>
                         <div class="alert alert-error">

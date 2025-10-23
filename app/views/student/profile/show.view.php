@@ -193,14 +193,6 @@ require '../app/views/partials/student_header.php';
                     </a>
                     <?php endif; ?>
 
-                    <?php if (!empty($profile->email)): ?>
-                    <a href="mailto:<?= esc($profile->email) ?>" class="social-link-card">
-                    <div class="social-link-icon email">
-                    <i class="fas fa-envelope"></i>
-                    </div>
-                    <div class="social-link-label">Email</div>
-                    </a>
-                    <?php endif; ?>
                     
                     <?php if (!empty($profile->GitHub)): ?>
                     <a href="<?= esc($profile->GitHub) ?>" target="_blank" class="social-link-card">
@@ -211,7 +203,7 @@ require '../app/views/partials/student_header.php';
                     </a>
                     <?php endif; ?>
                     
-                    <?php if (empty($profile->LinkedIn) && empty($profile->GitHub) && empty($profile->email)): ?>
+                    <?php if (empty($profile->LinkedIn) && empty($profile->GitHub) ): ?>
                     <div class="no-social-links">
                         <p>No social media links added yet. <a href="<?= ROOT ?>/student/profile/?action=edit&id=<?= $profile->student_id ?>">Edit your profile</a> to add social media links.</p>
                     </div>
