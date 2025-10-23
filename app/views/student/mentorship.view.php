@@ -47,7 +47,7 @@ require '../app/views/partials/student_header.php';
               <?php foreach ($data['requests'] as $request): ?>
                 <div class="request-card">
                   <div class="request-header">
-                    <h3 class="request-title">Mentorship Request #<?= htmlspecialchars($request['request_id']) ?></h3>
+                    <h3 class="request-title">Mentorship Request </h3>
                     <span class="status-badge status-<?= strtolower(str_replace('_', '-', $request['status'])) ?>">
                       <?= ucfirst(str_replace('_', ' ', $request['status'])) ?>
                     </span>

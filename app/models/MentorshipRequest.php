@@ -179,6 +179,38 @@ class MentorshipRequest
     }
 
     /**
+     * READ: Gets all mentorship requests from students in the same faculty as the alumnus.
+     */
+    public function getRequestsForAlumnusFaculty($alumnusId)
+    {
+        $pdo = $this->connect();
+        
+        $query = "
+            SELECT r.request_id, r.status, r.created_at, r.student_user_id,
+                   mr.mentorship_category, mr.other_category, mr.request_reason,
+                   u.name as student_name, u.email as student_email,
+                   s.student_id, s.academic_year,
+                   f.faculty_name
+            FROM requests r
+            JOIN mentorship_requests mr ON r.request_id = mr.request_id
+            JOIN users u ON r.student_user_id = u.user_id
+            JOIN students s ON r.student_user_id = s.user_id
+            JOIN faculties f ON s.faculty_id = f.faculty_id
+            JOIN alumnis a ON a.user_id = :alumnus_id
+            WHERE r.request_type = 'mentorship' 
+            AND r.status = 'pending_verification'
+            AND s.faculty_id = a.faculty_id
+            ORDER BY r.created_at DESC
+        ";
+        
+        $stmt = $pdo->prepare($query);
+        $stmt->execute(['alumnus_id' => $alumnusId]);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $result ? $result : [];
+    }
+
+    /**
      * READ: Gets all requests sent TO a specific alumnus.
      */
     public function getRequestsForAlumnus($alumnusId)
@@ -204,5 +236,140 @@ class MentorshipRequest
             'status' => $newStatus,
             'alumnus_user_id' => $alumnusId
         ], 'request_id');
+    }
+
+    /**
+     * UPDATE: Alumni accepts a mentorship request.
+     */
+    public function acceptRequest($requestId, $alumnusId)
+    {
+        $pdo = $this->connect();
+        
+        try {
+            $pdo->beginTransaction();
+            
+            // First, check if the request exists and is in pending status
+            $checkQuery = "SELECT request_id, status FROM requests WHERE request_id = :request_id";
+            $checkStmt = $pdo->prepare($checkQuery);
+            $checkStmt->execute(['request_id' => $requestId]);
+            $request = $checkStmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$request) {
+                error_log("Accept request error: Request not found with ID: $requestId");
+                $pdo->rollBack();
+                return false;
+            }
+            
+            if ($request['status'] !== 'pending_verification') {
+                error_log("Accept request error: Request is not in pending status. Current status: " . $request['status']);
+                $pdo->rollBack();
+                return false;
+            }
+            
+            // Update the request status and assign alumnus
+            $query = "UPDATE requests SET status = 'accepted', alumnus_user_id = :alumnus_id WHERE request_id = :request_id";
+            $stmt = $pdo->prepare($query);
+            $result = $stmt->execute([
+                'alumnus_id' => $alumnusId,
+                'request_id' => $requestId
+            ]);
+            
+            if (!$result) {
+                error_log("Accept request error: Failed to execute update query");
+                $pdo->rollBack();
+                return false;
+            }
+            
+            $pdo->commit();
+            error_log("Accept request success: Request $requestId accepted by alumnus $alumnusId");
+            return true;
+        } catch (Exception $e) {
+            $pdo->rollBack();
+            error_log("Accept request error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * UPDATE: Alumni rejects a mentorship request.
+     */
+    public function rejectRequest($requestId, $alumnusId)
+    {
+        $pdo = $this->connect();
+        
+        try {
+            $pdo->beginTransaction();
+            
+            // First, check if the request exists and is in pending status
+            $checkQuery = "SELECT request_id, status FROM requests WHERE request_id = :request_id";
+            $checkStmt = $pdo->prepare($checkQuery);
+            $checkStmt->execute(['request_id' => $requestId]);
+            $request = $checkStmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$request) {
+                error_log("Reject request error: Request not found with ID: $requestId");
+                $pdo->rollBack();
+                return false;
+            }
+            
+            if ($request['status'] !== 'pending_verification') {
+                error_log("Reject request error: Request is not in pending status. Current status: " . $request['status']);
+                $pdo->rollBack();
+                return false;
+            }
+            
+            // Update the request status
+            $query = "UPDATE requests SET status = 'rejected', alumnus_user_id = :alumnus_id WHERE request_id = :request_id";
+            $stmt = $pdo->prepare($query);
+            $result = $stmt->execute([
+                'alumnus_id' => $alumnusId,
+                'request_id' => $requestId
+            ]);
+            
+            if (!$result) {
+                error_log("Reject request error: Failed to execute update query");
+                $pdo->rollBack();
+                return false;
+            }
+            
+            $pdo->commit();
+            error_log("Reject request success: Request $requestId rejected by alumnus $alumnusId");
+            return true;
+        } catch (Exception $e) {
+            $pdo->rollBack();
+            error_log("Reject request error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * READ: Gets accepted mentorship requests for an alumnus.
+     */
+    public function getAcceptedRequestsForAlumnus($alumnusId)
+    {
+        $pdo = $this->connect();
+        
+        $query = "
+            SELECT r.request_id, r.status, r.created_at, r.student_user_id,
+                   mr.mentorship_category, mr.other_category, mr.request_reason,
+                   u.name as student_name, u.email as student_email,
+                   s.student_id, s.academic_year,
+                   f.faculty_name
+            FROM requests r
+            JOIN mentorship_requests mr ON r.request_id = mr.request_id
+            JOIN users u ON r.student_user_id = u.user_id
+            JOIN students s ON r.student_user_id = s.user_id
+            JOIN faculties f ON s.faculty_id = f.faculty_id
+            WHERE r.request_type = 'mentorship' 
+            AND r.status = 'accepted'
+            AND r.alumnus_user_id = :alumnus_id
+            ORDER BY r.created_at DESC
+        ";
+        
+        $stmt = $pdo->prepare($query);
+        $stmt->execute(['alumnus_id' => $alumnusId]);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $result ? $result : [];
     }
 }
