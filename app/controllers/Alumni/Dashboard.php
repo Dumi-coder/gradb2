@@ -30,11 +30,15 @@ class Dashboard extends Controller
 
         // Get dashboard statistics
         $stats = $this->getDashboardStats();
+        
+        // Get mentorship data for dashboard preview
+        $mentorshipData = $this->getMentorshipData();
 
         $data = [
             'title' => 'Alumni Dashboard - GradBridge',
             'profile' => $profile,  // This contains all the data you need
             'stats' => $stats,
+            'mentorshipData' => $mentorshipData,
             'user' => $_SESSION  // Session data if needed
         ];
 
@@ -49,6 +53,39 @@ class Dashboard extends Controller
             'aid_requests' => 0,
             'events_attended' => 0,
             'total_donations' => 0
+        ];
+    }
+    
+    private function getMentorshipData()
+    {
+        $mentorshipRequestModel = new MentorshipRequest();
+        $alumnusId = $_SESSION['user_id'];
+        
+        // Get pending mentorship requests from students in the same faculty (limit to 1 for dashboard)
+        $pendingRequests = $mentorshipRequestModel->getRequestsForAlumnusFaculty($alumnusId);
+        
+        // Limit to 1 request for dashboard preview
+        $limitedRequests = array_slice($pendingRequests, 0, 1);
+        
+        // Format pending requests for display
+        $formattedPendingRequests = [];
+        foreach ($limitedRequests as $request) {
+            $formattedPendingRequests[] = [
+                'id' => $request['request_id'],
+                'student_name' => $request['student_name'],
+                'student_email' => $request['student_email'],
+                'student_id' => $request['student_id'],
+                'academic_year' => $request['academic_year'],
+                'faculty_name' => $request['faculty_name'],
+                'guidance_type' => $request['mentorship_category'] === 'other' ? $request['other_category'] : $request['mentorship_category'],
+                'description' => $request['request_reason'],
+                'status' => 'pending',
+                'created_at' => $request['created_at']
+            ];
+        }
+        
+        return [
+            'requests' => $formattedPendingRequests
         ];
     }
 
