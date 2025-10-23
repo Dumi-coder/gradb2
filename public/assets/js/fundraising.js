@@ -179,7 +179,7 @@ function validateCampaignData(campaignData) {
     }
     
     if (!campaignData.goal || campaignData.goal < 100) {
-        showNotification('Goal must be at least $100', 'error');
+        showNotification('Goal must be at least Rs. 100', 'error');
         return false;
     }
     

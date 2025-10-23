@@ -26,19 +26,19 @@ require '../app/views/partials/alumni_header.php';
             $demoRequests = [
               [
                 'id' => 1,
-                'student_name' => 'Sarah Johnson',
+                'student_name' => 'Chamath Madusanka',
                 'request_type' => 'Emergency Financial Aid',
-                'description' => 'Urgent need for tuition fee payment. Semester fee deadline approaching and unable to afford the full amount. Requesting assistance to complete registration.',
-                'amount_requested' => '$2,500',
+                'description' => 'Urgent need for medical payment. In a situation to perform a surgery in kidneys',
+                'amount_requested' => 'Rs. 60,000',
                 'aid_type' => 'Monetary',
                 'status' => 'urgent'
               ],
               [
                 'id' => 2,
-                'student_name' => 'Michael Chen',
+                'student_name' => 'Umaya Walpola',
                 'request_type' => 'Textbook Assistance',
-                'description' => 'Need help acquiring required textbooks for Computer Science courses. Total cost is quite high for the semester.',
-                'amount_requested' => '$450',
+                'description' => 'Need help acquiring required textbooks for Computer Science courses.',
+                'amount_requested' => 'Rs. 4500',
                 'aid_type' => 'Monetary',
                 'status' => 'pending'
               ]
@@ -114,17 +114,17 @@ require '../app/views/partials/alumni_header.php';
             // Demo hardcoded approved requests
             $demoApproved = [
               [
-                'student_name' => 'David Kim',
+                'student_name' => 'Dinel Hashan',
                 'request_type' => 'Laptop Assistance',
                 'description' => 'Provided funding for new laptop for online classes.',
-                'provided_value' => '$800',
+                'provided_value' => 'Rs. 80000',
                 'aid_type' => 'Monetary'
               ],
               [
-                'student_name' => 'Lisa Thompson',
+                'student_name' => 'Sanduni Sasanka',
                 'request_type' => 'Career Workshop Access',
                 'description' => 'Sponsored attendance to professional development workshop.',
-                'provided_value' => '$350',
+                'provided_value' => 'Rs. 3500',
                 'aid_type' => 'Monetary'
               ]
             ];
@@ -174,18 +174,18 @@ require '../app/views/partials/alumni_header.php';
             // Demo hardcoded completed requests
             $demoCompleted = [
               [
-                'student_name' => 'James Wilson',
-                'request_type' => 'Internship Stipend',
-                'description' => 'Completed funding for unpaid internship program.',
-                'amount_provided' => '$1,200',
-                'aid_type' => 'Monetary',
+                'student_name' => 'Gehiru Widana',
+                'request_type' => 'Laptop',
+                'description' => 'Gave away a used but working macbook',
+                'amount_provided' => 'None',
+                'aid_type' => 'Physical',
                 'completed_date' => 'March 15, 2024'
               ],
               [
-                'student_name' => 'Maria Garcia',
+                'student_name' => 'Kavindu Attanayake',
                 'request_type' => 'Study Materials',
                 'description' => 'Provided funds for specialized study materials and software licenses.',
-                'amount_provided' => '$650',
+                'amount_provided' => 'Rs. 6500',
                 'aid_type' => 'Monetary',
                 'completed_date' => 'February 28, 2024'
               ]
@@ -264,7 +264,7 @@ require '../app/views/partials/alumni_header.php';
                 <i class="fas fa-dollar-sign"></i>
               </div>
               <div class="stat-content">
-                <div class="stat-number">$12,450</div>
+                <div class="stat-number">Rs. 12,450</div>
                 <div class="stat-label">Total Aid Received</div>
               </div>
             </div>

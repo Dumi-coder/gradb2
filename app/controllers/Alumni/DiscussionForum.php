@@ -19,7 +19,7 @@ class DiscussionForum extends Controller
                 [
                     'id' => 1,
                     'title' => 'Mentoring New Graduates: Effective Strategies',
-                    'creator' => 'Alex Rodriguez',
+                    'creator' => 'Nimal Perera',
                     'status' => 'active',
                     'description' => 'Share your experiences and tips for mentoring recent graduates in your field. What approaches have worked best for you in guiding new professionals?',
                     'category' => 'Mentorship',
@@ -29,7 +29,7 @@ class DiscussionForum extends Controller
                 [
                     'id' => 2,
                     'title' => 'Industry Trends: AI and Machine Learning Impact',
-                    'creator' => 'Rachel Patel',
+                    'creator' => 'Sanduni Jayawardena',
                     'status' => 'trending',
                     'description' => 'Discussion about how AI/ML is reshaping different industries and career paths. How are you adapting to these technological changes in your profession?',
                     'category' => 'General',
@@ -40,7 +40,7 @@ class DiscussionForum extends Controller
                 [
                     'id' => 3,
                     'title' => 'Work-Life Balance in Tech: Your Strategies',
-                    'creator' => 'Mark Thompson',
+                    'creator' => 'Chaminda Silva',
                     'status' => 'active',
                     'description' => 'How do you maintain a healthy work-life balance in demanding tech roles? Share your strategies and tips for managing stress and personal time.',
                     'category' => 'Career',
@@ -50,7 +50,7 @@ class DiscussionForum extends Controller
                 [
                     'id' => 4,
                     'title' => 'Remote Work Best Practices',
-                    'creator' => 'Jennifer Lee',
+                    'creator' => 'Dilani Fernando',
                     'status' => 'active',
                     'description' => 'What are your best practices for remote work productivity? Looking for tips on home office setup, communication tools, and maintaining team collaboration.',
                     'category' => 'Career',

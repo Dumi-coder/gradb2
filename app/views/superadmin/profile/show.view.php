@@ -12,7 +12,7 @@
         <!-- Admin Profile Section -->
         <section class="dashboard-section profile-section">
             <div class="section-header">
-                <h2 class="section-title">Admin Profile</h2>
+                <h2 class="section-title">Super Admin Profile</h2>
                 <a href="<?=ROOT?>/superadmin/profile?action=edit" class="btn btn-outline">
                     <i class="fas fa-edit"></i>
                     <span>Edit Profile</span>

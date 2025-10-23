@@ -8,7 +8,7 @@
     <main class="main-content">
         <!-- Faculty Admin Profile Section -->
         <section class="dashboard-section profile-section">
-            <h2 class="section-title">Faculty Admin Profile</h2>
+            <h2 class="section-title">Super Admin Profile</h2>
             <div class="profile-card">
                 <div class="profile-info">
                     <div class="profile-avatar">

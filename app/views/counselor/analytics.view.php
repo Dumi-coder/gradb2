@@ -91,7 +91,7 @@
                 <i class="fas fa-dollar-sign"></i>
               </div>
               <div class="stat-content">
-                <h3 class="stat-number">$89,450</h3>
+                <h3 class="stat-number">Rs. 89,450</h3>
                 <p class="stat-label">Total Disbursed</p>
               </div>
             </div>

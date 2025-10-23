@@ -91,7 +91,7 @@
               <div class="request-details">
                 <div class="detail-row">
                   <span class="detail-label">Amount Approved:</span>
-                  <span class="detail-value amount">$1,200</span>
+                  <span class="detail-value amount">Rs. 1,200</span>
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Approved Date:</span>
@@ -99,7 +99,7 @@
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Original Amount:</span>
-                  <span class="detail-value">$1,500</span>
+                  <span class="detail-value">Rs. 1,500</span>
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Reason:</span>
@@ -150,7 +150,7 @@
               <div class="request-details">
                 <div class="detail-row">
                   <span class="detail-label">Amount Approved:</span>
-                  <span class="detail-value amount">$2,000</span>
+                  <span class="detail-value amount">Rs. 2,000</span>
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Approved Date:</span>
@@ -158,7 +158,7 @@
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Original Amount:</span>
-                  <span class="detail-value">$2,000</span>
+                  <span class="detail-value">Rs. 2,000</span>
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Reason:</span>
@@ -209,7 +209,7 @@
               <div class="request-details">
                 <div class="detail-row">
                   <span class="detail-label">Amount Approved:</span>
-                  <span class="detail-value amount">$280</span>
+                  <span class="detail-value amount">Rs. 280</span>
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Approved Date:</span>
@@ -217,7 +217,7 @@
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Original Amount:</span>
-                  <span class="detail-value">$350</span>
+                  <span class="detail-value">Rs. 350</span>
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Reason:</span>

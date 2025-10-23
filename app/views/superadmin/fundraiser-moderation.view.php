@@ -175,7 +175,7 @@
 
             <div class="form-group">
                 <label for="fundraiserGoal">Fundraising Goal *</label>
-                <input type="number" id="fundraiserGoal" name="fundraiserGoal" placeholder="Enter amount in USD" min="100" required>
+                <input type="number" id="fundraiserGoal" name="fundraiserGoal" placeholder="Enter amount in Rs." min="100" required>
             </div>
 
             <div class="form-group">

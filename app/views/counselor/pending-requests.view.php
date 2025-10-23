@@ -91,7 +91,7 @@
               <div class="request-details">
                 <div class="detail-row">
                   <span class="detail-label">Amount Requested:</span>
-                  <span class="detail-value amount">$2,500</span>
+                  <span class="detail-value amount">Rs. 2,500</span>
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Submitted:</span>
@@ -158,7 +158,7 @@
               <div class="request-details">
                 <div class="detail-row">
                   <span class="detail-label">Amount Requested:</span>
-                  <span class="detail-value amount">$1,800</span>
+                  <span class="detail-value amount">Rs. 1,800</span>
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Submitted:</span>
@@ -220,7 +220,7 @@
               <div class="request-details">
                 <div class="detail-row">
                   <span class="detail-label">Amount Requested:</span>
-                  <span class="detail-value amount">$350</span>
+                  <span class="detail-value amount">Rs. 350</span>
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Submitted:</span>
@@ -287,7 +287,7 @@
               <div class="request-details">
                 <div class="detail-row">
                   <span class="detail-label">Amount Requested:</span>
-                  <span class="detail-value amount">$800</span>
+                  <span class="detail-value amount">Rs. 800</span>
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Submitted:</span>

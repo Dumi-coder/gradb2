@@ -171,7 +171,7 @@ function getRequestData(requestId) {
             year: 'Junior',
             gpa: '3.7',
             aidType: 'Emergency Fund',
-            amount: '$2,500',
+            amount: 'Rs. 2,500',
             urgency: 'Urgent',
             reason: 'Family emergency requiring immediate financial assistance for medical bills. Father was hospitalized and requires surgery. Family is struggling to cover medical expenses while maintaining basic living costs.',
             submittedDate: 'Dec 15, 2024 - 2 hours ago',
@@ -180,7 +180,7 @@ function getRequestData(requestId) {
                 { name: 'Medical Bills', type: 'pdf', size: '1.8 MB' },
                 { name: 'Enrollment Proof', type: 'pdf', size: '0.5 MB' }
             ],
-            previousAid: 'Received textbook support ($300) in Fall 2024',
+            previousAid: 'Received textbook support (Rs. 300) in Fall 2024',
             status: 'Pending'
         }
     };
@@ -649,7 +649,7 @@ function exportData() {
 function formatCurrency(amount) {
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
-        currency: 'USD'
+        currency: 'LKR'
     }).format(amount);
 }
 

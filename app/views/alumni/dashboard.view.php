@@ -73,8 +73,8 @@ require '../app/views/partials/alumni_header.php';
                   <i class="fas fa-user-graduate"></i>
                 </div>
                 <div class="mentor-details">
-                  <h4 class="mentor-name">Sarah Johnson</h4>
-                  <p class="mentor-role">Stanford University</p>
+                  <h4 class="mentor-name">Himath Fernando</h4>
+                  <p class="mentor-role">UCSC</p>
                   <p class="mentor-specialty">Looking for guidance on career transition to product management</p>
                 </div>
               </div>
@@ -103,7 +103,7 @@ require '../app/views/partials/alumni_header.php';
             <div class="aid-request-card urgent">
               <div class="aid-request-header">
                 <div class="request-info">
-                  <h4 class="request-name">Emily Rodriguez</h4>
+                  <h4 class="request-name">Pathum Amila</h4>
                   <p class="request-type">Financial Aid</p>
                   <p class="request-description">Emergency medical expenses for family member</p>
                 </div>
@@ -142,7 +142,7 @@ require '../app/views/partials/alumni_header.php';
             
             <div class="forum-post">
               <div class="post-header">
-                <h4 class="post-title">Networking event in San Francisco</h4>
+                <h4 class="post-title">Networking event in Hatch works</h4>
                 <span class="post-time">1 day ago</span>
               </div>
               <p class="post-excerpt">Anyone interested in organizing a networking event</p>
@@ -177,8 +177,8 @@ require '../app/views/partials/alumni_header.php';
                                         <div class="progress-fill" style="width: 65%"></div>
                                     </div>
                                     <div class="progress-stats">
-                                        <span class="raised">$6,500 raised</span>
-                                        <span class="goal">of $10,000</span>
+                                        <span class="raised">Rs. 6,500 raised</span>
+                                        <span class="goal">of Rs. 10,000</span>
                                     </div>
                                 </div>
               
@@ -200,8 +200,8 @@ require '../app/views/partials/alumni_header.php';
                                         <div class="progress-fill" style="width: 40%"></div>
                                     </div>
                                     <div class="progress-stats">
-                                        <span class="raised">$8,000 raised</span>
-                                        <span class="goal">of $20,000</span>
+                                        <span class="raised">Rs. 8,000 raised</span>
+                                        <span class="goal">of Rs. 20,000</span>
                                     </div>
                                 </div>
               
@@ -232,7 +232,7 @@ require '../app/views/partials/alumni_header.php';
               <div class="event-details">
                 <h4 class="event-title">Mentorship Workshop</h4>
                 <p class="event-time"><i class="fas fa-clock"></i> 2:00 PM</p>
-                <p class="event-location"><i class="fas fa-map-marker-alt"></i> Engineering Building</p>
+                <p class="event-location"><i class="fas fa-map-marker-alt"></i> Engineering Lab</p>
                 <p class="event-description">Learn how to be an effective mentor and guide students</p>
                     </div>
               <button class="btn btn-primary btn-sm event-register-btn">Register</button>
@@ -264,7 +264,7 @@ require '../app/views/partials/alumni_header.php';
                 <i class="fas fa-dollar-sign"></i>
               </div>
               <h4 class="badge-title">Donor</h4>
-              <p class="badge-description">Contributed $1000+</p>
+              <p class="badge-description">Contributed Rs. 1000+</p>
             </div>
             
             <div class="badge-card">

@@ -234,10 +234,10 @@
 //             <div class="form-group">
 //                 <label for="donation-amount">Donation Amount</label>
 //                 <div class="amount-options">
-//                     <button type="button" class="amount-option" data-amount="25">$25</button>
-//                     <button type="button" class="amount-option" data-amount="50">$50</button>
-//                     <button type="button" class="amount-option" data-amount="100">$100</button>
-//                     <button type="button" class="amount-option" data-amount="250">$250</button>
+//                     <button type="button" class="amount-option" data-amount="250">Rs. 250</button>
+//                     <button type="button" class="amount-option" data-amount="500">Rs. 500</button>
+//                     <button type="button" class="amount-option" data-amount="1000">Rs. 1000</button>
+//                     <button type="button" class="amount-option" data-amount="2500">Rs. 2500</button>
 //                 </div>
 //                 <input type="number" id="donation-amount" placeholder="Or enter custom amount" min="1" step="0.01">
 //             </div>

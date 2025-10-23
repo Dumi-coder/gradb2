@@ -45,7 +45,7 @@ require '../app/views/partials/alumni_header.php';
           
            <div class="quick-actions-container">
              <div class="section-actions">
-               <button class="btn btn-outline btn-sm" onclick="openQuickTagsModal()">
+               <button class="btn btn-outline" onclick="openQuickTagsModal()">
                  <i class="fas fa-hashtag"></i>
                  <span>Quick Tags</span>
                </button>
@@ -58,7 +58,7 @@ require '../app/views/partials/alumni_header.php';
         </section>
 
         <!-- Forum Statistics Section -->
-        <section class="dashboard-section statistics-section">
+        <!-- <section class="dashboard-section statistics-section">
           <div class="section-header">
             <h2 class="section-title">Forum Statistics</h2>
           </div>
@@ -78,7 +78,7 @@ require '../app/views/partials/alumni_header.php';
               </div>
             </div>
           </div>
-        </section>
+        </section> -->
 
         <!-- Forum Topics Section -->
         <section class="dashboard-section forum-topics-section">
