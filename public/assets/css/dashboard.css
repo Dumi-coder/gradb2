@@ -265,7 +265,7 @@
 /* Events Section */
 .events-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: 1fr; /* Single column - row-wise layout */
   gap: var(--spacing-lg);
 }
 
@@ -275,13 +275,17 @@
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   display: flex;
-  gap: var(--spacing-lg);
-  align-items: center;
+  flex-direction: column; /* Row-wise layout - stack vertically */
+  gap: var(--spacing-md);
+  align-items: flex-start;
 }
 
 .event-date {
-  text-align: center;
-  min-width: 80px;
+  text-align: left;
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
 }
 
 .event-day {
@@ -299,7 +303,7 @@
 }
 
 .event-details {
-  flex: 1;
+  width: 100%;
 }
 
 .event-title {

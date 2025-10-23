@@ -23,10 +23,10 @@
                             <span id="profileInitials"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
                         <?php endif; ?>
                     </div>
-                    <label for="profile_picture" class="profile-picture-upload">
+                    <label for="profile_picture" class="btn btn-primary" style="cursor: pointer;">
                         <i class="fas fa-camera"></i>
-                        Change Photo
-                        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)">
+                        <span>Change Photo</span>
+                        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)" style="display: none;">
                     </label>
                     <?php if (isset($errors['profile_picture'])): ?>
                         <div class="error-message"><?= esc($errors['profile_picture']) ?></div>

@@ -147,7 +147,7 @@
     min-width: 100%; /* Full width on mobile */
   }
   
-  /* Footer styles removed */
+ 
 }
 
 @media (max-width: 480px) {
@@ -159,5 +159,5 @@
     padding: var(--spacing-md);
   }
   
-  /* Page header styles removed */
+  
 }

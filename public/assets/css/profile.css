@@ -521,27 +521,7 @@ select.form-input:focus {
     color: #6B7280;
 }
 
-.profile-picture-upload {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    background: #1e3a8a;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-}
-
-.profile-picture-upload:hover {
-    background: #1e40af;
-    transform: translateY(-1px);
-}
-
-.profile-picture-upload input[type="file"] {
-    display: none;
-}
+/* Profile picture upload button now uses standard .btn .btn-primary classes */
 
 /* ============================================
    FORM ACTIONS

@@ -28,15 +28,15 @@ require '../app/views/partials/alumni_header.php';
                             <?php endif; ?>
                         </div>
                         <div style="display: flex; gap: 10px; align-items: center;">
-                            <label for="profile_picture" class="profile-picture-upload">
+                            <label for="profile_picture" class="btn btn-primary" style="cursor: pointer;">
                                 <i class="fas fa-camera"></i>
-                                Change Photo
-                                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)">
+                                <span>Change Photo</span>
+                                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)" style="display: none;">
                             </label>
                             <?php if (!empty($profile->profile_photo_url)): ?>
-                                <button type="button" onclick="deleteProfilePicture()" class="btn btn-danger btn-sm">
+                                <button type="button" onclick="deleteProfilePicture()" class="btn btn-danger">
                                     <i class="fas fa-trash"></i>
-                                    Delete Photo
+                                    <span>Delete Photo</span>
                                 </button>
                             <?php endif; ?>
                         </div>
@@ -207,11 +207,13 @@ require '../app/views/partials/alumni_header.php';
             <h3 style="margin: 0 0 10px 0; color: #2c3e50; font-size: 24px;">Delete Profile Picture?</h3>
             <p style="color: #7f8c8d; margin: 0 0 30px 0;">Are you sure you want to delete your profile picture? This action cannot be undone.</p>
             <div style="display: flex; gap: 10px; justify-content: center;">
-                <button onclick="closeDeleteModal()" style="padding: 12px 30px; background: #95a5a6; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: 500;">
-                    <i class="fas fa-times"></i> Cancel
+                <button onclick="closeDeleteModal()" class="btn btn-outline">
+                    <i class="fas fa-times"></i>
+                    <span>Cancel</span>
                 </button>
-                <button onclick="confirmDeletePhoto()" style="padding: 12px 30px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: 500;">
-                    <i class="fas fa-trash"></i> Delete
+                <button onclick="confirmDeletePhoto()" class="btn btn-danger">
+                    <i class="fas fa-trash"></i>
+                    <span>Delete</span>
                 </button>
             </div>
         </div>

@@ -29,7 +29,7 @@ require '../app/views/partials/student_header.php';
  <div class="profile-avatar-container">
     <div class="profile-avatar" id="profileAvatar">
         <?php if (!empty($profile->profile_photo_url)): ?>
-            <img src="<?= ROOT ?>/assets/uploads/profiles/<?= esc($profile->profile_photo_url) ?>" 
+            <img src="<?= esc($profile->profile_photo_url) ?>" 
                  alt="Profile Picture" 
                  id="profileImage" 
                  style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;"
@@ -98,14 +98,13 @@ require '../app/views/partials/student_header.php';
                   <i class="fas fa-user-tie"></i>
                 </div>
                 <div class="mentor-details">
-                  <h4 class="mentor-name">Dr. Michael Chen</h4>
-                  <p class="mentor-role">Software Engineer at Google</p>
+                  <h4 class="mentor-name">Prasanna Perera</h4>
+                  <p class="mentor-role">Software Engineer at Creative Software</p>
                   <p class="mentor-specialty">AI/ML, Career Guidance</p>
                 </div>
               </div>
               <div class="mentorship-status">
                 <span class="status-badge status-active">Active</span>
-                <p class="next-session">Next Session: Tomorrow, 2:00 PM</p>
               </div>
             </div>
             
@@ -115,14 +114,13 @@ require '../app/views/partials/student_header.php';
                   <i class="fas fa-user-tie"></i>
                 </div>
                 <div class="mentor-details">
-                  <h4 class="mentor-name">Lisa Rodriguez</h4>
-                  <p class="mentor-role">Product Manager at Microsoft</p>
+                  <h4 class="mentor-name">Amal Fernando</h4>
+                  <p class="mentor-role">Product Manager at MAS</p>
                   <p class="mentor-specialty">Product Strategy, Leadership</p>
                 </div>
               </div>
               <div class="mentorship-status">
                 <span class="status-badge status-pending">Pending</span>
-                <p class="next-session">Awaiting Response</p>
               </div>
             </div>
           </div>
@@ -153,7 +151,7 @@ require '../app/views/partials/student_header.php';
               </thead>
               <tbody>
                 <tr>
-                  <td>Tuition Assistance</td>
+                  <td>Laptop replacement</td>
                   <td><span class="status-badge status-pending">Pending</span></td>
                   <td><span class="status-badge status-approved">Approved</span></td>
                   <td><span class="status-badge status-waiting">Waiting</span></td>
@@ -199,7 +197,7 @@ require '../app/views/partials/student_header.php';
           <div class="forum-preview">
             <div class="forum-post">
               <div class="post-header">
-                <span class="post-author">Alex Thompson</span>
+                <span class="post-author">Sewni Jayawardhana</span>
                 <span class="post-time">2 hours ago</span>
               </div>
               <h4 class="post-title">Tips for Landing Your First Tech Internship</h4>
@@ -212,11 +210,11 @@ require '../app/views/partials/student_header.php';
             
             <div class="forum-post">
               <div class="post-header">
-                <span class="post-author">Maria Garcia</span>
+                <span class="post-author">Bineth Basitha</span>
                 <span class="post-time">5 hours ago</span>
               </div>
               <h4 class="post-title">Study Group for Advanced Algorithms</h4>
-              <p class="post-excerpt">Looking for study partners for CS 301. Anyone interested in forming a group?</p>
+              <p class="post-excerpt">Looking for study partners for Discrete Maths I. Anyone interested in forming a group?</p>
               <div class="post-stats">
                 <span><i class="fas fa-comment"></i> 8 replies</span>
                 <span><i class="fas fa-heart"></i> 12 likes</span>
@@ -225,10 +223,10 @@ require '../app/views/partials/student_header.php';
             
             <div class="forum-post">
               <div class="post-header">
-                <span class="post-author">David Kim</span>
+                <span class="post-author">Sahan Lakshan</span>
                 <span class="post-time">1 day ago</span>
               </div>
-              <h4 class="post-title">Career Fair Preparation Workshop</h4>
+              <h4 class="post-title">Looking for a partner to join a workshop</h4>
               <p class="post-excerpt">The career services office is hosting a workshop next week...</p>
               <div class="post-stats">
                 <span><i class="fas fa-comment"></i> 22 replies</span>
@@ -276,7 +274,7 @@ require '../app/views/partials/student_header.php';
                 <p class="event-location"><i class="fas fa-map-marker-alt"></i> Business School</p>
                 <p class="event-description">Learn resume writing, interview skills, and job search strategies.</p>
               </div>
-              <button class="btn btn-outline btn-sm event-register-btn">Register</button>
+              <button class="btn btn-primary btn-sm event-register-btn">Register</button>
             </div>
           </div>
         </section>

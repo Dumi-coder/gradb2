@@ -32,10 +32,7 @@ require '../app/views/partials/student_header.php';
                     <div class="profile-info">
                         <div class="profile-avatar">
                             <?php if (!empty($profile->profile_photo_url)): ?>
-                                <img src="<?= ROOT ?>/assets/uploads/profiles/<?= esc($profile->profile_photo_url) ?>" 
-                                     alt="Profile Picture"
-                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <span class="avatar-initials" style="display:none;"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
+                                <img src="<?= esc($profile->profile_photo_url) ?>" alt="Profile Picture">
                             <?php else: ?>
                                 <span class="avatar-initials"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
                             <?php endif; ?>
@@ -185,10 +182,10 @@ require '../app/views/partials/student_header.php';
             
             <!-- Contact & Social Links Section -->
             <section class="dashboard-section">
-                <h2 class="section-title">Connect With Me</h2>
+                <h2 class="section-title">Contact & Social Links</h2>
                 <div class="social-links-grid">
-                    <?php if (!empty($profile->linkedin_url)): ?>
-                    <a href="<?= esc($profile->linkedin_url) ?>" target="_blank" class="social-link-card">
+                    <?php if (!empty($profile->LinkedIn)): ?>
+                    <a href="<?= esc($profile->LinkedIn) ?>" target="_blank" class="social-link-card">
                         <div class="social-link-icon linkedin">
                             <i class="fab fa-linkedin"></i>
                         </div>
@@ -196,8 +193,8 @@ require '../app/views/partials/student_header.php';
                     </a>
                     <?php endif; ?>
                     
-                    <?php if (!empty($profile->github_url)): ?>
-                    <a href="<?= esc($profile->github_url) ?>" target="_blank" class="social-link-card">
+                    <?php if (!empty($profile->GitHub)): ?>
+                    <a href="<?= esc($profile->GitHub) ?>" target="_blank" class="social-link-card">
                         <div class="social-link-icon github">
                             <i class="fab fa-github"></i>
                         </div>
@@ -205,32 +202,54 @@ require '../app/views/partials/student_header.php';
                     </a>
                     <?php endif; ?>
                     
-                    <?php if (!empty($profile->twitter_url)): ?>
-                    <a href="<?= esc($profile->twitter_url) ?>" target="_blank" class="social-link-card">
-                        <div class="social-link-icon twitter">
-                            <i class="fab fa-twitter"></i>
-                        </div>
-                        <div class="social-link-label">Twitter</div>
-                    </a>
-                    <?php endif; ?>
-                    
-                    <?php if (!empty($profile->website_url)): ?>
-                    <a href="<?= esc($profile->website_url) ?>" target="_blank" class="social-link-card">
-                        <div class="social-link-icon website">
-                            <i class="fas fa-globe"></i>
-                        </div>
-                        <div class="social-link-label">Website</div>
-                    </a>
-                    <?php endif; ?>
-                    
-                    <?php if (empty($profile->linkedin_url) && empty($profile->github_url) && empty($profile->twitter_url) && empty($profile->website_url)): ?>
+                    <?php if (empty($profile->LinkedIn) && empty($profile->GitHub)): ?>
                     <div class="no-social-links">
                         <p>No social media links added yet. <a href="<?= ROOT ?>/student/profile/?action=edit&id=<?= $profile->student_id ?>">Edit your profile</a> to add social media links.</p>
                     </div>
                     <?php endif; ?>
                 </div>
             </section>
+
+            <!-- Profile Settings Section -->
+            <section class="dashboard-section">
+                <h2 class="section-title">Profile Settings</h2>
+                <div style="padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); max-width: 800px;">
+                    <p style="color:#7f8c8d; margin-bottom:12px;">Manage sensitive account actions. Deleting your account will permanently remove your profile, shared resources and all related data.</p>
+                    <button onclick="confirmAccountDelete()" class="btn btn-danger" style="background:#e74c3c; color:#fff; border:none; padding:10px 16px; border-radius:6px;">
+                        <i class="fas fa-user-times"></i> Delete My Account
+                    </button>
+                </div>
+            </section>
         </main>
     </div>
 </body>
 </html>
+
+<!-- Delete Account Confirmation Modal -->
+<div id="deleteAccountModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:9999;">
+    <div style="background:#fff; padding:24px; border-radius:8px; max-width:480px; width:90%; text-align:center;">
+        <h3 style="margin-top:0; color:#c0392b;">Delete Account</h3>
+        <p>Are you sure you want to delete your account? This will remove your profile, shared resources and all associated data. This action cannot be undone.</p>
+        <div style="display:flex; gap:10px; justify-content:center; margin-top:18px;">
+            <button onclick="closeAccountModal()" style="padding:10px 18px; background:#95a5a6; color:#fff; border:none; border-radius:6px;">Cancel</button>
+            <button onclick="submitDeleteAccount()" style="padding:10px 18px; background:#e74c3c; color:#fff; border:none; border-radius:6px;">Delete Account</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmAccountDelete(){
+    document.getElementById('deleteAccountModal').style.display = 'flex';
+}
+function closeAccountModal(){
+    document.getElementById('deleteAccountModal').style.display = 'none';
+}
+function submitDeleteAccount(){
+    // Create form and submit POST
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '<?=ROOT?>/student/profile?action=delete_account';
+    document.body.appendChild(form);
+    form.submit();
+}
+</script>
