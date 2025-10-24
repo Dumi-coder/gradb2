@@ -53,7 +53,7 @@ require '../app/views/partials/alumni_header.php';
                       </small>
                     </p>
                   </div>
-                  <span class="status-badge status-pending">PENDING</span>
+                  <span class="status-badge status-pending">Pending</span>
                 </div>
                 
                 <div class="request-description">
@@ -116,7 +116,7 @@ require '../app/views/partials/alumni_header.php';
                       </small>
                     </p>
                   </div>
-                  <span class="status-badge status-active">ACTIVE</span>
+                  <span class="status-badge status-active">Active</span>
                 </div>
                 
                 <div class="mentorship-description">
@@ -156,7 +156,7 @@ require '../app/views/partials/alumni_header.php';
                   <h3 class="student-name"><?= esc($mentorship['student_name']) ?></h3>
                   <p class="mentorship-topic"><?= esc($mentorship['topic']) ?></p>
                 </div>
-                <span class="status-badge status-completed">COMPLETED</span>
+                <span class="status-badge status-completed">Completed</span>
               </div>
               
               <div class="completed-description">

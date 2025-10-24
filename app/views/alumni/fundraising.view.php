@@ -95,7 +95,7 @@ require '../app/views/partials/alumni_header.php';
                   </div>
                 </div>
                 <div class="campaign-actions">
-                  <button class="btn btn-primary" onclick="openDonateModal('Student Emergency Fund', 15000, 11250)">
+                  <button class="btn btn-primary btn-sm" onclick="openDonateModal('Student Emergency Fund', 15000, 11250)">
                     <i class="fas fa-heart"></i>
                     <span>Donate Now</span>
                   </button>
@@ -136,54 +136,13 @@ require '../app/views/partials/alumni_header.php';
                   </div>
                 </div>
                 <div class="campaign-actions">
-                  <button class="btn btn-primary" onclick="openDonateModal('Laptop Loan Program', 25000, 11250)">
+                  <button class="btn btn-primary btn-sm" onclick="openDonateModal('Laptop Loan Program', 25000, 11250)">
                     <i class="fas fa-heart"></i>
                     <span>Donate Now</span>
                   </button>
                   <button class="btn btn-outline btn-sm">
                     <i class="fas fa-share"></i>
                     <span>Share</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div class="campaign-card">
-              <div class="campaign-image">
-                <div class="campaign-status completed">Completed</div>
-                <div class="campaign-progress">
-                  <div class="progress-bar">
-                    <div class="progress-fill" style="width: 100%"></div>
-                  </div>
-                  <span class="progress-text">100% funded</span>
-                </div>
-              </div>
-              <div class="campaign-content">
-                <div class="campaign-category community">Community</div>
-                <h3 class="campaign-title">Study Room Renovation</h3>
-                <p class="campaign-description">Renovate the main study room with new furniture, lighting, and technology equipment.</p>
-                <div class="campaign-meta">
-                  <div class="campaign-goal">
-                    <span class="goal-amount">Rs. 8,000</span>
-                    <span class="goal-label">Goal</span>
-                  </div>
-                  <div class="campaign-raised">
-                    <span class="raised-amount">Rs. 8,000</span>
-                    <span class="raised-label">Raised</span>
-                  </div>
-                  <div class="campaign-donors">
-                    <span class="donors-count">156</span>
-                    <span class="donors-label">Donors</span>
-                  </div>
-                </div>
-                <div class="campaign-actions">
-                  <button class="btn btn-outline" disabled>
-                    <i class="fas fa-check"></i>
-                    <span>Completed</span>
-                  </button>
-                  <button class="btn btn-outline btn-sm">
-                    <i class="fas fa-eye"></i>
-                    <span>View Results</span>
                   </button>
                 </div>
               </div>
@@ -300,13 +259,19 @@ require '../app/views/partials/alumni_header.php';
           </div>
 
           <div class="form-group">
-            <label for="campaignGoal">Fundraising Goal *</label>
+            <label for="campaignGoal">Fundraising Goal (Rs.) *</label>
             <input type="number" id="campaignGoal" name="campaignGoal" placeholder="Enter amount in Rs." min="100" required>
           </div>
 
           <div class="form-group">
             <label for="campaignDescription">Description *</label>
             <textarea id="campaignDescription" name="campaignDescription" rows="4" placeholder="Describe your campaign and how funds will be used..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="authorizationLetter">Director/Board Authorization Letter *</label>
+            <input type="file" id="authorizationLetter" name="authorizationLetter" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
+            <small class="form-help">Upload the approval letter from your director, dean, or club board (PDF, DOC, or Image)</small>
           </div>
 
           <div class="form-group">
@@ -352,14 +317,14 @@ require '../app/views/partials/alumni_header.php';
 
           <form class="donation-form">
             <div class="form-group">
-              <label>Donation Amount *</label>
+              <label>Donation Amount (Rs.) *</label>
               <div class="amount-options">
                 <button type="button" class="amount-btn" data-amount="100">Rs. 100</button>
                 <button type="button" class="amount-btn" data-amount="250">Rs. 250</button>
                 <button type="button" class="amount-btn" data-amount="500">Rs. 500</button>
                 <button type="button" class="amount-btn" data-amount="1000">Rs. 1000</button>
               </div>
-              <input type="number" id="donationAmount" name="donationAmount" placeholder="Enter custom amount" min="1" required>
+              <input type="number" id="donationAmount" name="donationAmount" placeholder="Enter custom amount in Rs." min="1" required>
             </div>
 
             <div class="form-group">

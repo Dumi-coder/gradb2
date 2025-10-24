@@ -81,21 +81,21 @@ require '../app/views/partials/alumni_header.php';
                   </div>
                 </div>
                 <div class="mentorship-status">
-                  <span class="status-badge status-new">NEW</span>
+                  <span class="status-badge status-new">New</span>
                   <div class="mentorship-actions">
-                    <a href="<?= ROOT ?>/Alumni/Mentorship/accept/<?= $request['id'] ?>" 
-                       class="btn btn-success btn-sm"
-                       onclick="return confirm('Are you sure you want to accept this mentorship request?')">
-                      Accept
-                    </a>
-                    <button class="btn btn-outline btn-sm view-student-profile-btn"
+                    <button class="btn btn-secondary btn-sm view-student-profile-btn"
                             data-student-name="<?= esc($request['student_name']) ?>"
                             data-student-id="<?= esc($request['student_id']) ?>"
                             data-student-year="<?= esc($request['academic_year']) ?>"
                             data-student-email="<?= esc($request['student_email']) ?>"
                             data-faculty-name="<?= esc($request['faculty_name']) ?>">
-                      View Profile
+                      <i class="fas fa-user"></i> View Student Profile
                     </button>
+                    <a href="<?= ROOT ?>/Alumni/Mentorship/accept/<?= $request['id'] ?>" 
+                       class="btn btn-success btn-sm accept-btn"
+                       onclick="return confirm('Are you sure you want to accept this mentorship request?')">
+                      <i class="fas fa-check"></i> Accept
+                    </a>
                   </div>
                 </div>
               </div>
@@ -130,7 +130,7 @@ require '../app/views/partials/alumni_header.php';
                   <p class="request-type">Financial Aid</p>
                   <p class="request-description">Emergency medical expenses for family member</p>
                 </div>
-                <span class="status-badge status-urgent">URGENT</span>
+                <span class="status-badge status-urgent">Urgent</span>
               </div>
               <div class="aid-request-actions">
                 <button class="btn btn-primary btn-sm">Provide Aid</button>
@@ -191,7 +191,7 @@ require '../app/views/partials/alumni_header.php';
                         <div class="fundraiser-card">
               <div class="fundraiser-header">
                 <h4 class="fundraiser-title">Student Emergency Fund</h4>
-                <span class="status-badge status-urgent">URGENT</span>
+                <span class="status-badge status-urgent">Urgent</span>
                             </div>
               <p class="fundraiser-description">Supporting students facing financial hardship during their studies.</p>
               
@@ -214,7 +214,7 @@ require '../app/views/partials/alumni_header.php';
                         <div class="fundraiser-card">
               <div class="fundraiser-header">
                 <h4 class="fundraiser-title">Research Equipment Fund</h4>
-                <span class="status-badge status-active">ACTIVE</span>
+                <span class="status-badge status-active">Active</span>
                             </div>
               <p class="fundraiser-description">Funding for new laboratory equipment to enhance research capabilities.</p>
               
