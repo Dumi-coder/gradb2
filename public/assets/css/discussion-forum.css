@@ -452,12 +452,10 @@
   min-height: 120px;
 }
 
-.form-help,
-.form-group small {
+.form-help {
   font-size: var(--font-xs);
   color: var(--muted-foreground);
   margin-top: var(--spacing-xs);
-  display: block;
   line-height: var(--leading-normal);
 }
 

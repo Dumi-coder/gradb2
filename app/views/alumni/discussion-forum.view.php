@@ -110,7 +110,7 @@ require '../app/views/partials/alumni_header.php';
                   <p class="topic-creator">Created by <?= esc($topic['creator']) ?></p>
                 </div>
                 <span class="status-badge status-<?= $topic['status'] ?>">
-                  <?= ucfirst($topic['status']) ?>
+                  <?= strtoupper($topic['status']) ?>
                 </span>
               </div>
               
@@ -135,9 +135,7 @@ require '../app/views/partials/alumni_header.php';
                   <div class="topic-views">Views: <strong><?= $topic['views'] ?></strong></div>
                   <div class="topic-activity">Last Activity: <?= esc($topic['last_activity']) ?></div>
                 </div>
-                <button class="btn btn-primary btn-sm">
-                  <i class="fas fa-reply"></i> Reply
-                </button>
+                <button class="btn btn-primary join-btn">Join Discussion</button>
               </div>
             </div>
             <?php endforeach; ?>
@@ -157,7 +155,7 @@ require '../app/views/partials/alumni_header.php';
           <div class="form-group">
             <label for="postTitle">Title *</label>
             <input type="text" id="postTitle" name="title" placeholder="e.g., Help with data structures" required>
-            <small>At least 10 characters.</small>
+            <small style="color: #6B7280; font-size: 12px;">At least 10 characters.</small>
           </div>
           <div class="form-group">
             <label for="postCategory">Category *</label>
@@ -172,7 +170,7 @@ require '../app/views/partials/alumni_header.php';
           <div class="form-group">
             <label for="postContent">Content *</label>
             <textarea id="postContent" name="content" placeholder="Write your question or post here..." rows="6" required></textarea>
-            <small>At least 50 characters.</small>
+            <small style="color: #6B7280; font-size: 12px;">At least 50 characters.</small>
           </div>
           <div class="form-group">
             <label for="postPriority">Priority</label>
@@ -185,7 +183,7 @@ require '../app/views/partials/alumni_header.php';
           <div class="form-group">
             <label for="postTags">Tags</label>
             <textarea id="postTags" name="tags" placeholder="Type a tag and press Enter (e.g., #python, #machine-learning)" rows="2"></textarea>
-            <small>Examples: #python, #algorithms, #notes</small>
+            <small style="color: #6B7280; font-size: 12px;">Examples: #python, #algorithms, #notes</small>
           </div>
           <div class="form-actions">
             <button type="button" class="btn btn-outline" onclick="openQuickTagsModal()">

@@ -6,7 +6,52 @@ require '../app/views/partials/alumni_header.php';
 
 <!-- Page-specific CSS -->
 <link rel="stylesheet" href="<?=ROOT?>/assets/css/faq.css">
-</head>
+
+<style>
+    /* Alumni FAQ Specific Overrides */
+    .btn-primary {
+      background-color: #000000 !important;
+      color: white !important;
+      border: none !important;
+    }
+    
+    .btn-primary:hover {
+      background-color: #333333 !important;
+    }
+    
+    .btn-outline:hover {
+      background-color: #000000 !important;
+      color: white !important;
+      border-color: #000000 !important;
+    }
+    
+    /* Section Boundaries */
+    .categories-section {
+      border: 2px solid #E5E7EB !important;
+      border-radius: 12px !important;
+      padding: 24px !important;
+      background-color: white !important;
+      margin-bottom: 20px !important;
+    }
+    
+    .faq-section {
+      border: 2px solid #E5E7EB !important;
+      border-radius: 12px !important;
+      padding: 24px !important;
+      background-color: white !important;
+      margin-bottom: 20px !important;
+    }
+    
+    .contact-section {
+      border: 2px solid #E5E7EB !important;
+      border-radius: 12px !important;
+      padding: 24px !important;
+      background-color: white !important;
+      margin-bottom: 20px !important;
+    }
+    
+    </style>
+  </head>
 
   <body class="alumni-dashboard">
     <!-- Top Navbar -->

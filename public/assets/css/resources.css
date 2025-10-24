@@ -818,18 +818,6 @@
 
 /* Button styling is now handled by buttons.css */
 
-/* Ensure danger button stays red */
-.my-resources-section .my-resource-card .resource-actions .btn-danger {
-  background-color: #dc2626;
-  color: white;
-  border-color: #dc2626;
-}
-
-.my-resources-section .my-resource-card .resource-actions .btn-danger:hover {
-  background-color: #b91c1c;
-  border-color: #b91c1c;
-}
-
 /* Button Icons */
 .my-resources-section .my-resource-card .resource-actions .btn i {
   font-size: 0.875rem;

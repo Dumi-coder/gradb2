@@ -546,67 +546,6 @@ function getNotificationIcon(type) {
     }
 }
 
-// Registration Management Functions
-function confirmCloseRegistrations(eventId) {
-    const message = 'Are you sure you want to close registrations for this event? No new participants will be able to register.';
-    
-    if (confirm(message)) {
-        closeEventRegistrations(eventId);
-    }
-}
-
-function confirmOpenRegistrations(eventId) {
-    const message = 'Reopen registrations for this event? Participants will be able to register again.';
-    
-    if (confirm(message)) {
-        openEventRegistrations(eventId);
-    }
-}
-
-function closeEventRegistrations(eventId) {
-    // Show loading notification
-    showNotification('Closing registrations...', 'info');
-    
-    // Simulate API call
-    setTimeout(() => {
-        // TODO: Make actual API call to backend
-        console.log('Closing registrations for event:', eventId);
-        
-        // Success notification
-        showNotification('Registrations closed successfully', 'success');
-        
-        // Reload page to reflect changes
-        // In production, you might want to update the UI dynamically
-        setTimeout(() => {
-            location.reload();
-        }, 1500);
-    }, 800);
-}
-
-function openEventRegistrations(eventId) {
-    // Show loading notification
-    showNotification('Reopening registrations...', 'info');
-    
-    // Simulate API call
-    setTimeout(() => {
-        // TODO: Make actual API call to backend
-        console.log('Opening registrations for event:', eventId);
-        
-        // Success notification
-        showNotification('Registrations reopened successfully', 'success');
-        
-        // Reload page to reflect changes
-        setTimeout(() => {
-            location.reload();
-        }, 1500);
-    }, 800);
-}
-
-function viewAllHostingEvents() {
-    // TODO: Navigate to full hosting events page
-    showNotification('Viewing all events you\'re hosting', 'info');
-}
-
 // Export functions for global access
 window.openNewEventModal = openNewEventModal;
 window.closeNewEventModal = closeNewEventModal;
@@ -618,7 +557,4 @@ window.viewAllFeatured = viewAllFeatured;
 window.viewCalendar = viewCalendar;
 window.exportEvents = exportEvents;
 window.viewAllMyEvents = viewAllMyEvents;
-window.confirmCloseRegistrations = confirmCloseRegistrations;
-window.confirmOpenRegistrations = confirmOpenRegistrations;
-window.viewAllHostingEvents = viewAllHostingEvents;
 

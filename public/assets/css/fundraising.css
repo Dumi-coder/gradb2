@@ -401,15 +401,6 @@
   min-height: 80px;
 }
 
-.form-help,
-.form-group small {
-  display: block;
-  margin-top: var(--spacing-xs);
-  color: var(--muted-foreground);
-  font-size: var(--font-xs);
-  line-height: var(--leading-normal);
-}
-
 /* Donation Amount Options */
 .amount-options {
   display: grid;

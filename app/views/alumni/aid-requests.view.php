@@ -52,9 +52,9 @@ require '../app/views/partials/alumni_header.php';
                   <p class="request-type"><?= esc($request['request_type']) ?></p>
                 </div>
                 <?php if ($request['status'] === 'urgent'): ?>
-                <span class="status-badge status-urgent">Urgent</span>
+                <span class="status-badge status-urgent">URGENT</span>
                 <?php elseif ($request['status'] === 'pending'): ?>
-                <span class="status-badge status-pending">Pending</span>
+                <span class="status-badge status-pending">PENDING</span>
                 <?php endif; ?>
               </div>
               
@@ -136,7 +136,7 @@ require '../app/views/partials/alumni_header.php';
                   <h3 class="student-name"><?= esc($request['student_name']) ?></h3>
                   <p class="request-type"><?= esc($request['request_type']) ?></p>
                 </div>
-                <span class="status-badge status-approved">Approved</span>
+                <span class="status-badge status-approved">APPROVED</span>
               </div>
               
               <div class="request-description">
@@ -198,7 +198,7 @@ require '../app/views/partials/alumni_header.php';
                   <h3 class="student-name"><?= esc($request['student_name']) ?></h3>
                   <p class="request-type"><?= esc($request['request_type']) ?></p>
                 </div>
-                <span class="status-badge status-completed">Completed</span>
+                <span class="status-badge status-completed">COMPLETED</span>
               </div>
               
               <div class="request-description">
@@ -368,7 +368,7 @@ require '../app/views/partials/alumni_header.php';
             
             <div class="form-group">
               <label>Cardholder Name</label>
-              <input type="text" class="form-control" placeholder="Ajith Pieris">
+              <input type="text" class="form-control" placeholder="John Doe">
             </div>
           </div>
 

@@ -375,89 +375,6 @@
   margin: 0;
 }
 
-/* Hosting Events Section (Events Created by Alumni) */
-.hosting-events-section {
-  margin-bottom: var(--spacing-2xl);
-}
-
-.hosting-events-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: var(--spacing-lg);
-}
-
-.hosting-event-card {
-  background-color: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  transition: all 0.3s ease;
-}
-
-.hosting-event-card:hover {
-  border-color: var(--primary);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.hosting-event-card .event-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: var(--spacing-md);
-  gap: var(--spacing-md);
-}
-
-.hosting-event-card .event-title {
-  font-size: var(--font-lg);
-  font-weight: 600;
-  color: var(--foreground);
-  margin: 0;
-  line-height: 1.3;
-}
-
-.hosting-event-card .event-meta {
-  display: flex;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
-  font-size: var(--font-sm);
-  color: var(--muted-foreground);
-  flex-wrap: wrap;
-}
-
-.hosting-event-card .event-meta span {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-}
-
-.hosting-event-card .event-stats {
-  display: flex;
-  gap: var(--spacing-lg);
-  margin-bottom: var(--spacing-md);
-  padding: var(--spacing-sm);
-  background-color: var(--secondary);
-  border-radius: var(--radius-md);
-  font-size: var(--font-sm);
-}
-
-.hosting-event-card .event-stats span {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  color: var(--foreground);
-  font-weight: 500;
-}
-
-.hosting-event-card .event-stats i {
-  color: var(--primary);
-}
-
-.hosting-event-card .event-actions {
-  display: flex;
-  gap: var(--spacing-sm);
-  flex-wrap: wrap;
-}
-
 /* My Events Section */
 .my-events-section {
   margin-bottom: var(--spacing-2xl);
@@ -723,10 +640,6 @@
 
 @media (max-width: 768px) {
   .featured-events-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .hosting-events-grid {
     grid-template-columns: 1fr;
   }
   

@@ -181,18 +181,6 @@
   color: #9a3412;
 }
 
-/* New States - Cyan/Teal */
-.status-new {
-  background-color: #ccfbf1; /* Light cyan */
-  color: #115e59; /* Dark teal */
-}
-
-/* Closed/Inactive Registration States - Gray */
-.status-closed {
-  background-color: #f3f4f6; /* Light gray */
-  color: #4b5563; /* Dark gray */
-}
-
 /* ==================== PRIORITY BADGES ==================== */
 
 .priority-badge {
