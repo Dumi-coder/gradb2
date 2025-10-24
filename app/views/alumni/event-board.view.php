@@ -94,10 +94,71 @@ require '../app/views/partials/alumni_header.php';
           </div>
         </section>
 
-        <!-- My Events Section -->
+        <!-- Events I'm Hosting Section -->
+        <section class="dashboard-section hosting-events-section">
+          <div class="section-header">
+            <h2 class="card-title">Events I'm Hosting</h2>
+            <button class="btn btn-outline btn-sm" onclick="viewAllHostingEvents()">
+              <span>Manage All</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+          
+          <div class="hosting-events-grid">
+            <!-- Example Event with Open Registrations -->
+            <div class="hosting-event-card">
+              <div class="event-header">
+                <h3 class="event-title">Tech Career Mentorship Session</h3>
+                <span class="status-badge status-active">Registrations Open</span>
+              </div>
+              <div class="event-meta">
+                <span class="event-time"><i class="fas fa-clock"></i> Dec 20, 3:00 PM</span>
+                <span class="event-location"><i class="fas fa-map-marker-alt"></i> Main Hall</span>
+              </div>
+              <div class="event-stats">
+                <span class="registrants"><i class="fas fa-users"></i> 45 registered</span>
+                <span class="capacity"><i class="fas fa-ticket-alt"></i> 50 capacity</span>
+              </div>
+              <div class="event-actions">
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-edit"></i> Edit Details
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="confirmCloseRegistrations(1)">
+                  <i class="fas fa-lock"></i> Close Registrations
+                </button>
+              </div>
+            </div>
+
+            <!-- Example Event with Closed Registrations -->
+            <div class="hosting-event-card">
+              <div class="event-header">
+                <h3 class="event-title">Alumni Networking Night</h3>
+                <span class="status-badge status-closed">Registrations Closed</span>
+              </div>
+              <div class="event-meta">
+                <span class="event-time"><i class="fas fa-clock"></i> Dec 18, 6:00 PM</span>
+                <span class="event-location"><i class="fas fa-map-marker-alt"></i> Conference Room B</span>
+              </div>
+              <div class="event-stats">
+                <span class="registrants"><i class="fas fa-users"></i> 30 registered</span>
+                <span class="capacity"><i class="fas fa-ticket-alt"></i> 30 capacity</span>
+              </div>
+              <div class="event-actions">
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-edit"></i> Edit Details
+                </button>
+                <button class="btn btn-success btn-sm" onclick="confirmOpenRegistrations(2)">
+                  <i class="fas fa-unlock"></i> Reopen Registrations
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- My Registered Events Section -->
         <section class="dashboard-section my-events-section">
           <div class="section-header">
-            <h2 class="card-title">My Events</h2>
+            <h2 class="card-title">Events I'm Attending</h2>
             <button class="btn btn-outline btn-sm" onclick="viewAllMyEvents()">
               <span>View All</span>
               <i class="fas fa-arrow-right"></i>

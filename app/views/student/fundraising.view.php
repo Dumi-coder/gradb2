@@ -70,11 +70,11 @@ require '../app/views/partials/student_header.php';
                   </div>
                 </div>
                 <div class="campaign-actions">
-                  <button class="btn btn-primary" onclick="openDonateModal('Student Emergency Fund', 15000, 11250)">
+                  <button class="btn btn-primary btn-sm" onclick="openDonateModal('Student Emergency Fund', 15000, 11250)">
                     <i class="fas fa-heart"></i>
                     <span>Donate Now</span>
                   </button>
-                  <button class="btn btn-outline">
+                  <button class="btn btn-outline btn-sm">
                     <i class="fas fa-share"></i>
                     <span>Share</span>
                   </button>
@@ -111,11 +111,11 @@ require '../app/views/partials/student_header.php';
                   </div>
                 </div>
                 <div class="campaign-actions">
-                  <button class="btn btn-primary" onclick="openDonateModal('Laptop Loan Program', 25000, 11250)">
+                  <button class="btn btn-primary btn-sm" onclick="openDonateModal('Laptop Loan Program', 25000, 11250)">
                     <i class="fas fa-heart"></i>
                     <span>Donate Now</span>
                   </button>
-                  <button class="btn btn-outline">
+                  <button class="btn btn-outline btn-sm">
                     <i class="fas fa-share"></i>
                     <span>Share</span>
                   </button>
@@ -152,11 +152,11 @@ require '../app/views/partials/student_header.php';
                   </div>
                 </div>
                 <div class="campaign-actions">
-                  <button class="btn btn-outline" disabled>
+                  <button class="btn btn-outline btn-sm" disabled>
                     <i class="fas fa-check"></i>
                     <span>Completed</span>
                   </button>
-                  <button class="btn btn-outline">
+                  <button class="btn btn-outline btn-sm">
                     <i class="fas fa-eye"></i>
                     <span>View Results</span>
                   </button>
@@ -245,7 +245,7 @@ require '../app/views/partials/student_header.php';
           <div class="form-group">
             <label for="authorizationLetter">Director/Board Authorization Letter *</label>
             <input type="file" id="authorizationLetter" name="authorizationLetter" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
-            <small style="display: block; margin-top: var(--spacing-xs); color: var(--muted-foreground);">Upload the approval letter from your director, dean, or club board (PDF, DOC, or Image)</small>
+            <small class="form-help">Upload the approval letter from your director, dean, or club board (PDF, DOC, or Image)</small>
           </div>
 
           <div class="form-group">
