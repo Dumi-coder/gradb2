@@ -108,7 +108,7 @@ require '../app/views/partials/student_header.php';
                             <?php endif; ?>
                         </div>
 
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="student_id" class="form-label">Student ID *</label>
                             <input 
                                 type="text" 
@@ -121,7 +121,7 @@ require '../app/views/partials/student_header.php';
                             <?php if (isset($errors['student_id'])): ?>
                                 <span class="error-message"><?= esc($errors['student_id']) ?></span>
                             <?php endif; ?>
-                        </div>
+                        </div> -->
 
                         <div class="form-group">
                             <label for="email" class="form-label">Email *</label>
