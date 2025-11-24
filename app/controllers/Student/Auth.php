@@ -46,9 +46,11 @@ class Auth extends Controller
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $student_id = trim($_POST['student_id'] ?? '');
+        // $alumni_id = isset($_POST['alumni_id']) ? trim($_POST['alumni_id']) : null;
         $academic_year = trim($_POST['academic_year'] ?? '');
-        $faculty = trim($_POST['faculty'] ?? '');
+        $faculty_input = isset($_POST['faculty']) ? trim($_POST['faculty']) : null;
         $password = $_POST['password'] ?? '';
+        // $role = (strpos($email, 'alumni') !== false) ? 'alumni' : 'student'; // Determine role based on email
 
         if (empty($name)) $errors[] = "Name is required";
 
@@ -56,11 +58,13 @@ class Auth extends Controller
 
         elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Invalid email format";
 
-        if (empty($student_id)) $errors[] = "Student ID is required";
+        // if (empty($student_id) && empty($alumni_id)) $errors[] = "Student ID or Alumni ID is required";
 
-        if (empty($academic_year) || !is_numeric($academic_year) || $academic_year < 1 || $academic_year > 5) $errors[] = "Academic year must be between 1 and 5";
+        if ($role === 'student' && (empty($academic_year) || !is_numeric($academic_year) || $academic_year < 1 || $academic_year > 5)) {
+            $errors[] = "Academic year must be between 1 and 5";
+        }
 
-        if (empty($faculty)) $errors[] = "Faculty is required";
+        if (empty($faculty_input)) $errors[] = "Faculty is required";
 
         if (empty($password)) {
             $errors[] = "Password is required";
@@ -71,18 +75,38 @@ class Auth extends Controller
             }
         }
 
-
+        // Check if user already exists
         if (empty($errors)) {
             $user = new User();
-            if ($user->first(['email' => $email])) $errors[] = "Email already exists";
+            if ($user->first(['email' => $email])) {
+                $errors[] = "Email already exists";
+            }
+            
             $student = new Student();
-            if ($student->first(['student_id' => $student_id])) $errors[] = "Student ID already exists";
+            if ($student->first(['student_id' => $student_id])) {
+                $errors[] = "Student ID already exists in the system";
+            }
         }
-
+        
         if (empty($errors)) {
             $faculty_model = new Faculty();
-            $faculty_record = $faculty_model->first(['faculty_name' => $faculty]);
+            $faculty_record = $faculty_model->first(['faculty_name' => $faculty_input]);
             if (!$faculty_record) $errors[] = "Invalid faculty selected";
+        }
+
+        
+        // VERIFY STUDENT EXISTS IN RECORDS TABLE
+        if (empty($errors) && $faculty_record) {
+            $studentModel = new Student();
+            error_log("Signup-check student: " . json_encode([
+                'student_id' => $student_id,
+                'email' => $email,
+                'faculty_id' => $faculty_record->faculty_id
+            ]));
+            
+            if (!$studentModel->existsInRecords($student_id, $email, $faculty_record->faculty_id)) {
+                $errors[] = "We could not verify your university student record. Please use your official university details.";
+            }
         }
 
         if (empty($errors)) {

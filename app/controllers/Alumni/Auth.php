@@ -85,6 +85,19 @@ class Auth extends Controller
             if (!$faculty_record) $errors[] = "Invalid faculty selected";
         }
 
+         // VERIFY ALUMNI EXISTS IN RECORDS TABLE
+        if (empty($errors) && $faculty_record) {
+            $alumniModel = new Alumni();
+            error_log("Signup-check alumni: " . json_encode([
+                'alumni_id' => $alumni_id,
+                'faculty_id' => $faculty_record->faculty_id
+            ]));
+            
+            if (!$alumniModel->existsInRecords($alumni_id, $faculty_record->faculty_id)) {
+                $errors[] = "We could not verify your alumni record. Please use your official university details.";
+            }
+        }
+
         if (empty($errors)) {
             $user_data = [
                 'name' => $name,

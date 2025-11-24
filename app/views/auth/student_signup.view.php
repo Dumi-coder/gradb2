@@ -56,6 +56,8 @@
         </div>
       </div>
     </section>
+    
+    <script src="<?=ROOT?>/assets/js/form-validation.js?v=1"></script>
 
 <?php require '../app/views/partials/footer.php'; ?><!--footer-->
 
