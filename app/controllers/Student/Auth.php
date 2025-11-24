@@ -46,9 +46,11 @@ class Auth extends Controller
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $student_id = trim($_POST['student_id'] ?? '');
+        // $alumni_id = isset($_POST['alumni_id']) ? trim($_POST['alumni_id']) : null;
         $academic_year = trim($_POST['academic_year'] ?? '');
-        $faculty = trim($_POST['faculty'] ?? '');
+        $faculty_input = isset($_POST['faculty']) ? trim($_POST['faculty']) : null;
         $password = $_POST['password'] ?? '';
+        // $role = (strpos($email, 'alumni') !== false) ? 'alumni' : 'student'; // Determine role based on email
 
         if (empty($name)) $errors[] = "Name is required";
 
@@ -58,9 +60,11 @@ class Auth extends Controller
 
         if (empty($student_id)) $errors[] = "Student ID is required";
 
-        if (empty($academic_year) || !is_numeric($academic_year) || $academic_year < 1 || $academic_year > 5) $errors[] = "Academic year must be between 1 and 5";
+        if (empty($academic_year) || !is_numeric($academic_year) || $academic_year < 1 || $academic_year > 5) {
+            $errors[] = "Academic year must be between 1 and 5";
+        }
 
-        if (empty($faculty)) $errors[] = "Faculty is required";
+        if (empty($faculty_input)) $errors[] = "Faculty is required";
 
         if (empty($password)) {
             $errors[] = "Password is required";
@@ -71,18 +75,43 @@ class Auth extends Controller
             }
         }
 
-
+        // Check if user already exists
         if (empty($errors)) {
             $user = new User();
-            if ($user->first(['email' => $email])) $errors[] = "Email already exists";
+            if ($user->first(['email' => $email])) {
+                $errors[] = "Email already exists";
+            }
+            
             $student = new Student();
-            if ($student->first(['student_id' => $student_id])) $errors[] = "Student ID already exists";
+            if ($student->first(['student_id' => $student_id])) {
+                $errors[] = "Student ID already exists in the system";
+            }
         }
-
+        
         if (empty($errors)) {
             $faculty_model = new Faculty();
-            $faculty_record = $faculty_model->first(['faculty_name' => $faculty]);
+            $faculty_record = $faculty_model->first(['faculty_name' => $faculty_input]);
             if (!$faculty_record) $errors[] = "Invalid faculty selected";
+        }
+
+        // VERIFY STUDENT EXISTS IN RECORDS TABLE
+        // User cannot register if their student_id is not in student_records table
+        if (empty($errors) && isset($faculty_record) && $faculty_record) {
+            $studentModel = new Student();
+            error_log("=== Student Registration Verification ===");
+            error_log("Student ID: " . $student_id);
+            error_log("Faculty ID: " . $faculty_record->faculty_id);
+            
+            $exists = $studentModel->existsInRecords($student_id, $faculty_record->faculty_id);
+            
+            if (!$exists) {
+                $errors[] = "Invalid Student ID.";
+                error_log("Verification FAILED - Student ID not found in student_records table");
+            } else {
+                error_log("Verification PASSED - Student ID found in student_records table");
+            }
+        } elseif (empty($errors) && !isset($faculty_record)) {
+            $errors[] = "Faculty verification failed. Please try again.";
         }
 
         if (empty($errors)) {
@@ -117,7 +146,14 @@ class Auth extends Controller
                             $_SESSION['student_id'] = $student_id;
                             $_SESSION['name'] = $name;
                             ob_end_flush();
-                            // header("Location: " . ROOT . "/student/dashboard");
+                            
+                            // Check if AJAX request
+                            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                                header('Content-Type: application/json');
+                                echo json_encode(['success' => true, 'redirect' => ROOT . '/student/dashboard']);
+                                exit();
+                            }
+                            
                             redirect('student/dashboard');
                             exit();
                         } else {
@@ -130,7 +166,14 @@ class Auth extends Controller
                         $_SESSION['student_id'] = $student_id;
                         $_SESSION['name'] = $name;
                         ob_end_flush();
-                        // header("Location: " . ROOT . "/student/dashboard");
+                        
+                        // Check if AJAX request
+                        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                            header('Content-Type: application/json');
+                            echo json_encode(['success' => true, 'redirect' => ROOT . '/student/dashboard']);
+                            exit();
+                        }
+                        
                         redirect('student/dashboard');
                         exit();
                     }
@@ -142,6 +185,26 @@ class Auth extends Controller
             }
         }
 
+        // Check if AJAX request - check multiple ways
+        $isAjax = false;
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            $isAjax = true;
+        } elseif (!empty($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+            $isAjax = true;
+        } elseif (isset($_POST['_ajax']) && $_POST['_ajax'] == '1') {
+            $isAjax = true;
+        }
+        
+        // ALWAYS return JSON for AJAX requests - never render view
+        if ($isAjax) {
+            header('Content-Type: application/json; charset=utf-8');
+            header('Cache-Control: no-cache, must-revalidate');
+            ob_clean(); // Clear any output
+            echo json_encode(['success' => false, 'errors' => $errors], JSON_UNESCAPED_UNICODE);
+            exit();
+        }
+
+        // Only render view for non-AJAX requests
         $data['errors'] = $errors;
         $this->view('auth/student_signup', $data);
     }

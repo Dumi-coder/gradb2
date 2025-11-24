@@ -75,14 +75,34 @@ class Auth extends Controller
         if (empty($errors)) {
             $user = new User();
             if ($user->first(['email' => $email])) $errors[] = "Email already exists";
-            $alumni = new alumni();
-            if ($alumni->first(['alumni_id' => $alumni_id])) $errors[] = " ID already exists";
+            $alumni = new Alumni();
+            if ($alumni->first(['alumni_id' => $alumni_id])) $errors[] = "Alumni ID already exists in the system";
         }
 
         if (empty($errors)) {
             $faculty_model = new Faculty();
             $faculty_record = $faculty_model->first(['faculty_name' => $faculty]);
             if (!$faculty_record) $errors[] = "Invalid faculty selected";
+        }
+
+        // VERIFY ALUMNI EXISTS IN RECORDS TABLE
+        // User cannot register if their alumni_id is not in alumni_records table
+        if (empty($errors) && isset($faculty_record) && $faculty_record) {
+            $alumniModel = new Alumni();
+            error_log("=== Alumni Registration Verification ===");
+            error_log("Alumni ID: " . $alumni_id);
+            error_log("Faculty ID: " . $faculty_record->faculty_id);
+            
+            $exists = $alumniModel->existsInRecords($alumni_id, $faculty_record->faculty_id);
+            
+            if (!$exists) {
+                $errors[] = "Invalid Alumni ID.";
+                error_log("Verification FAILED - Alumni ID not found in alumni_records table");
+            } else {
+                error_log("Verification PASSED - Alumni ID found in alumni_records table");
+            }
+        } elseif (empty($errors) && !isset($faculty_record)) {
+            $errors[] = "Faculty verification failed. Please try again.";
         }
 
         if (empty($errors)) {
@@ -105,7 +125,7 @@ class Auth extends Controller
                         // 'graduated_year' => $graduated_year
                     ];
 
-                    $alumni = new alumni();
+                    $alumni = new Alumni();
                     if (!$alumni->insert($alumni_data)) {
                         // Log error for debugging
                         error_log("Failed to insert alumni data: " . print_r($alumni_data, true));
@@ -117,7 +137,14 @@ class Auth extends Controller
                             $_SESSION['alumni_id'] = $alumni_id;
                             $_SESSION['name'] = $name;
                             ob_end_flush();
-                            // header("Location: " . ROOT . "/alumni/dashboard");
+                            
+                            // Check if AJAX request
+                            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                                header('Content-Type: application/json');
+                                echo json_encode(['success' => true, 'redirect' => ROOT . '/alumni/dashboard']);
+                                exit();
+                            }
+                            
                             redirect('alumni/dashboard');
                             exit();
                         } else {
@@ -130,7 +157,14 @@ class Auth extends Controller
                         $_SESSION['alumni_id'] = $alumni_id;
                         $_SESSION['name'] = $name;
                         ob_end_flush();
-                        // header("Location: " . ROOT . "/alumni/dashboard");
+                        
+                        // Check if AJAX request
+                        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                            header('Content-Type: application/json');
+                            echo json_encode(['success' => true, 'redirect' => ROOT . '/alumni/dashboard']);
+                            exit();
+                        }
+                        
                         redirect('alumni/dashboard');
                         exit();
                     }
@@ -142,6 +176,26 @@ class Auth extends Controller
             }
         }
 
+        // Check if AJAX request - check multiple ways
+        $isAjax = false;
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            $isAjax = true;
+        } elseif (!empty($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+            $isAjax = true;
+        } elseif (isset($_POST['_ajax']) && $_POST['_ajax'] == '1') {
+            $isAjax = true;
+        }
+        
+        // ALWAYS return JSON for AJAX requests - never render view
+        if ($isAjax) {
+            header('Content-Type: application/json; charset=utf-8');
+            header('Cache-Control: no-cache, must-revalidate');
+            ob_clean(); // Clear any output
+            echo json_encode(['success' => false, 'errors' => $errors], JSON_UNESCAPED_UNICODE);
+            exit();
+        }
+
+        // Only render view for non-AJAX requests
         $data['errors'] = $errors;
         $this->view('auth/alumni_signup', $data);
     }
@@ -168,7 +222,7 @@ class Auth extends Controller
 
         if (empty($errors)) {
             // Find alumni with user data
-            $alumni = new alumni();
+            $alumni = new Alumni();
             $alumni_record = $alumni->getalumniWithUser($alumni_id);
 
             if ($alumni_record) {

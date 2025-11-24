@@ -8,13 +8,7 @@
         <div class="auth-card">
           <h1 class="auth-title">Welcome to <span class="brand">GradBridge</span></h1>
 
-          <form class="auth-form"  method="post">
-
-          <?php if(!empty($errors)):?>
-            <div class="alert alert-danger">       
-                <?= implode("<br>",$errors)?> 
-            </div>
-            <?php endif;?>
+          <form class="auth-form" method="post" action="" id="alumni-signup-form">
 
             <input class="input" type="text" name="name" placeholder="Full Name" required />
 
@@ -55,6 +49,20 @@
         </div>
       </div>
     </section>
+
+    <script>
+        // Ensure form doesn't submit normally - run immediately
+        (function() {
+            const form = document.querySelector('.auth-form');
+            if (form) {
+                form.onsubmit = function(e) {
+                    e.preventDefault();
+                    return false;
+                };
+            }
+        })();
+    </script>
+    <script src="<?=ROOT?>/assets/js/alumni-signup.js"></script>
 
 <?php require '../app/views/partials/footer.php'; ?><!--footer-->
 

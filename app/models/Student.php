@@ -198,4 +198,66 @@ class Student
         error_log("Student update result: " . ($result ? 'success' : 'failed'));
         return $result;
     }
+    
+    /**
+     * Check if a student exists in records
+     */
+
+    // public function existsInRecords($student_id, $email = null, $faculty_id = null)
+    // {
+    //     $params = ['student_id' => $student_id];
+    //     $query = "SELECT 1 FROM student_rechords WHERE student_id = :student_id";
+    //     if (!empty($email)) {
+    //         $query .= " AND email = :email";
+    //         $params['email'] = $email;
+    //     }
+    //     if (!empty($faculty_id)) {
+    //         $query .= " AND faculty_id = :faculty_id";
+    //         $params['faculty_id'] = $faculty_id;
+    //     }
+    //     $res = $this->query($query, $params);
+    //     return !empty($res);
+    // }
+
+    /**
+ * Check if a student exists in student_records table
+ * This verifies that the student is a legitimate university student
+ * @param string $student_id The student ID to verify
+ * @param int|null $faculty_id The faculty ID to verify (optional but recommended)
+ * @return bool True if student exists in records, false otherwise
+ */
+public function existsInRecords($student_id, $faculty_id = null)
+{
+    $student_id = trim($student_id);
+    if ($student_id === '') {
+        error_log("[Student::existsInRecords] Empty student_id provided");
+        return false;
+    }
+
+    $params = ['student_id' => $student_id];
+    $query = "SELECT 1 FROM student_records WHERE student_id = :student_id";
+    
+    if (!empty($faculty_id)) {
+        $query .= " AND faculty_id = :faculty_id";
+        $params['faculty_id'] = (int)$faculty_id;
+    }
+    
+    error_log("[Student::existsInRecords] SQL: $query | params: " . json_encode($params));
+    
+    try {
+        $result = $this->query($query, $params);
+        
+        error_log("[Student::existsInRecords] Query executed. Result: " . var_export($result, true));
+        
+        // Check if result is an array with at least one element
+        $exists = !empty($result) && is_array($result) && count($result) > 0;
+        
+        error_log("[Student::existsInRecords] Final result - exists: " . ($exists ? 'YES' : 'NO'));
+        
+        return $exists;
+    } catch (Exception $e) {
+        error_log("[Student::existsInRecords] Exception: " . $e->getMessage());
+        return false;
+    }
+  }
 }
