@@ -96,7 +96,7 @@ class Auth extends Controller
             $exists = $alumniModel->existsInRecords($alumni_id, $faculty_record->faculty_id);
             
             if (!$exists) {
-                $errors[] = "We could not verify your alumni record. Your Alumni ID must exist in the university records for the selected faculty.";
+                $errors[] = "Invalid Alumni ID.";
                 error_log("Verification FAILED - Alumni ID not found in alumni_records table");
             } else {
                 error_log("Verification PASSED - Alumni ID found in alumni_records table");
@@ -186,12 +186,16 @@ class Auth extends Controller
             $isAjax = true;
         }
         
+        // ALWAYS return JSON for AJAX requests - never render view
         if ($isAjax) {
-            header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'errors' => $errors]);
+            header('Content-Type: application/json; charset=utf-8');
+            header('Cache-Control: no-cache, must-revalidate');
+            ob_clean(); // Clear any output
+            echo json_encode(['success' => false, 'errors' => $errors], JSON_UNESCAPED_UNICODE);
             exit();
         }
 
+        // Only render view for non-AJAX requests
         $data['errors'] = $errors;
         $this->view('auth/alumni_signup', $data);
     }

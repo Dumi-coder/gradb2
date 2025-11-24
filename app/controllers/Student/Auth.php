@@ -105,7 +105,7 @@ class Auth extends Controller
             $exists = $studentModel->existsInRecords($student_id, $faculty_record->faculty_id);
             
             if (!$exists) {
-                $errors[] = "We could not verify your university student record. Your Student ID must exist in the university records for the selected faculty.";
+                $errors[] = "Invalid Student ID.";
                 error_log("Verification FAILED - Student ID not found in student_records table");
             } else {
                 error_log("Verification PASSED - Student ID found in student_records table");
@@ -195,12 +195,16 @@ class Auth extends Controller
             $isAjax = true;
         }
         
+        // ALWAYS return JSON for AJAX requests - never render view
         if ($isAjax) {
-            header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'errors' => $errors]);
+            header('Content-Type: application/json; charset=utf-8');
+            header('Cache-Control: no-cache, must-revalidate');
+            ob_clean(); // Clear any output
+            echo json_encode(['success' => false, 'errors' => $errors], JSON_UNESCAPED_UNICODE);
             exit();
         }
 
+        // Only render view for non-AJAX requests
         $data['errors'] = $errors;
         $this->view('auth/student_signup', $data);
     }

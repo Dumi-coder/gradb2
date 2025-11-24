@@ -50,6 +50,18 @@
       </div>
     </section>
     
+    <script>
+        // Ensure form doesn't submit normally - run immediately
+        (function() {
+            const form = document.querySelector('.auth-form');
+            if (form) {
+                form.onsubmit = function(e) {
+                    e.preventDefault();
+                    return false;
+                };
+            }
+        })();
+    </script>
     <script src="<?=ROOT?>/assets/js/student-signup.js"></script>
 
 <?php require '../app/views/partials/footer.php'; ?><!--footer-->

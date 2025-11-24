@@ -13,12 +13,19 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('Student signup form handler initialized');
     
-    // Create error container if it doesn't exist
+    // Create error container if it doesn't exist - make it very visible
     let errorContainer = document.querySelector('.error-container');
     if (!errorContainer) {
         errorContainer = document.createElement('div');
-        errorContainer.className = 'error-container';
+        errorContainer.className = 'error-container js-error-container';
         errorContainer.style.display = 'none';
+        errorContainer.style.marginBottom = '20px';
+        errorContainer.style.padding = '15px';
+        errorContainer.style.borderRadius = '8px';
+        errorContainer.style.backgroundColor = '#fee2e2';
+        errorContainer.style.border = '2px solid #ef4444';
+        errorContainer.style.color = '#991b1b';
+        errorContainer.style.fontWeight = '500';
         signupForm.insertBefore(errorContainer, signupForm.firstChild);
     }
     
@@ -30,12 +37,27 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        errorContainer.className = 'alert alert-danger error-container';
+        // Make sure styles are applied
+        errorContainer.className = 'alert alert-danger error-container js-error-container';
         errorContainer.style.display = 'block';
-        errorContainer.innerHTML = errors.map(error => `<div>${escapeHtml(error)}</div>`).join('');
+        errorContainer.style.marginBottom = '20px';
+        errorContainer.style.padding = '15px';
+        errorContainer.style.borderRadius = '8px';
+        errorContainer.style.backgroundColor = '#fee2e2';
+        errorContainer.style.border = '2px solid #ef4444';
+        errorContainer.style.color = '#991b1b';
+        errorContainer.style.fontWeight = '500';
+        errorContainer.style.fontSize = '14px';
+        errorContainer.style.lineHeight = '1.5';
+        
+        // Create error list with icons or bullets
+        errorContainer.innerHTML = '<div style="font-weight: 600; margin-bottom: 8px;">⚠️ Please fix the following errors:</div>' + 
+            errors.map(error => `<div style="margin: 5px 0; padding-left: 5px;">• ${escapeHtml(error)}</div>`).join('');
         
         // Scroll to error container
-        errorContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        setTimeout(() => {
+            errorContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
     }
     
     // Function to clear errors
