@@ -7,14 +7,7 @@
       <div class="container">
         <div class="auth-card">
           <h1 class="auth-title">Welcome to <span class="brand">GradBridge</span></h1>
-          <form class="auth-form"  method="post">
-
-            <?php if(!empty($errors)):?>
-            <div class="alert alert-danger">       
-                <?= implode("<br>",$errors)?> 
-            </div>
-            <?php endif;?>
-
+          <form class="auth-form" method="post" action="" id="student-signup-form">
 
             <input class="input" type="text" name="name" placeholder="Full Name" required />
 
@@ -57,7 +50,7 @@
       </div>
     </section>
     
-    <script src="<?=ROOT?>/assets/js/form-validation.js?v=1"></script>
+    <script src="<?=ROOT?>/assets/js/student-signup.js"></script>
 
 <?php require '../app/views/partials/footer.php'; ?><!--footer-->
 

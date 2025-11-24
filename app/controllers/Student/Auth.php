@@ -146,7 +146,14 @@ class Auth extends Controller
                             $_SESSION['student_id'] = $student_id;
                             $_SESSION['name'] = $name;
                             ob_end_flush();
-                            // header("Location: " . ROOT . "/student/dashboard");
+                            
+                            // Check if AJAX request
+                            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                                header('Content-Type: application/json');
+                                echo json_encode(['success' => true, 'redirect' => ROOT . '/student/dashboard']);
+                                exit();
+                            }
+                            
                             redirect('student/dashboard');
                             exit();
                         } else {
@@ -159,7 +166,14 @@ class Auth extends Controller
                         $_SESSION['student_id'] = $student_id;
                         $_SESSION['name'] = $name;
                         ob_end_flush();
-                        // header("Location: " . ROOT . "/student/dashboard");
+                        
+                        // Check if AJAX request
+                        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                            header('Content-Type: application/json');
+                            echo json_encode(['success' => true, 'redirect' => ROOT . '/student/dashboard']);
+                            exit();
+                        }
+                        
                         redirect('student/dashboard');
                         exit();
                     }
@@ -169,6 +183,22 @@ class Auth extends Controller
             } else {
                 $errors[] = "Failed to create user.";
             }
+        }
+
+        // Check if AJAX request - check multiple ways
+        $isAjax = false;
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            $isAjax = true;
+        } elseif (!empty($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+            $isAjax = true;
+        } elseif (isset($_POST['_ajax']) && $_POST['_ajax'] == '1') {
+            $isAjax = true;
+        }
+        
+        if ($isAjax) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'errors' => $errors]);
+            exit();
         }
 
         $data['errors'] = $errors;
