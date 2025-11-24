@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
         errorContainer.style.lineHeight = '1.5';
         
         // Create error list with icons or bullets
-        errorContainer.innerHTML = '<div style="font-weight: 600; margin-bottom: 8px;">⚠️ Please fix the following errors:</div>' + 
+        errorContainer.innerHTML = '<div style="font-weight: 600; margin-bottom: 8px;"></div>' + 
             errors.map(error => `<div style="margin: 5px 0; padding-left: 5px;">• ${escapeHtml(error)}</div>`).join('');
         
         // Scroll to error container
