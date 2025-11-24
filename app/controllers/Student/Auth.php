@@ -58,9 +58,9 @@ class Auth extends Controller
 
         elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Invalid email format";
 
-        // if (empty($student_id) && empty($alumni_id)) $errors[] = "Student ID or Alumni ID is required";
+        if (empty($student_id)) $errors[] = "Student ID is required";
 
-        if ($role === 'student' && (empty($academic_year) || !is_numeric($academic_year) || $academic_year < 1 || $academic_year > 5)) {
+        if (empty($academic_year) || !is_numeric($academic_year) || $academic_year < 1 || $academic_year > 5) {
             $errors[] = "Academic year must be between 1 and 5";
         }
 
@@ -94,19 +94,24 @@ class Auth extends Controller
             if (!$faculty_record) $errors[] = "Invalid faculty selected";
         }
 
-        
         // VERIFY STUDENT EXISTS IN RECORDS TABLE
-        if (empty($errors) && $faculty_record) {
+        // User cannot register if their student_id is not in student_records table
+        if (empty($errors) && isset($faculty_record) && $faculty_record) {
             $studentModel = new Student();
-            error_log("Signup-check student: " . json_encode([
-                'student_id' => $student_id,
-                'email' => $email,
-                'faculty_id' => $faculty_record->faculty_id
-            ]));
+            error_log("=== Student Registration Verification ===");
+            error_log("Student ID: " . $student_id);
+            error_log("Faculty ID: " . $faculty_record->faculty_id);
             
-            if (!$studentModel->existsInRecords($student_id, $email, $faculty_record->faculty_id)) {
-                $errors[] = "We could not verify your university student record. Please use your official university details.";
+            $exists = $studentModel->existsInRecords($student_id, $faculty_record->faculty_id);
+            
+            if (!$exists) {
+                $errors[] = "We could not verify your university student record. Your Student ID must exist in the university records for the selected faculty.";
+                error_log("Verification FAILED - Student ID not found in student_records table");
+            } else {
+                error_log("Verification PASSED - Student ID found in student_records table");
             }
+        } elseif (empty($errors) && !isset($faculty_record)) {
+            $errors[] = "Faculty verification failed. Please try again.";
         }
 
         if (empty($errors)) {

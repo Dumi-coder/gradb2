@@ -75,8 +75,8 @@ class Auth extends Controller
         if (empty($errors)) {
             $user = new User();
             if ($user->first(['email' => $email])) $errors[] = "Email already exists";
-            $alumni = new alumni();
-            if ($alumni->first(['alumni_id' => $alumni_id])) $errors[] = " ID already exists";
+            $alumni = new Alumni();
+            if ($alumni->first(['alumni_id' => $alumni_id])) $errors[] = "Alumni ID already exists in the system";
         }
 
         if (empty($errors)) {
@@ -85,17 +85,24 @@ class Auth extends Controller
             if (!$faculty_record) $errors[] = "Invalid faculty selected";
         }
 
-         // VERIFY ALUMNI EXISTS IN RECORDS TABLE
-        if (empty($errors) && $faculty_record) {
+        // VERIFY ALUMNI EXISTS IN RECORDS TABLE
+        // User cannot register if their alumni_id is not in alumni_records table
+        if (empty($errors) && isset($faculty_record) && $faculty_record) {
             $alumniModel = new Alumni();
-            error_log("Signup-check alumni: " . json_encode([
-                'alumni_id' => $alumni_id,
-                'faculty_id' => $faculty_record->faculty_id
-            ]));
+            error_log("=== Alumni Registration Verification ===");
+            error_log("Alumni ID: " . $alumni_id);
+            error_log("Faculty ID: " . $faculty_record->faculty_id);
             
-            if (!$alumniModel->existsInRecords($alumni_id, $faculty_record->faculty_id)) {
-                $errors[] = "We could not verify your alumni record. Please use your official university details.";
+            $exists = $alumniModel->existsInRecords($alumni_id, $faculty_record->faculty_id);
+            
+            if (!$exists) {
+                $errors[] = "We could not verify your alumni record. Your Alumni ID must exist in the university records for the selected faculty.";
+                error_log("Verification FAILED - Alumni ID not found in alumni_records table");
+            } else {
+                error_log("Verification PASSED - Alumni ID found in alumni_records table");
             }
+        } elseif (empty($errors) && !isset($faculty_record)) {
+            $errors[] = "Faculty verification failed. Please try again.";
         }
 
         if (empty($errors)) {
@@ -118,7 +125,7 @@ class Auth extends Controller
                         // 'graduated_year' => $graduated_year
                     ];
 
-                    $alumni = new alumni();
+                    $alumni = new Alumni();
                     if (!$alumni->insert($alumni_data)) {
                         // Log error for debugging
                         error_log("Failed to insert alumni data: " . print_r($alumni_data, true));
@@ -181,7 +188,7 @@ class Auth extends Controller
 
         if (empty($errors)) {
             // Find alumni with user data
-            $alumni = new alumni();
+            $alumni = new Alumni();
             $alumni_record = $alumni->getalumniWithUser($alumni_id);
 
             if ($alumni_record) {

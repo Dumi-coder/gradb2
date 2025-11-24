@@ -289,7 +289,10 @@ class Alumni
 public function existsInRecords($alumni_id, $faculty = null)
  {
     $alumni_id = trim($alumni_id);
-    if ($alumni_id === '') return false;
+    if ($alumni_id === '') {
+        error_log("[Alumni::existsInRecords] Empty alumni_id provided");
+        return false;
+    }
 
     // If faculty passed as name (not numeric), try to resolve to faculty_id
     if ($faculty !== null && !is_numeric($faculty)) {
@@ -317,10 +320,20 @@ public function existsInRecords($alumni_id, $faculty = null)
 
     error_log("[Alumni::existsInRecords] SQL: $sql | params: " . json_encode($params));
     
-    $result = $this->query($sql, $params);
-    
-    error_log("[Alumni::existsInRecords] result: " . var_export($result, true));
-    
-    return !empty($result);
+    try {
+        $result = $this->query($sql, $params);
+        
+        error_log("[Alumni::existsInRecords] Query executed. Result: " . var_export($result, true));
+        
+        // Check if result is an array with at least one element
+        $exists = !empty($result) && is_array($result) && count($result) > 0;
+        
+        error_log("[Alumni::existsInRecords] Final result - exists: " . ($exists ? 'YES' : 'NO'));
+        
+        return $exists;
+    } catch (Exception $e) {
+        error_log("[Alumni::existsInRecords] Exception: " . $e->getMessage());
+        return false;
+    }
   }
 }
