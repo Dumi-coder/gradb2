@@ -51,7 +51,7 @@ define('APP_NAME','GradBridge');// This is the name of the application, used in 
 define('APP_DESC','Best website on the planet');// This is the description of the application, used in the meta description tag and other places.
 
 // true means show errors
-define('DEBUG',false); // This constant is used to enable or disable error reporting in the application.
+define('DEBUG',true); // This constant is used to enable or disable error reporting in the application.
 // If set to true, errors will be displayed on the screen. If set to false,
 // errors will be logged to a file instead. This is useful for debugging during development.
 
