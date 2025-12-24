@@ -69,7 +69,9 @@ class MentorshipRequest
             SELECT r.request_id, r.status, r.created_at, mr.mentorship_category, mr.other_category, mr.request_reason
             FROM requests r
             JOIN mentorship_requests mr ON r.request_id = mr.request_id
+            JOIN students s ON r.student_user_id = s.user_id
             WHERE r.student_user_id = :student_id AND r.request_type = 'mentorship'
+            AND (s.is_deleted IS NULL OR s.is_deleted = 0)
             ORDER BY r.created_at DESC
         ";
         
@@ -200,6 +202,8 @@ class MentorshipRequest
             WHERE r.request_type = 'mentorship' 
             AND r.status = 'pending_verification'
             AND s.faculty_id = a.faculty_id
+            AND (s.is_deleted IS NULL OR s.is_deleted = 0)
+            AND (a.is_deleted IS NULL OR a.is_deleted = 0)
             ORDER BY r.created_at DESC
         ";
         

@@ -253,7 +253,7 @@ require '../app/views/partials/alumni_header.php';
 <div id="deleteAccountModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:9999;">
     <div style="background:#fff; padding:24px; border-radius:8px; max-width:480px; width:90%; text-align:center;">
         <h3 style="margin-top:0; color:#c0392b;">Delete Account</h3>
-        <p>Are you sure you want to delete your account? This will remove your profile, shared resources and all associated data. This action cannot be undone.</p>
+        <p>Are you sure you want to delete your account? This will deactivate your profile and you will no longer be able to log in. Your data will be preserved in the system.</p>
         <div style="display:flex; gap:10px; justify-content:center; margin-top:18px;">
             <button onclick="closeAccountModal()" style="padding:10px 18px; background:#95a5a6; color:#fff; border:none; border-radius:6px;">Cancel</button>
             <button onclick="submitDeleteAccount()" style="padding:10px 18px; background:#e74c3c; color:#fff; border:none; border-radius:6px;">Delete Account</button>

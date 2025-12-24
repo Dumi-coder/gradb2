@@ -321,44 +321,13 @@ class Profile extends Controller
         $user_id = $_SESSION['user_id'];
         $student_id = $_SESSION['student_id'] ?? null;
 
-        // Delete uploaded resources files and DB rows
+        // Soft delete: Mark account as deleted instead of removing records
         try {
-            $resourceModel = new SharedResource();
-            $resources = $resourceModel->where(['user_id' => $user_id]);
-            if ($resources) {
-                foreach ($resources as $r) {
-                    if (!empty($r->file_path)) {
-                        $fileName = basename($r->file_path);
-                        $physicalPath = RESOURCE_UPLOAD_PATH . $fileName;
-                        if (file_exists($physicalPath)) {
-                            @unlink($physicalPath);
-                        }
-                    }
-                    // delete DB row
-                    $resourceModel->delete($r->resource_id, 'resource_id');
-                }
-            }
-
-            // Delete profile photo file if exists
             if ($student_id) {
                 $studentModel = new Student();
-                $profile = $studentModel->getStudentProfile($student_id);
-                if ($profile && !empty($profile->profile_photo_url)) {
-                    if (strpos($profile->profile_photo_url, '/assets/uploads/profiles/') !== false) {
-                        $old_file = '../public' . str_replace(ROOT, '', $profile->profile_photo_url);
-                        if (file_exists($old_file)) {
-                            @unlink($old_file);
-                        }
-                    }
-                }
-
-                // Delete student DB row
-                $studentModel->delete($student_id, 'student_id');
+                // Set is_deleted = 1 to mark account as deleted
+                $studentModel->update($student_id, ['is_deleted' => 1], 'student_id');
             }
-
-            // Delete user row
-            $userModel = new User();
-            $userModel->delete($user_id, 'user_id');
 
         } catch (Exception $e) {
             error_log('Account deletion error: ' . $e->getMessage());

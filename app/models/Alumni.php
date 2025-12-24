@@ -54,7 +54,8 @@ class Alumni
         'github_url',
         'twitter_url',
         'personal_website',
-        'current_job'
+        'current_job',
+        'is_deleted'
     ];
 
     public function validate($data)
@@ -107,7 +108,8 @@ class Alumni
         $query = "SELECT a.*, u.name, u.email, u.password, u.role, u.created_at, u.updated_at
                   FROM $this->table a
                   JOIN users u ON a.user_id = u.user_id
-                  WHERE a.alumni_id = :alumni_id";
+                  WHERE a.alumni_id = :alumni_id
+                  AND (a.is_deleted IS NULL OR a.is_deleted = 0)";
         
         $result = $this->query($query, ['alumni_id' => $alumni_id]);
         return $result ? $result[0] : false;
@@ -125,7 +127,8 @@ class Alumni
                   FROM $this->table a
                   JOIN users u ON a.user_id = u.user_id
                   JOIN faculties f ON a.faculty_id = f.faculty_id
-                  WHERE a.alumni_id = :alumni_id";
+                  WHERE a.alumni_id = :alumni_id
+                  AND (a.is_deleted IS NULL OR a.is_deleted = 0)";
 
         $result = $this->query($query, ['alumni_id' => $alumni_id]);
         return $result ? $result[0] : false;
@@ -140,6 +143,7 @@ class Alumni
                   FROM $this->table a
                   JOIN users u ON a.user_id = u.user_id
                   WHERE a.faculty_id = :faculty_id
+                  AND (a.is_deleted IS NULL OR a.is_deleted = 0)
                   ORDER BY u.name";
         
         return $this->query($query, ['faculty_id' => $faculty_id]);
@@ -155,6 +159,7 @@ class Alumni
                   JOIN users u ON a.user_id = u.user_id
                   JOIN faculties f ON a.faculty_id = f.faculty_id
                   WHERE a.academic_year = :academic_year
+                  AND (a.is_deleted IS NULL OR a.is_deleted = 0)
                   ORDER BY u.name";
         
         return $this->query($query, ['academic_year' => $academic_year]);
@@ -169,7 +174,8 @@ class Alumni
                   FROM $this->table a
                   JOIN users u ON a.user_id = u.user_id
                   JOIN faculties f ON a.faculty_id = f.faculty_id
-                  WHERE u.name LIKE :search OR a.alumni_id LIKE :search
+                  WHERE (u.name LIKE :search OR a.alumni_id LIKE :search)
+                  AND (a.is_deleted IS NULL OR a.is_deleted = 0)
                   ORDER BY u.name";
         
         $search_param = '%' . $search_term . '%';
