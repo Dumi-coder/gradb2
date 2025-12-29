@@ -76,7 +76,7 @@ require '../app/views/partials/student_header.php';
                 <i class="fas fa-search"></i>
                 <span>Search</span>
               </button>
-              <a href="<?=ROOT?>/student/resources" class="btn btn-outline">
+              <a href="<?=ROOT?>/student/resources/index" class="btn btn-outline">
                 <i class="fas fa-arrow-left"></i>
                 <span>Back to Resources</span>
               </a>

@@ -1,5 +1,8 @@
 <?php require '../app/views/partials/superadmin_header.php'; ?>
 
+<!-- Page-specific CSS -->
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/resources.css">
+
 <div class="dashboard-container">
     <!-- Sidebar -->
     <?php require '../app/views/partials/superadmin_sidebar.php'; ?>
@@ -9,7 +12,7 @@
         <!-- Resource Moderation Section -->
         <section class="dashboard-section">
             <div class="section-header">
-                <h2 class="section-title">Resource Moderation</h2>
+                <h2 class="section-title" style="font-size: 2rem; font-weight: 700;">Resource Moderation</h2>
                 <div class="section-stats">
                     <div class="stat-item">
                         <span class="stat-number"><?= $resourceData['stats']['total_resources'] ?></span>
@@ -30,192 +33,463 @@
             <div class="reported-resources-section">
                 <h3 class="subsection-title">Reported Resources</h3>
                 <div class="reported-resources-container">
-                    <?php foreach ($resourceData['reported_resources'] as $resource): ?>
-                    <div class="reported-resource-card">
-                        <div class="resource-header">
-                            <div class="resource-info">
-                                <h4 class="resource-title"><?= esc($resource['title']) ?></h4>
-                                <p class="resource-author">By: <?= esc($resource['author']) ?> (<?= esc($resource['author_email']) ?>)</p>
-                                <p class="resource-type"><?= esc($resource['resource_type']) ?> • <?= esc($resource['file_size']) ?></p>
+                    <?php if (!empty($resourceData['reported_resources'])): ?>
+                        <?php foreach ($resourceData['reported_resources'] as $resource): ?>
+                        <div class="reported-resource-card">
+                            <div class="resource-header">
+                                <div class="resource-info">
+                                    <h4 class="resource-title"><?= esc($resource['title']) ?></h4>
+                                    <p class="resource-author">By: <?= esc($resource['author']) ?> (<?= esc($resource['author_email']) ?>) - <?= esc($resource['user_role']) ?></p>
+                                    <p class="resource-type"><?= esc($resource['resource_type']) ?> • <?= esc($resource['file_size']) ?></p>
+                                </div>
+                                <div class="resource-meta">
+                                    <span class="report-reason">Reported</span>
+                                </div>
                             </div>
-                            <div class="resource-meta">
-                                <span class="report-reason"><?= esc($resource['report_reason']) ?></span>
-                                <span class="status-badge status-pending">PENDING</span>
+                            
+                            <div class="resource-content">
+                                <p><strong>Description:</strong> <?= esc($resource['description']) ?></p>
+                            </div>
+                            
+                            <div class="resource-stats">
+                                <span class="stat"><i class="fas fa-download"></i> <?= $resource['downloads'] ?> downloads</span>
+                            </div>
+                            
+                            <div class="report-details">
+                                <p><strong>Reported on:</strong> <?= date('M j, Y', strtotime($resource['reported_date'])) ?></p>
+                                <p><strong>Feedback:</strong> <?= esc($resource['report_reason']) ?></p>
+                            </div>
+                            
+                            <div class="resource-actions">
+                                <button class="btn btn-success btn-sm approve-btn" data-resource-id="<?= $resource['id'] ?>">
+                                    <i class="fas fa-flag"></i>
+                                    Remove Flag
+                                </button>
+                                <button class="btn btn-warning btn-sm hide-btn" data-resource-id="<?= $resource['id'] ?>">
+                                    <i class="fas fa-user-slash"></i>
+                                    Suspend User
+                                </button>
+                                <button class="btn btn-danger btn-sm delete-btn" data-resource-id="<?= $resource['id'] ?>">
+                                    <i class="fas fa-trash"></i>
+                                    Delete Resource
+                                </button>
+                                <button class="btn btn-outline btn-sm download-btn" data-resource-id="<?= $resource['id'] ?>">
+                                    <i class="fas fa-download"></i>
+                                    Download
+                                </button>
                             </div>
                         </div>
-                        
-                        <div class="resource-content">
-                            <p><strong>Description:</strong> <?= esc($resource['description']) ?></p>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="empty-state" style="text-align: center; padding: 40px; opacity: 0.7;">
+                            <i class="fas fa-check-circle" style="font-size: 48px; color: #10b981; margin-bottom: 15px;"></i>
+                            <h4 style="margin-bottom: 10px;">No Reported Resources</h4>
+                            <p style="color: #6b7280;">All resources are in good standing.</p>
                         </div>
-                        
-                        <div class="resource-stats">
-                            <span class="stat"><i class="fas fa-download"></i> <?= $resource['downloads'] ?> downloads</span>
-                        </div>
-                        
-                        <div class="report-details">
-                            <p><strong>Reported by:</strong> <?= esc($resource['reported_by']) ?></p>
-                            <p><strong>Reported on:</strong> <?= date('M j, Y', strtotime($resource['reported_date'])) ?></p>
-                        </div>
-                        
-                        <div class="resource-actions">
-                            <button class="btn btn-success btn-sm approve-btn" data-resource-id="<?= $resource['id'] ?>">
-                                <i class="fas fa-check"></i>
-                                Approve Resource
-                            </button>
-                            <button class="btn btn-warning btn-sm hide-btn" data-resource-id="<?= $resource['id'] ?>">
-                                <i class="fas fa-eye-slash"></i>
-                                Hide Resource
-                            </button>
-                            <button class="btn btn-danger btn-sm delete-btn" data-resource-id="<?= $resource['id'] ?>">
-                                <i class="fas fa-trash"></i>
-                                Delete Resource
-                            </button>
-                            <button class="btn btn-outline btn-sm download-btn" data-resource-id="<?= $resource['id'] ?>">
-                                <i class="fas fa-download"></i>
-                                Download
-                            </button>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
-            
-            <!-- Recent Resources Section -->
-            <div class="recent-resources-section">
-                <div class="section-header-with-button">
-                    <h3 class="subsection-title">Recent Resources</h3>
-                    <button class="btn btn-primary add-resource-btn" onclick="openAddResourceModal()">
-                        <i class="fas fa-plus"></i>
-                        Add New Resource
+        </section>
+
+        <!-- Upload Section -->
+        <section class="dashboard-section upload-section">
+          <div class="section-header">
+            <h2 class="card-title">Share Resources</h2>
+            <button class="btn btn-primary" onclick="openUploadModal()">
+              <i class="fas fa-upload"></i>
+              <span>Upload File</span>
+            </button>
+          </div>
+          
+          <div class="upload-info">
+            <p>Share study materials, lecture notes, and helpful resources with your faculty community.</p>
+          </div>
+        </section>
+
+        <!-- My Resources -->
+        <section class="dashboard-section my-resources-section">
+          <div class="section-header">
+            <h2 class="card-title">
+              <i class="fas fa-folder"></i>
+              My Resources
+            </h2>
+            <span class="resource-count"><span id="my-resources-count"><?= isset($resourceData['my_resources']) && is_array($resourceData['my_resources']) ? count($resourceData['my_resources']) : 0 ?></span> resources</span>
+          </div>
+          
+          <div class="my-resources-grid" id="my-resources-grid">
+            <?php if(isset($resourceData['my_resources']) && is_array($resourceData['my_resources']) && count($resourceData['my_resources'])): ?>
+              <?php foreach($resourceData['my_resources'] as $res): ?>
+                <div class="my-resource-card" 
+                     data-id="<?= $res->resource_id ?? '' ?>"
+                     data-title="<?= htmlspecialchars($res->title ?? '', ENT_QUOTES) ?>"
+                     data-description="<?= htmlspecialchars($res->description ?? '', ENT_QUOTES) ?>"
+                     data-category="<?= htmlspecialchars($res->category ?? '', ENT_QUOTES) ?>"
+                     data-file-path="<?= htmlspecialchars($res->file_path ?? '', ENT_QUOTES) ?>"
+                     data-file-size="<?= (int)($res->file_size ?? 0) ?>"
+                     data-created-at="<?= htmlspecialchars($res->created_at ?? '', ENT_QUOTES) ?>">
+                  <h3 class="resource-title"><?= htmlspecialchars($res->title ?? '') ?></h3>
+                  <div class="resource-meta">
+                    <?php 
+                      $cat = isset($res->category) ? ucwords(str_replace('-', ' ', $res->category)) : ''; 
+                    ?>
+                    <span class="resource-category"><?= htmlspecialchars($cat) ?></span>
+                    <span class="resource-size"><?= isset($res->file_size) ? number_format(($res->file_size/1024/1024), 1) . ' MB' : '' ?></span>
+                    <?php if (isset($res->is_reported) && $res->is_reported == 1): ?>
+                      <span class="resource-status" style="background: #dc2626; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">Reported</span>
+                    <?php endif; ?>
+                  </div>
+                  <p class="resource-description"><?= htmlspecialchars($res->description ?? '') ?></p>
+                  <div class="resource-details">
+                    <span class="upload-date">Uploaded: <?= isset($res->created_at) ? date('M j, Y', strtotime($res->created_at)) : '' ?></span>
+                    <span class="resource-downloads"><i class="fas fa-download"></i> <?= (int)($res->downloads ?? 0) ?> downloads</span>
+                  </div>
+                  <div class="resource-actions">
+                    <button class="btn btn-primary btn-sm" data-action="edit" data-id="<?= $res->resource_id ?? '' ?>">
+                      <i class="fas fa-edit"></i>
+                      <span>Edit</span>
                     </button>
+                    <a class="btn btn-outline btn-sm" href="<?= htmlspecialchars($res->file_path ?? '#') ?>" target="_blank" rel="noopener">
+                      <i class="fas fa-download"></i>
+                      <span>Open</span>
+                    </a>
+                    <button class="btn btn-danger btn-sm" data-action="delete" data-id="<?= $res->resource_id ?? '' ?>">
+                      <i class="fas fa-trash"></i>
+                      <span>Delete</span>
+                    </button>
+                  </div>
                 </div>
-                <div class="recent-resources-container">
-                    <?php foreach ($resourceData['recent_resources'] as $resource): ?>
-                    <div class="recent-resource-card">
-                        <div class="resource-header">
-                            <h4 class="resource-title"><?= esc($resource['title']) ?></h4>
-                            <div class="resource-meta">
-                                <span class="resource-author"><?= esc($resource['author']) ?></span>
-                                <span class="resource-date"><?= date('M j, Y', strtotime($resource['upload_date'])) ?></span>
-                            </div>
-                        </div>
-                        
-                        <div class="resource-content">
-                            <p><strong>Description:</strong> <?= esc($resource['description']) ?></p>
-                            <p><strong>Type:</strong> <?= esc($resource['resource_type']) ?> • <strong>Size:</strong> <?= esc($resource['file_size']) ?></p>
-                        </div>
-                        
-                        <div class="resource-stats">
-                            <span class="stat"><i class="fas fa-download"></i> <?= $resource['downloads'] ?> downloads</span>
-                            <span class="stat"><i class="fas fa-check-circle"></i> <?= ucfirst($resource['status']) ?></span>
-                        </div>
-                        
-                        <div class="resource-actions">
-                            <button class="btn btn-outline btn-sm view-btn" data-resource-id="<?= $resource['id'] ?>">
-                                <i class="fas fa-eye"></i>
-                                View Details
-                            </button>
-                            <button class="btn btn-outline btn-sm moderate-btn" data-resource-id="<?= $resource['id'] ?>">
-                                <i class="fas fa-gavel"></i>
-                                Moderate
-                            </button>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <div id="my-resources-empty" class="my-resource-card" style="opacity:.8">
+                <h3 class="resource-title">No resources yet</h3>
+                <p class="resource-description">Upload your first resource to see it here.</p>
+              </div>
+            <?php endif; ?>
+          </div>
+        </section>
+
+        <!-- Browse by Category -->
+        <section class="dashboard-section categories-section">
+          <div class="section-header">
+            <h2 class="card-title">Browse by Category</h2>
+          </div>
+          
+          <div class="categories-grid">
+            <div class="category-card" onclick="window.location.href='<?=ROOT?>/superadmin/resourcemoderation/browse?category=lecture-notes'">
+              <div class="category-icon">
+                <i class="fas fa-file-alt"></i>
+              </div>
+              <div class="category-info">
+                <h3 class="category-name">Lecture Notes</h3>
+                <p class="category-description">Class notes and study guides</p>
+                <div class="category-stats">
+                  <span class="stat"><i class="fas fa-file"></i> <?= isset($resourceData['category_counts']['lecture-notes']) ? $resourceData['category_counts']['lecture-notes'] : 0 ?> files</span>
                 </div>
+              </div>
             </div>
+
+            <div class="category-card" onclick="window.location.href='<?=ROOT?>/superadmin/resourcemoderation/browse?category=assignments'">
+              <div class="category-icon">
+                <i class="fas fa-tasks"></i>
+              </div>
+              <div class="category-info">
+                <h3 class="category-name">Exercises</h3>
+                <p class="category-description">Sample solutions and templates</p>
+                <div class="category-stats">
+                  <span class="stat"><i class="fas fa-file"></i> <?= isset($resourceData['category_counts']['assignments']) ? $resourceData['category_counts']['assignments'] : 0 ?> files</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="category-card" onclick="window.location.href='<?=ROOT?>/superadmin/resourcemoderation/browse?category=textbooks'">
+              <div class="category-icon">
+                <i class="fas fa-book"></i>
+              </div>
+              <div class="category-info">
+                <h3 class="category-name">Textbooks</h3>
+                <p class="category-description">Digital books and references</p>
+                <div class="category-stats">
+                  <span class="stat"><i class="fas fa-file"></i> <?= isset($resourceData['category_counts']['textbooks']) ? $resourceData['category_counts']['textbooks'] : 0 ?> files</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="category-card" onclick="window.location.href='<?=ROOT?>/superadmin/resourcemoderation/browse?category=software'">
+              <div class="category-icon">
+                <i class="fas fa-code"></i>
+              </div>
+              <div class="category-info">
+                <h3 class="category-name">Software & Tools</h3>
+                <p class="category-description">Development tools and software</p>
+                <div class="category-stats">
+                  <span class="stat"><i class="fas fa-file"></i> <?= isset($resourceData['category_counts']['software']) ? $resourceData['category_counts']['software'] : 0 ?> files</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Recent Resources -->
+        <section class="dashboard-section recent-section">
+          <div class="section-header">
+            <h2 class="card-title">Recent Resources</h2>
+            <div class="section-actions">
+              <a href="<?=ROOT?>/superadmin/resourcemoderation/browse" class="btn btn-outline btn-sm">
+                <span>View All</span>
+                <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="resources-list">
+            <?php if(isset($resourceData['recent_resources']) && is_array($resourceData['recent_resources']) && count($resourceData['recent_resources']) > 0): ?>
+              <?php foreach($resourceData['recent_resources'] as $resource): ?>
+                <div class="resource-item">
+                  <div class="resource-icon">
+                    <?php
+                      $iconClass = 'fa-file';
+                      $fileType = strtolower($resource->file_type ?? '');
+                      if ($fileType == 'pdf') $iconClass = 'fa-file-pdf';
+                      elseif (in_array($fileType, ['doc', 'docx'])) $iconClass = 'fa-file-word';
+                      elseif (in_array($fileType, ['xls', 'xlsx'])) $iconClass = 'fa-file-excel';
+                      elseif (in_array($fileType, ['ppt', 'pptx'])) $iconClass = 'fa-file-powerpoint';
+                      elseif (in_array($fileType, ['zip', 'rar'])) $iconClass = 'fa-file-archive';
+                      elseif (in_array($fileType, ['jpg', 'jpeg', 'png', 'gif'])) $iconClass = 'fa-file-image';
+                      elseif ($fileType == 'txt') $iconClass = 'fa-file-alt';
+                      elseif (in_array($fileType, ['py', 'js', 'php', 'java', 'cpp', 'c'])) $iconClass = 'fa-file-code';
+                    ?>
+                    <i class="fas <?= $iconClass ?>"></i>
+                  </div>
+                  <div class="resource-content">
+                    <h3 class="resource-title"><?= htmlspecialchars($resource->title ?? '') ?></h3>
+                    <p class="resource-description"><?= htmlspecialchars($resource->description ?? '') ?></p>
+                    <div class="resource-meta">
+                      <?php 
+                        $cat = isset($resource->category) ? ucwords(str_replace('-', ' ', $resource->category)) : ''; 
+                      ?>
+                      <span class="resource-category"><?= htmlspecialchars($cat) ?></span>
+                      <span class="resource-author">by <?= htmlspecialchars($resource->author_name ?? 'Unknown') ?></span>
+                      <?php
+                        $timeAgo = '';
+                        if (isset($resource->created_at)) {
+                          $timestamp = strtotime($resource->created_at);
+                          $diff = time() - $timestamp;
+                          if ($diff < 3600) {
+                            $timeAgo = floor($diff / 60) . ' minutes ago';
+                          } elseif ($diff < 86400) {
+                            $timeAgo = floor($diff / 3600) . ' hours ago';
+                          } elseif ($diff < 604800) {
+                            $timeAgo = floor($diff / 86400) . ' days ago';
+                          } else {
+                            $timeAgo = date('M j, Y', $timestamp);
+                          }
+                        }
+                      ?>
+                      <span class="resource-date"><?= $timeAgo ?></span>
+                      <span class="resource-downloads"><i class="fas fa-download"></i> <?= (int)($resource->downloads ?? 0) ?> downloads</span>
+                    </div>
+                  </div>
+                  <div class="resource-actions">
+                    <a class="btn btn-outline btn-sm" href="<?=ROOT?>/superadmin/resourcemoderation/download?id=<?= $resource->resource_id ?? '' ?>" target="_blank" rel="noopener">
+                      <i class="fas fa-download"></i>
+                      <span>Download</span>
+                    </a>
+                    <button class="btn btn-outline btn-sm" onclick="openReportModal(<?= $resource->resource_id ?? 0 ?>, '<?= htmlspecialchars(addslashes($resource->title ?? ''), ENT_QUOTES) ?>')" style="color: #dc2626; border-color: #dc2626;" onmouseover="this.style.background='#dc2626'; this.style.color='white';" onmouseout="this.style.background='transparent'; this.style.color='#dc2626';">
+                      <i class="fas fa-flag"></i>
+                      <span>Report</span>
+                    </button>
+                  </div>
+                </div>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <div class="resource-item" style="opacity:.7">
+                <div class="resource-content" style="text-align: center; width: 100%;">
+                  <h3 class="resource-title">No recent resources available</h3>
+                  <p class="resource-description">Resources shared by users will appear here.</p>
+                </div>
+              </div>
+            <?php endif; ?>
+          </div>
         </section>
     </main>
 </div>
 
 <!-- Add Resource Modal -->
-<div id="addResourceModal" class="modal">
-    <div class="modal-content">
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="modal">
+      <div class="modal-content" style="padding: 25px;">
         <div class="modal-header">
-            <h2 class="modal-title">Add New Resource</h2>
-            <button class="modal-close" onclick="closeAddResourceModal()">
-                <i class="fas fa-times"></i>
-            </button>
+          <h2 class="modal-title">Upload Resource</h2>
+          <button class="modal-close" onclick="closeUploadModal()">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
 
-        <form class="resource-form" id="resourceForm">
-            <div class="form-group">
-                <label for="resourceTitle">Resource Title *</label>
-                <input type="text" id="resourceTitle" name="resourceTitle" placeholder="Enter resource title" required>
-            </div>
+        <form class="upload-form" enctype="multipart/form-data">
+          <input type="hidden" id="resourceId" name="resourceId" value="">
+          <input type="hidden" id="resourceMode" name="resourceMode" value="create">
+          <div class="form-group">
+            <label for="resourceTitle">Resource Title *</label>
+            <input type="text" id="resourceTitle" name="resourceTitle" placeholder="Enter a descriptive title" required>
+          </div>
 
-            <div class="form-group">
-                <label for="resourceCategory">Category *</label>
-                <select id="resourceCategory" name="resourceCategory" required>
-                    <option value="">Select a category</option>
-                    <option value="academic">Academic Materials</option>
-                    <option value="career">Career Development</option>
-                    <option value="research">Research Tools</option>
-                    <option value="software">Software & Tools</option>
-                    <option value="templates">Templates & Forms</option>
-                    <option value="guides">Guides & Tutorials</option>
-                    <option value="databases">Databases & Archives</option>
-                    <option value="networking">Networking Resources</option>
-                </select>
-            </div>
+          <div class="form-group">
+            <label for="resourceCategory">Category *</label>
+            <select id="resourceCategory" name="resourceCategory" required>
+              <option value="">Select a category</option>
+              <option value="lecture-notes">Lecture Notes</option>
+              <option value="assignments">Assignments</option>
+              <option value="textbooks">Textbooks</option>
+              <option value="software">Software & Tools</option>
+            </select>
+          </div>
 
-            <div class="form-group">
-                <label for="resourceDescription">Description *</label>
-                <textarea id="resourceDescription" name="resourceDescription" rows="4" placeholder="Describe the resource and how it can be used..." required></textarea>
-            </div>
+          <div class="form-group">
+            <label for="resourceFaculty">Visibility *</label>
+            <select id="resourceFaculty" name="resourceFaculty" required>
+              <option value="">Select Faculty</option>
+              <option value="all-faculties">All Faculties</option>
+              <option value="UCSC">UCSC</option>
+              <option value="FOA">FOA</option>
+              <option value="FOS">FOS</option>
+              <option value="FOM">FOM</option>
+              <option value="FOMF">FOMF</option>
+              <option value="FOL">FOL</option>
+              <option value="FOE">FOE</option>
+              <option value="FOT">FOT</option>
+            </select>
+          </div>
 
-            <div class="form-group">
-                <label for="resourceType">Resource Type *</label>
-                <select id="resourceType" name="resourceType" required>
-                    <option value="">Select resource type</option>
-                    <option value="document">Document (PDF, DOC, etc.)</option>
-                    <option value="link">External Link</option>
-                    <option value="video">Video</option>
-                    <option value="image">Image/Gallery</option>
-                    <option value="software">Software/Application</option>
-                    <option value="template">Template</option>
-                    <option value="guide">Guide/Tutorial</option>
-                </select>
-            </div>
+          <div class="form-group">
+            <label for="resourceDescription">Description</label>
+            <textarea id="resourceDescription" name="resourceDescription" rows="3" placeholder="Describe what this resource contains..."></textarea>
+          </div>
 
-            <div class="form-group">
-                <label for="resourceUrl">Resource URL/Link</label>
-                <input type="url" id="resourceUrl" name="resourceUrl" placeholder="Enter resource URL (if applicable)">
+          <div class="form-group">
+            <label for="resourceFile">File *</label>
+            <div class="file-upload-area" onclick="document.getElementById('resourceFile').click()">
+              <input type="file" id="resourceFile" name="resourceFile" accept=".pdf,.doc,.docx,.txt,.zip,.rar,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.gif,image/*" style="display: none;" required>
+              <div class="upload-placeholder">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click to select file or drag and drop</p>
+                <small>Supported: PDF, DOC, DOCX, TXT, ZIP, RAR, PPT, PPTX, XLS, XLSX, PNG, JPG, JPEG, GIF</small>
+              </div>
             </div>
+          </div>
 
-            <div class="form-group">
-                <label for="resourceTags">Tags (Optional)</label>
-                <input type="text" id="resourceTags" name="resourceTags" placeholder="Enter tags separated by commas (e.g., research, academic, tools)">
-            </div>
-
-            <div class="form-group">
-                <label for="resourceAccess">Access Level</label>
-                <select id="resourceAccess" name="resourceAccess">
-                    <option value="public">Public (All Users)</option>
-                    <option value="students">Students Only</option>
-                    <option value="alumni">Alumni Only</option>
-                    <option value="faculty">Faculty Only</option>
-                    <option value="restricted">Restricted Access</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="resourceAuthor">Author/Contributor</label>
-                <input type="text" id="resourceAuthor" name="resourceAuthor" placeholder="Enter author or contributor name">
-            </div>
-
-            <div class="form-actions">
-                <button type="button" class="btn btn-outline" onclick="closeAddResourceModal()">
-                    <span>Cancel</span>
-                </button>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-plus-circle"></i>
-                    <span>Add Resource</span>
-                </button>
-            </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="closeUploadModal()">
+              <span>Cancel</span>
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-upload"></i>
+              <span>Upload</span>
+            </button>
+          </div>
         </form>
+      </div>
     </div>
-</div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+      <div class="modal-content modal-small" style="padding: 25px;">
+        <div class="modal-header">
+          <h2 class="modal-title">
+            <i class="fas fa-exclamation-circle"></i>
+            Confirm Delete
+          </h2>
+          <button class="modal-close" onclick="closeDeleteModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="delete-warning">
+            <div class="warning-icon-wrapper">
+              <i class="fas fa-trash-alt"></i>
+            </div>
+            <h3>Are you sure you want to delete this resource?</h3>
+            <p class="delete-resource-name" id="deleteResourceName"></p>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline btn-sm" onclick="closeDeleteModal()">
+            <i class="fas fa-times"></i>
+            <span>Cancel</span>
+          </button>
+          <button type="button" class="btn btn-danger btn-sm" id="confirmDeleteBtn">
+            <i class="fas fa-trash"></i>
+            <span>Delete Resource</span>
+          </button>
+        </div>
+
+        <div class="modal-footer">
+          <p class="warning-text">
+            <i class="fas fa-info-circle"></i>
+            This action cannot be undone. The file will be permanently deleted from the system.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div id="reportModal" class="modal" style="display: none;">
+      <div class="modal-content" style="padding: 25px;">
+        <div class="modal-header">
+          <h2 class="modal-title">
+            <i class="fas fa-flag" style="color: #dc2626;"></i>
+            Report Resource
+          </h2>
+          <button class="modal-close" onclick="closeReportModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <form id="reportForm" class="upload-form">
+          <input type="hidden" id="reportResourceId" name="reportResourceId">
+          
+          <div class="form-group">
+            <label>Resource</label>
+            <p id="reportResourceTitle" style="color: #6b7280; margin-top: 5px;"></p>
+          </div>
+
+          <div class="form-group">
+            <label for="reportReason">Reason for Reporting *</label>
+            <textarea id="reportReason" name="reportReason" rows="4" placeholder="Please describe why you are reporting this resource..." required></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="closeReportModal()">
+              <span>Cancel</span>
+            </button>
+            <button type="submit" class="btn" style="background: #dc2626; color: white;">
+              <i class="fas fa-flag"></i>
+              <span>Submit Report</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Success/Error Modal -->
+    <div id="messageModal" class="modal" style="display: none;">
+      <div class="modal-content" style="max-width: 400px; padding: 25px;">
+        <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
+          <button class="modal-close" onclick="closeMessageModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div style="text-align: center; padding: 20px;">
+          <div id="messageIcon" style="font-size: 48px; margin-bottom: 20px;"></div>
+          <h3 id="messageTitle" style="margin-bottom: 10px; font-size: 20px;"></h3>
+          <p id="messageText" style="color: #6b7280; margin-bottom: 25px;"></p>
+          <button class="btn btn-primary" onclick="closeMessageModal()" style="min-width: 120px;">
+            <span>OK</span>
+          </button>
+        </div>
+      </div>
+    </div>
 
 <style>
 .reported-resources-section, .recent-resources-section {
@@ -281,14 +555,13 @@
 }
 
 .report-reason {
-    display: block;
-    background-color: #FEE2E2;
-    color: #DC2626;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
+    display: inline-block;
+    background-color: #DC2626;
+    color: white;
+    padding: 0.35rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
 }
 
 .status-badge {
@@ -562,15 +835,43 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle approve button clicks
+    // Handle remove flag button clicks
     document.querySelectorAll('.approve-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const resourceId = this.getAttribute('data-resource-id');
-            if (confirm('Are you sure you want to approve this resource?')) {
-                alert('Resource approved successfully!');
-                this.closest('.reported-resource-card').style.opacity = '0.5';
-                this.disabled = true;
-            }
+            const btn = this;
+            
+            // Show loading state
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Processing...</span>';
+            btn.disabled = true;
+            
+            fetch('<?=ROOT?>/superadmin/resourcemoderation/removeflag', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'resource_id=' + resourceId
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showMessageModal('success', 'Success', data.message || 'Report flag removed successfully!');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    showMessageModal('error', 'Error', data.message || 'Failed to remove flag');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessageModal('error', 'Error', 'An error occurred. Please try again.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
         });
     });
 
@@ -590,10 +891,40 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const resourceId = this.getAttribute('data-resource-id');
-            if (confirm('Are you sure you want to delete this resource? This action cannot be undone.')) {
-                alert('Resource deleted successfully!');
-                this.closest('.reported-resource-card').remove();
-            }
+            const btn = this;
+            const card = this.closest('.reported-resource-card');
+            
+            // Show loading state
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Deleting...</span>';
+            btn.disabled = true;
+            
+            fetch('<?=ROOT?>/superadmin/resourcemoderation/delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'resource_id=' + resourceId
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showMessageModal('success', 'Success', data.message || 'Resource deleted successfully!');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    showMessageModal('error', 'Error', data.message || 'Failed to delete resource');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessageModal('error', 'Error', 'An error occurred. Please try again.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
         });
     });
 
@@ -601,7 +932,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.download-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const resourceId = this.getAttribute('data-resource-id');
-            alert('Download functionality would be implemented here for resource ID: ' + resourceId);
+            window.open('<?=ROOT?>/superadmin/resourcemoderation/download?id=' + resourceId, '_blank');
         });
     });
 
@@ -623,52 +954,261 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Modal Functions
-function openAddResourceModal() {
-    document.getElementById('addResourceModal').style.display = 'block';
-    document.body.style.overflow = 'hidden';
+function openUploadModal() {
+    document.getElementById('uploadModal').style.display = 'flex';
+    document.getElementById('resourceMode').value = 'create';
+    document.getElementById('resourceId').value = '';
+    document.querySelector('.upload-form').reset();
+    document.querySelector('.modal-title').textContent = 'Upload Resource';
 }
 
-function closeAddResourceModal() {
-    document.getElementById('addResourceModal').style.display = 'none';
-    document.body.style.overflow = 'auto';
-    // Reset form
-    document.getElementById('resourceForm').reset();
+function closeUploadModal() {
+    document.getElementById('uploadModal').style.display = 'none';
+    document.querySelector('.upload-form').reset();
+}
+
+function openDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'flex';
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
 }
 
 // Close modal when clicking outside
 window.onclick = function(event) {
-    const modal = document.getElementById('addResourceModal');
-    if (event.target === modal) {
-        closeAddResourceModal();
+    const uploadModal = document.getElementById('uploadModal');
+    const deleteModal = document.getElementById('deleteModal');
+    if (event.target === uploadModal) {
+        closeUploadModal();
+    }
+    if (event.target === deleteModal) {
+        closeDeleteModal();
     }
 }
 
-// Handle form submission
-document.getElementById('resourceForm').addEventListener('submit', function(e) {
+// File upload display
+document.getElementById('resourceFile').addEventListener('change', function() {
+    const fileName = this.files[0]?.name;
+    if (fileName) {
+        const placeholder = document.querySelector('.upload-placeholder p');
+        placeholder.textContent = fileName;
+    }
+});
+
+// Handle upload form submission
+document.querySelector('.upload-form').addEventListener('submit', function(e) {
     e.preventDefault();
     
+    const mode = document.getElementById('resourceMode').value;
     const formData = new FormData(this);
-    const resourceData = {
-        title: formData.get('resourceTitle'),
-        category: formData.get('resourceCategory'),
-        description: formData.get('resourceDescription'),
-        type: formData.get('resourceType'),
-        url: formData.get('resourceUrl'),
-        tags: formData.get('resourceTags'),
-        access: formData.get('resourceAccess'),
-        author: formData.get('resourceAuthor')
-    };
     
-    // Here you would typically send the data to the server
-    console.log('Resource Data:', resourceData);
+    // Show loading state
+    const submitBtn = this.querySelector('button[type=\"submit\"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class=\"fas fa-spinner fa-spin\"></i><span>Processing...</span>';
+    submitBtn.disabled = true;
     
-    // Show success message
-    alert('Resource added successfully!');
-    
-    // Close modal
-    closeAddResourceModal();
-    
-    // Here you would typically refresh the resources list
-    // or add the new resource to the page dynamically
+    fetch('<?=ROOT?>/superadmin/resourcemoderation/' + (mode === 'edit' ? 'update' : 'upload'), {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        closeUploadModal();
+        if (data.success) {
+            showMessageModal('success', 'Success', data.message || 'Resource saved successfully!');
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        } else {
+            showMessageModal('error', 'Error', data.message || 'Failed to save resource');
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        closeUploadModal();
+        showMessageModal('error', 'Error', 'An error occurred. Please try again.');
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
 });
+
+// Handle Edit Resource
+document.querySelectorAll('[data-action=\"edit\"]').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const card = this.closest('.my-resource-card');
+        const resourceId = card.dataset.id;
+        const title = card.dataset.title;
+        const description = card.dataset.description;
+        const category = card.dataset.category;
+        
+        // Populate form
+        document.getElementById('resourceMode').value = 'edit';
+        document.getElementById('resourceId').value = resourceId;
+        document.getElementById('resourceTitle').value = title;
+        document.getElementById('resourceDescription').value = description;
+        document.getElementById('resourceCategory').value = category;
+        
+        // Make file optional for edit mode
+        document.getElementById('resourceFile').required = false;
+        
+        // Update modal title
+        document.querySelector('.modal-title').textContent = 'Edit Resource';
+        
+        // Open modal
+        openUploadModal();
+    });
+});
+
+// Handle Delete Resource
+document.querySelectorAll('[data-action=\"delete\"]').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const card = this.closest('.my-resource-card');
+        const resourceId = card.dataset.id;
+        const title = card.dataset.title;
+        
+        // Set resource name in modal
+        document.getElementById('deleteResourceName').textContent = title;
+        
+        // Set up confirm button
+        document.getElementById('confirmDeleteBtn').onclick = function() {
+            // Show loading state
+            this.innerHTML = '<i class=\"fas fa-spinner fa-spin\"></i><span>Deleting...</span>';
+            this.disabled = true;
+            
+            fetch('<?=ROOT?>/superadmin/resourcemoderation/delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'resource_id=' + resourceId
+            })
+            .then(response => response.json())
+            .then(data => {
+                closeDeleteModal();
+                if (data.success) {
+                    showMessageModal('success', 'Success', data.message || 'Resource deleted successfully!');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    showMessageModal('error', 'Error', data.message || 'Failed to delete resource');
+                    this.innerHTML = '<i class=\"fas fa-trash\"></i><span>Delete Resource</span>';
+                    this.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                closeDeleteModal();
+                showMessageModal('error', 'Error', 'An error occurred. Please try again.');
+                this.innerHTML = '<i class=\"fas fa-trash\"></i><span>Delete Resource</span>';
+                this.disabled = false;
+            });
+        };
+        
+        // Open delete modal
+        openDeleteModal();
+    });
+});
+
+// Report Modal Functions
+function openReportModal(resourceId, resourceTitle) {
+    document.getElementById('reportResourceId').value = resourceId;
+    document.getElementById('reportResourceTitle').textContent = resourceTitle;
+    document.getElementById('reportReason').value = '';
+    document.getElementById('reportModal').style.display = 'flex';
+}
+
+function closeReportModal() {
+    document.getElementById('reportModal').style.display = 'none';
+}
+
+// Message Modal Functions
+function showMessageModal(type, title, message) {
+    const modal = document.getElementById('messageModal');
+    const icon = document.getElementById('messageIcon');
+    const titleEl = document.getElementById('messageTitle');
+    const textEl = document.getElementById('messageText');
+    
+    if (type === 'success') {
+        icon.innerHTML = '<i class="fas fa-check-circle" style="color: #10b981;"></i>';
+    } else {
+        icon.innerHTML = '<i class="fas fa-times-circle" style="color: #ef4444;"></i>';
+    }
+    
+    titleEl.textContent = title;
+    textEl.textContent = message;
+    modal.style.display = 'flex';
+}
+
+function closeMessageModal() {
+    document.getElementById('messageModal').style.display = 'none';
+}
+
+// Close report modal when clicking outside
+window.addEventListener('click', function(event) {
+    const reportModal = document.getElementById('reportModal');
+    const messageModal = document.getElementById('messageModal');
+    if (event.target === reportModal) {
+        closeReportModal();
+    }
+    if (event.target === messageModal) {
+        closeMessageModal();
+    }
+});
+
+// Handle Report Form Submission
+document.getElementById('reportForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const resourceId = document.getElementById('reportResourceId').value;
+    const reason = document.getElementById('reportReason').value.trim();
+    
+    if (!reason) {
+        showMessageModal('error', 'Error', 'Please provide a reason for reporting.');
+        return;
+    }
+    
+    // Show loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Submitting...</span>';
+    submitBtn.disabled = true;
+    
+    fetch('<?=ROOT?>/superadmin/resourcemoderation/report', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'resource_id=' + encodeURIComponent(resourceId) + '&reason=' + encodeURIComponent(reason)
+    })
+    .then(response => response.json())
+    .then(data => {
+        closeReportModal();
+        if (data.success) {
+            showMessageModal('success', 'Report Submitted', data.message || 'Thank you for reporting this resource. We will review it shortly.');
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        } else {
+            showMessageModal('error', 'Error', data.message || 'Failed to submit report. Please try again.');
+        }
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        closeReportModal();
+        showMessageModal('error', 'Error', 'An error occurred. Please try again later.');
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+});
+
 </script>
+

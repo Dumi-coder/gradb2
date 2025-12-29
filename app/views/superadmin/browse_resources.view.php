@@ -1,16 +1,15 @@
 <?php 
 $page_title = "Browse Resources";
 $page_subtitle = "Discover study materials and resources";
-require '../app/views/partials/alumni_header.php'; 
+require '../app/views/partials/superadmin_header.php'; 
 ?>
 
 <!-- Page-specific CSS -->
 <link rel="stylesheet" href="<?=ROOT?>/assets/css/resources.css">
 
-<body class="alumni-dashboard">
 <div class="dashboard-container">
     <!-- sidebar -->
-    <?php require '../app/views/partials/alumni_sidebar.php'; ?>
+    <?php require '../app/views/partials/superadmin_sidebar.php'; ?>
       <!-- Main Content Area -->
       <main class="main-content">
         <!-- Header Section -->
@@ -29,27 +28,27 @@ require '../app/views/partials/alumni_header.php';
 
           <!-- Category Navigation -->
           <div class="categories-nav" style="margin-bottom: 25px; display: flex; gap: 10px; flex-wrap: wrap;">
-            <a href="<?=ROOT?>/alumni/resources/browse<?= !empty($search) ? '?search=' . urlencode($search) : '' ?>" 
+            <a href="<?=ROOT?>/superadmin/resourcemoderation/browse<?= !empty($search) ? '?search=' . urlencode($search) : '' ?>" 
                class="btn <?= empty($category) ? 'btn-primary' : 'btn-outline' ?> btn-sm">
               <i class="fas fa-th"></i>
               <span>All</span>
             </a>
-            <a href="<?=ROOT?>/alumni/resources/browse?category=lecture-notes<?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" 
+            <a href="<?=ROOT?>/superadmin/resourcemoderation/browse?category=lecture-notes<?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" 
                class="btn <?= $category === 'lecture-notes' ? 'btn-primary' : 'btn-outline' ?> btn-sm">
               <i class="fas fa-file-alt"></i>
               <span>Lecture Notes</span>
             </a>
-            <a href="<?=ROOT?>/alumni/resources/browse?category=assignments<?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" 
+            <a href="<?=ROOT?>/superadmin/resourcemoderation/browse?category=assignments<?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" 
                class="btn <?= $category === 'assignments' ? 'btn-primary' : 'btn-outline' ?> btn-sm">
               <i class="fas fa-tasks"></i>
               <span>Exercises</span>
             </a>
-            <a href="<?=ROOT?>/alumni/resources/browse?category=textbooks<?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" 
+            <a href="<?=ROOT?>/superadmin/resourcemoderation/browse?category=textbooks<?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" 
                class="btn <?= $category === 'textbooks' ? 'btn-primary' : 'btn-outline' ?> btn-sm">
               <i class="fas fa-book"></i>
               <span>Textbooks</span>
             </a>
-            <a href="<?=ROOT?>/alumni/resources/browse?category=software<?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" 
+            <a href="<?=ROOT?>/superadmin/resourcemoderation/browse?category=software<?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" 
                class="btn <?= $category === 'software' ? 'btn-primary' : 'btn-outline' ?> btn-sm">
               <i class="fas fa-code"></i>
               <span>Software & Tools</span>
@@ -58,7 +57,7 @@ require '../app/views/partials/alumni_header.php';
 
           <!-- Search Bar -->
           <div class="search-bar-container" style="margin-bottom: 30px;">
-            <form method="GET" action="<?=ROOT?>/alumni/resources/browse" style="display: flex; gap: 10px; max-width: 100%;">
+            <form method="GET" action="<?=ROOT?>/superadmin/resourcemoderation/browse" style="display: flex; gap: 10px; max-width: 100%;">
               <?php if (!empty($category)): ?>
                 <input type="hidden" name="category" value="<?= htmlspecialchars($category) ?>">
               <?php endif; ?>
@@ -77,7 +76,7 @@ require '../app/views/partials/alumni_header.php';
                 <i class="fas fa-search"></i>
                 <span>Search</span>
               </button>
-              <a href="<?=ROOT?>/alumni/resources/index" class="btn btn-outline">
+              <a href="<?=ROOT?>/superadmin/resourcemoderation/index" class="btn btn-outline">
                 <i class="fas fa-arrow-left"></i>
                 <span>Back to Resources</span>
               </a>
@@ -138,16 +137,15 @@ require '../app/views/partials/alumni_header.php';
                         }
                       ?>
                       <span class="resource-date"><?= $timeAgo ?></span>
-                      <span class="resource-size"><?= isset($resource->file_size) ? number_format(($resource->file_size/1024/1024), 1) . ' MB' : '' ?></span>
                       <span class="resource-downloads"><i class="fas fa-download"></i> <?= (int)($resource->downloads ?? 0) ?> downloads</span>
                     </div>
                   </div>
                   <div class="resource-actions">
-                    <a class="btn btn-outline btn-sm" href="<?=ROOT?>/alumni/resources/download?id=<?= $resource->resource_id ?? '' ?>" target="_blank" rel="noopener">
+                    <a class="btn btn-outline btn-sm" href="<?=ROOT?>/superadmin/resourcemoderation/download?id=<?= $resource->resource_id ?? '' ?>" target="_blank" rel="noopener">
                       <i class="fas fa-download"></i>
                       <span>Download</span>
                     </a>
-                    <button class="btn btn-outline btn-sm" style="transition: all 0.3s;" onmouseover="this.style.borderColor='#dc2626'; this.style.color='#dc2626'" onmouseout="this.style.borderColor=''; this.style.color=''" onclick="openReportModal(<?= $resource->resource_id ?? 0 ?>, '<?= htmlspecialchars($resource->title ?? '', ENT_QUOTES) ?>')">
+                    <button class="btn btn-outline btn-sm" onclick="openReportModal(<?= $resource->resource_id ?? 0 ?>, '<?= htmlspecialchars(addslashes($resource->title ?? ''), ENT_QUOTES) ?>')" style="color: #dc2626; border-color: #dc2626;" onmouseover="this.style.background='#dc2626'; this.style.color='white';" onmouseout="this.style.background='transparent'; this.style.color='#dc2626';">
                       <i class="fas fa-flag"></i>
                       <span>Report</span>
                     </button>
@@ -176,7 +174,7 @@ require '../app/views/partials/alumni_header.php';
 
     <!-- Report Modal -->
     <div id="reportModal" class="modal" style="display: none;">
-      <div class="modal-content">
+      <div class="modal-content" style="padding: 25px;">
         <div class="modal-header">
           <h2 class="modal-title">
             <i class="fas fa-flag" style="color: #dc2626;"></i>
@@ -215,7 +213,7 @@ require '../app/views/partials/alumni_header.php';
 
     <!-- Success/Error Modal -->
     <div id="messageModal" class="modal" style="display: none;">
-      <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-content" style="max-width: 400px; padding: 25px;">
         <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
           <button class="modal-close" onclick="closeMessageModal()">
             <i class="fas fa-times"></i>
@@ -235,92 +233,102 @@ require '../app/views/partials/alumni_header.php';
     <!-- JS -->
     <script>
       window.APP_ROOT = '<?=ROOT?>';
-      
+
+      // Report Modal Functions
       function openReportModal(resourceId, resourceTitle) {
-        document.getElementById('reportResourceId').value = resourceId;
-        document.getElementById('reportResourceTitle').textContent = resourceTitle;
-        document.getElementById('reportReason').value = '';
-        document.getElementById('reportModal').style.display = 'flex';
+          document.getElementById('reportResourceId').value = resourceId;
+          document.getElementById('reportResourceTitle').textContent = resourceTitle;
+          document.getElementById('reportReason').value = '';
+          document.getElementById('reportModal').style.display = 'flex';
       }
 
       function closeReportModal() {
-        document.getElementById('reportModal').style.display = 'none';
+          document.getElementById('reportModal').style.display = 'none';
       }
 
-      function showMessage(type, title, message, reloadOnClose = false) {
-        const modal = document.getElementById('messageModal');
-        const icon = document.getElementById('messageIcon');
-        const titleEl = document.getElementById('messageTitle');
-        const textEl = document.getElementById('messageText');
-        
-        if (type === 'success') {
-          icon.innerHTML = '<i class="fas fa-check-circle" style="color: #10b981;"></i>';
-        } else {
-          icon.innerHTML = '<i class="fas fa-exclamation-circle" style="color: #ef4444;"></i>';
-        }
-        
-        titleEl.textContent = title;
-        textEl.textContent = message;
-        modal.style.display = 'flex';
-        modal.dataset.reloadOnClose = reloadOnClose;
+      // Message Modal Functions
+      function showMessageModal(type, title, message) {
+          const modal = document.getElementById('messageModal');
+          const icon = document.getElementById('messageIcon');
+          const titleEl = document.getElementById('messageTitle');
+          const textEl = document.getElementById('messageText');
+          
+          if (type === 'success') {
+              icon.innerHTML = '<i class="fas fa-check-circle" style="color: #10b981;"></i>';
+          } else {
+              icon.innerHTML = '<i class="fas fa-times-circle" style="color: #ef4444;"></i>';
+          }
+          
+          titleEl.textContent = title;
+          textEl.textContent = message;
+          modal.style.display = 'flex';
       }
 
       function closeMessageModal() {
-        const modal = document.getElementById('messageModal');
-        modal.style.display = 'none';
-        if (modal.dataset.reloadOnClose === 'true') {
-          location.reload();
-        }
+          document.getElementById('messageModal').style.display = 'none';
       }
 
-      document.getElementById('reportForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const resourceId = document.getElementById('reportResourceId').value;
-        const reason = document.getElementById('reportReason').value.trim();
-
-        if (!reason) {
-          showMessage('error', 'Missing Information', 'Please provide a reason for reporting this resource.');
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append('resourceId', resourceId);
-        formData.append('reason', reason);
-
-        fetch('<?=ROOT?>/alumni/resources/report', {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            closeReportModal();
-            showMessage('success', 'Report Submitted', 'Thank you for helping maintain quality. Your report has been submitted successfully.', true);
-          } else {
-            showMessage('error', 'Submission Failed', data.message || 'Failed to submit report. Please try again.');
+      // Close modals when clicking outside
+      window.addEventListener('click', function(event) {
+          const reportModal = document.getElementById('reportModal');
+          const messageModal = document.getElementById('messageModal');
+          if (event.target === reportModal) {
+              closeReportModal();
           }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          showMessage('error', 'Error Occurred', 'An unexpected error occurred while submitting the report. Please try again.');
-        });
+          if (event.target === messageModal) {
+              closeMessageModal();
+          }
       });
 
-      // Close report modal when clicking outside
-      document.getElementById('reportModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-          closeReportModal();
-        }
-      });
-
-      // Close message modal when clicking outside
-      document.getElementById('messageModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-          closeMessageModal();
-        }
+      // Handle Report Form Submission
+      document.getElementById('reportForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          const resourceId = document.getElementById('reportResourceId').value;
+          const reason = document.getElementById('reportReason').value.trim();
+          
+          if (!reason) {
+              showMessageModal('error', 'Error', 'Please provide a reason for reporting.');
+              return;
+          }
+          
+          // Show loading state
+          const submitBtn = this.querySelector('button[type="submit"]');
+          const originalText = submitBtn.innerHTML;
+          submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Submitting...</span>';
+          submitBtn.disabled = true;
+          
+          fetch('<?=ROOT?>/superadmin/resourcemoderation/report', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: 'resource_id=' + encodeURIComponent(resourceId) + '&reason=' + encodeURIComponent(reason)
+          })
+          .then(response => response.json())
+          .then(data => {
+              closeReportModal();
+              if (data.success) {
+                  showMessageModal('success', 'Report Submitted', data.message || 'Thank you for reporting this resource. We will review it shortly.');
+                  setTimeout(() => {
+                      location.reload();
+                  }, 2000);
+              } else {
+                  showMessageModal('error', 'Error', data.message || 'Failed to submit report. Please try again.');
+              }
+              submitBtn.innerHTML = originalText;
+              submitBtn.disabled = false;
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              closeReportModal();
+              showMessageModal('error', 'Error', 'An error occurred. Please try again later.');
+              submitBtn.innerHTML = originalText;
+              submitBtn.disabled = false;
+          });
       });
     </script>
     <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
   </body>
 </html>
+
