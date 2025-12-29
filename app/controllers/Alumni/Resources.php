@@ -14,7 +14,62 @@ class Resources extends Controller
     $resourceModel = new SharedResource();
     $resources = $resourceModel->where(['user_id' => $_SESSION['user_id']]);
 
-        $this->view('alumni/resources', ['my_resources' => $resources]);
+        // Get current user's faculty_id
+        $alumni = new Alumni();
+        $alumniProfile = $alumni->getalumniProfile($_SESSION['alumni_id'] ?? '');
+        $user_faculty_id = $alumniProfile->faculty_id ?? null;
+
+        // Fetch recent resources visible to this user
+        $recent_resources = [];
+        $category_counts = [];
+        $stats = ['total_resources' => 0, 'my_resources' => 0, 'my_downloads' => 0];
+        if ($user_faculty_id) {
+            $recent_resources = $resourceModel->getRecentResourcesByFaculty($user_faculty_id);
+            $category_counts = $resourceModel->getCategoryCounts($user_faculty_id);
+            $stats = $resourceModel->getUserStats($_SESSION['user_id'], $user_faculty_id);
+        }
+
+        $this->view('alumni/resources', [
+            'my_resources' => $resources,
+            'recent_resources' => $recent_resources,
+            'category_counts' => $category_counts,
+            'stats' => $stats
+        ]);
+    }
+
+    // Handle browse page with category and search
+    public function browse()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'alumni') {
+            redirect('alumni/auth');
+        }
+
+        // Get current user's faculty_id
+        $alumni = new Alumni();
+        $alumniProfile = $alumni->getalumniProfile($_SESSION['alumni_id'] ?? '');
+        $user_faculty_id = $alumniProfile->faculty_id ?? null;
+
+        // Get filter parameters
+        $category = isset($_GET['category']) ? trim($_GET['category']) : '';
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+        // Fetch filtered resources
+        $resourceModel = new SharedResource();
+        $resources = [];
+        if ($user_faculty_id) {
+            $result = $resourceModel->browseResources($user_faculty_id, $category, $search);
+            $resources = is_array($result) ? $result : [];
+        }
+
+        $this->view('alumni/browse_resources', [
+            'resources' => $resources,
+            'category' => $category,
+            'search' => $search
+        ]);
     }
 
     // Handle AJAX upload
@@ -40,6 +95,7 @@ class Resources extends Controller
         $title = trim($_POST['resourceTitle'] ?? '');
         $category = trim($_POST['resourceCategory'] ?? '');
         $description = trim($_POST['resourceDescription'] ?? '');
+        $faculty_input = trim($_POST['resourceFaculty'] ?? '');
 
         if ($title === '' || strlen($title) < 3) {
             echo json_encode(['success' => false, 'message' => 'Please provide a valid title']);
@@ -47,6 +103,10 @@ class Resources extends Controller
         }
         if ($category === '') {
             echo json_encode(['success' => false, 'message' => 'Please select a category']);
+            return;
+        }
+        if ($faculty_input === '') {
+            echo json_encode(['success' => false, 'message' => 'Please select visibility']);
             return;
         }
         if (!isset($_FILES['resourceFile'])) {
@@ -102,6 +162,16 @@ class Resources extends Controller
         // Build public URL path
         $publicPath = ROOT . '/assets/uploads/resources/' . $newName;
 
+        // Map faculty selection to faculty_id
+        $faculty_id = 999; // Default for "all-faculties"
+        if ($faculty_input !== 'all-faculties') {
+            $faculty_model = new Faculty();
+            $faculty_record = $faculty_model->first(['faculty_name' => $faculty_input]);
+            if ($faculty_record) {
+                $faculty_id = $faculty_record->faculty_id;
+            }
+        }
+
         // Save to DB
         $resourceModel = new SharedResource();
         $data = [
@@ -116,6 +186,7 @@ class Resources extends Controller
             'downloads' => 0,
             'likes' => 0,
             'status' => 'approved',
+            'faculty_id' => $faculty_id,
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ];
@@ -171,6 +242,7 @@ class Resources extends Controller
         $title = trim($_POST['resourceTitle'] ?? '');
         $category = trim($_POST['resourceCategory'] ?? '');
         $description = trim($_POST['resourceDescription'] ?? '');
+        $faculty_input = trim($_POST['resourceFaculty'] ?? '');
 
         if ($title === '' || strlen($title) < 3) {
             echo json_encode(['success' => false, 'message' => 'Please provide a valid title']);
@@ -180,11 +252,26 @@ class Resources extends Controller
             echo json_encode(['success' => false, 'message' => 'Please select a category']);
             return;
         }
+        if ($faculty_input === '') {
+            echo json_encode(['success' => false, 'message' => 'Please select visibility']);
+            return;
+        }
+
+        // Map faculty selection to faculty_id
+        $faculty_id = 999; // Default for "all-faculties"
+        if ($faculty_input !== 'all-faculties') {
+            $faculty_model = new Faculty();
+            $faculty_record = $faculty_model->first(['faculty_name' => $faculty_input]);
+            if ($faculty_record) {
+                $faculty_id = $faculty_record->faculty_id;
+            }
+        }
 
         $update = [
             'title' => $title,
             'category' => $category,
             'description' => $description,
+            'faculty_id' => $faculty_id,
             'updated_at' => date('Y-m-d H:i:s'),
         ];
 
@@ -280,5 +367,90 @@ class Resources extends Controller
         $resourceModel->delete($resourceId, 'resource_id');
         
         echo json_encode(['success' => true, 'message' => 'Resource deleted successfully']);
+    }
+
+    // Handle download tracking
+    public function download()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'alumni') {
+            redirect('alumni/auth');
+        }
+
+        // Get resource ID from URL parameter
+        $resourceId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        
+        if ($resourceId <= 0) {
+            redirect('alumni/resources');
+            return;
+        }
+
+        $resourceModel = new SharedResource();
+        $resource = $resourceModel->first(['resource_id' => $resourceId]);
+        
+        if (!$resource) {
+            redirect('alumni/resources');
+            return;
+        }
+
+        // Increment download count
+        $resourceModel->incrementDownloads($resourceId);
+
+        // Redirect to the actual file
+        header('Location: ' . $resource->file_path);
+        exit();
+    }
+
+    // Handle resource reporting
+    public function report()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        header('Content-Type: application/json');
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'alumni') {
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            return;
+        }
+
+        $resourceId = (int)($_POST['resourceId'] ?? 0);
+        $reason = trim($_POST['reason'] ?? '');
+
+        if ($resourceId <= 0) {
+            echo json_encode(['success' => false, 'message' => 'Invalid resource ID']);
+            return;
+        }
+
+        if (empty($reason)) {
+            echo json_encode(['success' => false, 'message' => 'Please provide a reason']);
+            return;
+        }
+
+        $resourceModel = new SharedResource();
+        $resource = $resourceModel->first(['resource_id' => $resourceId]);
+
+        if (!$resource) {
+            echo json_encode(['success' => false, 'message' => 'Resource not found']);
+            return;
+        }
+
+        // Update resource as reported
+        $success = $resourceModel->reportResource($resourceId, $reason);
+
+        if ($success) {
+            echo json_encode(['success' => true, 'message' => 'Resource reported successfully']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to report resource']);
+        }
     }
 }
