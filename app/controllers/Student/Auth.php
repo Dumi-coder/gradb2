@@ -246,6 +246,7 @@ class Auth extends Controller
                     $_SESSION['role'] = 'student';
                     $_SESSION['student_id'] = $student_id;
                     $_SESSION['name'] = $student_record->name;
+                    $_SESSION['profile_picture'] = $student_record->profile_photo_url ?? null;
                     
                     // Redirect to dashboard
                     redirect('student/dashboard');

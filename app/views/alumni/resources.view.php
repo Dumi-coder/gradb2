@@ -7,7 +7,6 @@ require '../app/views/partials/alumni_header.php';
 <!-- Page-specific CSS -->
 <link rel="stylesheet" href="<?=ROOT?>/assets/css/resources.css">
 
-<body class="alumni-dashboard">
 <div class="dashboard-container">
     <!-- sidebar -->
     <?php require '../app/views/partials/alumni_sidebar.php'; ?>

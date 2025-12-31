@@ -68,28 +68,6 @@ require '../app/views/partials/student_header.php';
                         </div>
 
                         <div class="form-group">
-                            <label for="faculty" class="form-label">Faculty *</label>
-                            <select
-                                name="faculty" 
-                                id="faculty"
-                                class="form-input <?= isset($errors['faculty']) ? 'error' : '' ?>"
-                                required
-                            >
-                                <option value="">Select Faculty</option>
-                                <option value="UCSC" <?= $profile->faculty == 'UCSC' ? 'selected' : '' ?>>UCSC</option>
-                                <option value="FOS" <?= $profile->faculty == 'FOS' ? 'selected' : '' ?>>FOS</option>
-                                <option value="FOM" <?= $profile->faculty == 'FOM' ? 'selected' : '' ?>>FOM</option>
-                                <option value="FOMF" <?= $profile->faculty == 'FOMF' ? 'selected' : '' ?>>FOMF</option>
-                                <option value="FOL" <?= $profile->faculty == 'FOL' ? 'selected' : '' ?>>FOL</option>
-                                <option value="FOE" <?= $profile->faculty == 'FOE' ? 'selected' : '' ?>>FOE</option>
-                                <option value="FOT" <?= $profile->faculty == 'FOT' ? 'selected' : '' ?>>FOT</option>
-                            </select>
-                            <?php if (isset($errors['faculty'])): ?>
-                                <span class="error-message"><?= esc($errors['faculty']) ?></span>
-                            <?php endif; ?>
-                        </div>
-
-                        <div class="form-group">
                             <label for="academic_year" class="form-label">Academic Year *</label>
                             <select 
                                 id="academic_year"

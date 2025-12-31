@@ -6,31 +6,6 @@ require '../app/views/partials/alumni_header.php';
 
 <!-- Page-specific CSS -->
 <link rel="stylesheet" href="<?=ROOT?>/assets/css/fundraising.css">
-</head>
-
-  <body class="alumni-dashboard">
-    <!-- Top Navbar -->
-    <header class="dashboard-header">
-      <div class="container">
-        <div class="header-content">
-          <div class="welcome-section">
-            <h1 class="welcome-text">Fundraising</h1>
-            <p class="alumni-role">Support student initiatives and community campaigns</p>
-          </div>
-          
-          <div class="header-actions">
-            <button class="btn btn-outline notification-btn" aria-label="Notifications">
-              <i class="fas fa-bell"></i>
-              <span class="notification-badge">3</span>
-            </button>
-            <a href="<?=ROOT?>/alumni/logout"><button class="btn btn-primary logout-btn">
-              <i class="fas fa-sign-out-alt"></i>
-              Logout
-            </button></a>
-          </div>
-        </div>
-      </div>
-    </header>
 
     <div class="dashboard-container">
     <!-- sidebar -->

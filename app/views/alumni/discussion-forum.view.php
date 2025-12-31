@@ -7,30 +7,6 @@ require '../app/views/partials/alumni_header.php';
 <!-- Page-specific CSS -->
 <link rel="stylesheet" href="<?=ROOT?>/assets/css/discussion-forum.css">
 
-    
-  </head>
-
-  <body class="alumni-dashboard">
-    <!-- Top Navbar -->
-    <header class="dashboard-header">
-      <div class="container">
-        <div class="header-content">
-          <div class="welcome-section">
-            <h1 class="welcome-text">Discussion Forums</h1>
-            <p class="header-subtitle">Engage with fellow alumni in forums — ask questions, share experiences, and provide mentorship.</p>
-          </div>
-          
-          <div class="header-actions">
-            <button class="btn btn-outline notification-btn" aria-label="Notifications">
-              <i class="fas fa-bell"></i>
-              <span class="notification-badge">3</span>
-            </button>
-            <a href="<?=ROOT?>/alumni/logout" class="btn btn-primary logout-btn">Logout</a>
-          </div>
-        </div>
-      </div>
-    </header>
-
     <div class="dashboard-container">
      <!-- sidebar -->
     <?php require '../app/views/partials/alumni_sidebar.php'; ?>

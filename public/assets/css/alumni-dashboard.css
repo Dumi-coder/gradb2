@@ -30,7 +30,7 @@
 .header-actions {
     display: flex;
     align-items: center;
-  gap: var(--spacing-sm);
+    gap: var(--spacing-sm);
 }
 
 .notification-btn {
@@ -67,6 +67,18 @@
   font-size: 0.75rem;
   font-weight: 600;
   border: 2px solid var(--background);
+}
+
+/* Profile Dropdown Styling for Alumni */
+.alumni-dashboard .profile-avatar,
+.alumni-dashboard .profile-avatar-placeholder {
+  width: 48px;
+  height: 48px;
+}
+
+.alumni-dashboard .profile-dropdown-btn {
+  width: 48px;
+  height: 48px;
 }
 
 /* Logout button styles are now in buttons.css */

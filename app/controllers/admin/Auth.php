@@ -55,6 +55,11 @@ class Auth extends Controller
                     $_SESSION['role'] = 'faculty_admin';
                     $_SESSION['name'] = $admin->name;
                     
+                    // Get profile picture from faculty_admins table
+                    $facultyAdmin = new FacultyAdmin();
+                    $adminProfile = $facultyAdmin->getFacultyAdminProfile($admin->user_id);
+                    $_SESSION['profile_picture'] = $adminProfile->picture_path ?? null;
+                    
                     // Redirect to admin dashboard
                     redirect('admin/dashboard');
                     return;

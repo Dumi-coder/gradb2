@@ -55,6 +55,11 @@ class Auth extends Controller
                     $_SESSION['role'] = 'super_admin';
                     $_SESSION['name'] = $superadmin->name;
                     
+                    // Get profile picture from super_admins table
+                    $superAdminModel = new SuperAdmin();
+                    $adminProfile = $superAdminModel->getSuperAdminProfile($superadmin->user_id);
+                    $_SESSION['profile_picture'] = $adminProfile->picture_path ?? null;
+                    
                     // Redirect to superadmin dashboard
                     redirect('superadmin/dashboard');
                     return;

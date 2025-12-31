@@ -69,7 +69,7 @@ class Student
 
     public function getStudentWithUser($student_id)
     {
-        $query = "SELECT s.*, u.name, u.email, u.password, u.role, u.created_at, u.updated_at
+        $query = "SELECT s.*, u.name, u.email, u.password, u.role, u.created_at, u.updated_at, s.profile_photo_url
                   FROM $this->table s
                   JOIN users u ON s.user_id = u.user_id
                   WHERE s.student_id = :student_id

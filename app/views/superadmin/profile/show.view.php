@@ -22,14 +22,21 @@
             <div class="profile-card">
                 <div class="profile-info">
                     <div class="profile-avatar">
-                        <span class="avatar-initials"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
+                        <?php if (!empty($profile->picture_path)): ?>
+                            <img src="<?= esc($profile->picture_path) ?>" alt="Profile Picture">
+                        <?php else: ?>
+                            <span class="avatar-initials"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
+                        <?php endif; ?>
                     </div>
                     <div class="profile-details">
                         <h3><?= esc($profile->name) ?></h3>
                         <p>Super Administrator</p>
-                        <p>Admin ID: FAC<?= str_pad($profile->user_id, 3, '0', STR_PAD_LEFT) ?></p>
+                        <p>Admin ID: SA<?= str_pad($profile->super_admin_id ?? $profile->user_id, 3, '0', STR_PAD_LEFT) ?></p>
                         <div class="profile-meta">
                             <p><strong>Email:</strong> <?= esc($profile->email) ?></p>
+                            <?php if (!empty($profile->admin_level)): ?>
+                                <p><strong>Admin Level:</strong> <?= esc($profile->admin_level) ?></p>
+                            <?php endif; ?>
                             <p><strong>Role:</strong> 
                                 <span class="status-badge status-active">
                                     <i class="fas fa-shield-alt"></i> Super Admin
@@ -127,7 +134,11 @@
                         </div>
                     </div>
                     <div class="bio-content">
-                        <p>Experienced Super Administrator with a strong background in educational technology and student services. Committed to fostering meaningful connections between students and alumni while maintaining the highest standards of platform integrity and user experience.</p>
+                        <?php if (!empty($profile->bio)): ?>
+                            <p><?= esc($profile->bio) ?></p>
+                        <?php else: ?>
+                            <p>No bio added yet. <a href="<?=ROOT?>/superadmin/profile?action=edit">Edit your profile</a> to add a professional bio.</p>
+                        <?php endif; ?>
                     </div>
                 </div>
                 
@@ -199,8 +210,8 @@
                 </a>
                 <?php endif; ?>
                 
-                <?php if (!empty($profile->website_url)): ?>
-                <a href="<?= esc($profile->website_url) ?>" target="_blank" class="social-link-card">
+                <?php if (!empty($profile->personalweb_url)): ?>
+                <a href="<?= esc($profile->personalweb_url) ?>" target="_blank" class="social-link-card">
                     <div class="social-link-icon website">
                         <i class="fas fa-globe"></i>
                     </div>
@@ -208,7 +219,7 @@
                 </a>
                 <?php endif; ?>
                 
-                <?php if (empty($profile->linkedin_url) && empty($profile->github_url) && empty($profile->twitter_url) && empty($profile->website_url)): ?>
+                <?php if (empty($profile->linkedin_url) && empty($profile->github_url) && empty($profile->twitter_url) && empty($profile->personalweb_url)): ?>
                 <div class="no-social-links">
                     <p>No social media links added yet. <a href="<?=ROOT?>/superadmin/profile?action=edit">Edit your profile</a> to add social media links.</p>
                 </div>

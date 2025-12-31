@@ -73,7 +73,42 @@
                         <i class="fas fa-bell" style="font-size: var(--font-md);"></i>
                         <span class="notification-badge">3</span>
                     </button>
-                    <button class="btn btn-primary logout-btn" onclick="logout()">Logout</button>
+                    
+                    <!-- Profile Dropdown -->
+                    <div class="profile-dropdown">
+                        <button class="profile-dropdown-btn" onclick="toggleProfileDropdown()">
+                            <?php 
+                            $profile_pic = $_SESSION['profile_picture'] ?? null;
+                            if ($profile_pic): 
+                            ?>
+                                <img src="<?= esc($profile_pic) ?>" alt="Profile" class="profile-avatar">
+                            <?php else: ?>
+                                <div class="profile-avatar-placeholder">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            <?php endif; ?>
+                        </button>
+                        <div class="profile-dropdown-menu" id="profileDropdownMenu">
+                            <div class="dropdown-header">
+                                <span class="dropdown-name"><?= esc($_SESSION['name'] ?? 'Admin') ?></span>
+                                <span class="dropdown-role">Faculty Admin</span>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="<?=ROOT?>/admin/profile" class="dropdown-item">
+                                <i class="fas fa-user"></i>
+                                <span>My Profile</span>
+                            </a>
+                            <a href="<?=ROOT?>/admin/profile/edit" class="dropdown-item">
+                                <i class="fas fa-edit"></i>
+                                <span>Edit Profile</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item dropdown-logout" onclick="logout(); return false;">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,5 +1,8 @@
 <?php require '../app/views/partials/admin_header.php'; ?>
 
+<!-- Profile CSS for avatar styling -->
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/profile.css">
+
 <div class="dashboard-container">
     <!-- Sidebar -->
     <?php require '../app/views/partials/admin_sidebar.php'; ?>
@@ -11,8 +14,18 @@
             <h2 class="section-title">Faculty Admin Profile</h2>
             <div class="profile-card">
                 <div class="profile-info">
-                    <div class="profile-avatar">
-                        <span class="avatar-initials"><?= strtoupper(substr($_SESSION['name'] ?? 'SA', 0, 2)) ?></span>
+                    <div class="profile-avatar-container">
+                        <div class="profile-avatar">
+                            <?php if (!empty($_SESSION['profile_picture'])): ?>
+                                <img src="<?= esc($_SESSION['profile_picture']) ?>" 
+                                     alt="Profile Picture" 
+                                     id="profileImage"
+                                     onerror="this.style.display='none'; document.getElementById('avatarInitials').style.display='inline-block';">
+                                <span id="avatarInitials" class="avatar-initials" style="display:none;"><?= strtoupper(substr($_SESSION['name'] ?? 'FA', 0, 2)) ?></span>
+                            <?php else: ?>
+                                <span id="avatarInitials" class="avatar-initials"><?= strtoupper(substr($_SESSION['name'] ?? 'FA', 0, 2)) ?></span>
+                            <?php endif; ?>
+                        </div>
                     </div>
                     <div class="profile-details">
                         <h3><?= esc($_SESSION['name'] ?? 'sasa') ?></h3>

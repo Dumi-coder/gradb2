@@ -105,7 +105,7 @@ class Alumni
      */
     public function getalumniWithUser($alumni_id)
     {
-        $query = "SELECT a.*, u.name, u.email, u.password, u.role, u.created_at, u.updated_at
+        $query = "SELECT a.*, u.name, u.email, u.password, u.role, u.created_at, u.updated_at, a.profile_photo_url
                   FROM $this->table a
                   JOIN users u ON a.user_id = u.user_id
                   WHERE a.alumni_id = :alumni_id

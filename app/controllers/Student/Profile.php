@@ -79,14 +79,16 @@ class Profile extends Controller
     // Get form data
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
-    $faculty = trim($_POST['faculty'] ?? '');
     $academic_year = trim($_POST['academic_year'] ?? '');
-    $student_id = trim($_POST['student_id'] ?? '');
     $mobile = trim($_POST['mobile'] ?? '');
     $bio = trim($_POST['bio'] ?? '');
     $linkedin_url = trim($_POST['linkedin_url'] ?? '');
     $github_url = trim($_POST['github_url'] ?? '');
     $profile_picture = $_FILES['profile_picture'] ?? null;
+    
+    // Use current profile values for faculty and student_id (not editable)
+    $faculty = $current_profile->faculty;
+    $student_id = $current_profile->student_id;
 
     // Validation
     if (empty($name)) {
@@ -95,14 +97,8 @@ class Profile extends Controller
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = "Valid email is required";
     }
-    if (empty($faculty)) {
-        $errors['faculty'] = "Faculty is required";
-    }
     if (empty($academic_year) || !is_numeric($academic_year) || $academic_year < 1 || $academic_year > 5) {
         $errors['academic_year'] = "Academic year must be between 1 and 5";
-    }
-    if (empty($student_id)) {
-        $errors['student_id'] = "Student ID is required";
     }
     if (!empty($mobile) && !preg_match('/^[7][0-9]{8}$/', $mobile)) {
         $errors['mobile'] = "Mobile number must be 9 digits starting with 7";
@@ -111,25 +107,14 @@ class Profile extends Controller
         $errors['bio'] = "Bio must be less than 1000 characters";
     }
 
-    // Validate faculty exists
-    if (empty($errors['faculty'])) {
-        $faculty_model = new Faculty();
-        $faculty_record = $faculty_model->first(['faculty_name' => $faculty]);
-        if (!$faculty_record) {
-            $errors['faculty'] = "Invalid faculty selected";
-        }
-    }
+    // Get faculty record from current profile
+    $faculty_model = new Faculty();
+    $faculty_record = $faculty_model->first(['faculty_id' => $current_profile->faculty_id]);
 
-    // Validate student_id and email uniqueness (exclude current student)
+    // Validate email uniqueness (exclude current student)
     $student = new Student();
     $user = new User();
 
-    if ($student_id !== $current_profile->student_id) {
-        $existing_student = $student->first(['student_id' => $student_id], ['student_id' => $current_profile->student_id]);
-        if ($existing_student) {
-            $errors['student_id'] = "This Student ID is already in use by another student";
-        }
-    }
     if ($email !== $current_profile->email) {
         $existing_user = $user->first(['email' => $email], ['user_id' => $current_profile->user_id]);
         if ($existing_user) {
