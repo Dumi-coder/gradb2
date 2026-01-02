@@ -6,7 +6,7 @@
 class PasswordValidator {
     constructor() {
         this.requirements = {
-            minLength: 8,
+            minLength: 10,
             hasLetter: /[a-zA-Z]/,
             hasNumber: /[0-9]/,
             hasSpecial: /[!@#$%^&*()_+\-=\[\]{}|;':",./<>?]/
@@ -88,19 +88,19 @@ class PasswordValidator {
             <div class="strength-text">Enter a password</div>
             <div class="requirements-list">
                 <div class="requirement" data-check="length">
-                    <span class="check-icon">✗</span>
-                    <span class="requirement-text">At least 8 characters</span>
+                    <span class="check-icon"></span>
+                    <span class="requirement-text">At least 10 characters</span>
                 </div>
                 <div class="requirement" data-check="letter">
-                    <span class="check-icon">✗</span>
+                    <span class="check-icon"></span>
                     <span class="requirement-text">At least one letter</span>
                 </div>
                 <div class="requirement" data-check="number">
-                    <span class="check-icon">✗</span>
+                    <span class="check-icon"></span>
                     <span class="requirement-text">At least one number</span>
                 </div>
                 <div class="requirement" data-check="special">
-                    <span class="check-icon">✗</span>
+                    <span class="check-icon"></span>
                     <span class="requirement-text">At least one special character</span>
                 </div>
             </div>

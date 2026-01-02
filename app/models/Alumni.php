@@ -244,4 +244,96 @@ class Alumni
         error_log("alumni update result: " . ($result ? 'success' : 'failed'));
         return $result;
     }
+
+    // public function existsInRecords($alumni_id, $faculty = null)
+    // {
+    //     $alumni_id = trim($alumni_id);
+    //     if ($alumni_id === '') return false;
+
+    //     // if faculty passed as name (not numeric), try to resolve to id
+    //     if ($faculty !== null && !is_numeric($faculty)) {
+    //         try {
+    //             $facModel = new Faculty();
+    //             $facRec = $facModel->first(['faculty_name' => trim($faculty)]);
+    //             if ($facRec) {
+    //                 // adjust property name if your faculty model uses different column name
+    //                 $faculty = $facRec->id ?? $facRec->faculty_id ?? null;
+    //             } else {
+    //                 $faculty = null;
+    //             }
+    //         } catch (\Throwable $e) {
+    //             error_log("[Alumni::existsInRecords] faculty lookup error: ".$e->getMessage());
+    //             $faculty = null;
+    //         }
+    //     }
+
+    //     $params = ['alumni_id' => $alumni_id];
+    //     $sql = "SELECT 1 FROM alumni_records WHERE alumni_id = :alumni_id";
+
+    //     if (!empty($faculty)) {
+    //         $sql .= " AND faculty_id = :faculty_id";
+    //         $params['faculty_id'] = (int)$faculty;
+    //     }
+
+    //     error_log("[Alumni::existsInRecords] SQL: $sql | params: ".json_encode($params));
+    //     $res = $this->query($sql, $params);
+    //     error_log("[Alumni::existsInRecords] result: ".var_export($res, true));
+    //     return !empty($res);
+    // }
+
+
+    /**
+ * Check if an alumni exists in alumni_records table
+ * This verifies that the alumni is a legitimate university graduate
+ */
+public function existsInRecords($alumni_id, $faculty = null)
+ {
+    $alumni_id = trim($alumni_id);
+    if ($alumni_id === '') {
+        error_log("[Alumni::existsInRecords] Empty alumni_id provided");
+        return false;
+    }
+
+    // If faculty passed as name (not numeric), try to resolve to faculty_id
+    if ($faculty !== null && !is_numeric($faculty)) {
+        try {
+            $facModel = new Faculty();
+            $facRec = $facModel->first(['faculty_name' => trim($faculty)]);
+            if ($facRec) {
+                $faculty = $facRec->faculty_id ?? null;
+            } else {
+                $faculty = null;
+            }
+        } catch (\Throwable $e) {
+            error_log("[Alumni::existsInRecords] faculty lookup error: " . $e->getMessage());
+            $faculty = null;
+        }
+    }
+
+    $params = ['alumni_id' => $alumni_id];
+    $sql = "SELECT 1 FROM alumni_records WHERE alumni_id = :alumni_id";
+
+    if (!empty($faculty)) {
+        $sql .= " AND faculty_id = :faculty_id";
+        $params['faculty_id'] = (int)$faculty;
+    }
+
+    error_log("[Alumni::existsInRecords] SQL: $sql | params: " . json_encode($params));
+    
+    try {
+        $result = $this->query($sql, $params);
+        
+        error_log("[Alumni::existsInRecords] Query executed. Result: " . var_export($result, true));
+        
+        // Check if result is an array with at least one element
+        $exists = !empty($result) && is_array($result) && count($result) > 0;
+        
+        error_log("[Alumni::existsInRecords] Final result - exists: " . ($exists ? 'YES' : 'NO'));
+        
+        return $exists;
+    } catch (Exception $e) {
+        error_log("[Alumni::existsInRecords] Exception: " . $e->getMessage());
+        return false;
+    }
+  }
 }
