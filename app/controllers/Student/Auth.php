@@ -235,13 +235,18 @@ class Auth extends Controller
             $student_record = $student->getStudentWithUser($student_id);
 
             if ($student_record) {
+                // Check if account is deleted
+                if (isset($student_record->is_deleted) && $student_record->is_deleted == 1) {
+                    $errors[] = "This account has been deleted. Please contact support if you need assistance.";
+                }
                 // Verify password
-                if (password_verify($password, $student_record->password)) {
+                elseif (password_verify($password, $student_record->password)) {
                     // Login successful - set session
                     $_SESSION['user_id'] = $student_record->user_id;
                     $_SESSION['role'] = 'student';
                     $_SESSION['student_id'] = $student_id;
                     $_SESSION['name'] = $student_record->name;
+                    $_SESSION['profile_picture'] = $student_record->profile_photo_url ?? null;
                     
                     // Redirect to dashboard
                     redirect('student/dashboard');

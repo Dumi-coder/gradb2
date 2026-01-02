@@ -59,7 +59,14 @@
             <!-- FAQs List -->
             <div class="faqs-container">
                 <?php foreach ($faqData['faq_items'] as $faq): ?>
-                <div class="faq-card" data-category="<?= esc($faq['category']) ?>" data-status="<?= $faq['status'] ?>">
+                <div class="faq-card" 
+                     data-category="<?= esc($faq['category']) ?>" 
+                     data-status="<?= $faq['status'] ?>"
+                     data-faq-id="<?= $faq['id'] ?>"
+                     data-question="<?= esc($faq['question']) ?>"
+                     data-answer="<?= esc($faq['answer']) ?>"
+                     data-priority="<?= esc($faq['priority'] ?? 'normal') ?>"
+                     data-tags="<?= esc($faq['tags'] ?? '') ?>">
                     <div class="faq-header">
                         <div class="faq-info">
                             <h4 class="faq-question"><?= esc($faq['question']) ?></h4>
@@ -67,10 +74,6 @@
                         </div>
                         <div class="faq-meta">
                             <span class="status-badge status-<?= $faq['status'] ?>"><?= ucfirst($faq['status']) ?></span>
-                            <div class="faq-stats">
-                                <span class="stat"><i class="fas fa-eye"></i> <?= $faq['views'] ?> views</span>
-                                <span class="stat"><i class="fas fa-thumbs-up"></i> <?= $faq['helpful'] ?> helpful</span>
-                            </div>
                         </div>
                     </div>
                     
@@ -90,27 +93,21 @@
                     </div>
                     
                     <div class="faq-actions">
-                        <?php if ($faq['status'] === 'pending'): ?>
-                        <button class="btn btn-success btn-sm approve-btn" data-faq-id="<?= $faq['id'] ?>">
-                            <i class="fas fa-check"></i>
-                            Approve
-                        </button>
-                        <?php endif; ?>
-                        
                         <?php if ($faq['status'] === 'published'): ?>
                         <button class="btn btn-warning btn-sm unpublish-btn" data-faq-id="<?= $faq['id'] ?>">
                             <i class="fas fa-eye-slash"></i>
                             Unpublish
+                        </button>
+                        <?php else: ?>
+                        <button class="btn btn-success btn-sm publish-btn" data-faq-id="<?= $faq['id'] ?>">
+                            <i class="fas fa-check"></i>
+                            Publish
                         </button>
                         <?php endif; ?>
                         
                         <button class="btn btn-primary btn-sm edit-btn" data-faq-id="<?= $faq['id'] ?>">
                             <i class="fas fa-edit"></i>
                             Edit
-                        </button>
-                        <button class="btn btn-outline btn-sm view-btn" data-faq-id="<?= $faq['id'] ?>">
-                            <i class="fas fa-eye"></i>
-                            View
                         </button>
                         <button class="btn btn-danger btn-sm delete-btn" data-faq-id="<?= $faq['id'] ?>">
                             <i class="fas fa-trash"></i>
@@ -149,14 +146,11 @@
                 <label for="faqCategory">Category *</label>
                 <select id="faqCategory" name="faqCategory" required>
                     <option value="">Select a category</option>
-                    <option value="General">General</option>
-                    <option value="Academic">Academic</option>
-                    <option value="Career">Career</option>
-                    <option value="Financial">Financial Aid</option>
-                    <option value="Technical">Technical Support</option>
-                    <option value="Registration">Registration</option>
-                    <option value="Graduation">Graduation</option>
-                    <option value="Alumni">Alumni Services</option>
+                    <option value="general">General</option>
+                    <option value="mentorship">Mentorship</option>
+                    <option value="aid">Aid Requests</option>
+                    <option value="technical">Technical</option>
+                    <option value="fundraiser">Fundraiser</option>
                 </select>
             </div>
 
@@ -196,7 +190,190 @@
     </div>
 </div>
 
+<!-- Edit FAQ Modal -->
+<div id="editFaqModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Edit FAQ</h2>
+            <button class="modal-close" onclick="closeEditFaqModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <form class="faq-form" id="editFaqForm">
+            <input type="hidden" id="editFaqId" name="editFaqId">
+            
+            <div class="form-group">
+                <label for="editFaqQuestion">Question *</label>
+                <input type="text" id="editFaqQuestion" name="editFaqQuestion" placeholder="Enter the FAQ question" required>
+            </div>
+
+            <div class="form-group">
+                <label for="editFaqAnswer">Answer *</label>
+                <textarea id="editFaqAnswer" name="editFaqAnswer" rows="6" placeholder="Enter the detailed answer..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="editFaqCategory">Category *</label>
+                <select id="editFaqCategory" name="editFaqCategory" required>
+                    <option value="">Select a category</option>
+                    <option value="general">General</option>
+                    <option value="mentorship">Mentorship</option>
+                    <option value="aid">Aid Requests</option>
+                    <option value="technical">Technical</option>
+                    <option value="fundraiser">Fundraiser</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="editFaqPriority">Priority</label>
+                <select id="editFaqPriority" name="editFaqPriority">
+                    <option value="normal">Normal</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="editFaqStatus">Status</label>
+                <select id="editFaqStatus" name="editFaqStatus">
+                    <option value="draft">Draft</option>
+                    <option value="pending">Pending Review</option>
+                    <option value="published">Published</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="editFaqTags">Tags (Optional)</label>
+                <input type="text" id="editFaqTags" name="editFaqTags" placeholder="Enter tags separated by commas">
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" onclick="closeEditFaqModal()">
+                    <span>Cancel</span>
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    <span>Update FAQ</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Custom Alert Modal -->
+<div id="customAlert" class="custom-modal">
+    <div class="custom-modal-content alert-modal">
+        <div class="custom-modal-icon">
+            <i class="fas fa-check-circle" id="alertIcon"></i>
+        </div>
+        <h3 id="alertTitle">Success</h3>
+        <p id="alertMessage"></p>
+        <button class="btn btn-primary" onclick="closeCustomAlert()">OK</button>
+    </div>
+</div>
+
+<!-- Custom Confirm Modal -->
+<div id="customConfirm" class="custom-modal">
+    <div class="custom-modal-content confirm-modal">
+        <div class="custom-modal-icon warning">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3 id="confirmTitle">Confirm Action</h3>
+        <p id="confirmMessage"></p>
+        <div class="custom-modal-actions">
+            <button class="btn btn-outline" onclick="closeCustomConfirm(false)">Cancel</button>
+            <button class="btn btn-primary" onclick="closeCustomConfirm(true)" id="confirmBtn">Confirm</button>
+        </div>
+    </div>
+</div>
+
 <style>
+.custom-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.2s ease;
+}
+
+.custom-modal-content {
+    position: relative;
+    background-color: white;
+    margin: 15% auto;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: slideDown 0.3s ease;
+}
+
+.custom-modal-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.custom-modal-icon.warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.custom-modal-icon i {
+    font-size: 2rem;
+    color: white;
+}
+
+.custom-modal-content h3 {
+    margin: 0 0 1rem 0;
+    color: #1F2937;
+    font-size: 1.5rem;
+}
+
+.custom-modal-content p {
+    margin: 0 0 1.5rem 0;
+    color: #6B7280;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.custom-modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.custom-modal-actions .btn {
+    flex: 1;
+    max-width: 150px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 .faq-filters {
     display: flex;
     gap: 1rem;
@@ -585,27 +762,133 @@
 </style>
 
 <script>
+const ROOT_URL = '<?= ROOT ?>';
+
+// Custom Alert Function
+let alertCallback = null;
+
+function showAlert(message, type = 'success') {
+    const modal = document.getElementById('customAlert');
+    const icon = document.getElementById('alertIcon');
+    const title = document.getElementById('alertTitle');
+    const messageEl = document.getElementById('alertMessage');
+    
+    messageEl.textContent = message;
+    
+    if (type === 'success') {
+        title.textContent = 'Success';
+        icon.className = 'fas fa-check-circle';
+        icon.parentElement.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+    } else if (type === 'error') {
+        title.textContent = 'Error';
+        icon.className = 'fas fa-times-circle';
+        icon.parentElement.style.background = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
+    }
+    
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    
+    return new Promise((resolve) => {
+        alertCallback = resolve;
+    });
+}
+
+function closeCustomAlert() {
+    document.getElementById('customAlert').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    if (alertCallback) {
+        alertCallback();
+        alertCallback = null;
+    }
+}
+
+// Custom Confirm Function
+let confirmCallback = null;
+
+function showConfirm(message, title = 'Confirm Action') {
+    const modal = document.getElementById('customConfirm');
+    const titleEl = document.getElementById('confirmTitle');
+    const messageEl = document.getElementById('confirmMessage');
+    
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+    
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    
+    return new Promise((resolve) => {
+        confirmCallback = resolve;
+    });
+}
+
+function closeCustomConfirm(result) {
+    document.getElementById('customConfirm').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    if (confirmCallback) {
+        confirmCallback(result);
+        confirmCallback = null;
+    }
+}
+
+function sendAjaxRequest(action, faqId, formData = null) {
+    const data = new FormData();
+    data.append('action', action);
+    if (faqId) data.append('faq_id', faqId);
+    if (formData) {
+        for (let [key, value] of formData.entries()) {
+            data.append(key, value);
+        }
+    }
+
+    return fetch(window.location.href, {
+        method: 'POST',
+        body: data
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            return result;
+        } else {
+            throw new Error(result.message || 'Operation failed');
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle approve button clicks
-    document.querySelectorAll('.approve-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+    // Handle publish button clicks
+    document.querySelectorAll('.publish-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
             const faqId = this.getAttribute('data-faq-id');
-            if (confirm('Are you sure you want to approve this FAQ?')) {
-                alert('FAQ approved successfully!');
-                this.closest('.faq-card').style.opacity = '0.5';
-                this.disabled = true;
+            const confirmed = await showConfirm('Are you sure you want to publish this FAQ?', 'Publish FAQ');
+            
+            if (confirmed) {
+                sendAjaxRequest('publish', faqId)
+                    .then(async () => {
+                        await showAlert('FAQ published successfully!', 'success');
+                        location.reload();
+                    })
+                    .catch(async (error) => {
+                        await showAlert('Error: ' + error.message, 'error');
+                    });
             }
         });
     });
 
     // Handle unpublish button clicks
     document.querySelectorAll('.unpublish-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', async function() {
             const faqId = this.getAttribute('data-faq-id');
-            if (confirm('Are you sure you want to unpublish this FAQ?')) {
-                alert('FAQ unpublished successfully!');
-                this.closest('.faq-card').style.opacity = '0.5';
-                this.disabled = true;
+            const confirmed = await showConfirm('Are you sure you want to unpublish this FAQ? You can publish it again anytime.', 'Unpublish FAQ');
+            
+            if (confirmed) {
+                sendAjaxRequest('unpublish', faqId)
+                    .then(async () => {
+                        await showAlert('FAQ unpublished successfully!', 'success');
+                        location.reload();
+                    })
+                    .catch(async (error) => {
+                        await showAlert('Error: ' + error.message, 'error');
+                    });
             }
         });
     });
@@ -614,25 +897,38 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.edit-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const faqId = this.getAttribute('data-faq-id');
-            alert('Edit FAQ functionality would be implemented here for FAQ ID: ' + faqId);
-        });
-    });
-
-    // Handle view button clicks
-    document.querySelectorAll('.view-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const faqId = this.getAttribute('data-faq-id');
-            alert('View FAQ functionality would be implemented here for FAQ ID: ' + faqId);
+            const faqCard = this.closest('.faq-card');
+            
+            // Populate the edit modal with FAQ data
+            document.getElementById('editFaqId').value = faqId;
+            document.getElementById('editFaqQuestion').value = faqCard.getAttribute('data-question');
+            document.getElementById('editFaqAnswer').value = faqCard.getAttribute('data-answer');
+            document.getElementById('editFaqCategory').value = faqCard.getAttribute('data-category');
+            document.getElementById('editFaqPriority').value = faqCard.getAttribute('data-priority');
+            document.getElementById('editFaqStatus').value = faqCard.getAttribute('data-status');
+            document.getElementById('editFaqTags').value = faqCard.getAttribute('data-tags');
+            
+            // Open the edit modal
+            openEditFaqModal();
         });
     });
 
     // Handle delete button clicks
     document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', async function() {
             const faqId = this.getAttribute('data-faq-id');
-            if (confirm('Are you sure you want to delete this FAQ? This action cannot be undone.')) {
-                alert('FAQ deleted successfully!');
-                this.closest('.faq-card').remove();
+            const confirmed = await showConfirm('Are you sure you want to delete this FAQ? This action cannot be undone.', 'Delete FAQ');
+            
+            if (confirmed) {
+                const faqCard = this.closest('.faq-card');
+                sendAjaxRequest('delete', faqId)
+                    .then(async () => {
+                        await showAlert('FAQ deleted successfully!', 'success');
+                        faqCard.remove();
+                    })
+                    .catch(async (error) => {
+                        await showAlert('Error: ' + error.message, 'error');
+                    });
             }
         });
     });
@@ -692,42 +988,82 @@ function openAddFaqModal() {
 function closeAddFaqModal() {
     document.getElementById('addFaqModal').style.display = 'none';
     document.body.style.overflow = 'auto';
-    // Reset form
     document.getElementById('faqForm').reset();
+}
+
+function openEditFaqModal() {
+    document.getElementById('editFaqModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeEditFaqModal() {
+    document.getElementById('editFaqModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    document.getElementById('editFaqForm').reset();
 }
 
 // Close modal when clicking outside
 window.onclick = function(event) {
-    const modal = document.getElementById('addFaqModal');
-    if (event.target === modal) {
+    const addModal = document.getElementById('addFaqModal');
+    const editModal = document.getElementById('editFaqModal');
+    
+    if (event.target === addModal) {
         closeAddFaqModal();
+    } else if (event.target === editModal) {
+        closeEditFaqModal();
     }
 }
 
-// Handle form submission
+// Handle add form submission
 document.getElementById('faqForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
     const formData = new FormData(this);
-    const faqData = {
-        question: formData.get('faqQuestion'),
-        answer: formData.get('faqAnswer'),
-        category: formData.get('faqCategory'),
-        priority: formData.get('faqPriority'),
-        status: formData.get('faqStatus'),
-        tags: formData.get('faqTags')
-    };
+    const faqData = new FormData();
+    faqData.append('action', 'add');
+    faqData.append('question', formData.get('faqQuestion'));
+    faqData.append('answer', formData.get('faqAnswer'));
+    faqData.append('category', formData.get('faqCategory'));
+    faqData.append('priority', formData.get('faqPriority'));
+    faqData.append('status', formData.get('faqStatus'));
+    faqData.append('tags', formData.get('faqTags'));
     
-    // Here you would typically send the data to the server
-    console.log('FAQ Data:', faqData);
+    sendAjaxRequest('add', null, faqData)
+        .then(async () => {
+            closeAddFaqModal();
+            await showAlert('FAQ added successfully!', 'success');
+            location.reload();
+        })
+        .catch(async (error) => {
+            await showAlert('Error: ' + error.message, 'error');
+        });
+});
+
+// Handle edit form submission
+document.getElementById('editFaqForm').addEventListener('submit', function(e) {
+    e.preventDefault();
     
-    // Show success message
-    alert('FAQ added successfully!');
+    const formData = new FormData(this);
+    const faqData = new FormData();
+    const faqId = formData.get('editFaqId');
     
-    // Close modal
-    closeAddFaqModal();
+    faqData.append('action', 'edit');
+    faqData.append('faq_id', faqId);
+    faqData.append('question', formData.get('editFaqQuestion'));
+    faqData.append('answer', formData.get('editFaqAnswer'));
+    faqData.append('category', formData.get('editFaqCategory'));
+    faqData.append('priority', formData.get('editFaqPriority'));
+    faqData.append('status', formData.get('editFaqStatus'));
+    faqData.append('tags', formData.get('editFaqTags'));
     
-    // Here you would typically refresh the FAQ list
-    // or add the new FAQ to the page dynamically
+    sendAjaxRequest('edit', faqId, faqData)
+        .then(async () => {
+            closeEditFaqModal();
+            await showAlert('FAQ updated successfully!', 'success');
+            location.reload();
+        })
+        .catch(async (error) => {
+            await showAlert('Error: ' + error.message, 'error');
+        });
 });
 </script>

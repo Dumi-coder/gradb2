@@ -79,14 +79,16 @@ class Profile extends Controller
     // Get form data
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
-    $faculty = trim($_POST['faculty'] ?? '');
     $academic_year = trim($_POST['academic_year'] ?? '');
-    $student_id = trim($_POST['student_id'] ?? '');
     $mobile = trim($_POST['mobile'] ?? '');
     $bio = trim($_POST['bio'] ?? '');
     $linkedin_url = trim($_POST['linkedin_url'] ?? '');
     $github_url = trim($_POST['github_url'] ?? '');
     $profile_picture = $_FILES['profile_picture'] ?? null;
+    
+    // Use current profile values for faculty and student_id (not editable)
+    $faculty = $current_profile->faculty;
+    $student_id = $current_profile->student_id;
 
     // Validation
     if (empty($name)) {
@@ -95,14 +97,8 @@ class Profile extends Controller
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = "Valid email is required";
     }
-    if (empty($faculty)) {
-        $errors['faculty'] = "Faculty is required";
-    }
     if (empty($academic_year) || !is_numeric($academic_year) || $academic_year < 1 || $academic_year > 5) {
         $errors['academic_year'] = "Academic year must be between 1 and 5";
-    }
-    if (empty($student_id)) {
-        $errors['student_id'] = "Student ID is required";
     }
     if (!empty($mobile) && !preg_match('/^[7][0-9]{8}$/', $mobile)) {
         $errors['mobile'] = "Mobile number must be 9 digits starting with 7";
@@ -111,25 +107,14 @@ class Profile extends Controller
         $errors['bio'] = "Bio must be less than 1000 characters";
     }
 
-    // Validate faculty exists
-    if (empty($errors['faculty'])) {
-        $faculty_model = new Faculty();
-        $faculty_record = $faculty_model->first(['faculty_name' => $faculty]);
-        if (!$faculty_record) {
-            $errors['faculty'] = "Invalid faculty selected";
-        }
-    }
+    // Get faculty record from current profile
+    $faculty_model = new Faculty();
+    $faculty_record = $faculty_model->first(['faculty_id' => $current_profile->faculty_id]);
 
-    // Validate student_id and email uniqueness (exclude current student)
+    // Validate email uniqueness (exclude current student)
     $student = new Student();
     $user = new User();
 
-    if ($student_id !== $current_profile->student_id) {
-        $existing_student = $student->first(['student_id' => $student_id], ['student_id' => $current_profile->student_id]);
-        if ($existing_student) {
-            $errors['student_id'] = "This Student ID is already in use by another student";
-        }
-    }
     if ($email !== $current_profile->email) {
         $existing_user = $user->first(['email' => $email], ['user_id' => $current_profile->user_id]);
         if ($existing_user) {
@@ -321,44 +306,13 @@ class Profile extends Controller
         $user_id = $_SESSION['user_id'];
         $student_id = $_SESSION['student_id'] ?? null;
 
-        // Delete uploaded resources files and DB rows
+        // Soft delete: Mark account as deleted instead of removing records
         try {
-            $resourceModel = new SharedResource();
-            $resources = $resourceModel->where(['user_id' => $user_id]);
-            if ($resources) {
-                foreach ($resources as $r) {
-                    if (!empty($r->file_path)) {
-                        $fileName = basename($r->file_path);
-                        $physicalPath = RESOURCE_UPLOAD_PATH . $fileName;
-                        if (file_exists($physicalPath)) {
-                            @unlink($physicalPath);
-                        }
-                    }
-                    // delete DB row
-                    $resourceModel->delete($r->resource_id, 'resource_id');
-                }
-            }
-
-            // Delete profile photo file if exists
             if ($student_id) {
                 $studentModel = new Student();
-                $profile = $studentModel->getStudentProfile($student_id);
-                if ($profile && !empty($profile->profile_photo_url)) {
-                    if (strpos($profile->profile_photo_url, '/assets/uploads/profiles/') !== false) {
-                        $old_file = '../public' . str_replace(ROOT, '', $profile->profile_photo_url);
-                        if (file_exists($old_file)) {
-                            @unlink($old_file);
-                        }
-                    }
-                }
-
-                // Delete student DB row
-                $studentModel->delete($student_id, 'student_id');
+                // Set is_deleted = 1 to mark account as deleted
+                $studentModel->update($student_id, ['is_deleted' => 1], 'student_id');
             }
-
-            // Delete user row
-            $userModel = new User();
-            $userModel->delete($user_id, 'user_id');
 
         } catch (Exception $e) {
             error_log('Account deletion error: ' . $e->getMessage());

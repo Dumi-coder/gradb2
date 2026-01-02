@@ -66,3 +66,36 @@ window.isSidebarCollapsed = function() {
     const sidebar = document.getElementById('sidebar');
     return sidebar ? sidebar.classList.contains('collapsed') : false;
 };
+
+/**
+ * Profile Dropdown Toggle Functionality
+ */
+function toggleProfileDropdown() {
+    const dropdown = document.getElementById('profileDropdownMenu');
+    if (dropdown) {
+        dropdown.classList.toggle('show');
+    }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('profileDropdownMenu');
+    const dropdownBtn = document.querySelector('.profile-dropdown-btn');
+    
+    if (dropdown && dropdownBtn) {
+        // Check if click is outside both the dropdown menu and the button
+        if (!dropdown.contains(event.target) && !dropdownBtn.contains(event.target)) {
+            dropdown.classList.remove('show');
+        }
+    }
+});
+
+// Close dropdown on escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const dropdown = document.getElementById('profileDropdownMenu');
+        if (dropdown) {
+            dropdown.classList.remove('show');
+        }
+    }
+});

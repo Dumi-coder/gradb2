@@ -266,13 +266,18 @@ class Auth extends Controller
             $alumni_record = $alumni->getalumniWithUser($alumni_id);
 
             if ($alumni_record) {
+                // Check if account is deleted
+                if (isset($alumni_record->is_deleted) && $alumni_record->is_deleted == 1) {
+                    $errors[] = "This account has been deleted. Please contact support if you need assistance.";
+                }
                 // Verify password
-                if (password_verify($password, $alumni_record->password)) {
+                elseif (password_verify($password, $alumni_record->password)) {
                     // Login successful - set session
                     $_SESSION['user_id'] = $alumni_record->user_id;
                     $_SESSION['role'] = 'alumni';
                     $_SESSION['alumni_id'] = $alumni_id;
                     $_SESSION['name'] = $alumni_record->name;
+                    $_SESSION['profile_picture'] = $alumni_record->profile_photo_url ?? null;
                     
                     // Redirect to dashboard
                     redirect('alumni/dashboard');

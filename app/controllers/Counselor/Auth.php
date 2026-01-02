@@ -59,6 +59,7 @@ class Auth extends Controller
                     $_SESSION['user_id'] = $counselor->user_id;
                     $_SESSION['role'] = 'counselor';
                     $_SESSION['name'] = $counselor->name;
+                    $_SESSION['profile_picture'] = $counselor->profile_photo_url ?? null;
                     
                     // Redirect to counselor dashboard
                     redirect('counselor/dashboard');

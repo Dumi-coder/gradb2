@@ -12,22 +12,39 @@
         <!-- Edit Profile Form -->
         <section class="edit-form-section">
             <h2 class="section-title">Edit Admin Profile</h2>
+
+            <!-- Success/Error Messages -->
+            <?php if (isset($errors['success'])): ?>
+                <div class="alert alert-success"><?= esc($errors['success']) ?></div>
+            <?php endif; ?>
+            
+            <?php if (isset($errors['general'])): ?>
+                <div class="alert alert-danger"><?= esc($errors['general']) ?></div>
+            <?php endif; ?>
             
             <form method="POST" enctype="multipart/form-data">
                 <!-- Profile Picture Section -->
                 <div class="profile-picture-section">
                     <div class="profile-picture-preview">
-                        <?php if (!empty($profile->profile_photo_url)): ?>
-                            <img src="<?= esc($profile->profile_photo_url) ?>" alt="Profile Picture" id="profilePreview">
+                        <?php if (!empty($profile->picture_path)): ?>
+                            <img src="<?= esc($profile->picture_path) ?>" alt="Profile Picture" id="profilePreview">
                         <?php else: ?>
                             <span id="profileInitials"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
                         <?php endif; ?>
                     </div>
-                    <label for="profile_picture" class="btn btn-primary" style="cursor: pointer;">
-                        <i class="fas fa-camera"></i>
-                        <span>Change Photo</span>
-                        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)" style="display: none;">
-                    </label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <label for="profile_picture" class="btn btn-primary" style="cursor: pointer;">
+                            <i class="fas fa-camera"></i>
+                            <span>Change Photo</span>
+                            <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)" style="display: none;">
+                        </label>
+                        <?php if (!empty($profile->picture_path)): ?>
+                            <button type="button" onclick="deleteProfilePicture()" class="btn btn-danger">
+                                <i class="fas fa-trash"></i>
+                                <span>Delete Photo</span>
+                            </button>
+                        <?php endif; ?>
+                    </div>
                     <?php if (isset($errors['profile_picture'])): ?>
                         <div class="error-message"><?= esc($errors['profile_picture']) ?></div>
                     <?php endif; ?>
@@ -59,13 +76,11 @@
                         <small class="form-help">Role cannot be changed</small>
                     </div>
 
-                    <!-- Department -->
+                    <!-- Faculty -->
                     <div class="form-group">
-                        <label for="department" class="form-label">Department</label>
-                        <input type="text" id="department" name="department" class="form-input" value="<?= esc($profile->department ?? 'Educational Technology') ?>">
-                        <?php if (isset($errors['department'])): ?>
-                            <div class="error-message"><?= esc($errors['department']) ?></div>
-                        <?php endif; ?>
+                        <label for="faculty" class="form-label">Faculty</label>
+                        <input type="text" id="faculty" class="form-input" value="<?= esc($profile->faculty_name ?? 'Not Assigned') ?>" disabled>
+                        <small class="form-help">Faculty assignment cannot be changed</small>
                     </div>
 
                     <!-- Bio -->
@@ -107,23 +122,14 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="website_url" class="form-label">Personal Website</label>
-                            <input type="url" id="website_url" name="website_url" class="form-input" value="<?= esc($profile->website_url ?? '') ?>" placeholder="https://yourwebsite.com">
-                            <?php if (isset($errors['website_url'])): ?>
-                                <div class="error-message"><?= esc($errors['website_url']) ?></div>
+                            <label for="personalweb_url" class="form-label">Personal Website</label>
+                            <input type="url" id="personalweb_url" name="personalweb_url" class="form-input" value="<?= esc($profile->personalweb_url ?? '') ?>" placeholder="https://yourwebsite.com">
+                            <?php if (isset($errors['personalweb_url'])): ?>
+                                <div class="error-message"><?= esc($errors['personalweb_url']) ?></div>
                             <?php endif; ?>
                         </div>
                     </div>
                 </div>
-
-                <!-- Success/Error Messages -->
-                <?php if (isset($success)): ?>
-                    <div class="success-message"><?= esc($success) ?></div>
-                <?php endif; ?>
-                
-                <?php if (isset($errors['general'])): ?>
-                    <div class="error-message"><?= esc($errors['general']) ?></div>
-                <?php endif; ?>
 
                 <!-- Form Actions -->
                 <div class="form-actions">
@@ -141,5 +147,41 @@
     </main>
 </div>
 
+<!-- Delete Photo Form (Hidden) -->
+<form id="deletePhotoForm" action="<?= ROOT ?>/admin/profile?action=delete_photo" method="POST" style="display: none;">
+    <input type="hidden" name="delete_photo" value="1">
+</form>
+
 <!-- Unified Profile JavaScript -->
 <script src="<?=ROOT?>/assets/js/profile.js"></script>
+<script>
+function deleteProfilePicture() {
+    if (confirm('Are you sure you want to delete your profile picture?')) {
+        document.getElementById('deletePhotoForm').submit();
+    }
+}
+
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var preview = document.getElementById('profilePreview');
+            var initials = document.getElementById('profileInitials');
+            
+            if (preview) {
+                preview.src = e.target.result;
+            } else if (initials) {
+                // Replace initials with image
+                var container = initials.parentElement;
+                initials.remove();
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = 'Profile Picture';
+                img.id = 'profilePreview';
+                container.appendChild(img);
+            }
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>

@@ -17,7 +17,8 @@ class Student
         'profile_photo_url',
         'mobile',
         'LinkedIn',
-        'GitHub'
+        'GitHub',
+        'is_deleted'
     ];
     
     public function validate($data)
@@ -68,10 +69,11 @@ class Student
 
     public function getStudentWithUser($student_id)
     {
-        $query = "SELECT s.*, u.name, u.email, u.password, u.role, u.created_at, u.updated_at
+        $query = "SELECT s.*, u.name, u.email, u.password, u.role, u.created_at, u.updated_at, s.profile_photo_url
                   FROM $this->table s
                   JOIN users u ON s.user_id = u.user_id
-                  WHERE s.student_id = :student_id";
+                  WHERE s.student_id = :student_id
+                  AND (s.is_deleted IS NULL OR s.is_deleted = 0)";
         
         $result = $this->query($query, ['student_id' => $student_id]);
         return $result ? $result[0] : false;
@@ -87,7 +89,8 @@ class Student
                   FROM $this->table s
                   JOIN users u ON s.user_id = u.user_id
                   JOIN faculties f ON s.faculty_id = f.faculty_id
-                  WHERE s.student_id = :student_id";
+                  WHERE s.student_id = :student_id
+                  AND (s.is_deleted IS NULL OR s.is_deleted = 0)";
         
         $result = $this->query($query, ['student_id' => $student_id]);
         return $result ? $result[0] : false;
@@ -103,6 +106,7 @@ class Student
                   FROM $this->table s
                   JOIN users u ON s.user_id = u.user_id
                   WHERE s.faculty_id = :faculty_id
+                  AND (s.is_deleted IS NULL OR s.is_deleted = 0)
                   ORDER BY u.name";
         
         return $this->query($query, ['faculty_id' => $faculty_id]);
@@ -119,6 +123,7 @@ class Student
                   JOIN users u ON s.user_id = u.user_id
                   JOIN faculties f ON s.faculty_id = f.faculty_id
                   WHERE s.academic_year = :academic_year
+                  AND (s.is_deleted IS NULL OR s.is_deleted = 0)
                   ORDER BY u.name";
         
         return $this->query($query, ['academic_year' => $academic_year]);
@@ -134,7 +139,8 @@ class Student
                   FROM $this->table s
                   JOIN users u ON s.user_id = u.user_id
                   JOIN faculties f ON s.faculty_id = f.faculty_id
-                  WHERE u.name LIKE :search OR s.student_id LIKE :search
+                  WHERE (u.name LIKE :search OR s.student_id LIKE :search)
+                  AND (s.is_deleted IS NULL OR s.is_deleted = 0)
                   ORDER BY u.name";
         
         $search_param = '%' . $search_term . '%';
