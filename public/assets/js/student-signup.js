@@ -128,15 +128,19 @@ document.addEventListener('DOMContentLoaded', function() {
             setLoading(false);
             
             console.log('Response status:', xhr.status);
-            console.log('Response text:', xhr.responseText);
+            console.log('Response headers:', xhr.getAllResponseHeaders());
+            console.log('Response text (first 500 chars):', xhr.responseText.substring(0, 500));
             
             if (xhr.status === 200) {
                 try {
                     // Check if response is HTML (means it's not JSON, fallback happened)
                     const contentType = xhr.getResponseHeader('Content-Type') || '';
+                    console.log('Content-Type:', contentType);
+                    
                     if (contentType.includes('text/html')) {
                         console.error('Received HTML instead of JSON - AJAX detection may have failed');
-                        showErrors(['Server error: Please refresh the page and try again.']);
+                        console.error('Full response:', xhr.responseText);
+                        showErrors(['Server error: Received HTML instead of JSON. Please check the console for details.']);
                         return;
                     }
                     
@@ -145,6 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     if (response.success) {
                         // Success - redirect to dashboard
+                        console.log('Registration successful, redirecting...');
                         if (response.redirect) {
                             window.location.href = response.redirect;
                         } else {
@@ -152,19 +157,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     } else {
                         // Show errors
+                        console.log('Registration failed with errors:', response.errors);
                         if (response.errors && response.errors.length > 0) {
                             showErrors(response.errors);
                         } else {
-                            showErrors(['An error occurred. Please try again.']);
+                            showErrors(['Registration failed with unknown error. Please check the console.']);
                         }
                     }
                 } catch (e) {
                     console.error('Error parsing response:', e);
-                    console.error('Response was:', xhr.responseText.substring(0, 200));
-                    showErrors(['An error occurred. Please try again.']);
+                    console.error('Full response text:', xhr.responseText);
+                    showErrors(['Parse error: ' + e.message + '. Check console for details.']);
                 }
             } else {
-                showErrors(['Server error. Please try again later.']);
+                console.error('Server returned status:', xhr.status);
+                showErrors(['Server error (status ' + xhr.status + '). Please try again later.']);
             }
         };
         

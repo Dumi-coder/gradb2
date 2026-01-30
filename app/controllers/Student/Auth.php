@@ -135,53 +135,55 @@ class Auth extends Controller
                     ];
 
                     $student = new Student();
-                    if (!$student->insert($student_data)) {
-                        // Log error for debugging
-                        error_log("Failed to insert student data: " . print_r($student_data, true));
-                        // Check if record was actually inserted
-                        if ($student->first(['student_id' => $student_id])) {
-                            // Record exists, proceed with session and redirect
-                            $_SESSION['user_id'] = $created_user->user_id;
-                            $_SESSION['role'] = 'student';
-                            $_SESSION['student_id'] = $student_id;
-                            $_SESSION['name'] = $name;
-                            ob_end_flush();
-                            
-                            // Check if AJAX request
-                            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-                                header('Content-Type: application/json');
-                                echo json_encode(['success' => true, 'redirect' => ROOT . '/student/dashboard']);
-                                exit();
-                            }
-                            
-                            redirect('student/dashboard');
-                            exit();
-                        } else {
-                            $errors[] = "Failed to create student record.";
-                        }
-                    } else {
-                        // Insert succeeded, set session and redirect
+                    $insert_result = $student->insert($student_data);
+                    
+                    // Log for debugging
+                    error_log("Student insert result: " . ($insert_result ? 'true' : 'false'));
+                    
+                    // Verify student record was created (check database directly)
+                    $student_record = $student->first(['student_id' => $student_id]);
+                    
+                    if ($student_record) {
+                        // Student record exists - registration successful
+                        // Set session and auto-login the user
                         $_SESSION['user_id'] = $created_user->user_id;
                         $_SESSION['role'] = 'student';
                         $_SESSION['student_id'] = $student_id;
                         $_SESSION['name'] = $name;
-                        ob_end_flush();
                         
-                        // Check if AJAX request
+                        error_log("Student registration successful - auto-login user: " . $student_id);
+                        
+                        // Check if AJAX request - must check BEFORE any output
+                        $isAjax = false;
                         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                            $isAjax = true;
+                        } elseif (isset($_POST['_ajax']) && $_POST['_ajax'] == '1') {
+                            $isAjax = true;
+                        }
+                        
+                        if ($isAjax) {
+                            // AJAX request - return JSON
+                            ob_clean(); // Clear any output buffer
                             header('Content-Type: application/json');
                             echo json_encode(['success' => true, 'redirect' => ROOT . '/student/dashboard']);
                             exit();
+                        } else {
+                            // Regular request - redirect
+                            ob_end_flush();
+                            redirect('student/dashboard');
+                            exit();
                         }
-                        
-                        redirect('student/dashboard');
-                        exit();
+                    } else {
+                        // Record not found - registration failed
+                        error_log("Failed to create student record - record not found in database");
+                        $errors[] = "Failed to create student record. Please try again.";
                     }
                 } else {
                     $errors[] = "Failed to retrieve created user.";
                 }
             } else {
                 $errors[] = "Failed to create user.";
+                error_log("User insert failed for email: " . $email);
             }
         }
 
@@ -195,11 +197,15 @@ class Auth extends Controller
             $isAjax = true;
         }
         
+        // Log for debugging
+        error_log("Registration errors: " . print_r($errors, true));
+        error_log("Is AJAX request: " . ($isAjax ? 'YES' : 'NO'));
+        
         // ALWAYS return JSON for AJAX requests - never render view
         if ($isAjax) {
+            ob_clean(); // Clear any output buffer first
             header('Content-Type: application/json; charset=utf-8');
             header('Cache-Control: no-cache, must-revalidate');
-            ob_clean(); // Clear any output
             echo json_encode(['success' => false, 'errors' => $errors], JSON_UNESCAPED_UNICODE);
             exit();
         }
