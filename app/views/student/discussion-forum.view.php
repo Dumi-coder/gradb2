@@ -1,6 +1,11 @@
 ﻿<?php 
 $page_title = "Discussion Forum";
 $page_subtitle = "Engage with fellow students and share experiences";
+
+// Trending Posts Configuration
+$trending_threshold = 50;  // Minimum points to show "Trending" badge
+$trending_hours = 48;      // Time window in hours for calculating trending points
+
 require '../app/views/partials/student_header.php'; 
 ?>
 
@@ -70,9 +75,15 @@ require '../app/views/partials/student_header.php';
                         <h3 class="topic-title"><?= esc($forum->title) ?></h3>
                         <p class="topic-creator">Created by You</p>
                       </div>
-                      <span class="status-badge status-active">
-                        Active
-                      </span>
+                      <?php if (isset($forum->trending_points) && $forum->trending_points >= $trending_threshold): ?>
+                        <span class="status-badge status-trending">
+                          Trending
+                        </span>
+                      <?php else: ?>
+                        <span class="status-badge status-active">
+                          Active
+                        </span>
+                      <?php endif; ?>
                     </div>
                     
                     <div class="topic-description">
@@ -197,9 +208,15 @@ require '../app/views/partials/student_header.php';
                   <h3 class="topic-title"><?= esc($topic->title) ?></h3>
                   <p class="topic-creator">Created by <?= esc($topic->author_name ?? 'Unknown') ?></p>
                 </div>
-                <span class="status-badge status-active">
-                  Active
-                </span>
+                <?php if (isset($topic->trending_points) && $topic->trending_points >= $trending_threshold): ?>
+                  <span class="status-badge status-trending">
+                    Trending
+                  </span>
+                <?php else: ?>
+                  <span class="status-badge status-active">
+                    Active
+                  </span>
+                <?php endif; ?>
               </div>
               
               <div class="topic-description">
@@ -1007,11 +1024,6 @@ require '../app/views/partials/student_header.php';
         return;
       }
       
-      if (replyText.length < 10) {
-        showNotification('Reply must be at least 10 characters long', 'warning');
-        return;
-      }
-      
       // Update reply via backend
       fetch('<?=ROOT?>/student/discussionforum/updatereply', {
         method: 'POST',
@@ -1302,8 +1314,6 @@ require '../app/views/partials/student_header.php';
           })
           .then(data => {
             if (data.success) {
-              showNotification(data.message || 'Post updated successfully!', 'success');
-              closeEditPostModal();
               location.reload();
             } else {
               showNotification(data.message || 'Update failed', 'error');
@@ -1311,8 +1321,6 @@ require '../app/views/partials/student_header.php';
           })
           .catch(error => {
             console.error('Error:', error);
-            showNotification('Post updated successfully!', 'success');
-            closeEditPostModal();
             location.reload();
           });
         });

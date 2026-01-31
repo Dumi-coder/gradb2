@@ -187,9 +187,18 @@ class DiscussionForum extends Controller
             exit;
         }
 
+        // Read JSON input
+        $input = json_decode(file_get_contents('php://input'), true);
+        $post_id = $input['post_id'] ?? 0;
+        
+        // Validation
+        if (empty($post_id)) {
+            echo json_encode(['success' => false, 'message' => 'Post ID is required']);
+            exit;
+        }
+
         $forumPost = new ForumPost();
         $forumReply = new ForumReply();
-        $post_id = $_POST['post_id'] ?? 0;
         
         // Security check
         $existing = $forumPost->getPostForOwnership($post_id);
@@ -205,19 +214,31 @@ class DiscussionForum extends Controller
             exit;
         }
 
-        // CASCADE DELETE: First delete all likes for replies of this post
+        // CASCADE DELETE: First get all reply IDs, then delete likes, then replies, then post
         try {
-            $db = new Database();
-            // Delete all likes for replies of this post in one query
-            $query = "DELETE FROM form_reply_likes 
-                      WHERE replyid IN (SELECT replyid FROM form_replies WHERE postid = :post_id)";
-            $db->query($query, ['post_id' => $post_id]);
+            // Use a model to access database
+            $tempModel = new ForumPost();
+            
+            // Step 1: Get all reply IDs for this post
+            $replyQuery = "SELECT replyid FROM form_replies WHERE postid = :post_id";
+            $replies = $tempModel->query($replyQuery, ['post_id' => $post_id]);
+            
+            // Step 2: Delete all likes for these replies
+            if ($replies && is_array($replies)) {
+                foreach ($replies as $reply) {
+                    $deleteLikesQuery = "DELETE FROM form_reply_likes WHERE replyid = :reply_id";
+                    $tempModel->query($deleteLikesQuery, ['reply_id' => $reply->replyid]);
+                }
+            }
+            
+            // Step 3: Now delete all replies
+            $deleteRepliesQuery = "DELETE FROM form_replies WHERE postid = :post_id";
+            $tempModel->query($deleteRepliesQuery, ['post_id' => $post_id]);
+            
         } catch (Throwable $e) {
-            // Continue even if likes deletion fails (table might not exist or be empty)
+            echo json_encode(['success' => false, 'message' => 'Cascade delete failed: ' . $e->getMessage()]);
+            exit;
         }
-        
-        // Delete all replies for this post
-        $forumReply->deleteRepliesByPostId($post_id);
         
         // Finally, delete the post itself
         $result = $forumPost->delete($post_id, 'post_id');
@@ -472,6 +493,12 @@ class DiscussionForum extends Controller
         $input = json_decode(file_get_contents('php://input'), true);
 
         $reply_id = $input['reply_id'] ?? 0;
+        
+        // Validation
+        if (empty($reply_id)) {
+            echo json_encode(['success' => false, 'message' => 'Reply ID is required']);
+            exit;
+        }
 
         // Check ownership
         $forumReply = new ForumReply();
@@ -483,12 +510,24 @@ class DiscussionForum extends Controller
         }
 
         $post_id = $existing->postid;
+        
+        // Delete likes for this reply first - MUST happen before deleting the reply
+        try {
+            $forumPost = new ForumPost(); // Use any model to access the database
+            $deleteLikesQuery = "DELETE FROM form_reply_likes WHERE replyid = :reply_id";
+            $forumPost->query($deleteLikesQuery, ['reply_id' => $reply_id]);
+        } catch (Throwable $e) {
+            echo json_encode(['success' => false, 'message' => 'Failed to delete reply likes: ' . $e->getMessage()]);
+            exit;
+        }
+        
+        // Now delete the reply itself
         $result = $forumReply->delete($reply_id, 'replyid');
         
         if ($result) {
             // Update reply count
             $forumPost = new ForumPost();
-            $forumPost->query("UPDATE forum_posts SET replies = replies - 1, updated_at = NOW() WHERE post_id = :post_id", ['post_id' => $post_id]);
+            $forumPost->query("UPDATE forum_posts SET replies = GREATEST(replies - 1, 0) WHERE post_id = :post_id", ['post_id' => $post_id]);
             
             echo json_encode(['success' => true, 'message' => 'Reply deleted!']);
         } else {

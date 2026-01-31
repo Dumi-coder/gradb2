@@ -170,64 +170,112 @@ class DiscussionForum extends Controller
     // AJAX endpoint: Delete post
     public function delete()
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        header('Content-Type: application/json');
-        
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode(['success' => false, 'message' => 'Invalid request']);
-            exit;
-        }
-
-        // Security check
-        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
-            echo json_encode(['success' => false, 'message' => 'Not logged in']);
-            exit;
-        }
-
-        $forumPost = new ForumPost();
-        $forumReply = new ForumReply();
-        $post_id = $_POST['post_id'] ?? 0;
-        
-        // Security check
-        $existing = $forumPost->getPostForOwnership($post_id);
-        
-        if (!$existing) {
-            echo json_encode(['success' => false, 'message' => 'Post not found']);
-            exit;
-        }
-        
-        // Check if user owns this post
-        if ($existing->user_id != $_SESSION['user_id']) {
-            echo json_encode(['success' => false, 'message' => 'You cannot delete this post']);
-            exit;
-        }
-
-        // CASCADE DELETE: First delete all likes for replies of this post
         try {
-            $db = new Database();
-            // Delete all likes for replies of this post in one query
-            $query = "DELETE FROM form_reply_likes 
-                      WHERE replyid IN (SELECT replyid FROM form_replies WHERE postid = :post_id)";
-            $db->query($query, ['post_id' => $post_id]);
+            // Suppress all output and errors that could break JSON
+            @ini_set('display_errors', '0');
+            error_reporting(0);
+            ob_start();
+            
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            header('Content-Type: application/json');
+            
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                ob_end_clean();
+                echo json_encode(['success' => false, 'message' => 'Invalid request']);
+                exit;
+            }
+
+            // Security check
+            if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+                ob_end_clean();
+                echo json_encode(['success' => false, 'message' => 'Not logged in']);
+                exit;
+            }
+
+            // Read JSON input
+            $json_input = file_get_contents('php://input');
+            $input = json_decode($json_input, true);
+            
+            // Check if JSON decode failed
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                ob_end_clean();
+                echo json_encode(['success' => false, 'message' => 'Invalid JSON data']);
+                exit;
+            }
+
+            $forumPost = new ForumPost();
+            $forumReply = new ForumReply();
+            $post_id = $input['post_id'] ?? 0;
+            
+            // Validation
+            if (empty($post_id)) {
+                ob_end_clean();
+                echo json_encode(['success' => false, 'message' => 'Post ID is required']);
+                exit;
+            }
+            
+            // Security check
+            $existing = $forumPost->getPostForOwnership($post_id);
+            
+            if (!$existing) {
+                ob_end_clean();
+                echo json_encode(['success' => false, 'message' => 'Post not found']);
+                exit;
+            }
+            
+            // Check if user owns this post
+            if ($existing->user_id != $_SESSION['user_id']) {
+                ob_end_clean();
+                echo json_encode(['success' => false, 'message' => 'You cannot delete this post']);
+                exit;
+            }
+
+            // CASCADE DELETE: First get all reply IDs, then delete likes, then replies, then post
+            try {
+                // Use a model to access database
+                $tempModel = new ForumPost();
+                
+                // Step 1: Get all reply IDs for this post
+                $replyQuery = "SELECT replyid FROM form_replies WHERE postid = :post_id";
+                $replies = $tempModel->query($replyQuery, ['post_id' => $post_id]);
+                
+                // Step 2: Delete all likes for these replies
+                if ($replies && is_array($replies)) {
+                    foreach ($replies as $reply) {
+                        $deleteLikesQuery = "DELETE FROM form_reply_likes WHERE replyid = :reply_id";
+                        $tempModel->query($deleteLikesQuery, ['reply_id' => $reply->replyid]);
+                    }
+                }
+                
+                // Step 3: Now delete all replies
+                $deleteRepliesQuery = "DELETE FROM form_replies WHERE postid = :post_id";
+                $tempModel->query($deleteRepliesQuery, ['post_id' => $post_id]);
+                
+            } catch (Throwable $e) {
+                ob_end_clean();
+                echo json_encode(['success' => false, 'message' => 'Cascade delete failed: ' . $e->getMessage()]);
+                exit;
+            }
+            
+            // Finally, delete the post itself
+            $result = $forumPost->delete($post_id, 'post_id');
+            
+            ob_end_clean();
+            if ($result) {
+                echo json_encode(['success' => true, 'message' => 'Post deleted successfully!']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to delete post']);
+            }
+            exit;
+            
         } catch (Throwable $e) {
-            // Continue even if likes deletion fails (table might not exist or be empty)
+            @ob_end_clean();
+            echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            exit;
         }
-        
-        // Delete all replies for this post
-        $forumReply->deleteRepliesByPostId($post_id);
-        
-        // Finally, delete the post itself
-        $result = $forumPost->delete($post_id, 'post_id');
-        
-        if ($result) {
-            echo json_encode(['success' => true, 'message' => 'Post deleted!']);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Delete failed']);
-        }
-        exit;
     }
 
     // AJAX endpoint: Get single post for editing
@@ -472,6 +520,12 @@ class DiscussionForum extends Controller
         $input = json_decode(file_get_contents('php://input'), true);
 
         $reply_id = $input['reply_id'] ?? 0;
+        
+        // Validation
+        if (empty($reply_id)) {
+            echo json_encode(['success' => false, 'message' => 'Reply ID is required']);
+            exit;
+        }
 
         // Check ownership
         $forumReply = new ForumReply();
@@ -483,12 +537,24 @@ class DiscussionForum extends Controller
         }
 
         $post_id = $existing->postid;
+        
+        // Delete likes for this reply first - MUST happen before deleting the reply
+        try {
+            $forumPost = new ForumPost(); // Use any model to access the database
+            $deleteLikesQuery = "DELETE FROM form_reply_likes WHERE replyid = :reply_id";
+            $forumPost->query($deleteLikesQuery, ['reply_id' => $reply_id]);
+        } catch (Throwable $e) {
+            echo json_encode(['success' => false, 'message' => 'Failed to delete reply likes: ' . $e->getMessage()]);
+            exit;
+        }
+        
+        // Now delete the reply itself
         $result = $forumReply->delete($reply_id, 'replyid');
         
         if ($result) {
             // Update reply count
             $forumPost = new ForumPost();
-            $forumPost->query("UPDATE forum_posts SET replies = replies - 1, updated_at = NOW() WHERE post_id = :post_id", ['post_id' => $post_id]);
+            $forumPost->query("UPDATE forum_posts SET replies = GREATEST(replies - 1, 0) WHERE post_id = :post_id", ['post_id' => $post_id]);
             
             echo json_encode(['success' => true, 'message' => 'Reply deleted!']);
         } else {
