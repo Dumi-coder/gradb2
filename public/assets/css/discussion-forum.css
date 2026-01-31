@@ -411,7 +411,8 @@
 
 /* New Post Form Styles */
 .new-post-form,
-.edit-post-form {
+.edit-post-form,
+.edit-reply-form {
   padding: var(--spacing-lg);
 }
 

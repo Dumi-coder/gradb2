@@ -71,7 +71,7 @@ class ForumPost
     // Increment view count
     public function incrementViews($post_id)
     {
-        $query = "UPDATE {$this->table} SET views = views + 1, updated_at = NOW() WHERE post_id = :post_id";
+        $query = "UPDATE {$this->table} SET views = views + 1 WHERE post_id = :post_id";
         return $this->query($query, ['post_id' => $post_id]);
     }
 
@@ -83,7 +83,10 @@ class ForumPost
                   LEFT JOIN users u ON fp.user_id = u.user_id 
                   LEFT JOIN students s ON u.user_id = s.user_id
                   LEFT JOIN alumnis a ON u.user_id = a.user_id
-                  WHERE (FIND_IN_SET(:faculty_id, fp.visiblefaculties) > 0 OR fp.visiblefaculties IS NULL OR fp.visiblefaculties = '')
+                  WHERE (FIND_IN_SET(:faculty_id, fp.visiblefaculties) > 0 
+                         OR fp.visiblefaculties = '999' 
+                         OR fp.visiblefaculties IS NULL 
+                         OR fp.visiblefaculties = '')
                   AND (s.is_deleted IS NULL OR s.is_deleted = 0)
                   AND (a.is_deleted IS NULL OR a.is_deleted = 0)
                   ORDER BY fp.created_at DESC";

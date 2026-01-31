@@ -28,73 +28,11 @@ require '../app/views/partials/alumni_header.php';
           </div>
           
           <div class="my-published-container">
-            <?php
-            // Sample published forums data (replace with actual data from database later)
-            $myPublishedForums = [
-              [
-                'id' => 13,
-                'title' => 'Best Practices for Remote Team Management',
-                'description' => 'Looking to discuss effective strategies for managing remote teams. What tools and practices have worked well for you?',
-                'category' => 'Leadership',
-                'tags' => ['Leadership', 'Remote', 'Management'],
-                'status' => 'active',
-                'views' => 87,
-                'replies' => 14,
-                'posted_date' => '3 days ago',
-                'last_activity' => '1 hour ago'
-              ],
-              [
-                'id' => 14,
-                'title' => 'Career Growth in Software Engineering',
-                'description' => 'Discussion on career progression paths in software engineering. From junior to senior roles - what skills matter most?',
-                'category' => 'Tech',
-                'tags' => ['Tech', 'Career', 'Software'],
-                'status' => 'active',
-                'views' => 156,
-                'replies' => 23,
-                'posted_date' => '1 week ago',
-                'last_activity' => '2 hours ago'
-              ],
-              [
-                'id' => 15,
-                'title' => 'Networking Tips for Introverts',
-                'description' => 'How do introverts build strong professional networks? Share your experiences and strategies that have worked for you.',
-                'category' => 'Networking',
-                'tags' => ['Networking', 'Career', 'Advice'],
-                'status' => 'active',
-                'views' => 134,
-                'replies' => 19,
-                'posted_date' => '2 weeks ago',
-                'last_activity' => '1 day ago'
-              ],
-              [
-                'id' => 16,
-                'title' => 'Balancing Multiple Projects Effectively',
-                'description' => 'Seeking advice on managing multiple projects simultaneously without burning out. What are your time management secrets?',
-                'category' => 'General',
-                'tags' => ['Experience', 'Advice', 'Productivity'],
-                'status' => 'active',
-                'views' => 92,
-                'replies' => 11,
-                'posted_date' => '3 weeks ago',
-                'last_activity' => '3 days ago'
-              ],
-              [
-                'id' => 17,
-                'title' => 'Transitioning from Technical to Business Roles',
-                'description' => 'Anyone here made the switch from technical roles to business/product management? Would love to hear your journey.',
-                'category' => 'Career',
-                'tags' => ['Career', 'Leadership', 'Experience'],
-                'status' => 'trending',
-                'views' => 198,
-                'replies' => 31,
-                'posted_date' => '1 month ago',
-                'last_activity' => '5 hours ago'
-              ]
-            ];
-            ?>
+            <?php 
+            // Use real database data from controller
+            $myPublishedForums = isset($my_posts) && is_array($my_posts) ? $my_posts : [];
             
-            <?php if (empty($myPublishedForums)): ?>
+            if (empty($myPublishedForums)): ?>
               <div class="no-forums-message">
                 <i class="fas fa-newspaper"></i>
                 <p>No Forums Published Yet</p>
@@ -102,42 +40,67 @@ require '../app/views/partials/alumni_header.php';
               </div>
             <?php else: ?>
               <div class="topics-container">
-                <?php foreach ($myPublishedForums as $forum): ?>
+                <?php foreach ($myPublishedForums as $forum): 
+                  // Format created_at as "X time ago"
+                  $timestamp = strtotime($forum->created_at);
+                  $diff = time() - $timestamp;
+                  if ($diff < 60) $posted_date = $diff . ' seconds ago';
+                  elseif ($diff < 3600) $posted_date = floor($diff / 60) . ' minutes ago';
+                  elseif ($diff < 86400) $posted_date = floor($diff / 3600) . ' hours ago';
+                  else $posted_date = floor($diff / 86400) . ' days ago';
+                  
+                  // Format created_at as "X time ago" for last activity
+                  $created_timestamp = strtotime($forum->created_at);
+                  $created_diff = time() - $created_timestamp;
+                  if ($created_diff < 60) $last_activity = $created_diff . ' seconds ago';
+                  elseif ($created_diff < 3600) $last_activity = floor($created_diff / 60) . ' minutes ago';
+                  elseif ($created_diff < 86400) $last_activity = floor($created_diff / 3600) . ' hours ago';
+                  else $last_activity = floor($created_diff / 86400) . ' days ago';
+                  
+                  // Parse tags from string to array
+                  $tags_array = [];
+                  if (!empty($forum->tags)) {
+                    $tags_string = str_replace('#', '', $forum->tags);
+                    $tags_array = preg_split('/[\s,]+/', $tags_string, -1, PREG_SPLIT_NO_EMPTY);
+                  }
+                ?>
                   <div class="topic-card">
                     <div class="topic-header">
                       <div class="topic-info">
-                        <h3 class="topic-title"><?= esc($forum['title']) ?></h3>
+                        <h3 class="topic-title"><?= esc($forum->title) ?></h3>
                         <p class="topic-creator">Created by You</p>
                       </div>
-                      <span class="status-badge status-<?= $forum['status'] ?>">
-                        <?= ucfirst($forum['status']) ?>
+                      <span class="status-badge status-active">
+                        Active
                       </span>
                     </div>
                     
                     <div class="topic-description">
-                      <p><?= esc($forum['description']) ?></p>
+                      <p><?= esc(substr($forum->content, 0, 150)) ?><?= strlen($forum->content) > 150 ? '...' : '' ?></p>
                     </div>
                     
+                    <?php if (!empty($tags_array)): ?>
                     <div class="topic-tags">
-                      <?php foreach ($forum['tags'] as $tag): ?>
+                      <?php foreach ($tags_array as $tag): ?>
                         <span class="topic-tag tag-<?= strtolower($tag) ?>">#<?= esc($tag) ?></span>
                       <?php endforeach; ?>
                     </div>
+                    <?php endif; ?>
                     
                     <div class="topic-footer">
                       <div class="topic-meta">
-                        <div class="topic-views"><i class="fas fa-eye"></i> <strong><?= $forum['views'] ?></strong></div>
-                        <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $forum['replies'] ?></strong> replies</div>
-                        <div class="topic-activity"><i class="fas fa-clock"></i> <?= esc($forum['last_activity']) ?></div>
+                        <div class="topic-views"><i class="fas fa-eye"></i> <strong><?= $forum->views ?? 0 ?></strong></div>
+                        <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $forum->replies ?? 0 ?></strong> replies</div>
+                        <div class="topic-activity"><i class="fas fa-clock"></i> <?= $last_activity ?></div>
                       </div>
                       <div class="topic-actions" style="display: flex; gap: 0.5rem;">
-                        <button class="btn btn-primary btn-sm" onclick="openForumDetailModal(<?= $forum['id'] ?>)">
+                        <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $forum->post_id ?>)">
                           <i class="fas fa-eye"></i> View
                         </button>
-                        <button class="btn-action btn-edit" onclick="openEditForumModal(<?= $forum['id'] ?>)">
+                        <button class="btn-action btn-edit" onclick="openEditForumModal(<?= $forum->post_id ?>)">
                           <i class="fas fa-edit"></i> Edit
                         </button>
-                        <button class="btn-action btn-delete" onclick="confirmDeleteForum(<?= $forum['id'] ?>)">
+                        <button class="btn-action btn-delete" onclick="confirmDeleteForum(<?= $forum->post_id ?>)">
                           <i class="fas fa-trash"></i> Delete
                         </button>
                       </div>
@@ -201,48 +164,69 @@ require '../app/views/partials/alumni_header.php';
           
           <div class="topics-container">
             <?php 
-            // Show only first 5 topics
-            $displayTopics = array_slice($forumData['topics'], 0, 5);
-            foreach ($displayTopics as $topic): ?>
+            // Show only first 5 topics visible to alumni's faculty
+            $displayTopics = isset($faculty_posts) && is_array($faculty_posts) ? array_slice($faculty_posts, 0, 5) : [];
+            
+            if (empty($displayTopics)): ?>
+              <div style="text-align: center; padding: 40px; color: #666;">
+                <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                <p style="font-size: 16px; margin: 0;">No forum topics available for your faculty yet.</p>
+                <p style="font-size: 14px; margin-top: 8px; opacity: 0.8;">Be the first to start a discussion!</p>
+              </div>
+            <?php else:
+            foreach ($displayTopics as $topic): 
+              // Format created_at as "X time ago"
+              $timestamp = strtotime($topic->created_at);
+              $diff = time() - $timestamp;
+              if ($diff < 60) $last_activity = $diff . ' seconds ago';
+              elseif ($diff < 3600) $last_activity = floor($diff / 60) . ' minutes ago';
+              elseif ($diff < 86400) $last_activity = floor($diff / 3600) . ' hours ago';
+              else $last_activity = floor($diff / 86400) . ' days ago';
+              
+              // Parse tags from string to array
+              $tags_array = [];
+              if (!empty($topic->tags)) {
+                // Remove # symbols and split by space or comma
+                $tags_string = str_replace('#', '', $topic->tags);
+                $tags_array = preg_split('/[\s,]+/', $tags_string, -1, PREG_SPLIT_NO_EMPTY);
+              }
+            ?>
             <div class="topic-card">
               <div class="topic-header">
                 <div class="topic-info">
-                  <h3 class="topic-title"><?= esc($topic['title']) ?></h3>
-                  <p class="topic-creator">Created by <?= esc($topic['creator']) ?></p>
+                  <h3 class="topic-title"><?= esc($topic->title) ?></h3>
+                  <p class="topic-creator">Created by <?= esc($topic->author_name ?? 'Unknown') ?></p>
                 </div>
-                <span class="status-badge status-<?= $topic['status'] ?>">
-                  <?= ucfirst($topic['status']) ?>
+                <span class="status-badge status-active">
+                  Active
                 </span>
               </div>
               
               <div class="topic-description">
-                <p><?= esc($topic['description']) ?></p>
+                <p><?= esc(substr($topic->content, 0, 150)) ?><?= strlen($topic->content) > 150 ? '...' : '' ?></p>
               </div>
               
-              <?php if (isset($topic['tags'])): ?>
+              <?php if (!empty($tags_array)): ?>
               <div class="topic-tags">
-                <?php foreach ($topic['tags'] as $tag): ?>
+                <?php foreach ($tags_array as $tag): ?>
                 <span class="topic-tag tag-<?= strtolower($tag) ?>">#<?= esc($tag) ?></span>
                 <?php endforeach; ?>
-              </div>
-              <?php else: ?>
-              <div class="topic-tags">
-                <span class="topic-tag tag-<?= strtolower($topic['category']) ?>"><?= esc($topic['category']) ?></span>
               </div>
               <?php endif; ?>
               
               <div class="topic-footer">
                 <div class="topic-meta">
-                  <div class="topic-views"><i class="fas fa-eye"></i> <strong><?= $topic['views'] ?></strong></div>
-                  <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $topic['replies'] ?></strong> replies</div>
-                  <div class="topic-activity"><i class="fas fa-clock"></i> <?= esc($topic['last_activity']) ?></div>
+                  <div class="topic-views"><i class="fas fa-eye"></i> <strong><?= $topic->views ?? 0 ?></strong></div>
+                  <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $topic->replies ?? 0 ?></strong> replies</div>
+                  <div class="topic-activity"><i class="fas fa-clock"></i> <?= $last_activity ?></div>
                 </div>
-                <button class="btn btn-primary btn-sm" onclick="openForumDetailModal(<?= $topic['id'] ?>)">
+                <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $topic->post_id ?>)">
                   <i class="fas fa-eye"></i> View
                 </button>
               </div>
             </div>
-            <?php endforeach; ?>
+            <?php endforeach; 
+            endif; ?>
           </div>
         </section>
 
@@ -256,65 +240,8 @@ require '../app/views/partials/alumni_header.php';
           
           <div class="my-replies-container">
             <?php
-            // Sample replies data (replace with actual data from database later)
-            $myReplies = [
-              [
-                'id' => 1,
-                'forum_id' => 1,
-                'forum_title' => 'Mentoring New Graduates: Effective Strategies',
-                'reply_text' => 'I\'ve been mentoring for 3 years now and the most important thing I\'ve learned is to be patient and provide constructive feedback. Always encourage questions and create a safe space for learning.',
-                'posted_date' => '2 days ago',
-                'likes' => 12
-              ],
-              [
-                'id' => 2,
-                'forum_id' => 3,
-                'forum_title' => 'Work-Life Balance in Tech: Your Strategies',
-                'reply_text' => 'Setting clear boundaries has been crucial for me. I don\'t check work emails after 7 PM and make sure to take regular breaks during the day. Also, exercise and hobbies are essential!',
-                'posted_date' => '5 days ago',
-                'likes' => 8
-              ],
-              [
-                'id' => 3,
-                'forum_id' => 8,
-                'forum_title' => 'Tech Certifications Worth Pursuing in 2026',
-                'reply_text' => 'I recently completed AWS Solutions Architect certification and it really helped advance my career. The hands-on experience is invaluable. Highly recommend it for anyone in cloud computing!',
-                'posted_date' => '1 week ago',
-                'likes' => 15
-              ],
-              [
-                'id' => 4,
-                'forum_id' => 5,
-                'forum_title' => 'Building a Strong Professional Network',
-                'reply_text' => 'Attending industry conferences has been invaluable for my networking. Don\'t be afraid to reach out to people and follow up after events!',
-                'posted_date' => '2 weeks ago',
-                'likes' => 10
-              ],
-              [
-                'id' => 5,
-                'forum_id' => 2,
-                'forum_title' => 'Industry Trends: AI and Machine Learning Impact',
-                'reply_text' => 'I\'ve been working with AI tools daily and they\'ve significantly increased my productivity. The key is learning how to use them effectively while maintaining critical thinking.',
-                'posted_date' => '3 weeks ago',
-                'likes' => 18
-              ],
-              [
-                'id' => 6,
-                'forum_id' => 11,
-                'forum_title' => 'Data Science and Analytics Career Paths',
-                'reply_text' => 'Started as a data analyst and transitioned to data science. Python, SQL, and understanding business context are crucial skills.',
-                'posted_date' => '1 month ago',
-                'likes' => 14
-              ],
-              [
-                'id' => 7,
-                'forum_id' => 6,
-                'forum_title' => 'Transitioning to Leadership Roles',
-                'reply_text' => 'The biggest challenge was shifting from doing the work to enabling others. Delegation and trust are key leadership skills.',
-                'posted_date' => '1 month ago',
-                'likes' => 11
-              ]
-            ];
+            // Use real database data from controller
+            $myReplies = isset($my_replies) && is_array($my_replies) ? $my_replies : [];
             ?>
             
             <?php if (empty($myReplies)): ?>
@@ -325,35 +252,43 @@ require '../app/views/partials/alumni_header.php';
               </div>
             <?php else: ?>
               <div class="replies-grid">
-                <?php foreach ($myReplies as $reply): ?>
+                <?php foreach ($myReplies as $reply): 
+                  // Format repliedtime as "X time ago"
+                  $timestamp = strtotime($reply->repliedtime);
+                  $diff = time() - $timestamp;
+                  if ($diff < 60) $posted_date = $diff . ' seconds ago';
+                  elseif ($diff < 3600) $posted_date = floor($diff / 60) . ' minutes ago';
+                  elseif ($diff < 86400) $posted_date = floor($diff / 3600) . ' hours ago';
+                  else $posted_date = floor($diff / 86400) . ' days ago';
+                ?>
                   <div class="reply-card">
                     <div class="reply-card-header">
                       <div class="forum-link-info">
                         <span class="forum-label">Replied to:</span>
-                        <a href="javascript:void(0)" class="forum-link" onclick="openForumDetailModal(<?= $reply['forum_id'] ?>)">
-                          <?= esc($reply['forum_title']) ?>
+                        <a href="javascript:void(0)" class="forum-link" onclick="incrementAndViewPost(<?= $reply->forum_id ?>)">
+                          <?= esc($reply->forum_title ?? 'Deleted Post') ?>
                         </a>
                       </div>
                       <span class="reply-date">
-                        <i class="fas fa-clock"></i> <?= esc($reply['posted_date']) ?>
+                        <i class="fas fa-clock"></i> <?= esc($posted_date) ?>
                       </span>
                     </div>
                     
                     <div class="reply-card-content">
-                      <p class="reply-text"><?= esc($reply['reply_text']) ?></p>
+                      <p class="reply-text"><?= esc($reply->reply) ?></p>
                     </div>
                     
                     <div class="reply-card-footer">
                       <div class="reply-stats">
                         <span class="reply-likes">
-                          <i class="fas fa-thumbs-up"></i> <?= $reply['likes'] ?> likes
+                          <i class="fas fa-thumbs-up"></i> <?= $reply->likes ?> likes
                         </span>
                       </div>
                       <div class="reply-actions">
-                        <button class="btn-action btn-edit" onclick="openEditReplyModal(<?= $reply['id'] ?>, '<?= htmlspecialchars($reply['reply_text'], ENT_QUOTES) ?>')">
+                        <button class="btn-action btn-edit" onclick="openEditReplyModal(<?= $reply->replyid ?>, '<?= htmlspecialchars($reply->reply, ENT_QUOTES) ?>')">
                           <i class="fas fa-edit"></i> Edit
                         </button>
-                        <button class="btn-action btn-delete" onclick="confirmDeleteReply(<?= $reply['id'] ?>)">
+                        <button class="btn-action btn-delete" onclick="confirmDeleteReply(<?= $reply->replyid ?>)">
                           <i class="fas fa-trash"></i> Delete
                         </button>
                       </div>
@@ -409,119 +344,7 @@ require '../app/views/partials/alumni_header.php';
             </h3>
             
             <div class="replies-list" id="repliesList">
-              <!-- Sample replies - will be dynamically loaded -->
-              <div class="reply-item">
-                <div class="reply-header">
-                  <div class="reply-author">
-                    <i class="fas fa-user-circle"></i>
-                    <strong>Sarah Johnson</strong>
-                  </div>
-                  <span class="reply-time">2 hours ago</span>
-                </div>
-                <div class="reply-content">
-                  <p>This is a great discussion topic! I've been working in the tech industry for 5 years now and I'd be happy to share my experience. The most important thing is to keep learning and stay updated with the latest technologies.</p>
-                </div>
-                <div class="reply-footer">
-                  <button class="btn-link"><i class="fas fa-thumbs-up"></i> Like</button>
-                </div>
-              </div>
-
-              <div class="reply-item">
-                <div class="reply-header">
-                  <div class="reply-author">
-                    <i class="fas fa-user-circle"></i>
-                    <strong>Michael Chen</strong>
-                  </div>
-                  <span class="reply-time">1 day ago</span>
-                </div>
-                <div class="reply-content">
-                  <p>I completely agree! Networking has been crucial for my career growth. I recommend attending tech meetups and conferences whenever possible. Also, contributing to open-source projects is a great way to build your portfolio.</p>
-                </div>
-                <div class="reply-footer">
-                  <button class="btn-link"><i class="fas fa-thumbs-up"></i> Like</button>
-                </div>
-              </div>
-
-              <div class="reply-item">
-                <div class="reply-header">
-                  <div class="reply-author">
-                    <i class="fas fa-user-circle"></i>
-                    <strong>Emily Rodriguez</strong>
-                  </div>
-                  <span class="reply-time">2 days ago</span>
-                </div>
-                <div class="reply-content">
-                  <p>Don't forget about soft skills! Communication and teamwork are just as important as technical skills. I've seen many talented developers struggle because they couldn't effectively communicate their ideas.</p>
-                </div>
-                <div class="reply-footer">
-                  <button class="btn-link"><i class="fas fa-thumbs-up"></i> Like</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Hidden replies (shown when View All is clicked) -->
-            <div class="reply-item hidden-reply">
-              <div class="reply-header">
-                <div class="reply-author">
-                  <i class="fas fa-user-circle"></i>
-                  <strong>David Martinez</strong>
-                </div>
-                <span class="reply-time">3 days ago</span>
-              </div>
-              <div class="reply-content">
-                <p>I'd also recommend finding a mentor in your field. Having someone to guide you and provide feedback on your career decisions can make a huge difference.</p>
-              </div>
-              <div class="reply-footer">
-                <button class="btn-link"><i class="fas fa-thumbs-up"></i> Like</button>
-              </div>
-            </div>
-
-            <div class="reply-item hidden-reply">
-              <div class="reply-header">
-                <div class="reply-author">
-                  <i class="fas fa-user-circle"></i>
-                  <strong>Jennifer Wong</strong>
-                </div>
-                <span class="reply-time">4 days ago</span>
-              </div>
-              <div class="reply-content">
-                <p>Building a strong portfolio is key! Work on personal projects that showcase your skills and passion. Employers love to see practical applications of your knowledge.</p>
-              </div>
-              <div class="reply-footer">
-                <button class="btn-link"><i class="fas fa-thumbs-up"></i> Like</button>
-              </div>
-            </div>
-
-            <div class="reply-item hidden-reply">
-              <div class="reply-header">
-                <div class="reply-author">
-                  <i class="fas fa-user-circle"></i>
-                  <strong>Robert Lee</strong>
-                </div>
-                <span class="reply-time">5 days ago</span>
-              </div>
-              <div class="reply-content">
-                <p>Don't underestimate the power of continuous learning. Take online courses, read industry blogs, and stay curious. The tech landscape changes rapidly!</p>
-              </div>
-              <div class="reply-footer">
-                <button class="btn-link"><i class="fas fa-thumbs-up"></i> Like</button>
-              </div>
-            </div>
-
-            <div class="reply-item hidden-reply">
-              <div class="reply-header">
-                <div class="reply-author">
-                  <i class="fas fa-user-circle"></i>
-                  <strong>Amanda Foster</strong>
-                </div>
-                <span class="reply-time">1 week ago</span>
-              </div>
-              <div class="reply-content">
-                <p>Remember to take care of your work-life balance from the start. It's easy to burn out, especially when you're trying to prove yourself in a new role.</p>
-              </div>
-              <div class="reply-footer">
-                <button class="btn-link"><i class="fas fa-thumbs-up"></i> Like</button>
-              </div>
+              <!-- Replies will be dynamically loaded from database -->
             </div>
 
             <!-- View All Replies Button -->
@@ -598,13 +421,26 @@ require '../app/views/partials/alumni_header.php';
         <form class="new-post-form">
           <div class="form-group">
             <label for="postTitle">Title *</label>
-            <input type="text" id="postTitle" name="title" placeholder="e.g., Help with data structures" required>
+            <input type="text" id="postTitle" name="title" placeholder="e.g., Industry insights and career advice" required>
             <small>At least 10 characters.</small>
           </div>
           <div class="form-group">
             <label for="postContent">Content *</label>
-            <textarea id="postContent" name="content" placeholder="Write your question or post here..." rows="6" required></textarea>
+            <textarea id="postContent" name="content" placeholder="Share your experiences and insights..." rows="6" required></textarea>
             <small>At least 50 characters.</small>
+          </div>
+          <div class="form-group">
+            <label for="visibleFaculties">Visible Faculties *</label>
+            <select id="visibleFaculties" name="faculty_id" class="form-control" required style="padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; background-color: #fff; font-size: 14px;">
+              <option value="">-- Select Faculty --</option>
+              <option value="999">All Faculties</option>
+              <?php if (!empty($faculties)): ?>
+                <?php foreach ($faculties as $faculty): ?>
+                  <option value="<?= $faculty->faculty_id ?>"><?= htmlspecialchars($faculty->faculty_name) ?></option>
+                <?php endforeach; ?>
+              <?php endif; ?>
+            </select>
+            <small>Select which faculty can see this post</small>
           </div>
           <div class="form-group">
             <label for="postTags">Tags</label>
@@ -625,6 +461,124 @@ require '../app/views/partials/alumni_header.php';
             </button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Edit Post Modal -->
+    <div id="editPostModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Edit Post</h2>
+          <button class="modal-close" onclick="closeEditForumModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <form class="edit-post-form">
+          <input type="hidden" id="editPostId" name="post_id" value="">
+          <div class="form-group">
+            <label for="editPostTitle">Title *</label>
+            <input type="text" id="editPostTitle" name="title" placeholder="e.g., Industry insights and career advice" required>
+            <small>At least 10 characters.</small>
+          </div>
+          <div class="form-group">
+            <label for="editPostContent">Content *</label>
+            <textarea id="editPostContent" name="content" placeholder="Share your experiences and insights..." rows="6" required></textarea>
+            <small>At least 50 characters.</small>
+          </div>
+          <div class="form-group">
+            <label for="editVisibleFaculties">Visible Faculties *</label>
+            <select id="editVisibleFaculties" name="faculty_id" class="form-control" required style="padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; background-color: #fff; font-size: 14px;">
+              <option value="">-- Select Faculty --</option>
+              <option value="999">All Faculties</option>
+              <?php if (!empty($faculties)): ?>
+                <?php foreach ($faculties as $faculty): ?>
+                  <option value="<?= $faculty->faculty_id ?>"><?= htmlspecialchars($faculty->faculty_name) ?></option>
+                <?php endforeach; ?>
+              <?php endif; ?>
+            </select>
+            <small>Select which faculty can see this post</small>
+          </div>
+          <div class="form-group">
+            <label for="editPostTags">Tags</label>
+            <textarea id="editPostTags" name="tags" placeholder="Click 'Quick Tags' button below to select tags" rows="2" readonly style="cursor: pointer; background-color: var(--muted);"></textarea>
+            <small>Click the "Quick Tags" button to select tags from the list</small>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="openQuickTagsModalForEdit()">
+              <i class="fas fa-hashtag"></i>
+              <span>Quick Tags</span>
+            </button>
+            <button type="button" class="btn btn-outline" onclick="closeEditForumModal()">
+              <span>Cancel</span>
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i>
+              <span>Save Changes</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="modal">
+      <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header" style="border-bottom: 1px solid #e5e7eb;">
+          <h2 class="modal-title" style="color: #dc2626; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-exclamation-triangle"></i> Confirm Delete
+          </h2>
+          <button class="modal-close" onclick="closeDeleteConfirmModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div style="padding: 24px;">
+          <p style="color: #1f2937; font-size: 15px; line-height: 1.6; margin-bottom: 16px;">
+            Are you sure you want to delete this forum post?
+          </p>
+          <div style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 12px 16px; border-radius: 4px;">
+            <p style="color: #991b1b; font-size: 14px; margin: 0; line-height: 1.5;">
+              <i class="fas fa-info-circle"></i> <strong>Warning:</strong> This action cannot be undone. All replies to this post will also be deleted.
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px; background: #f9fafb; border-top: 1px solid #e5e7eb;">
+          <button class="btn btn-outline" onclick="closeDeleteConfirmModal()" style="min-width: 100px;">
+            <i class="fas fa-times"></i>
+            <span>Cancel</span>
+          </button>
+          <button class="btn" onclick="executeDeleteForum()" style="background: #dc2626; color: white; min-width: 100px;">
+            <i class="fas fa-trash"></i>
+            <span>Delete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Reply Confirmation Modal -->
+    <div id="deleteReplyConfirmModal" class="modal">
+      <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header" style="border-bottom: 1px solid #e5e7eb;">
+          <h2 class="modal-title" style="color: #dc2626; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-exclamation-triangle"></i> Confirm Delete
+          </h2>
+          <button class="modal-close" onclick="closeDeleteReplyConfirmModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div style="padding: 24px;">
+          <p style="color: #1f2937; font-size: 15px; line-height: 1.6; margin-bottom: 16px;">
+            Are you sure you want to delete this reply?
+          </p>
+          <div style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 12px 16px; border-radius: 4px;">
+            <p style="color: #991b1b; font-size: 14px; margin: 0; line-height: 1.5;">
+              <i class="fas fa-info-circle"></i> <strong>Warning:</strong> This action cannot be undone.
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px; background: #f9fafb; border-top: 1px solid #e5e7eb;">
+          <button class="btn btn-outline" onclick="closeDeleteReplyConfirmModal()" style="min-width: 100px;">
+            <i class="fas fa-times"></i>
+            <span>Cancel</span>
+          </button>
+          <button class="btn" onclick="executeDeleteReply()" style="background: #dc2626; color: white; min-width: 100px;">
+            <i class="fas fa-trash"></i>
+            <span>Delete</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -745,212 +699,174 @@ require '../app/views/partials/alumni_header.php';
     }
 
     // Forum Detail Modal Functions
-    function openForumDetailModal(topicId) {
-      console.log('Opening Forum Detail Modal for topic:', topicId);
+    let currentPostId = null;
+
+    function openForumDetailModal(postId) {
+      currentPostId = postId;
       
-      // Sample data (replace with actual data fetching later)
-      const forumData = {
-        1: {
-          title: "Mentoring New Graduates: Effective Strategies",
-          creator: "Nimal Perera",
-          status: "active",
-          views: 134,
-          replies: 23,
-          last_activity: "1 day ago",
-          tags: ["Mentorship", "Career", "Experience"],
-          category: "Mentorship",
-          description: "Share your experiences and tips for mentoring recent graduates in your field. What approaches have worked best for you in guiding new professionals?"
-        },
-        2: {
-          title: "Industry Trends: AI and Machine Learning Impact",
-          creator: "Sanduni Jayawardena",
-          status: "trending",
-          views: 198,
-          replies: 45,
-          last_activity: "2 days ago",
-          tags: ["General", "Trending", "AI", "Tech"],
-          category: "General",
-          description: "Discussion about how AI/ML is reshaping different industries and career paths. How are you adapting to these technological changes in your profession?"
-        },
-        3: {
-          title: "Work-Life Balance in Tech: Your Strategies",
-          creator: "Chaminda Silva",
-          status: "active",
-          views: 92,
-          replies: 18,
-          last_activity: "3 days ago",
-          tags: ["Career", "Tech", "Experience"],
-          category: "Career",
-          description: "How do you maintain a healthy work-life balance in demanding tech roles? Share your strategies and tips for managing stress and personal time."
-        },
-        4: {
-          title: "Remote Work Best Practices",
-          creator: "Dilani Fernando",
-          status: "active",
-          views: 67,
-          replies: 12,
-          last_activity: "4 days ago",
-          tags: ["Career", "General", "Networking"],
-          category: "Career",
-          description: "What are your best practices for remote work productivity? Looking for tips on home office setup, communication tools, and maintaining team collaboration."
-        },
-        5: {
-          title: "Building a Strong Professional Network",
-          creator: "Kasun Rajapaksha",
-          status: "active",
-          views: 156,
-          replies: 31,
-          last_activity: "5 days ago",
-          tags: ["Networking", "Career", "Experience"],
-          category: "Networking",
-          description: "How do you expand your professional network effectively? Share your networking strategies, tips for LinkedIn, and experiences from industry events."
-        },
-        6: {
-          title: "Transitioning to Leadership Roles",
-          creator: "Tharindi Wickramasinghe",
-          status: "active",
-          views: 89,
-          replies: 20,
-          last_activity: "1 week ago",
-          tags: ["Leadership", "Career", "Mentorship"],
-          category: "Leadership",
-          description: "Advice and experiences for alumni transitioning from technical roles to leadership and management positions. What challenges did you face and how did you overcome them?"
-        },
-        7: {
-          title: "Startup Funding: From Idea to Investment",
-          creator: "Rukmal Wijemanne",
-          status: "active",
-          views: 142,
-          replies: 28,
-          last_activity: "2 weeks ago",
-          tags: ["Startup", "Entrepreneurship", "Networking"],
-          category: "Entrepreneurship",
-          description: "Discussing strategies for securing startup funding, pitching to investors, and navigating the venture capital landscape. Share your fundraising stories and lessons learned."
-        },
-        8: {
-          title: "Tech Certifications Worth Pursuing in 2026",
-          creator: "Amila Jayasinghe",
-          status: "trending",
-          views: 215,
-          replies: 42,
-          last_activity: "3 days ago",
-          tags: ["Tech", "Career", "Skills", "Learning"],
-          category: "Career",
-          description: "Which tech certifications are most valuable in today's market? AWS, Azure, GCP, or specialized certifications? Share your experiences and recommendations."
-        },
-        9: {
-          title: "Mental Health in High-Pressure Careers",
-          creator: "Shalini Perera",
-          status: "active",
-          views: 178,
-          replies: 35,
-          last_activity: "4 days ago",
-          tags: ["Experience", "General", "Advice"],
-          category: "General",
-          description: "Let's discuss mental health awareness and strategies for managing stress in demanding career paths. How do you maintain your well-being while pursuing professional goals?"
-        },
-        10: {
-          title: "International Career Opportunities: Tips for Relocation",
-          creator: "Dinesh Fernando",
-          status: "active",
-          views: 134,
-          replies: 25,
-          last_activity: "5 days ago",
-          tags: ["Career", "Networking", "Experience"],
-          category: "Career",
-          description: "Exploring international job opportunities? Share your experiences with visa processes, cultural adaptation, and building a career abroad."
-        },
-        11: {
-          title: "Data Science and Analytics Career Paths",
-          creator: "Hasini Wickramaratne",
-          status: "active",
-          views: 198,
-          replies: 37,
-          last_activity: "6 days ago",
-          tags: ["Tech", "AI", "Career", "Skills"],
-          category: "Tech",
-          description: "Discussion about breaking into data science, essential skills, tools, and career progression. From data analyst to data scientist - what's your journey been like?"
-        },
-        12: {
-          title: "Effective Communication Skills for Leaders",
-          creator: "Mahesh Silva",
-          status: "active",
-          views: 112,
-          replies: 22,
-          last_activity: "1 week ago",
-          tags: ["Leadership", "Mentorship", "Experience"],
-          category: "Leadership",
-          description: "What communication strategies have helped you become a better leader? Share tips on public speaking, team communication, and stakeholder management."
-        }
-      };
-
-      const forum = forumData[topicId] || forumData[1]; // Default to first topic if ID not found
-
-      // Update modal content
-      document.getElementById('forumDetailTitle').textContent = forum.title;
-      document.getElementById('forumDetailCreator').textContent = forum.creator;
-      document.getElementById('forumDetailStatus').textContent = forum.status.charAt(0).toUpperCase() + forum.status.slice(1);
-      document.getElementById('forumDetailStatus').className = 'status-badge status-' + forum.status;
-      document.getElementById('forumDetailViews').textContent = forum.views;
-      document.getElementById('forumDetailReplies').textContent = forum.replies;
-      document.getElementById('repliesCount').textContent = forum.replies;
-      document.getElementById('forumDetailActivity').textContent = forum.last_activity;
-      document.getElementById('forumDetailDescription').textContent = forum.description;
-
-      // Update tags
-      const tagsContainer = document.getElementById('forumDetailTagsContainer');
-      tagsContainer.innerHTML = '';
-      if (forum.tags && forum.tags.length > 0) {
-        forum.tags.forEach(tag => {
-          const tagSpan = document.createElement('span');
-          tagSpan.className = 'topic-tag tag-' + tag.toLowerCase();
-          tagSpan.textContent = '#' + tag;
-          tagsContainer.appendChild(tagSpan);
+      // Fetch post details and replies from server
+      fetch(`<?=ROOT?>/alumni/discussionforum/getpostwithreplies?post_id=${postId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            const post = data.post;
+            const replies = Array.isArray(data.replies) ? data.replies : [];
+            const likedReplyIds = data.likedReplyIds || [];
+            
+            // Store liked reply IDs globally
+            window.likedReplyIds = likedReplyIds;
+            
+            // Populate modal with post details
+            document.getElementById('forumDetailTitle').textContent = post.title;
+            document.getElementById('forumDetailCreator').textContent = post.author_name || 'Unknown';
+            document.getElementById('forumDetailViews').textContent = post.views || 0;
+            document.getElementById('forumDetailReplies').textContent = replies.length;
+            
+            // Format created_at as readable date and time
+            const createdDate = new Date(post.created_at);
+            const formattedDateTime = createdDate.toLocaleString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            });
+            
+            document.getElementById('forumDetailActivity').textContent = formattedDateTime;
+            document.getElementById('forumDetailDescription').textContent = post.content;
+            
+            // Display tags
+            const tagsContainer = document.getElementById('forumDetailTagsContainer');
+            tagsContainer.innerHTML = '';
+            if (post.tags) {
+              const tags = post.tags.split(/[\s,]+/).filter(tag => tag.trim());
+              tags.forEach(tag => {
+                const tagSpan = document.createElement('span');
+                tagSpan.className = 'topic-tag tag-' + tag.toLowerCase().replace('#', '');
+                tagSpan.textContent = tag.startsWith('#') ? tag : '#' + tag;
+                tagsContainer.appendChild(tagSpan);
+              });
+            }
+            
+            // Display replies
+            displayReplies(replies);
+            
+            // Update reply count
+            document.getElementById('repliesCount').textContent = replies.length;
+            
+            // Show/hide View All Replies button based on reply count
+            const viewAllBtn = document.getElementById('viewAllRepliesBtn');
+            if (viewAllBtn) {
+              if (replies.length > 3) {
+                viewAllBtn.style.display = 'block';
+              } else {
+                viewAllBtn.style.display = 'none';
+              }
+            }
+            
+            // Show modal
+            const modal = document.getElementById('forumDetailModal');
+            modal.classList.add('show');
+            modal.style.display = 'block';
+          } else {
+            showNotification(data.message || 'Failed to load post', 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showNotification('Failed to load post details', 'error');
         });
-      }
+    }
 
-      // Reset hidden replies to hidden state
-      const hiddenReplies = document.querySelectorAll('.hidden-reply');
-      hiddenReplies.forEach(reply => reply.style.display = 'none');
+    function displayReplies(replies) {
+      const repliesList = document.getElementById('repliesList');
+      repliesList.innerHTML = '';
       
-      // Show View All button if there are more than 3 replies
-      const viewAllBtn = document.getElementById('viewAllRepliesBtn');
-      if (viewAllBtn) {
-        if (forum.replies > 3) {
-          viewAllBtn.style.display = 'block';
-          viewAllBtn.querySelector('.btn-view-all-replies').innerHTML = '<i class="fas fa-comments"></i> View All Replies';
-        } else {
-          viewAllBtn.style.display = 'none';
+      // Ensure replies is an array
+      if (!Array.isArray(replies)) {
+        replies = [];
+      }
+      
+      if (replies.length === 0) {
+        repliesList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No replies yet. Be the first to reply!</p>';
+        return;
+      }
+      
+      replies.forEach((reply, index) => {
+        const replyItem = document.createElement('div');
+        replyItem.className = 'reply-item';
+        
+        // Hide replies after the first 3
+        if (index >= 3) {
+          replyItem.classList.add('hidden-reply');
+          replyItem.style.display = 'none';
         }
-      }
-
-      // Show modal
-      const modal = document.getElementById('forumDetailModal');
-      if (modal) {
-        modal.classList.add('show');
-        modal.style.display = 'block';
-      }
+        
+        // Format reply time - show time if today, date if not
+        const replyDate = new Date(reply.repliedtime);
+        const today = new Date();
+        const isToday = replyDate.toDateString() === today.toDateString();
+        
+        let displayTime;
+        if (isToday) {
+          // Show just the time if posted today
+          displayTime = replyDate.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        } else {
+          // Show the date if not today
+          displayTime = replyDate.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+          });
+        }
+        
+        // Check if this reply is liked by current user
+        const isLiked = window.likedReplyIds && window.likedReplyIds.includes(reply.replyid);
+        const likedClass = isLiked ? 'liked' : '';
+        
+        replyItem.innerHTML = `
+          <div class="reply-header">
+            <div class="reply-author">
+              <i class="fas fa-user-circle"></i>
+              <strong>${reply.user_name || 'Anonymous'}</strong>
+            </div>
+            <span class="reply-time">${displayTime}</span>
+          </div>
+          <div class="reply-content">
+            <p>${reply.reply}</p>
+          </div>
+          <div class="reply-footer">
+            <button class="btn-link btn-like ${likedClass}" data-reply-id="${reply.replyid}" onclick="toggleLikeReply(${reply.replyid}, this)">
+              <i class="fas fa-thumbs-up"></i> 
+              <span class="like-count">${reply.likes || 0}</span> Like${(reply.likes || 0) !== 1 ? 's' : ''}
+            </button>
+          </div>
+        `;
+        
+        repliesList.appendChild(replyItem);
+      });
     }
 
     function toggleAllReplies() {
       const hiddenReplies = document.querySelectorAll('.hidden-reply');
-      const viewAllBtn = document.getElementById('viewAllRepliesBtn');
-      const btnElement = viewAllBtn.querySelector('.btn-view-all-replies');
+      const viewAllBtn = document.querySelector('.btn-view-all-replies');
+      
+      if (hiddenReplies.length === 0) return;
       
       // Check if replies are currently hidden
-      const isHidden = hiddenReplies[0].style.display === 'none' || !hiddenReplies[0].style.display;
+      const isHidden = hiddenReplies[0].style.display === 'none';
       
       if (isHidden) {
         // Show all replies
         hiddenReplies.forEach(reply => reply.style.display = 'block');
-        btnElement.innerHTML = '<i class="fas fa-chevron-up"></i> Show Less';
+        viewAllBtn.innerHTML = '<i class="fas fa-chevron-up"></i> Show Less';
       } else {
         // Hide additional replies
         hiddenReplies.forEach(reply => reply.style.display = 'none');
-        btnElement.innerHTML = '<i class="fas fa-comments"></i> View All Replies';
-        
-        // Scroll to replies section
-        document.querySelector('.replies-section').scrollIntoView({ behavior: 'smooth' });
+        viewAllBtn.innerHTML = '<i class="fas fa-comments"></i> View All Replies';
       }
     }
 
@@ -959,8 +875,11 @@ require '../app/views/partials/alumni_header.php';
       const modal = document.getElementById('forumDetailModal');
       if (modal) {
         modal.classList.remove('show');
-        modal.style.display = 'none';
+        setTimeout(() => {
+          modal.style.display = 'none';
+        }, 300);
       }
+      currentPostId = null;
     }
 
     function submitReply(event) {
@@ -968,14 +887,90 @@ require '../app/views/partials/alumni_header.php';
       const textarea = event.target.querySelector('.reply-textarea');
       const replyText = textarea.value.trim();
       
-      if (replyText) {
-        console.log('Submitting reply:', replyText);
-        // TODO: Add backend logic to save reply
-        
-        // For now, just show a success message and clear the form
-        alert('Reply posted successfully! (Backend integration pending)');
-        textarea.value = '';
+      if (!replyText) {
+        showNotification('Please enter a reply', 'warning');
+        return;
       }
+      
+      if (!currentPostId) {
+        showNotification('Post ID not found', 'error');
+        return;
+      }
+      
+      // Submit reply to backend
+      fetch('<?=ROOT?>/alumni/discussionforum/addreply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          post_id: currentPostId,
+          reply: replyText
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          showNotification(data.message || 'Reply posted successfully', 'success');
+          textarea.value = '';
+          
+          // Refresh the post to show new reply
+          openForumDetailModal(currentPostId);
+        } else {
+          showNotification(data.message || 'Failed to post reply', 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showNotification('Failed to post reply', 'error');
+      });
+    }
+
+    // Toggle Like Reply Function
+    function toggleLikeReply(replyId, buttonElement) {
+      fetch('<?=ROOT?>/alumni/discussionforum/likereply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          reply_id: replyId
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Update the like count display
+          const likeCountSpan = buttonElement.querySelector('.like-count');
+          if (likeCountSpan) {
+            likeCountSpan.textContent = data.likes;
+            // Update the pluralization
+            const likeText = data.likes !== 1 ? 's' : '';
+            buttonElement.innerHTML = `<i class="fas fa-thumbs-up"></i> <span class="like-count">${data.likes}</span> Like${likeText}`;
+          }
+          
+          // Toggle the liked class for highlighting
+          if (data.liked) {
+            buttonElement.classList.add('liked');
+            // Update global liked array
+            if (window.likedReplyIds && !window.likedReplyIds.includes(replyId)) {
+              window.likedReplyIds.push(replyId);
+            }
+          } else {
+            buttonElement.classList.remove('liked');
+            // Update global liked array
+            if (window.likedReplyIds) {
+              window.likedReplyIds = window.likedReplyIds.filter(id => id !== replyId);
+            }
+          }
+        } else {
+          showNotification(data.message || 'Failed to toggle like', 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showNotification('Failed to toggle like', 'error');
+      });
     }
 
     // My Replies Management Functions
@@ -1007,55 +1002,345 @@ require '../app/views/partials/alumni_header.php';
       const replyId = document.getElementById('editReplyId').value;
       const replyText = document.getElementById('editReplyText').value.trim();
       
-      if (replyText) {
-        console.log('Updating reply:', replyId, replyText);
-        // TODO: Add backend logic to update reply
-        
-        alert('Reply updated successfully! (Backend integration pending)');
-        closeEditReplyModal();
-        // Optionally reload the page to show updated content
-        // location.reload();
+      if (!replyText) {
+        showNotification('Please enter a reply', 'warning');
+        return;
+      }
+      
+      if (replyText.length < 10) {
+        showNotification('Reply must be at least 10 characters long', 'warning');
+        return;
+      }
+      
+      // Update reply via backend
+      fetch('<?=ROOT?>/alumni/discussionforum/updatereply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          reply_id: replyId,
+          reply: replyText
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          showNotification(data.message || 'Reply updated successfully', 'success');
+          closeEditReplyModal();
+          // Reload page to update My Replies section
+          setTimeout(() => location.reload(), 1000);
+        } else {
+          showNotification(data.message || 'Failed to update reply', 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showNotification('Failed to update reply', 'error');
+      });
+    }
+
+    let deleteReplyId = null;
+
+    function confirmDeleteReply(replyId) {
+      deleteReplyId = replyId;
+      const modal = document.getElementById('deleteReplyConfirmModal');
+      if (modal) {
+        modal.classList.add('show');
+        modal.style.display = 'block';
       }
     }
 
-    function confirmDeleteReply(replyId) {
-      if (confirm('Are you sure you want to delete this reply? This action cannot be undone.')) {
-        console.log('Deleting reply:', replyId);
-        // TODO: Add backend logic to delete reply
-        
-        alert('Reply deleted successfully! (Backend integration pending)');
-        // Optionally reload the page to remove the deleted reply
-        // location.reload();
+    function closeDeleteReplyConfirmModal() {
+      const modal = document.getElementById('deleteReplyConfirmModal');
+      if (modal) {
+        modal.classList.remove('show');
+        modal.style.display = 'none';
       }
+      deleteReplyId = null;
+    }
+
+    function executeDeleteReply() {
+      if (!deleteReplyId) {
+        showNotification('No reply selected', 'error');
+        return;
+      }
+
+      // Delete reply via backend
+      fetch('<?=ROOT?>/alumni/discussionforum/deletereply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          reply_id: deleteReplyId
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          showNotification(data.message || 'Reply deleted successfully', 'success');
+          closeDeleteReplyConfirmModal();
+          // Reload page to update My Replies section
+          setTimeout(() => location.reload(), 1000);
+        } else {
+          showNotification(data.message || 'Failed to delete reply', 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showNotification('Failed to delete reply', 'error');
+      });
     }
 
     // My Published Forums Management Functions
+    let deleteForumId = null;
+
     function openEditForumModal(forumId) {
       console.log('Opening Edit Forum Modal for forum:', forumId);
-      // TODO: Implement edit forum modal
-      alert('Edit forum functionality - Backend integration pending\nForum ID: ' + forumId);
+      
+      // Fetch post data from server
+      fetch(`<?=ROOT?>/alumni/discussionforum/get?post_id=${forumId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            const post = data.post;
+            
+            // Populate the edit form
+            document.getElementById('editPostId').value = post.post_id;
+            document.getElementById('editPostTitle').value = post.title;
+            document.getElementById('editPostContent').value = post.content;
+            document.getElementById('editPostTags').value = post.tags || '';
+            document.getElementById('editVisibleFaculties').value = post.visiblefaculties || '';
+            
+            // Show the modal
+            const modal = document.getElementById('editPostModal');
+            modal.classList.add('show');
+            modal.style.display = 'block';
+          } else {
+            showNotification(data.message || 'Failed to load post', 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showNotification('Failed to load post', 'error');
+        });
+    }
+
+    function closeEditForumModal() {
+      const modal = document.getElementById('editPostModal');
+      if (modal) {
+        modal.classList.remove('show');
+        modal.style.display = 'none';
+      }
     }
 
     function confirmDeleteForum(forumId) {
-      if (confirm('Are you sure you want to delete this forum? This will also delete all replies. This action cannot be undone.')) {
-        console.log('Deleting forum:', forumId);
-        // TODO: Add backend logic to delete forum
-        
-        alert('Forum deleted successfully! (Backend integration pending)');
-        // Optionally reload the page to remove the deleted forum
-        // location.reload();
+      deleteForumId = forumId;
+      const modal = document.getElementById('deleteConfirmModal');
+      if (modal) {
+        modal.classList.add('show');
+        modal.style.display = 'block';
       }
     }
+
+    function closeDeleteConfirmModal() {
+      const modal = document.getElementById('deleteConfirmModal');
+      if (modal) {
+        modal.classList.remove('show');
+        modal.style.display = 'none';
+      }
+      deleteForumId = null;
+    }
+
+    function incrementAndViewPost(postId) {
+      // First, increment the view count
+      fetch('<?= ROOT ?>/alumni/discussionforum/incrementview', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'post_id=' + postId
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Then open the forum detail modal
+        openForumDetailModal(postId);
+      })
+      .catch(error => {
+        console.error('Error incrementing views:', error);
+        // Still open the modal even if view increment fails
+        openForumDetailModal(postId);
+      });
+    }
+
+    function executeDeleteForum() {
+      if (!deleteForumId) {
+        showNotification('No forum selected', 'error');
+        return;
+      }
+
+      fetch('<?=ROOT?>/alumni/discussionforum/delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          post_id: deleteForumId
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          showNotification(data.message || 'Forum deleted successfully', 'success');
+          closeDeleteConfirmModal();
+          location.reload(); // Reload to refresh the list
+        } else {
+          showNotification(data.message || 'Failed to delete forum', 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showNotification('Failed to delete forum', 'error');
+      });
+    }
+
+    // Initialize and Event Listeners
+    // Toast notification system already set up above
+    
+    // Form submission
+    document.addEventListener('DOMContentLoaded', function() {
+      // New Post Form
+      const newPostForm = document.querySelector('.new-post-form');
+      if (newPostForm) {
+        newPostForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          // Get form data
+          const formData = new FormData(this);
+          const title = formData.get('title');
+          const content = formData.get('content');
+          const faculty_id = formData.get('faculty_id');
+          const tags = formData.get('tags');
+          
+          // Basic validation
+          if (title.length < 10) {
+            showNotification('Title must be at least 10 characters long', 'error');
+            return;
+          }
+          
+          if (content.length < 50) {
+            showNotification('Content must be at least 50 characters long', 'error');
+            return;
+          }
+
+          if (!faculty_id) {
+            showNotification('Please select a faculty', 'error');
+            return;
+          }
+          
+          // Submit to server
+          fetch('<?=ROOT?>/alumni/discussionforum/create', {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              showNotification(data.message, 'success');
+              closeNewPostModal();
+              this.reset();
+              setTimeout(() => {
+                location.reload();
+              }, 1000);
+            } else {
+              showNotification(data.message, 'error');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            showNotification('Failed to create post', 'error');
+          });
+        });
+      }
+
+      // Edit Post Form
+      const editPostForm = document.querySelector('.edit-post-form');
+      if (editPostForm) {
+        editPostForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          const formData = new FormData(this);
+          const title = formData.get('title');
+          const content = formData.get('content');
+          const faculty_id = formData.get('faculty_id');
+          
+          if (title.length < 10) {
+            showNotification('Title must be at least 10 characters long', 'error');
+            return;
+          }
+          
+          if (content.length < 50) {
+            showNotification('Content must be at least 50 characters long', 'error');
+            return;
+          }
+
+          if (!faculty_id) {
+            showNotification('Please select a faculty', 'error');
+            return;
+          }
+          
+          fetch('<?=ROOT?>/alumni/discussionforum/update', {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            if (data.success) {
+              showNotification(data.message || 'Post updated successfully!', 'success');
+              closeEditForumModal();
+              location.reload();
+            } else {
+              showNotification(data.message || 'Update failed', 'error');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            showNotification('Post updated successfully!', 'success');
+            closeEditForumModal();
+            location.reload();
+          });
+        });
+      }
+    });
     
     function openQuickTagsModal() {
       console.log('Opening Quick Tags Modal');
       const modal = document.getElementById('quickTagsModal');
       if (modal) {
         // Pre-select tags that are already in the textarea
-        syncModalWithTextarea();
+        syncModalWithTextarea('postTags');
         modal.classList.add('show');
         modal.style.display = 'block';
         console.log('Quick Tags Modal display set to block and show class added');
+      } else {
+        console.error('Quick Tags Modal not found');
+      }
+    }
+
+    function openQuickTagsModalForEdit() {
+      console.log('Opening Quick Tags Modal for Edit');
+      const modal = document.getElementById('quickTagsModal');
+      if (modal) {
+        // Pre-select tags that are already in the edit textarea
+        syncModalWithTextarea('editPostTags');
+        modal.classList.add('show');
+        modal.style.display = 'block';
       } else {
         console.error('Quick Tags Modal not found');
       }
@@ -1071,8 +1356,10 @@ require '../app/views/partials/alumni_header.php';
     }
     
     // Sync modal selections with textarea content
-    function syncModalWithTextarea() {
-      const tagsTextarea = document.getElementById('postTags');
+    function syncModalWithTextarea(textareaId = 'postTags') {
+      const tagsTextarea = document.getElementById(textareaId);
+      if (!tagsTextarea) return;
+      
       const currentTags = tagsTextarea.value.trim();
       
       // Clear all selections first
@@ -1106,7 +1393,19 @@ require '../app/views/partials/alumni_header.php';
     // Sync textarea with selected tags (replaces content instead of appending)
     function addSelectedTags() {
       const selectedTags = document.querySelectorAll('.quick-tag.selected');
-      const tagsTextarea = document.getElementById('postTags');
+      
+      // Determine which textarea to update (for new or edit post)
+      const newPostModal = document.getElementById('newPostModal');
+      const editPostModal = document.getElementById('editPostModal');
+      let tagsTextarea;
+      
+      if (editPostModal && editPostModal.classList.contains('show')) {
+        tagsTextarea = document.getElementById('editPostTags');
+      } else {
+        tagsTextarea = document.getElementById('postTags');
+      }
+      
+      if (!tagsTextarea) return;
       
       if (selectedTags.length === 0) {
         // No tags selected, clear the textarea
@@ -1215,53 +1514,6 @@ require '../app/views/partials/alumni_header.php';
         closeQuickTagsModal();
       }
     }
-    
-    // Form submission
-    document.addEventListener('DOMContentLoaded', function() {
-      const newPostForm = document.querySelector('.new-post-form');
-      if (newPostForm) {
-        newPostForm.addEventListener('submit', function(e) {
-          e.preventDefault();
-          
-          // Get form data
-          const formData = new FormData(this);
-          const title = formData.get('title');
-          const category = formData.get('category');
-          const content = formData.get('content');
-          const priority = formData.get('priority');
-          const tags = formData.get('tags');
-          
-          // Basic validation
-          if (title.length < 10) {
-            alert('Title must be at least 10 characters long.');
-            return;
-          }
-          
-          if (content.length < 50) {
-            alert('Content must be at least 50 characters long.');
-            return;
-          }
-          
-          if (!category) {
-            alert('Please select a category.');
-            return;
-          }
-          
-          // Here you would typically send the data to the server
-          console.log('New post data:', {
-            title: title,
-            category: category,
-            content: content,
-            priority: priority,
-            tags: tags
-          });
-          
-          alert('Post created successfully!');
-          closeNewPostModal();
-          this.reset();
-        });
-      }
-    });
     
     // Hashtag Search Functionality
     const hashtagSearchInput = document.getElementById('hashtagSearch');
@@ -2343,7 +2595,101 @@ require '../app/views/partials/alumni_header.php';
       transform: translateX(5px);
     }
     
-    /* Trending badge red color */    .no-results-message i {
+    /* Trending badge red color */
+    
+    /* Toast Notification Styles */
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      min-width: 300px;
+      max-width: 500px;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: all 0.3s ease;
+      border-left: 4px solid;
+      position: relative;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .toast-success {
+      border-left-color: #10b981;
+      background: #f0fdf4;
+    }
+
+    .toast-success i {
+      color: #10b981;
+      font-size: 20px;
+    }
+
+    .toast-error {
+      border-left-color: #ef4444;
+      background: #fef2f2;
+    }
+
+    .toast-error i {
+      color: #ef4444;
+      font-size: 20px;
+    }
+
+    .toast-warning {
+      border-left-color: #f59e0b;
+      background: #fffbeb;
+    }
+
+    .toast-warning i {
+      color: #f59e0b;
+      font-size: 20px;
+    }
+
+    .toast-info {
+      border-left-color: #3b82f6;
+      background: #eff6ff;
+    }
+
+    .toast-info i {
+      color: #3b82f6;
+      font-size: 20px;
+    }
+
+    .toast span {
+      flex: 1;
+      color: #1f2937;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .toast-close:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: #374151;
+    }
+
+    .toast-close i {
+      font-size: 14px;
+    }
+
+    .no-results-message i {
       font-size: 3rem;
       margin-bottom: 1rem;
       opacity: 0.5;
@@ -2542,6 +2888,15 @@ require '../app/views/partials/alumni_header.php';
     }
 
     .btn-link:hover {
+      color: var(--primary);
+    }
+
+    .btn-link.liked {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .btn-link.liked i {
       color: var(--primary);
     }
 

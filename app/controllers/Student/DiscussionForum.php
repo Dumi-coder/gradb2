@@ -1,202 +1,7 @@
 <?php
-
-
 class DiscussionForum extends Controller
 {
-    // This runs when user visits the page
     public function index()
-    {
-        // Start session if not started
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        // Security: Make sure user is logged in (FIXED - matches other controllers)
-        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
-            redirect('student/auth');
-        }
-
-        // Prevent caching
-        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");
-
-        // Get faculties for dropdown
-        $faculty = new Faculty();
-        $faculties = $faculty->findAll();
-
-        // Sample discussion forum data (for display)
-        $forumData = [
-            'topics' => [
-                [
-                    'id' => 1,
-                    'title' => 'Tips for mastering Data Structures?',
-                    'creator' => 'Alex Johnson',
-                    'status' => 'active',
-                    'description' => 'I struggle to understand linked lists and trees. Any strategies or resources you recommend for visualizing these concepts better?',
-                    'category' => 'CSF',
-                    'tags' => ['CSF', 'Help', 'DataStructures'],
-                    'views' => 89,
-                    'replies' => 15,
-                    'last_activity' => '2 hours ago'
-                ],
-                [
-                    'id' => 2,
-                    'title' => 'Study Plan for Final Exams',
-                    'creator' => 'Priya Patel',
-                    'status' => 'trending',
-                    'description' => 'Here\'s a comprehensive study schedule that helped me last semester. Includes time management tips and resource recommendations!',
-                    'category' => 'StudyTips',
-                    'tags' => ['StudyTips', 'Finals', 'Planning'],
-                    'views' => 156,
-                    'replies' => 28,
-                    'last_activity' => '1 day ago'
-                ],
-                [
-                    'id' => 3,
-                    'title' => 'Anyone up for a Study Group?',
-                    'creator' => 'Sarah Williams',
-                    'status' => 'active',
-                    'description' => 'Looking to form a study group for Database Systems course. Planning to meet twice a week. DM if interested!',
-                    'category' => 'General',
-                    'tags' => ['StudyGroup', 'Collaboration', 'General'],
-                    'views' => 67,
-                    'replies' => 12,
-                    'last_activity' => '3 hours ago'
-                ],
-                [
-                    'id' => 4,
-                    'title' => 'Best Resources for Algorithm Practice',
-                    'creator' => 'Michael Chen',
-                    'status' => 'active',
-                    'description' => 'Share your favorite websites, books, or YouTube channels for practicing algorithms and problem-solving. What has worked best for you?',
-                    'category' => 'CSF',
-                    'tags' => ['CSF', 'Algorithms', 'Resources'],
-                    'views' => 134,
-                    'replies' => 22,
-                    'last_activity' => '5 hours ago'
-                ],
-                [
-                    'id' => 5,
-                    'title' => 'How to Stay Motivated During Semester',
-                    'creator' => 'Emma Rodriguez',
-                    'status' => 'active',
-                    'description' => 'Sometimes I lose motivation midway through the semester. What are your tips for staying focused and maintaining good study habits?',
-                    'category' => 'StudyTips',
-                    'tags' => ['StudyTips', 'Motivation', 'General'],
-                    'views' => 98,
-                    'replies' => 18,
-                    'last_activity' => '1 day ago'
-                ],
-                [
-                    'id' => 6,
-                    'title' => 'Python vs Java: Which to Learn First?',
-                    'creator' => 'David Kim',
-                    'status' => 'active',
-                    'description' => 'I\'m debating which language to focus on learning first. Both seem important but I want to choose the right starting point. Thoughts?',
-                    'category' => 'CSF',
-                    'tags' => ['CSF', 'Python', 'Java'],
-                    'views' => 112,
-                    'replies' => 25,
-                    'last_activity' => '2 days ago'
-                ],
-                [
-                    'id' => 7,
-                    'title' => 'Effective Note-Taking Methods',
-                    'creator' => 'Lisa Anderson',
-                    'status' => 'active',
-                    'description' => 'What note-taking systems work best for technical courses? Cornell method, mind maps, or something else?',
-                    'category' => 'StudyTips',
-                    'tags' => ['StudyTips', 'Notes', 'Learning'],
-                    'views' => 145,
-                    'replies' => 20,
-                    'last_activity' => '3 days ago'
-                ],
-                [
-                    'id' => 8,
-                    'title' => 'Project Ideas for Portfolio',
-                    'creator' => 'James Wilson',
-                    'status' => 'trending',
-                    'description' => 'Looking for project ideas to add to my portfolio. What projects have impressed potential employers or helped you land internships?',
-                    'category' => 'General',
-                    'tags' => ['Projects', 'Portfolio', 'Career'],
-                    'views' => 198,
-                    'replies' => 31,
-                    'last_activity' => '1 day ago'
-                ],
-                [
-                    'id' => 9,
-                    'title' => 'Dealing with Exam Anxiety',
-                    'creator' => 'Maria Garcia',
-                    'status' => 'active',
-                    'description' => 'I get really anxious during exams even when I know the material. Any tips for managing test anxiety and staying calm?',
-                    'category' => 'StudyTips',
-                    'tags' => ['StudyTips', 'Wellness', 'General'],
-                    'views' => 87,
-                    'replies' => 16,
-                    'last_activity' => '4 days ago'
-                ],
-                [
-                    'id' => 10,
-                    'title' => 'Understanding Big O Notation',
-                    'creator' => 'Kevin Brown',
-                    'status' => 'active',
-                    'description' => 'Big O notation is confusing me. Can someone explain it in simple terms with real-world examples?',
-                    'category' => 'CSF',
-                    'tags' => ['CSF', 'Algorithms', 'Help'],
-                    'views' => 123,
-                    'replies' => 19,
-                    'last_activity' => '2 days ago'
-                ],
-                [
-                    'id' => 11,
-                    'title' => 'Balancing Work and Study',
-                    'creator' => 'Rachel Lee',
-                    'status' => 'active',
-                    'description' => 'How do you balance part-time work with studies? Looking for time management strategies that actually work.',
-                    'category' => 'General',
-                    'tags' => ['General', 'TimeManagement', 'Advice'],
-                    'views' => 92,
-                    'replies' => 14,
-                    'last_activity' => '3 days ago'
-                ],
-                [
-                    'id' => 12,
-                    'title' => 'Git and Version Control Basics',
-                    'creator' => 'Tom Martinez',
-                    'status' => 'active',
-                    'description' => 'Need help understanding Git workflows. What are the essential commands every student should know?',
-                    'category' => 'CSF',
-                    'tags' => ['CSF', 'Git', 'Tools'],
-                    'views' => 108,
-                    'replies' => 17,
-                    'last_activity' => '1 day ago'
-                ]
-            ],
-            'statistics' => [
-                'active_discussions' => 52,
-                'total_posts' => 287
-            ]
-        ];
-
-               // Create model instance
-               $forumPost = new ForumPost();
-        
-               // Get data from database for CRUD operations
-               $all_posts = $forumPost->getAllPosts();
-               $my_posts = $forumPost->getPostsByUser($_SESSION['user_id']);
-               
-               // Convert false to empty array (when no results)
-               $data['all_posts'] = is_array($all_posts) ? $all_posts : [];
-               $data['my_posts'] = is_array($my_posts) ? $my_posts : [];
-               $data['forumData'] = $forumData;
-               $data['faculties'] = is_array($faculties) ? $faculties : [];
-        
-        // Send data to view
-        $this->view('student/discussion-forum', $data);
-    }
-
-    public function viewall()
     {
         // Start session if not started
         if (session_status() == PHP_SESSION_NONE) {
@@ -207,169 +12,43 @@ class DiscussionForum extends Controller
         if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
             redirect('student/auth');
         }
+
+        // Get student's faculty_id from database
+        $student = new Student();
+        $studentData = $student->first(['user_id' => $_SESSION['user_id']]);
+        $studentFacultyId = $studentData->faculty_id ?? null;
+
+        // Get faculties for dropdown
+        $faculty = new Faculty();
+        $faculties = $faculty->findAll();
+
+        // Create model instance
+        $forumPost = new ForumPost();
+        $forumReply = new ForumReply();
         
-        // Prevent caching
-        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");
-
-        // Get all forum data (same as index but will show all topics)
-        $forumData = [
-            'topics' => [
-                [
-                    'id' => 1,
-                    'title' => 'Tips for mastering Data Structures?',
-                    'creator' => 'Alex Johnson',
-                    'status' => 'active',
-                    'description' => 'I struggle to understand linked lists and trees. Any strategies or resources you recommend for visualizing these concepts better?',
-                    'category' => 'CSF',
-                    'tags' => ['CSF', 'Help', 'DataStructures'],
-                    'views' => 89,
-                    'replies' => 15,
-                    'last_activity' => '2 hours ago'
-                ],
-                [
-                    'id' => 2,
-                    'title' => 'Study Plan for Final Exams',
-                    'creator' => 'Priya Patel',
-                    'status' => 'trending',
-                    'description' => 'Here\'s a comprehensive study schedule that helped me last semester. Includes time management tips and resource recommendations!',
-                    'category' => 'StudyTips',
-                    'tags' => ['StudyTips', 'Finals', 'Planning'],
-                    'views' => 156,
-                    'replies' => 28,
-                    'last_activity' => '1 day ago'
-                ],
-                [
-                    'id' => 3,
-                    'title' => 'Anyone up for a Study Group?',
-                    'creator' => 'Sarah Williams',
-                    'status' => 'active',
-                    'description' => 'Looking to form a study group for Database Systems course. Planning to meet twice a week. DM if interested!',
-                    'category' => 'General',
-                    'tags' => ['StudyGroup', 'Collaboration', 'General'],
-                    'views' => 67,
-                    'replies' => 12,
-                    'last_activity' => '3 hours ago'
-                ],
-                [
-                    'id' => 4,
-                    'title' => 'Best Resources for Algorithm Practice',
-                    'creator' => 'Michael Chen',
-                    'status' => 'active',
-                    'description' => 'Share your favorite websites, books, or YouTube channels for practicing algorithms and problem-solving. What has worked best for you?',
-                    'category' => 'CSF',
-                    'tags' => ['CSF', 'Algorithms', 'Resources'],
-                    'views' => 134,
-                    'replies' => 22,
-                    'last_activity' => '5 hours ago'
-                ],
-                [
-                    'id' => 5,
-                    'title' => 'How to Stay Motivated During Semester',
-                    'creator' => 'Emma Rodriguez',
-                    'status' => 'active',
-                    'description' => 'Sometimes I lose motivation midway through the semester. What are your tips for staying focused and maintaining good study habits?',
-                    'category' => 'StudyTips',
-                    'tags' => ['StudyTips', 'Motivation', 'General'],
-                    'views' => 98,
-                    'replies' => 18,
-                    'last_activity' => '1 day ago'
-                ],
-                [
-                    'id' => 6,
-                    'title' => 'Python vs Java: Which to Learn First?',
-                    'creator' => 'David Kim',
-                    'status' => 'active',
-                    'description' => 'I\'m debating which language to focus on learning first. Both seem important but I want to choose the right starting point. Thoughts?',
-                    'category' => 'CSF',
-                    'tags' => ['CSF', 'Python', 'Java'],
-                    'views' => 112,
-                    'replies' => 25,
-                    'last_activity' => '2 days ago'
-                ],
-                [
-                    'id' => 7,
-                    'title' => 'Effective Note-Taking Methods',
-                    'creator' => 'Lisa Anderson',
-                    'status' => 'active',
-                    'description' => 'What note-taking systems work best for technical courses? Cornell method, mind maps, or something else?',
-                    'category' => 'StudyTips',
-                    'tags' => ['StudyTips', 'Notes', 'Learning'],
-                    'views' => 145,
-                    'replies' => 20,
-                    'last_activity' => '3 days ago'
-                ],
-                [
-                    'id' => 8,
-                    'title' => 'Project Ideas for Portfolio',
-                    'creator' => 'James Wilson',
-                    'status' => 'trending',
-                    'description' => 'Looking for project ideas to add to my portfolio. What projects have impressed potential employers or helped you land internships?',
-                    'category' => 'General',
-                    'tags' => ['Projects', 'Portfolio', 'Career'],
-                    'views' => 198,
-                    'replies' => 31,
-                    'last_activity' => '1 day ago'
-                ],
-                [
-                    'id' => 9,
-                    'title' => 'Dealing with Exam Anxiety',
-                    'creator' => 'Maria Garcia',
-                    'status' => 'active',
-                    'description' => 'I get really anxious during exams even when I know the material. Any tips for managing test anxiety and staying calm?',
-                    'category' => 'StudyTips',
-                    'tags' => ['StudyTips', 'Wellness', 'General'],
-                    'views' => 87,
-                    'replies' => 16,
-                    'last_activity' => '4 days ago'
-                ],
-                [
-                    'id' => 10,
-                    'title' => 'Understanding Big O Notation',
-                    'creator' => 'Kevin Brown',
-                    'status' => 'active',
-                    'description' => 'Big O notation is confusing me. Can someone explain it in simple terms with real-world examples?',
-                    'category' => 'CSF',
-                    'tags' => ['CSF', 'Algorithms', 'Help'],
-                    'views' => 123,
-                    'replies' => 19,
-                    'last_activity' => '2 days ago'
-                ],
-                [
-                    'id' => 11,
-                    'title' => 'Balancing Work and Study',
-                    'creator' => 'Rachel Lee',
-                    'status' => 'active',
-                    'description' => 'How do you balance part-time work with studies? Looking for time management strategies that actually work.',
-                    'category' => 'General',
-                    'tags' => ['General', 'TimeManagement', 'Advice'],
-                    'views' => 92,
-                    'replies' => 14,
-                    'last_activity' => '3 days ago'
-                ],
-                [
-                    'id' => 12,
-                    'title' => 'Git and Version Control Basics',
-                    'creator' => 'Tom Martinez',
-                    'status' => 'active',
-                    'description' => 'Need help understanding Git workflows. What are the essential commands every student should know?',
-                    'category' => 'CSF',
-                    'tags' => ['CSF', 'Git', 'Tools'],
-                    'views' => 108,
-                    'replies' => 17,
-                    'last_activity' => '1 day ago'
-                ]
-            ]
-        ];
-
+        // Get posts visible to student's faculty (includes posts with visiblefaculties = 999 or student's faculty_id)
+        $faculty_posts = [];
+        if ($studentFacultyId) {
+            $faculty_posts = $forumPost->getPostsByFaculty($studentFacultyId);
+        }
+        
+        // Get user's own posts
+        $my_posts = $forumPost->getPostsByUser($_SESSION['user_id']);
+        
+        // Get user's replies
+        $my_replies = $forumReply->getRepliesByUser($_SESSION['user_id']);
+        
+        // Convert false to empty array (when no results)
         $data = [
-            'title' => 'All Forum Topics - GradBridge',
+            'title' => 'Discussion Forum - GradBridge',
             'user' => $_SESSION,
-            'forumData' => $forumData
+            'faculty_posts' => is_array($faculty_posts) ? $faculty_posts : [],
+            'my_posts' => is_array($my_posts) ? $my_posts : [],
+            'my_replies' => is_array($my_replies) ? $my_replies : [],
+            'faculties' => is_array($faculties) ? $faculties : []
         ];
 
-        $this->view('student/all-forums', $data);
+        $this->view('student/discussion-forum', $data);
     }
 
     // AJAX endpoint: Create new post
@@ -389,13 +68,13 @@ class DiscussionForum extends Controller
             exit;
         }
 
-        // Security check (FIXED)
+        // Security check
         if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
             echo json_encode(['success' => false, 'message' => 'Not logged in']);
             exit;
         }
 
-        // Collect form data (FIXED - use user_id)
+        // Collect form data
         $data = [
             'user_id' => $_SESSION['user_id'],
             'title' => $_POST['title'] ?? '',
@@ -455,7 +134,7 @@ class DiscussionForum extends Controller
             exit;
         }
 
-        // Security check (FIXED)
+        // Security check
         if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
             echo json_encode(['success' => false, 'message' => 'Not logged in']);
             exit;
@@ -464,7 +143,7 @@ class DiscussionForum extends Controller
         $forumPost = new ForumPost();
         $post_id = $_POST['post_id'] ?? 0;
         
-        // Security: Make sure user owns this post (FIXED)
+        // Security: Make sure user owns this post
         $existing = $forumPost->getPostForOwnership($post_id);
         if (!$existing || $existing->user_id != $_SESSION['user_id']) {
             echo json_encode(['success' => false, 'message' => 'You cannot edit this post']);
@@ -502,38 +181,45 @@ class DiscussionForum extends Controller
             exit;
         }
 
-        // Security check (FIXED)
+        // Security check
         if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
             echo json_encode(['success' => false, 'message' => 'Not logged in']);
             exit;
         }
 
         $forumPost = new ForumPost();
+        $forumReply = new ForumReply();
         $post_id = $_POST['post_id'] ?? 0;
         
-        // Debug logging
-        error_log("Delete attempt - post_id: " . $post_id);
-        error_log("User ID: " . $_SESSION['user_id']);
-        
-        // Security check - use simpler method for ownership
+        // Security check
         $existing = $forumPost->getPostForOwnership($post_id);
         
-        error_log("Post found: " . ($existing ? "yes" : "no"));
-        if ($existing) {
-            error_log("Post user_id: " . $existing->user_id);
-        }
-        
         if (!$existing) {
-            echo json_encode(['success' => false, 'message' => 'Post not found (ID: ' . $post_id . ')']);
+            echo json_encode(['success' => false, 'message' => 'Post not found']);
             exit;
         }
         
         // Check if user owns this post
         if ($existing->user_id != $_SESSION['user_id']) {
-            echo json_encode(['success' => false, 'message' => 'You cannot delete this post (not your post)']);
+            echo json_encode(['success' => false, 'message' => 'You cannot delete this post']);
             exit;
         }
 
+        // CASCADE DELETE: First delete all likes for replies of this post
+        try {
+            $db = new Database();
+            // Delete all likes for replies of this post in one query
+            $query = "DELETE FROM form_reply_likes 
+                      WHERE replyid IN (SELECT replyid FROM form_replies WHERE postid = :post_id)";
+            $db->query($query, ['post_id' => $post_id]);
+        } catch (Throwable $e) {
+            // Continue even if likes deletion fails (table might not exist or be empty)
+        }
+        
+        // Delete all replies for this post
+        $forumReply->deleteRepliesByPostId($post_id);
+        
+        // Finally, delete the post itself
         $result = $forumPost->delete($post_id, 'post_id');
         
         if ($result) {
@@ -553,7 +239,7 @@ class DiscussionForum extends Controller
 
         header('Content-Type: application/json');
         
-        // Security check (FIXED)
+        // Security check
         if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
             echo json_encode(['success' => false, 'message' => 'Not logged in']);
             exit;
@@ -601,6 +287,281 @@ class DiscussionForum extends Controller
             echo json_encode(['success' => true]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to increment view']);
+        }
+        exit;
+    }
+
+    // AJAX endpoint: Get post with replies
+    public function getpostwithreplies()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        header('Content-Type: application/json');
+        
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+            echo json_encode(['success' => false, 'message' => 'Not logged in as student']);
+            exit;
+        }
+
+        $post_id = $_GET['post_id'] ?? 0;
+        
+        if (empty($post_id)) {
+            echo json_encode(['success' => false, 'message' => 'Post ID is required']);
+            exit;
+        }
+        
+        // Get post details
+        $forumPost = new ForumPost();
+        $post = $forumPost->getPost($post_id);
+        
+        if (!$post) {
+            echo json_encode(['success' => false, 'message' => 'Post not found with ID: ' . $post_id]);
+            exit;
+        }
+
+        // Get replies
+        $forumReply = new ForumReply();
+        $replies = $forumReply->getRepliesByPost($post_id);
+        
+        // Get liked reply IDs for current user
+        $likedReplyIds = [];
+        try {
+            $forumReplyLike = new ForumReplyLike();
+            $result = $forumReplyLike->getLikedRepliesByUser($post_id, $_SESSION['user_id']);
+            $likedReplyIds = $result ? $result : [];
+        } catch (Throwable $e) {
+            // Continue without liked data if there's any error
+            $likedReplyIds = [];
+        }
+        
+        echo json_encode([
+            'success' => true, 
+            'post' => $post,
+            'replies' => $replies ? $replies : [],
+            'likedReplyIds' => $likedReplyIds
+        ]);
+        exit;
+    }
+
+    // AJAX endpoint: Add reply
+    public function addreply()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        header('Content-Type: application/json');
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            exit;
+        }
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+            echo json_encode(['success' => false, 'message' => 'Not logged in']);
+            exit;
+        }
+
+        // Read JSON input
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        $data = [
+            'postid' => $input['post_id'] ?? 0,
+            'userid' => $_SESSION['user_id'],
+            'reply' => $input['reply'] ?? '',
+            'likes' => 0
+        ];
+
+        // Validation
+        if (empty($data['postid'])) {
+            echo json_encode(['success' => false, 'message' => 'Post ID is required']);
+            exit;
+        }
+
+        if (empty($data['reply'])) {
+            echo json_encode(['success' => false, 'message' => 'Reply cannot be empty']);
+            exit;
+        }
+
+        $forumReply = new ForumReply();
+        $result = $forumReply->insert($data);
+        
+        if ($result) {
+            // Update reply count
+            $forumPost = new ForumPost();
+            $forumPost->query("UPDATE forum_posts SET replies = replies + 1, updated_at = NOW() WHERE post_id = :post_id", ['post_id' => $data['postid']]);
+            
+            echo json_encode(['success' => true, 'message' => 'Reply added successfully!']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to add reply']);
+        }
+        exit;
+    }
+
+    // AJAX endpoint: Update reply
+    public function updatereply()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        header('Content-Type: application/json');
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            exit;
+        }
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+            echo json_encode(['success' => false, 'message' => 'Not logged in']);
+            exit;
+        }
+
+        // Read JSON input
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        $reply_id = $input['reply_id'] ?? 0;
+        $reply_text = $input['reply'] ?? '';
+
+        // Check ownership
+        $forumReply = new ForumReply();
+        $existing = $forumReply->getReplyForOwnership($reply_id);
+        
+        if (!$existing || $existing->userid != $_SESSION['user_id']) {
+            echo json_encode(['success' => false, 'message' => 'You cannot edit this reply']);
+            exit;
+        }
+
+        if (empty($reply_text)) {
+            echo json_encode(['success' => false, 'message' => 'Reply cannot be empty']);
+            exit;
+        }
+
+        $result = $forumReply->update($reply_id, ['reply' => $reply_text], 'replyid');
+        
+        if ($result) {
+            echo json_encode(['success' => true, 'message' => 'Reply updated!']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Update failed']);
+        }
+        exit;
+    }
+
+    // AJAX endpoint: Delete reply
+    public function deletereply()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        header('Content-Type: application/json');
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            exit;
+        }
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+            echo json_encode(['success' => false, 'message' => 'Not logged in']);
+            exit;
+        }
+
+        // Read JSON input
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        $reply_id = $input['reply_id'] ?? 0;
+
+        // Check ownership
+        $forumReply = new ForumReply();
+        $existing = $forumReply->getReplyForOwnership($reply_id);
+        
+        if (!$existing || $existing->userid != $_SESSION['user_id']) {
+            echo json_encode(['success' => false, 'message' => 'You cannot delete this reply']);
+            exit;
+        }
+
+        $post_id = $existing->postid;
+        $result = $forumReply->delete($reply_id, 'replyid');
+        
+        if ($result) {
+            // Update reply count
+            $forumPost = new ForumPost();
+            $forumPost->query("UPDATE forum_posts SET replies = replies - 1, updated_at = NOW() WHERE post_id = :post_id", ['post_id' => $post_id]);
+            
+            echo json_encode(['success' => true, 'message' => 'Reply deleted!']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Delete failed']);
+        }
+        exit;
+    }
+
+    // AJAX endpoint: Toggle like on reply
+    public function likereply()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        header('Content-Type: application/json');
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            exit;
+        }
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+            echo json_encode(['success' => false, 'message' => 'Not logged in']);
+            exit;
+        }
+
+        // Read JSON input
+        $input = json_decode(file_get_contents('php://input'), true);
+        $reply_id = $input['reply_id'] ?? 0;
+        $user_id = $_SESSION['user_id'];
+        
+        if (empty($reply_id)) {
+            echo json_encode(['success' => false, 'message' => 'Reply ID is required']);
+            exit;
+        }
+        
+        $forumReply = new ForumReply();
+        $forumReplyLike = new ForumReplyLike();
+        
+        // Check if user has already liked this reply
+        $existingLike = $forumReplyLike->hasUserLiked($reply_id, $user_id);
+        
+        if ($existingLike) {
+            // Unlike: Remove like record and decrement count
+            $removeLike = $forumReplyLike->removeLike($reply_id, $user_id);
+            $decrementResult = $forumReply->decrementLikes($reply_id);
+            
+            if ($removeLike && $decrementResult) {
+                $reply = $forumReply->getReplyForOwnership($reply_id);
+                echo json_encode([
+                    'success' => true, 
+                    'liked' => false,
+                    'likes' => $reply->likes ?? 0
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to unlike reply']);
+            }
+        } else {
+            // Like: Add like record and increment count
+            $addLike = $forumReplyLike->addLike($reply_id, $user_id);
+            $incrementResult = $forumReply->incrementLikes($reply_id);
+            
+            if ($addLike && $incrementResult) {
+                $reply = $forumReply->getReplyForOwnership($reply_id);
+                echo json_encode([
+                    'success' => true, 
+                    'liked' => true,
+                    'likes' => $reply->likes ?? 0
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to like reply']);
+            }
         }
         exit;
     }
