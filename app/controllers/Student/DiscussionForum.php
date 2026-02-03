@@ -631,4 +631,56 @@ class DiscussionForum extends Controller
         }
         exit;
     }
+
+    // View all forums page
+    public function viewall()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+            redirect('student/auth');
+        }
+
+        // Get student's faculty_id from database
+        $student = new Student();
+        $studentData = $student->first(['user_id' => $_SESSION['user_id']]);
+        $studentFacultyId = $studentData->faculty_id ?? null;
+
+        // Create model instance
+        $forumPost = new ForumPost();
+        
+        // Get ALL posts visible to student's faculty (no limit)
+        $all_posts = [];
+        if ($studentFacultyId) {
+            $all_posts = $forumPost->query(
+                "SELECT fp.post_id, fp.title, fp.content, fp.created_at, fp.views, fp.tags, fp.visiblefaculties,
+                u.name AS author_name,
+                COUNT(DISTINCT fr.replyid) AS replies,
+                (
+                    2 * (SELECT COUNT(*) FROM form_replies fr2 WHERE fr2.postid = fp.post_id AND fr2.repliedtime >= DATE_SUB(NOW(), INTERVAL 48 HOUR))
+                    + 
+                    (SELECT COUNT(*) FROM form_reply_likes frl
+                     INNER JOIN form_replies fr3 ON frl.replyid = fr3.replyid
+                     WHERE fr3.postid = fp.post_id AND frl.liked_time >= DATE_SUB(NOW(), INTERVAL 48 HOUR))
+                ) AS trending_points
+                FROM forum_posts fp 
+                LEFT JOIN users u ON fp.user_id = u.user_id 
+                LEFT JOIN form_replies fr ON fp.post_id = fr.postid
+                WHERE (fp.visiblefaculties = :faculty_id OR fp.visiblefaculties = 999)
+                GROUP BY fp.post_id
+                ORDER BY fp.created_at DESC",
+                ['faculty_id' => $studentFacultyId]
+            );
+        }
+        
+        $data = [
+            'title' => 'All Forum Topics - GradBridge',
+            'user' => $_SESSION,
+            'all_posts' => is_array($all_posts) ? $all_posts : []
+        ];
+
+        $this->view('student/forum-viewall', $data);
+    }
 }

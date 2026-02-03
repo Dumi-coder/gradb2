@@ -18,7 +18,7 @@ class ForumReply
     // Get all replies for a specific post with user details
     public function getRepliesByPost($post_id)
     {
-        $query = "SELECT fr.*, u.name as user_name, u.email as user_email
+        $query = "SELECT fr.*, u.name as author_name, u.email as user_email
                   FROM {$this->table} fr
                   LEFT JOIN users u ON fr.userid = u.user_id
                   LEFT JOIN students s ON u.user_id = s.user_id

@@ -1529,6 +1529,63 @@ require '../app/views/partials/student_header.php';
     const hashtagPills = document.querySelectorAll('.hashtag-pill');
     const topicCards = document.querySelectorAll('.topic-card');
     
+    // Sort Filter Functionality
+    const filterSelect = document.querySelector('.filter-select');
+    if (filterSelect) {
+      filterSelect.addEventListener('change', function(e) {
+        sortTopics(e.target.value);
+      });
+    }
+    
+    function sortTopics(sortType) {
+      const topicsContainer = document.querySelector('.forum-topics-section .topics-container');
+      const topicCardsArray = Array.from(topicsContainer.querySelectorAll('.topic-card'));
+      
+      topicCardsArray.sort((a, b) => {
+        if (sortType === 'Most Recent') {
+          // Sort by creation time (most recent first)
+          const timeA = a.querySelector('.topic-activity')?.textContent.trim() || '';
+          const timeB = b.querySelector('.topic-activity')?.textContent.trim() || '';
+          return parseTimeToSeconds(timeA) - parseTimeToSeconds(timeB);
+        } else if (sortType === 'Most Popular') {
+          // Sort by views (highest first)
+          const viewsA = parseInt(a.querySelector('.topic-views strong')?.textContent) || 0;
+          const viewsB = parseInt(b.querySelector('.topic-views strong')?.textContent) || 0;
+          return viewsB - viewsA;
+        } else if (sortType === 'Most Active') {
+          // Sort by trending points (highest first)
+          const hasTrendingA = a.querySelector('.status-trending') !== null;
+          const hasTrendingB = b.querySelector('.status-trending') !== null;
+          
+          if (hasTrendingA && !hasTrendingB) return -1;
+          if (!hasTrendingA && hasTrendingB) return 1;
+          
+          // If both trending or both not trending, sort by replies
+          const repliesA = parseInt(a.querySelector('.topic-replies strong')?.textContent) || 0;
+          const repliesB = parseInt(b.querySelector('.topic-replies strong')?.textContent) || 0;
+          return repliesB - repliesA;
+        }
+        return 0;
+      });
+      
+      // Re-append sorted cards
+      topicCardsArray.forEach(card => topicsContainer.appendChild(card));
+    }
+    
+    function parseTimeToSeconds(timeStr) {
+      const match = timeStr.match(/(\d+)\s*(second|minute|hour|day)/);
+      if (!match) return 999999; // Put invalid dates at the end
+      
+      const value = parseInt(match[1]);
+      const unit = match[2];
+      
+      if (unit.startsWith('second')) return value;
+      if (unit.startsWith('minute')) return value * 60;
+      if (unit.startsWith('hour')) return value * 3600;
+      if (unit.startsWith('day')) return value * 86400;
+      return 999999;
+    }
+    
     // Search input handler
     if (hashtagSearchInput) {
       hashtagSearchInput.addEventListener('input', function(e) {

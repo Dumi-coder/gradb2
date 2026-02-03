@@ -18,10 +18,20 @@ class ForumPost
         'replies'
     ];
 
-    // Get all posts with author names
+    // Get all posts with author names and trending points
     public function getAllPosts()
     {
-        $query = "SELECT fp.*, u.name as author_name 
+        $query = "SELECT fp.*, u.name as author_name,
+                  (
+                    2 * (SELECT COUNT(*) FROM form_replies fr 
+                         WHERE fr.postid = fp.post_id 
+                         AND fr.updatedtime >= DATE_SUB(NOW(), INTERVAL 48 HOUR))
+                    + 
+                    (SELECT COUNT(*) FROM form_reply_likes frl
+                     INNER JOIN form_replies fr ON frl.replyid = fr.replyid
+                     WHERE fr.postid = fp.post_id
+                     AND frl.liked_time >= DATE_SUB(NOW(), INTERVAL 48 HOUR))
+                  ) as trending_points
                   FROM {$this->table} fp 
                   LEFT JOIN users u ON fp.user_id = u.user_id 
                   LEFT JOIN students s ON u.user_id = s.user_id
