@@ -22,8 +22,8 @@ require '../app/views/partials/student_header.php';
         <section class="dashboard-section my-published-forums-section">
           <div class="section-header">
             <div class="section-title-container">
-              <h2 class="section-title">
-                <i class="fas fa-newspaper"></i> My Published Forums
+              <h2 class="card-title">
+                My Published Forums
               </h2>
               <button class="btn btn-primary" onclick="openNewPostModal()">
                 <i class="fas fa-plus"></i>
@@ -127,8 +127,8 @@ require '../app/views/partials/student_header.php';
         <section class="dashboard-section forum-topics-section">
           <div class="section-header">
             <div class="section-title-container">
-              <h2 class="section-title" style="font-size: 1.5rem;">
-                <i class="fas fa-comments"></i> Forum Topics
+              <h2 class="card-title" style="font-size: 1.5rem;">
+                  Forum Topics
               </h2>
               <div class="filter-controls">
                 <select class="filter-select">
