@@ -121,6 +121,24 @@
   color: #1e40af; /* Dark blue */
 }
 
+/* Trending State - Red */
+.status-trending {
+  background-color: #fee2e2; /* Light red */
+  color: #991b1b; /* Dark red */
+  animation: pulse-trending 2s ease-in-out infinite;
+}
+
+@keyframes pulse-trending {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+  color: #1e40af; /* Dark blue */
+}
+
 /* Approved/Accepted/Success States - Green */
 .status-approved,
 .status-accepted,
