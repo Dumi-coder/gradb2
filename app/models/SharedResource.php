@@ -224,7 +224,12 @@ class SharedResource
 	public function getReportedResourcesByFaculty($faculty_id)
 	{
 		$query = "SELECT r.*, u.name as author_name, u.email as author_email,
-					 s.student_id, a.alumni_id,
+					 s.student_id, a.alumni_id, u.role as uploader_role,
+					 CASE
+						 WHEN u.role = 'student' THEN COALESCE(s.is_suspended, 0)
+						 WHEN u.role = 'alumni' THEN COALESCE(a.is_suspended, 0)
+						 ELSE 0
+					 END as user_is_suspended,
 					 CASE 
 						 WHEN u.role = 'student' THEN 'Student'
 						 WHEN u.role = 'alumni' THEN 'Alumni'
@@ -289,7 +294,12 @@ class SharedResource
 	public function getAllReportedResources()
 	{
 		$query = "SELECT r.*, u.name as author_name, u.email as author_email,
-					 s.student_id, a.alumni_id,
+					 s.student_id, a.alumni_id, u.role as uploader_role,
+					 CASE
+						 WHEN u.role = 'student' THEN COALESCE(s.is_suspended, 0)
+						 WHEN u.role = 'alumni' THEN COALESCE(a.is_suspended, 0)
+						 ELSE 0
+					 END as user_is_suspended,
 					 CASE 
 						 WHEN u.role = 'student' THEN 'Student'
 						 WHEN u.role = 'alumni' THEN 'Alumni'

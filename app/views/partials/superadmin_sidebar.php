@@ -49,6 +49,10 @@ $isActive = function(string $path) use ($current): string {
         <!-- RESOURCES Section -->
         <div class="nav-section">
             <h3 class="nav-section-title">RESOURCES</h3>
+            <a href="<?=ROOT?>/superadmin/FacultyModeration" class="nav-item<?= $isActive('superadmin/FacultyModeration') ?>">
+                <i class="fas fa-user-shield"></i>
+                <span>Faculty Moderation</span>
+            </a>
             <a href="<?=ROOT?>/superadmin/UserManagement" class="nav-item<?= $isActive('superadmin/UserManagement') ?>">
                 <i class="fas fa-user-slash"></i>
                 <span>Suspend/Reactivate Users</span>

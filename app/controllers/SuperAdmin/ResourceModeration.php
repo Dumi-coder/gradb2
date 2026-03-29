@@ -52,6 +52,8 @@ class ResourceModeration extends Controller
                     'status' => 'pending',
                     'downloads' => $resource->downloads ?? 0,
                     'user_role' => $resource->user_role ?? 'Unknown',
+                    'uploader_role' => $resource->uploader_role ?? '',
+                    'user_is_suspended' => (int)($resource->user_is_suspended ?? 0),
                     'faculty_name' => $resource->faculty_name ?? 'All Faculties'
                 ];
             }
@@ -515,6 +517,81 @@ class ResourceModeration extends Controller
             echo json_encode(['success' => true, 'message' => 'Report flag removed successfully. Resource is now visible to users.']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to remove flag']);
+        }
+    }
+
+    public function suspenduser()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        header('Content-Type: application/json');
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'super_admin') {
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            return;
+        }
+
+        $resourceId = (int)($_POST['resource_id'] ?? 0);
+
+        if ($resourceId <= 0) {
+            echo json_encode(['success' => false, 'message' => 'Invalid resource ID']);
+            return;
+        }
+
+        $resourceModel = new SharedResource();
+        $resourceOwner = $resourceModel->query(
+            "SELECT r.user_id, u.role
+             FROM resources r
+             JOIN users u ON r.user_id = u.user_id
+             WHERE r.resource_id = :resource_id
+             LIMIT 1",
+            ['resource_id' => $resourceId]
+        );
+
+        if (!$resourceOwner || !is_array($resourceOwner) || empty($resourceOwner[0])) {
+            echo json_encode(['success' => false, 'message' => 'Resource not found']);
+            return;
+        }
+
+        $owner = $resourceOwner[0];
+        $ownerRole = $owner->role ?? '';
+        $ownerUserId = (int)($owner->user_id ?? 0);
+
+        if (in_array($ownerRole, ['faculty_admin', 'super_admin'], true)) {
+            echo json_encode(['success' => false, 'message' => 'This role cannot be suspended from this action. Use Notify User.']);
+            return;
+        }
+
+        $targetTable = null;
+        if ($ownerRole === 'student') {
+            $targetTable = 'students';
+        } elseif ($ownerRole === 'alumni') {
+            $targetTable = 'alumnis';
+        }
+
+        if (!$targetTable) {
+            echo json_encode(['success' => false, 'message' => 'Only student and alumni accounts can be suspended here.']);
+            return;
+        }
+
+        $updated = $resourceModel->query(
+            "UPDATE {$targetTable}
+             SET is_suspended = 1
+             WHERE user_id = :user_id",
+            ['user_id' => $ownerUserId]
+        );
+
+        if ($updated) {
+            echo json_encode(['success' => true, 'message' => 'User suspended successfully.']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to suspend user']);
         }
     }
 }
