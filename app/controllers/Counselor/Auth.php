@@ -4,7 +4,7 @@ class Auth extends Controller
 {
     // TEMP: Development-only login bypass for counselor routes.
     // Set to false to restore normal email/password authentication.
-    private const TEMP_BYPASS_LOGIN = true;
+    private const TEMP_BYPASS_LOGIN = false;
 
     public function index()
     {
@@ -25,7 +25,7 @@ class Auth extends Controller
         }
 
         // Check if user is already logged in as counselor
-        if (isset($_SESSION['user_id']) && $_SESSION['role'] == 'counselor') {
+        if (isset($_SESSION['user_id']) && $_SESSION['role'] == 'counselor' && (int)$_SESSION['user_id'] === 1) {
             redirect('counselor/dashboard');
             exit();
         }
@@ -70,14 +70,18 @@ class Auth extends Controller
             if ($counselor) {
                 // Verify password
                 if (password_verify($password, $counselor->password)) {
-                    // Login successful - force counselor identity to user_id = 1
-                    $_SESSION['user_id'] = 1;
-                    $_SESSION['role'] = 'counselor';
+                    if ((int)$counselor->user_id !== 1) {
+                        $errors[] = "Access denied. Only counselor user_id 1 can access this dashboard";
+                        $data['errors'] = $errors;
+                        $this->view('auth/counselor-login', $data);
+                        return;
+                    }
 
-                    $userModel = new User();
-                    $userOne = $userModel->first(['user_id' => 1]);
-                    $_SESSION['name'] = $userOne->name ?? ($counselor->name ?? 'Counselor');
-                    $_SESSION['profile_picture'] = $userOne->profile_photo_url ?? ($counselor->profile_photo_url ?? null);
+                    // Login successful
+                    $_SESSION['user_id'] = (int)$counselor->user_id;
+                    $_SESSION['role'] = 'counselor';
+                    $_SESSION['name'] = $counselor->name ?? 'Counselor';
+                    $_SESSION['profile_picture'] = $counselor->profile_photo_url ?? null;
                     
                     // Redirect to counselor dashboard
                     redirect('counselor/dashboard');

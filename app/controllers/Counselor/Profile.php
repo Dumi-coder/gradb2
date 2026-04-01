@@ -8,8 +8,10 @@ class Profile extends Controller
             session_start();
         }
 
-        $_SESSION['user_id'] = 1;
-        $_SESSION['role'] = 'counselor';
+        if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'counselor' || (int)$_SESSION['user_id'] !== 1) {
+            redirect('counselor');
+        }
+
         $activeUserId = 1;
 
         $counselorModel = new Counselor();

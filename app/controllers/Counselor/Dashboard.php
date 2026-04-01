@@ -9,9 +9,11 @@ class Dashboard extends Controller
             session_start();
         }
 
-        // Always force counselor identity to user_id = 1
-        $_SESSION['user_id'] = 1;
-        $_SESSION['role'] = 'counselor';
+        // Allow only logged-in counselor with user_id = 1
+        if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'counselor' || (int)$_SESSION['user_id'] !== 1) {
+            $_SESSION['flash_message'] = 'Please login as counselor user_id 1';
+            redirect('counselor');
+        }
 
         $requestModel = new Request();
 
