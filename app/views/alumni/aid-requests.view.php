@@ -56,17 +56,15 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
               </div>
               
               <div class="request-actions">
-                <?php if (strtolower((string)($request['aid_type'] ?? '')) === 'monetary'): ?>
-                <button class="btn btn-success btn-sm approve-pay-btn" 
-                        data-request-id="<?= esc($request['id'] ?? '') ?>" 
-                        data-amount="<?= esc($request['amount_requested'] ?? 'N/A') ?>"
-                        data-student="<?= esc($request['student_name'] ?? 'Student') ?>"
-                        data-type="<?= esc($request['request_type'] ?? 'Aid Request') ?>">
-                  <i class="fas fa-credit-card"></i> Approve & Pay
-                </button>
-                <?php else: ?>
-                <button class="btn btn-success btn-sm approve-btn">Approve</button>
-                <?php endif; ?>
+                <form method="POST" action="<?=ROOT?>/alumni/aid-requests/approve/<?= esc($request['id'] ?? '') ?>" style="display:inline;">
+                  <?php if (strtolower((string)($request['aid_type'] ?? '')) === 'monetary'): ?>
+                  <button type="submit" class="btn btn-success btn-sm approve-btn">
+                    <i class="fas fa-credit-card"></i> Approve &amp; Pay
+                  </button>
+                  <?php else: ?>
+                  <button type="submit" class="btn btn-success btn-sm approve-btn">Approve</button>
+                  <?php endif; ?>
+                </form>
                 <button class="btn btn-danger btn-sm decline-btn">Decline</button>
               </div>
             </div>

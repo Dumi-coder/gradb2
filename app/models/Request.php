@@ -163,6 +163,22 @@ class Request
 		return true;
 	}
 
+	public function approveAidRequestByAlumni($requestId, $alumnusUserId)
+	{
+		$updateQuery = "UPDATE requests
+						SET status = 'approved', alumnus_user_id = :alumnus_user_id
+						WHERE request_id = :request_id
+						  AND request_type = 'aid'
+						  AND status = 'open'";
+
+		$updated = $this->query($updateQuery, [
+			'request_id' => (int)$requestId,
+			'alumnus_user_id' => (int)$alumnusUserId,
+		]);
+
+		return $updated !== false;
+	}
+
 	public function getAidAnalyticsSummary($days = 30)
 	{
 		$days = max(1, (int)$days);

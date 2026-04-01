@@ -1,17 +1,20 @@
 <?php
 class AidRequests extends Controller
 {
+	private function ensureAuthenticatedAlumni()
+	{
+		if (session_status() == PHP_SESSION_NONE) {
+			session_start();
+		}
+
+		if (empty($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'alumni') {
+			redirect('alumni/auth');
+		}
+	}
+
     public function index()
     {
-        // Start session if not started
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        // Check if user is logged in
-        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'alumni') {
-            redirect('alumni/auth');
-        }
+		$this->ensureAuthenticatedAlumni();
 
         // Get fresh profile data from database
         $alumni = new Alumni();
@@ -34,6 +37,32 @@ class AidRequests extends Controller
         ];
 
         $this->view('alumni/aid-requests', $data);
+    }
+
+    public function approve($requestId = null)
+    {
+        $this->ensureAuthenticatedAlumni();
+
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+            redirect('alumni/aid-requests');
+        }
+
+        $requestId = (int)($requestId ?? 0);
+        if ($requestId <= 0) {
+            $_SESSION['error'] = 'Invalid request selected.';
+            redirect('alumni/aid-requests');
+        }
+
+        $requestModel = new Request();
+        $approved = $requestModel->approveAidRequestByAlumni($requestId, (int)($_SESSION['user_id'] ?? 0));
+
+        if ($approved) {
+            $_SESSION['success'] = 'Aid request approved successfully.';
+        } else {
+            $_SESSION['error'] = 'Unable to approve this request.';
+        }
+
+        redirect('alumni/aid-requests');
     }
 
     private function getAidRequestsData()
