@@ -16,7 +16,7 @@ class Auth extends Controller
         // TEMP BYPASS: Auto-login as counselor without credentials.
         // Remove this block or set TEMP_BYPASS_LOGIN to false before production.
         if (self::TEMP_BYPASS_LOGIN) {
-            $_SESSION['user_id'] = $_SESSION['user_id'] ?? 1;
+            $_SESSION['user_id'] = 1;
             $_SESSION['role'] = 'counselor';
             $_SESSION['name'] = $_SESSION['name'] ?? 'Counselor';
 
@@ -70,11 +70,14 @@ class Auth extends Controller
             if ($counselor) {
                 // Verify password
                 if (password_verify($password, $counselor->password)) {
-                    // Login successful - set session
-                    $_SESSION['user_id'] = $counselor->user_id;
+                    // Login successful - force counselor identity to user_id = 1
+                    $_SESSION['user_id'] = 1;
                     $_SESSION['role'] = 'counselor';
-                    $_SESSION['name'] = $counselor->name;
-                    $_SESSION['profile_picture'] = $counselor->profile_photo_url ?? null;
+
+                    $userModel = new User();
+                    $userOne = $userModel->first(['user_id' => 1]);
+                    $_SESSION['name'] = $userOne->name ?? ($counselor->name ?? 'Counselor');
+                    $_SESSION['profile_picture'] = $userOne->profile_photo_url ?? ($counselor->profile_photo_url ?? null);
                     
                     // Redirect to counselor dashboard
                     redirect('counselor/dashboard');

@@ -83,3 +83,72 @@ function destroyUserSession()
     session_destroy();
     session_start(); // Start a new clean session
 }
+
+// Initialize database tables
+function initializeDatabaseTables()
+{
+    try {
+        $string = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8";
+        $con = new PDO($string, DBUSER, DBPASS);
+        $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        // Create counselor table if it doesn't exist
+        $createCounselorTable = "
+        CREATE TABLE IF NOT EXISTS `counselor` (
+            `user_id` int NOT NULL PRIMARY KEY,
+            `name` varchar(255) DEFAULT NULL,
+            `email` varchar(255) DEFAULT NULL,
+            `password` varchar(255) DEFAULT NULL,
+            `profile_photo_url` varchar(500) DEFAULT NULL,
+            `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+            `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            KEY `email` (`email`)
+        )
+        ";
+        
+        $con->exec($createCounselorTable);
+        
+        // Sync counselor data from users table if not already synced
+        $syncCounselors = "
+        INSERT INTO counselor (user_id, name, email, password)
+        SELECT user_id, name, email, password FROM users 
+        WHERE role = 'counselor' AND user_id NOT IN (SELECT user_id FROM counselor)
+        ";
+        
+        try {
+            $con->exec($syncCounselors);
+        } catch (Exception $e) {
+            // Sync might fail if there's a constraint, that's ok
+        }
+        
+        // Ensure default counselor "lakshani" exists
+        $checkLakshani = "SELECT user_id FROM counselor WHERE name = 'lakshani' LIMIT 1";
+        $result = $con->query($checkLakshani);
+        
+        if (!$result || $result->rowCount() == 0) {
+            // Find the next available user_id or use a default
+            $getMaxId = "SELECT COALESCE(MAX(user_id), 0) + 1 as next_id FROM counselor";
+            $idResult = $con->query($getMaxId)->fetch(PDO::FETCH_ASSOC);
+            $nextId = $idResult['next_id'] ?: 9366;
+            
+            // Create password hash for "lakshani" (password: lakshani123)
+            $hashedPassword = password_hash('lakshani123', PASSWORD_BCRYPT);
+            
+            // Insert lakshani counselor
+            $insertLakshani = "
+            INSERT INTO counselor (user_id, name, email, password) 
+            VALUES (?, ?, ?, ?)
+            ";
+            
+            $stmt = $con->prepare($insertLakshani);
+            $stmt->execute([$nextId, 'lakshani', 'lakshani@gradb.com', $hashedPassword]);
+        }
+        
+    } catch (Exception $e) {
+        // Database initialization error - log but don't break the app
+        error_log("Database initialization error: " . $e->getMessage());
+    }
+}
+
+// Initialize tables on application load
+initializeDatabaseTables();

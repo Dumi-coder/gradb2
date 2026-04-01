@@ -9,10 +9,9 @@ class Dashboard extends Controller
             session_start();
         }
 
-        // Check if user is logged in as counselor
-        if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'counselor') {
-            redirect('counselor');
-        }
+        // Always force counselor identity to user_id = 1
+        $_SESSION['user_id'] = 1;
+        $_SESSION['role'] = 'counselor';
 
         $requestModel = new Request();
 
@@ -48,6 +47,9 @@ class Dashboard extends Controller
         $acceptedRequests = $requestModel->getAidRequestsForCounselorByStatuses(['open', 'approved', 'accepted']);
         $rejectedRequests = $requestModel->getAidRequestsForCounselorByStatuses(['rejected']);
         $flashMessage = $_SESSION['flash_message'] ?? null;
+        if (is_array($flashMessage)) {
+            $flashMessage = $flashMessage['text'] ?? null;
+        }
         unset($_SESSION['flash_message']);
 
         // Prevent caching of dashboard pages

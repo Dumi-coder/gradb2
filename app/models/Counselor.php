@@ -5,12 +5,11 @@ class Counselor
 {
     use Model;
 
-    protected $table = 'counselor'; // Your alumni table name
-    protected $allowedColumns = ['name', 'email', 'password'];
-    // protected $id_column = 'alumni_id';
-    // protected $order_column = 'alumni_id';
+    protected $table = 'counselor';
+    protected $id_column = 'user_id';
+    protected $order_column = 'user_id';
+    protected $allowedColumns = ['user_id', 'name', 'email', 'password', 'profile_photo_url'];
     
-    // You can add a validate() method similar to User if needed
     public function validate($data)
     {
         $this->errors = [];

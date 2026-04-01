@@ -9,7 +9,25 @@ function show($stuff) // This function is used to display the contents of a vari
 // show($stuff);
 function esc($str)// This function is used to escape special characters in a string for safe output
 {
-    return htmlspecialchars($str);// Convert special characters to HTML entities
+    if (is_array($str)) {
+        if (isset($str['text']) && is_scalar($str['text'])) {
+            $str = (string)$str['text'];
+        } else {
+            $str = json_encode($str, JSON_UNESCAPED_UNICODE) ?: '';
+        }
+    } elseif (is_object($str)) {
+        if (method_exists($str, '__toString')) {
+            $str = (string)$str;
+        } else {
+            $str = json_encode($str, JSON_UNESCAPED_UNICODE) ?: '';
+        }
+    } elseif ($str === null) {
+        $str = '';
+    } else {
+        $str = (string)$str;
+    }
+
+    return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');// Convert special characters to HTML entities
 }
 function redirect($path)
 {
