@@ -65,10 +65,22 @@
                                     <i class="fas fa-flag"></i>
                                     Remove Flag
                                 </button>
-                                <button class="btn btn-warning btn-sm hide-btn" data-resource-id="<?= $resource['id'] ?>">
-                                    <i class="fas fa-user-slash"></i>
-                                    Suspend User
-                                </button>
+                              <?php if ((int)($resource['user_is_suspended'] ?? 0) === 1): ?>
+                              <span class="suspended-user-label">
+                                <i class="fas fa-user-lock"></i>
+                                User Suspended
+                              </span>
+                              <?php elseif (in_array($resource['uploader_role'] ?? '', ['faculty_admin', 'super_admin'])): ?>
+                              <button class="btn btn-outline btn-sm notify-btn" data-resource-id="<?= $resource['id'] ?>">
+                                <i class="fas fa-bell"></i>
+                                Notify User
+                              </button>
+                              <?php else: ?>
+                              <button class="btn btn-warning btn-sm hide-btn" data-resource-id="<?= $resource['id'] ?>">
+                                <i class="fas fa-user-slash"></i>
+                                Suspend User
+                              </button>
+                              <?php endif; ?>
                                 <button class="btn btn-danger btn-sm delete-btn" data-resource-id="<?= $resource['id'] ?>">
                                     <i class="fas fa-trash"></i>
                                     Delete Resource
@@ -491,6 +503,29 @@
       </div>
     </div>
 
+    <!-- Action Confirmation Modal (Reported Resources) -->
+    <div id="actionConfirmModal" class="modal" style="display: none;">
+      <div class="modal-content" style="max-width: 460px; padding: 25px;">
+        <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
+          <h2 class="modal-title" id="actionConfirmTitle">Confirm Action</h2>
+          <button class="modal-close" onclick="closeActionConfirmModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body" style="padding-top: 0.5rem;">
+          <p id="actionConfirmText" style="margin: 0; color: #4b5563;"></p>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" onclick="closeActionConfirmModal()">
+            <span>Cancel</span>
+          </button>
+          <button type="button" class="btn btn-primary" id="actionConfirmBtn">
+            <span>Confirm</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
 <style>
 .reported-resources-section, .recent-resources-section {
     margin-bottom: 2rem;
@@ -827,103 +862,199 @@
     border-top: 1px solid #E5E7EB;
 }
 
-. {
+.form-actions .btn {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
+}
+
+.suspended-user-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.48rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid #059669;
+  background: #ecfdf5;
+  color: #065f46;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+#actionConfirmModal.show {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+#actionConfirmModal .modal-content {
+  width: min(520px, 92vw);
+  max-width: 520px;
+  max-height: none;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+}
+
+#actionConfirmModal .modal-body {
+  padding: 0.75rem 1.5rem 0.5rem;
+}
+
+#actionConfirmModal .form-actions {
+  margin-top: 1rem;
+  padding-top: 1rem;
 }
 </style>
 
 <script>
+let actionConfirmHandler = null;
+
 document.addEventListener('DOMContentLoaded', function() {
     // Handle remove flag button clicks
     document.querySelectorAll('.approve-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const resourceId = this.getAttribute('data-resource-id');
-            const btn = this;
-            
-            // Show loading state
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Processing...</span>';
-            btn.disabled = true;
-            
-            fetch('<?=ROOT?>/admin/resourcemoderation/removeflag', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'resource_id=' + resourceId
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showMessageModal('success', 'Success', data.message || 'Report flag removed successfully!');
-                    setTimeout(() => {
-                        location.reload();
-                    }, 2000);
-                } else {
-                    showMessageModal('error', 'Error', data.message || 'Failed to remove flag');
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showMessageModal('error', 'Error', 'An error occurred. Please try again.');
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+      const actionBtn = this;
+
+      openActionConfirmModal({
+        title: 'Remove Report Flag',
+        message: 'Are you sure you want to remove the report flag for this resource?',
+        confirmText: 'Remove Flag',
+        confirmClass: 'btn-success',
+        onConfirm: () => {
+          const originalText = actionBtn.innerHTML;
+          actionBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Processing...</span>';
+          actionBtn.disabled = true;
+
+          fetch('<?=ROOT?>/admin/resourcemoderation/removeflag', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'resource_id=' + resourceId
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              showMessageModal('success', 'Success', data.message || 'Report flag removed successfully!');
+              setTimeout(() => {
+                location.reload();
+              }, 2000);
+            } else {
+              showMessageModal('error', 'Error', data.message || 'Failed to remove flag');
+              actionBtn.innerHTML = originalText;
+              actionBtn.disabled = false;
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            showMessageModal('error', 'Error', 'An error occurred. Please try again.');
+            actionBtn.innerHTML = originalText;
+            actionBtn.disabled = false;
+          });
+        }
             });
         });
     });
 
-    // Handle hide button clicks
+    // Handle suspend user button clicks
     document.querySelectorAll('.hide-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const resourceId = this.getAttribute('data-resource-id');
-            if (confirm('Are you sure you want to hide this resource?')) {
-                alert('Resource hidden successfully!');
-                this.closest('.reported-resource-card').style.opacity = '0.5';
-                this.disabled = true;
-            }
+            const actionBtn = this;
+
+            openActionConfirmModal({
+                title: 'Suspend User',
+                message: 'Are you sure you want to suspend this user account?',
+                confirmText: 'Suspend User',
+                confirmClass: 'btn-warning',
+                onConfirm: () => {
+                    const originalText = actionBtn.innerHTML;
+                    actionBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Processing...</span>';
+                    actionBtn.disabled = true;
+
+                    fetch('<?=ROOT?>/admin/resourcemoderation/suspenduser', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'resource_id=' + resourceId
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showMessageModal('success', 'Success', data.message || 'User suspended successfully!');
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2000);
+                        } else {
+                            showMessageModal('error', 'Error', data.message || 'Failed to suspend user');
+                            actionBtn.innerHTML = originalText;
+                            actionBtn.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showMessageModal('error', 'Error', 'An error occurred. Please try again.');
+                        actionBtn.innerHTML = originalText;
+                        actionBtn.disabled = false;
+                    });
+                }
+            });
         });
+    });
+
+    // Notify action is UI-only for now
+    document.querySelectorAll('.notify-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        showMessageModal('info', 'Notify User', 'Notify user action is not implemented yet.');
+      });
     });
 
     // Handle delete button clicks
     document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const resourceId = this.getAttribute('data-resource-id');
-            const btn = this;
-            const card = this.closest('.reported-resource-card');
-            
-            // Show loading state
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Deleting...</span>';
-            btn.disabled = true;
-            
+        const actionBtn = this;
+
+        openActionConfirmModal({
+          title: 'Delete Resource',
+          message: 'Are you sure you want to delete this reported resource? This action cannot be undone.',
+          confirmText: 'Delete Resource',
+          confirmClass: 'btn-danger',
+          onConfirm: () => {
+            const originalText = actionBtn.innerHTML;
+            actionBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Deleting...</span>';
+            actionBtn.disabled = true;
+
             fetch('<?=ROOT?>/admin/resourcemoderation/delete', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'resource_id=' + resourceId
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: 'resource_id=' + resourceId
             })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    showMessageModal('success', 'Success', data.message || 'Resource deleted successfully!');
-                    setTimeout(() => {
-                        location.reload();
-                    }, 2000);
-                } else {
-                    showMessageModal('error', 'Error', data.message || 'Failed to delete resource');
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }
+              if (data.success) {
+                showMessageModal('success', 'Success', data.message || 'Resource deleted successfully!');
+                setTimeout(() => {
+                  location.reload();
+                }, 2000);
+              } else {
+                showMessageModal('error', 'Error', data.message || 'Failed to delete resource');
+                actionBtn.innerHTML = originalText;
+                actionBtn.disabled = false;
+              }
             })
             .catch(error => {
-                console.error('Error:', error);
-                showMessageModal('error', 'Error', 'An error occurred. Please try again.');
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+              console.error('Error:', error);
+              showMessageModal('error', 'Error', 'An error occurred. Please try again.');
+              actionBtn.innerHTML = originalText;
+              actionBtn.disabled = false;
+            });
+          }
             });
         });
     });
@@ -975,17 +1106,51 @@ function closeDeleteModal() {
     document.getElementById('deleteModal').style.display = 'none';
 }
 
+function openActionConfirmModal(options) {
+  const modal = document.getElementById('actionConfirmModal');
+  const titleEl = document.getElementById('actionConfirmTitle');
+  const textEl = document.getElementById('actionConfirmText');
+  const confirmBtn = document.getElementById('actionConfirmBtn');
+
+  titleEl.textContent = options.title || 'Confirm Action';
+  textEl.textContent = options.message || 'Are you sure you want to continue?';
+  confirmBtn.innerHTML = '<span>' + (options.confirmText || 'Confirm') + '</span>';
+  confirmBtn.className = 'btn ' + (options.confirmClass || 'btn-primary');
+  actionConfirmHandler = options.onConfirm || null;
+  modal.style.display = 'flex';
+  modal.classList.add('show');
+}
+
+function closeActionConfirmModal() {
+  const modal = document.getElementById('actionConfirmModal');
+  modal.classList.remove('show');
+  modal.style.display = 'none';
+  actionConfirmHandler = null;
+}
+
 // Close modal when clicking outside
 window.onclick = function(event) {
     const uploadModal = document.getElementById('uploadModal');
     const deleteModal = document.getElementById('deleteModal');
+  const actionConfirmModal = document.getElementById('actionConfirmModal');
     if (event.target === uploadModal) {
         closeUploadModal();
     }
     if (event.target === deleteModal) {
         closeDeleteModal();
     }
+  if (event.target === actionConfirmModal) {
+    closeActionConfirmModal();
+  }
 }
+
+document.getElementById('actionConfirmBtn').addEventListener('click', function() {
+  const action = actionConfirmHandler;
+  closeActionConfirmModal();
+  if (typeof action === 'function') {
+    action();
+  }
+});
 
 // File upload display
 document.getElementById('resourceFile').addEventListener('change', function() {
@@ -1154,12 +1319,16 @@ function closeMessageModal() {
 window.addEventListener('click', function(event) {
     const reportModal = document.getElementById('reportModal');
     const messageModal = document.getElementById('messageModal');
+  const actionConfirmModal = document.getElementById('actionConfirmModal');
     if (event.target === reportModal) {
         closeReportModal();
     }
     if (event.target === messageModal) {
         closeMessageModal();
     }
+  if (event.target === actionConfirmModal) {
+    closeActionConfirmModal();
+  }
 });
 
 // Handle Report Form Submission

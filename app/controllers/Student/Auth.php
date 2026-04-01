@@ -245,6 +245,10 @@ class Auth extends Controller
                 if (isset($student_record->is_deleted) && $student_record->is_deleted == 1) {
                     $errors[] = "This account has been deleted. Please contact support if you need assistance.";
                 }
+                // Check if account is suspended
+                elseif (isset($student_record->is_suspended) && (int)$student_record->is_suspended === 1) {
+                    $errors[] = "Your account has been suspended";
+                }
                 // Verify password
                 elseif (password_verify($password, $student_record->password)) {
                     // Login successful - set session

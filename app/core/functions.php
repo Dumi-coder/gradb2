@@ -28,22 +28,33 @@ function time_elapsed_string($datetime, $full = false) {
         $ago = new DateTime($datetime);
         $diff = $now->diff($ago);
 
-        $diff->w = floor($diff->d / 7);
-        $diff->d -= $diff->w * 7;
+        $weeks = (int) floor($diff->d / 7);
+        $days = $diff->d - ($weeks * 7);
 
         $string = array(
             'y' => 'year',
             'm' => 'month',
-            'w' => 'week',
             'd' => 'day',
             'h' => 'hour',
             'i' => 'minute',
             's' => 'second',
         );
+
+        $diffParts = [
+            'y' => $diff->y,
+            'm' => $diff->m,
+            'w' => $weeks,
+            'd' => $days,
+            'h' => $diff->h,
+            'i' => $diff->i,
+            's' => $diff->s,
+        ];
+
+        $string['w'] = 'week';
         
         foreach ($string as $k => &$v) {
-            if ($diff->$k) {
-                $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+            if (!empty($diffParts[$k])) {
+                $v = $diffParts[$k] . ' ' . $v . ($diffParts[$k] > 1 ? 's' : '');
             } else {
                 unset($string[$k]);
             }

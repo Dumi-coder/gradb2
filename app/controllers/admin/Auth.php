@@ -11,8 +11,21 @@ class Auth extends Controller
 
         // Check if user is already logged in as admin
         if (isset($_SESSION['user_id']) && $_SESSION['role'] == 'faculty_admin') {
-            redirect('admin/dashboard');
-            exit();
+            $facultyAdmin = new FacultyAdmin();
+            $activeAdmin = $facultyAdmin->getActiveAdminByUserId($_SESSION['user_id']);
+
+            if ($activeAdmin) {
+                redirect('admin/dashboard');
+                exit();
+            }
+
+            session_unset();
+            session_destroy();
+            session_start();
+
+            $data = ['errors' => ["Your account has been suspended"]];
+            $this->view('auth/admin-login', $data);
+            return;
         }
 
         $data = [];
@@ -50,13 +63,22 @@ class Auth extends Controller
             if ($admin) {
                 // Verify password
                 if (password_verify($password, $admin->password)) {
+                    $facultyAdmin = new FacultyAdmin();
+                    $activeAdmin = $facultyAdmin->getActiveAdminByUserId($admin->user_id);
+
+                    if (!$activeAdmin) {
+                        $errors[] = "Your account has been suspended";
+                        $data['errors'] = $errors;
+                        $this->view('auth/admin-login', $data);
+                        return;
+                    }
+
                     // Login successful - set session
                     $_SESSION['user_id'] = $admin->user_id;
                     $_SESSION['role'] = 'faculty_admin';
                     $_SESSION['name'] = $admin->name;
                     
                     // Get profile picture from faculty_admins table
-                    $facultyAdmin = new FacultyAdmin();
                     $adminProfile = $facultyAdmin->getFacultyAdminProfile($admin->user_id);
                     $_SESSION['profile_picture'] = $adminProfile->picture_path ?? null;
                     
