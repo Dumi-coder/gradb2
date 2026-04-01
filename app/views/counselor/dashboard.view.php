@@ -76,8 +76,8 @@ $buildFileUrl = static function ($path) {
       <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;">
         <h2 class="card-title">Pending Aid Requests</h2>
         <div style="display:flex; gap:.6rem;">
-          <a href="<?=ROOT?>/counselor/approved-requests" class="btn btn-outline btn-sm">Accepted Page</a>
-          <a href="<?=ROOT?>/counselor/rejected-requests" class="btn btn-outline btn-sm">Rejected Page</a>
+          <!-- <a href="<?=ROOT?>/counselor/approved-requests" class="btn btn-outline btn-sm">Accepted Page</a> -->
+          <!-- <a href="<?=ROOT?>/counselor/rejected-requests" class="btn btn-outline btn-sm">Rejected Page</a> -->
         </div>
       </div>
 
