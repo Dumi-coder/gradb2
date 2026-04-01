@@ -1,236 +1,77 @@
 <?php 
 $page_title = "Rejected Requests";
-$page_subtitle = "View and manage rejected aid requests";
+$page_subtitle = "Counselor rejected submissions";
 require '../app/views/partials/counselor_header.php'; 
+
+$rejectedRequests = $rejectedRequests ?? [];
 ?>
 
-    <div class="dashboard-container">
-      <!-- sidebar -->
-      <?php require '../app/views/partials/counselor_sidebar.php'; ?>
+<style>
+  .req-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap: 16px; }
+  .req-card {
+    border:1px solid #e6eaf0;
+    border-radius:16px;
+    padding:16px;
+    background:#ffffff;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .req-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08); }
+  .req-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:10px; }
+  .req-id { font-size:1.05rem; margin:0; letter-spacing:.2px; }
+  .req-meta { color:var(--muted-foreground,#6b7280); font-size:.86rem; margin-top:4px; }
+  .req-row {
+    display:grid;
+    grid-template-columns: 140px 1fr;
+    gap:10px;
+    align-items:start;
+    background:#f8fafc;
+    border-radius:10px;
+    padding:9px 10px;
+    margin-top:8px;
+  }
+  .req-label { color:var(--muted-foreground,#6b7280); font-size:.86rem; }
+  .req-row strong { font-size:.9rem; text-align:left; word-break: break-word; }
+  .chip-no { background:#ef4444; color:#fff; border-radius:999px; padding:.24rem .62rem; font-size:.74rem; font-weight:600; }
+</style>
 
-      <!-- Main Content Area -->
-      <main class="main-content">
-        <!-- Rejected Requests Section -->
-        <section class="dashboard-section rejected-requests-section">
-          <div class="section-header">
-            <h2 class="card-title">Rejected Aid Requests</h2>
-            <div class="section-actions">
-              <select class="filter-select" id="reasonFilter">
-                <option value="">All Rejection Reasons</option>
-                <option value="insufficient-docs">Insufficient Documentation</option>
-                <option value="not-eligible">Not Eligible</option>
-                <option value="duplicate">Duplicate Request</option>
-                <option value="funds-exhausted">Funds Exhausted</option>
-              </select>
-              <button class="btn btn-outline btn-sm" id="refreshBtn">
-                <i class="fas fa-sync-alt"></i>
-                <span>Refresh</span>
-              </button>
-            </div>
-          </div>
-          
-          <div class="requests-container">
-            <!-- Rejected Request Card 1 -->
-            <div class="request-card rejected-request" data-reason="insufficient-docs">
-              <div class="request-header">
-                <div class="request-info">
-                  <h3 class="request-id">#AR-2024-008</h3>
-                  <div class="request-meta">
-                    <span class="student-name">Alex Johnson</span>
-                    <span class="student-id">ID: 2024008</span>
-                  </div>
-                </div>
-                <div class="request-badges">
-                  <span class="status-badge rejected">Rejected</span>
-                  <span class="type-badge">Technology Grant</span>
-                </div>
-              </div>
-              
-              <div class="request-details">
-                <div class="detail-row">
-                  <span class="detail-label">Amount Requested:</span>
-                  <span class="detail-value amount">Rs. 1,200</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Rejected Date:</span>
-                  <span class="detail-value">Dec 7, 2024 - 8 days ago</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Reason:</span>
-                  <span class="detail-value">Laptop replacement needed for coursework</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Rejected By:</span>
-                  <span class="detail-value">Dr. Michael Brown</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Rejection Reason:</span>
-                  <span class="detail-value">Insufficient Documentation - Missing financial statements and quotes</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Notes:</span>
-                  <span class="detail-value">Student can reapply with complete documentation within 30 days</span>
-                </div>
-              </div>
-              
-              <div class="request-actions">
-                <button class="btn btn-outline btn-sm" onclick="viewRequestDetails('AR-2024-008')">
-                  <i class="fas fa-eye"></i>
-                  <span>View Details</span>
-                </button>
-                <button class="btn btn-info btn-sm" onclick="viewRejectionHistory('AR-2024-008')">
-                  <i class="fas fa-history"></i>
-                  <span>Rejection History</span>
-                </button>
-                <button class="btn btn-warning btn-sm" onclick="allowResubmission('AR-2024-008')">
-                  <i class="fas fa-redo"></i>
-                  <span>Allow Resubmission</span>
-                </button>
-              </div>
-            </div>
+<div class="dashboard-container">
+  <?php require '../app/views/partials/counselor_sidebar.php'; ?>
 
-            <!-- Rejected Request Card 2 -->
-            <div class="request-card rejected-request" data-reason="not-eligible">
-              <div class="request-header">
-                <div class="request-info">
-                  <h3 class="request-id">#AR-2024-009</h3>
-                  <div class="request-meta">
-                    <span class="student-name">Maria Garcia</span>
-                    <span class="student-id">ID: 2024009</span>
-                  </div>
-                </div>
-                <div class="request-badges">
-                  <span class="status-badge rejected">Rejected</span>
-                  <span class="type-badge">Emergency Fund</span>
-                </div>
-              </div>
-              
-              <div class="request-details">
-                <div class="detail-row">
-                  <span class="detail-label">Amount Requested:</span>
-                  <span class="detail-value amount">Rs. 3,000</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Rejected Date:</span>
-                  <span class="detail-value">Dec 3, 2024 - 12 days ago</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Reason:</span>
-                  <span class="detail-value">Family emergency requiring immediate financial assistance</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Rejected By:</span>
-                  <span class="detail-value">Dr. Sarah Wilson</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Rejection Reason:</span>
-                  <span class="detail-value">Not Eligible - Student already received maximum emergency fund allocation this semester</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Notes:</span>
-                  <span class="detail-value">Student can apply for other types of assistance or reapply next semester</span>
-                </div>
-              </div>
-              
-              <div class="request-actions">
-                <button class="btn btn-outline btn-sm" onclick="viewRequestDetails('AR-2024-009')">
-                  <i class="fas fa-eye"></i>
-                  <span>View Details</span>
-                </button>
-                <button class="btn btn-info btn-sm" onclick="viewRejectionHistory('AR-2024-009')">
-                  <i class="fas fa-history"></i>
-                  <span>Rejection History</span>
-                </button>
-                <button class="btn btn-warning btn-sm" onclick="allowResubmission('AR-2024-009')">
-                  <i class="fas fa-redo"></i>
-                  <span>Allow Resubmission</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Rejected Request Card 3 -->
-            <div class="request-card rejected-request" data-reason="funds-exhausted">
-              <div class="request-header">
-                <div class="request-info">
-                  <h3 class="request-id">#AR-2024-010</h3>
-                  <div class="request-meta">
-                    <span class="student-name">James Wilson</span>
-                    <span class="student-id">ID: 2024010</span>
-                  </div>
-                </div>
-                <div class="request-badges">
-                  <span class="status-badge rejected">Rejected</span>
-                  <span class="type-badge">Tuition Assistance</span>
-                </div>
-              </div>
-              
-              <div class="request-details">
-                <div class="detail-row">
-                  <span class="detail-label">Amount Requested:</span>
-                  <span class="detail-value amount">Rs. 2,500</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Rejected Date:</span>
-                  <span class="detail-value">Dec 1, 2024 - 14 days ago</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Reason:</span>
-                  <span class="detail-value">Unexpected family financial hardship affecting tuition payment</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Rejected By:</span>
-                  <span class="detail-value">Dr. Michael Brown</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Rejection Reason:</span>
-                  <span class="detail-value">Funds Exhausted - Tuition assistance fund depleted for this semester</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Notes:</span>
-                  <span class="detail-value">Student placed on priority list for next semester funding</span>
-                </div>
-              </div>
-              
-              <div class="request-actions">
-                <button class="btn btn-outline btn-sm" onclick="viewRequestDetails('AR-2024-010')">
-                  <i class="fas fa-eye"></i>
-                  <span>View Details</span>
-                </button>
-                <button class="btn btn-info btn-sm" onclick="viewRejectionHistory('AR-2024-010')">
-                  <i class="fas fa-history"></i>
-                  <span>Rejection History</span>
-                </button>
-                <button class="btn btn-warning btn-sm" onclick="allowResubmission('AR-2024-010')">
-                  <i class="fas fa-redo"></i>
-                  <span>Allow Resubmission</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-      </main>
-    </div>
-
-    <!-- Request Details Modal -->
-    <div class="modal" id="requestDetailsModal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3 class="modal-title">Request Details</h3>
-          <button class="modal-close" onclick="closeModal()">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="modal-body" id="modalBody">
-          <!-- Dynamic content will be inserted here -->
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-outline" onclick="closeModal()">Close</button>
-        </div>
+  <main class="main-content">
+    <section class="dashboard-section">
+      <div class="section-header">
+        <h2 class="card-title">Rejected Submissions</h2>
       </div>
-    </div>
 
-    <script type="module" src="assets/js/main.js"></script>
-    <script src="assets/js/counselor-dashboard.js"></script>
-  </body>
+      <?php if (empty($rejectedRequests)): ?>
+        <div class="request-card" style="margin-top: 1rem;">
+          <div class="request-details">
+            <p class="detail-value">No rejected submissions.</p>
+          </div>
+        </div>
+      <?php else: ?>
+        <div class="req-grid">
+          <?php foreach ($rejectedRequests as $request): ?>
+            <div class="req-card">
+              <div class="req-head">
+                <div>
+                  <h3 class="req-id">#REQ-<?= (int)$request->request_id ?></h3>
+                  <div class="req-meta"><?= esc($request->student_name ?? 'Student') ?> · ID: <?= esc($request->student_id ?? 'N/A') ?></div>
+                </div>
+                <span class="chip-no">Rejected</span>
+              </div>
+              <div class="req-row"><span class="req-label">Aid Type</span><strong><?= esc(ucfirst((string)($request->aid_type ?? 'N/A'))) ?></strong></div>
+              <div class="req-row"><span class="req-label">Amount</span><strong><?= isset($request->amount) && $request->amount !== null ? 'LKR ' . esc($request->amount) : 'N/A' ?></strong></div>
+              <div class="req-row"><span class="req-label">Submitted</span><strong><?= esc($request->created_at ?? 'N/A') ?></strong></div>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
+    </section>
+  </main>
+</div>
+
+<script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
+</body>
 </html>

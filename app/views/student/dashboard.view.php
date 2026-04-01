@@ -131,7 +131,7 @@ require '../app/views/partials/student_header.php';
         <section class="dashboard-section aid-requests-section">
           <div class="section-header">
             <h2 class="section-title">Aid Requests</h2>
-            <a href="<?=ROOT?>/student/AidReqForm">
+            <a href="<?=ROOT?>/student/aid-req-form">
             <button class="btn btn-primary  new-aid-btn">
               <i class="fas fa-plus"></i>
               New Aid Request
@@ -140,46 +140,20 @@ require '../app/views/partials/student_header.php';
           </div>
           
           <div class="aid-requests-table">
-            <table>
-              <thead>
-                <tr>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Counselor Approval</th>
-                  <th>Alumni Acceptance</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Laptop replacement</td>
-                  <td><span class="status-badge status-pending">Pending</span></td>
-                  <td><span class="status-badge status-approved">Approved</span></td>
-                  <td><span class="status-badge status-waiting">Waiting</span></td>
-                  <td>
-                    <button class="btn btn-outline btn-sm">View Details</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Book Grant</td>
-                  <td><span class="status-badge status-approved">Approved</span></td>
-                  <td><span class="status-badge status-approved">Approved</span></td>
-                  <td><span class="status-badge status-accepted">Accepted</span></td>
-                  <td>
-                    <button class="btn btn-outline btn-sm">View Details</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Emergency Fund</td>
-                  <td><span class="status-badge status-completed">Completed</span></td>
-                  <td><span class="status-badge status-approved">Approved</span></td>
-                  <td><span class="status-badge status-accepted">Accepted</span></td>
-                  <td>
-                    <button class="btn btn-outline btn-sm">View Details</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="request-form-card" style="margin-top: 0.5rem;">
+              <div class="form-intro">
+                <h3 class="form-title">No fake sample requests shown</h3>
+                <p class="form-description">Use the Aid Requests page to view your real submissions and status (Pending, Accepted, Rejected).</p>
+              </div>
+              <div class="form-actions">
+                <a href="<?=ROOT?>/student/aidrequests">
+                  <button class="btn btn-outline">
+                    <i class="fas fa-list"></i>
+                    <span>View My Real Submissions</span>
+                  </button>
+                </a>
+              </div>
+            </div>
           </div>
         </section>
 

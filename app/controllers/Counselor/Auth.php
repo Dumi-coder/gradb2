@@ -2,11 +2,26 @@
 
 class Auth extends Controller
 {
+    // TEMP: Development-only login bypass for counselor routes.
+    // Set to false to restore normal email/password authentication.
+    private const TEMP_BYPASS_LOGIN = true;
+
     public function index()
     {
         // Start session if not started
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
+        }
+
+        // TEMP BYPASS: Auto-login as counselor without credentials.
+        // Remove this block or set TEMP_BYPASS_LOGIN to false before production.
+        if (self::TEMP_BYPASS_LOGIN) {
+            $_SESSION['user_id'] = $_SESSION['user_id'] ?? 1;
+            $_SESSION['role'] = 'counselor';
+            $_SESSION['name'] = $_SESSION['name'] ?? 'Counselor';
+
+            redirect('counselor/dashboard');
+            exit();
         }
 
         // Check if user is already logged in as counselor
