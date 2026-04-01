@@ -12,8 +12,12 @@ $statusLabel = function ($status) {
         return 'Pending';
     }
 
-    if (in_array($status, ['open', 'approved', 'accepted'], true)) {
-        return 'Accepted';
+  if ($status === 'open') {
+    return 'Accepted (Counselor)';
+  }
+
+  if (in_array($status, ['approved', 'accepted'], true)) {
+    return 'Accepted (Alumni)';
     }
 
     if ($status === 'rejected') {
@@ -30,8 +34,12 @@ $statusClass = function ($status) {
         return 'status-pending';
     }
 
-    if (in_array($status, ['open', 'approved', 'accepted'], true)) {
-        return 'status-approved';
+  if ($status === 'open') {
+    return 'status-accepted-stage1';
+  }
+
+  if (in_array($status, ['approved', 'accepted'], true)) {
+    return 'status-accepted-stage2';
     }
 
     if ($status === 'rejected') {
