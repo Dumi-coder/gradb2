@@ -21,56 +21,56 @@ $profile = $profile ?? (object)[
 
 <style>
   .profile-wrap {
-    max-width: 920px;
+    max-width: 980px;
     margin: 0 auto;
-    padding: 12px;
+    padding: 16px;
   }
 
   .profile-card {
     background: var(--card, #fff);
     border: 1px solid var(--border, #e5e7eb);
-    border-radius: 10px;
-    padding: 20px;
+    border-radius: 12px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
-    min-height: 520px;
+    min-height: 560px;
   }
 
   .profile-heading {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     font-weight: 700;
     color: var(--foreground);
   }
 
   .profile-heading-sub {
-    margin: 4px 0 14px 0;
+    margin: 6px 0 16px 0;
     color: var(--muted-foreground, #64748b);
-    font-size: .9rem;
+    font-size: .92rem;
   }
 
   .profile-top {
     display: flex;
-    gap: 14px;
+    gap: 16px;
     align-items: center;
     justify-content: flex-start;
-    padding: 14px;
+    padding: 16px;
     border: 1px solid var(--border, #e5e7eb);
-    border-radius: 8px;
-    background: var(--card, #fff);
-    margin-bottom: 14px;
+    border-radius: 10px;
+    background: var(--background, #fafafa);
+    margin-bottom: 18px;
   }
 
   .profile-top-left {
     display: flex;
-    gap: 14px;
+    gap: 16px;
     align-items: center;
     flex-wrap: wrap;
   }
 
   .avatar {
-    width: 80px;
-    height: 80px;
+    width: 88px;
+    height: 88px;
     border-radius: 50%;
     background: var(--secondary, #f1f5f9);
     border: 1px solid var(--border, #e5e7eb);
@@ -91,40 +91,40 @@ $profile = $profile ?? (object)[
 
   .name {
     margin: 0;
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     color: var(--foreground);
   }
 
   .subtext {
-    margin-top: 4px;
+    margin-top: 6px;
     margin-bottom: 0;
     color: var(--muted-foreground, #64748b);
-    font-size: 0.86rem;
+    font-size: 0.9rem;
   }
 
   .role-chip {
-    margin-top: 6px;
+    margin-top: 8px;
     display: inline-block;
-    font-size: .74rem;
+    font-size: .76rem;
     font-weight: 600;
     border-radius: 999px;
-    padding: .22rem .55rem;
+    padding: .28rem .62rem;
     background: var(--secondary, #f1f5f9);
     color: var(--muted-foreground, #64748b);
   }
 
   .profile-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
 
   .info-item {
     border: 1px solid var(--border, #e5e7eb);
-    border-radius: 8px;
-    padding: 12px;
+    border-radius: 10px;
+    padding: 14px;
     background: var(--background, #fff);
-    min-height: 78px;
+    min-height: 96px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -132,27 +132,27 @@ $profile = $profile ?? (object)[
 
   .info-label {
     margin: 0 0 6px 0;
-    font-size: .76rem;
+    font-size: .75rem;
     font-weight: 600;
     color: var(--muted-foreground, #64748b);
     text-transform: uppercase;
-    letter-spacing: .02em;
+    letter-spacing: .04em;
   }
 
   .info-value {
     margin: 0;
-    font-size: .96rem;
+    font-size: 1rem;
     font-weight: 600;
-    line-height: 1.35;
+    line-height: 1.45;
     word-break: break-word;
     color: var(--foreground);
   }
 
   .profile-actions {
     margin-top: auto;
-    padding-top: 14px;
+    padding-top: 16px;
     display: flex;
-    gap: 8px;
+    gap: 10px;
     justify-content: flex-end;
     border-top: 1px solid var(--border, #e5e7eb);
   }
@@ -166,6 +166,11 @@ $profile = $profile ?? (object)[
       padding: 18px;
       min-height: auto;
     }
+
+    .profile-grid {
+      grid-template-columns: 1fr;
+    }
+
     .profile-top {
       align-items: flex-start;
       flex-direction: column;
@@ -189,7 +194,7 @@ $profile = $profile ?? (object)[
     <section class="dashboard-section profile-wrap">
       <div class="profile-card">
         <h2 class="profile-heading">Profile Information</h2>
-        <!-- <p class="profile-heading-sub">Quickly view your account details and update them when needed.</p> -->
+        <p class="profile-heading-sub"></p>
 
         <?php if (!empty($flashMessage) && is_array($flashMessage)): ?>
           <div style="padding: 12px 14px; border-radius: 10px; margin-bottom: 16px; font-size: 0.95rem; background: <?= ($flashMessage['type'] === 'success' ? '#d1fae5' : '#fee2e2') ?>; color: <?= ($flashMessage['type'] === 'success' ? '#065f46' : '#991b1b') ?>; border: 1px solid <?= ($flashMessage['type'] === 'success' ? '#a7f3d0' : '#fecaca') ?>;">
@@ -209,7 +214,7 @@ $profile = $profile ?? (object)[
 
             <div>
               <h2 class="name"><?= esc($profile->name ?? 'Counselor') ?></h2>
-              <!-- <p class="subtext">Manage your account details and keep your profile up to date.</p> -->
+              <p class="subtext">Counselor account</p>
               <span class="role-chip"><?= esc(ucfirst((string)($profile->role ?? 'counselor'))) ?></span>
             </div>
           </div>
@@ -256,19 +261,11 @@ $profile = $profile ?? (object)[
 <script>
   (function () {
     const editBtn = document.getElementById('editProfileBtn');
-    const backBtn = document.getElementById('backDashboardBtn');
 
     if (editBtn) {
       editBtn.addEventListener('click', function (event) {
         event.preventDefault();
         window.location.assign('<?=ROOT?>/counselor/profile-edit');
-      });
-    }
-
-    if (backBtn) {
-      backBtn.addEventListener('click', function (event) {
-        event.preventDefault();
-        window.location.assign('<?=ROOT?>/counselor/dashboard');
       });
     }
   })();
