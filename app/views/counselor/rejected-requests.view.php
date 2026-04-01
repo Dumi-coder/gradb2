@@ -4,10 +4,28 @@ $page_subtitle = "Counselor rejected submissions";
 require '../app/views/partials/counselor_header.php'; 
 
 $rejectedRequests = $rejectedRequests ?? [];
+$buildFileUrl = static function ($path) {
+  $path = trim((string)$path);
+  if ($path === '') {
+    return '';
+  }
+  return ROOT . '/' . ltrim($path, '/');
+};
 ?>
 
 <style>
-  .req-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap: 16px; }
+  .req-grid {
+    display:grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    align-items: stretch;
+  }
+  @media (max-width: 1200px) {
+    .req-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 768px) {
+    .req-grid { grid-template-columns: 1fr; }
+  }
   .req-card {
     border:1px solid #e6eaf0;
     border-radius:16px;
@@ -18,8 +36,20 @@ $rejectedRequests = $rejectedRequests ?? [];
   }
   .req-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08); }
   .req-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:10px; }
-  .req-id { font-size:1.05rem; margin:0; letter-spacing:.2px; }
   .req-meta { color:var(--muted-foreground,#6b7280); font-size:.86rem; margin-top:4px; }
+  .student-meta { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+  .student-chip {
+    display:inline-flex;
+    align-items:center;
+    border:1px solid #e2e8f0;
+    background:#f8fafc;
+    color:#334155;
+    border-radius:999px;
+    font-size:.78rem;
+    font-weight:600;
+    padding:.2rem .55rem;
+  }
+  .student-chip .k { color:#64748b; font-weight:600; margin-right:4px; }
   .req-row {
     display:grid;
     grid-template-columns: 140px 1fr;
@@ -56,13 +86,49 @@ $rejectedRequests = $rejectedRequests ?? [];
             <div class="req-card">
               <div class="req-head">
                 <div>
-                  <h3 class="req-id">#REQ-<?= (int)$request->request_id ?></h3>
-                  <div class="req-meta"><?= esc($request->student_name ?? 'Student') ?> · ID: <?= esc($request->student_id ?? 'N/A') ?></div>
+                  <div class="student-meta">
+                    <span class="student-chip"><span class="k">Name:</span><?= esc($request->student_name ?? 'Student') ?></span>
+                    <span class="student-chip"><span class="k">ID:</span><?= esc($request->student_id ?? 'N/A') ?></span>
+                  </div>
                 </div>
                 <span class="chip-no">Rejected</span>
               </div>
               <div class="req-row"><span class="req-label">Aid Type</span><strong><?= esc(ucfirst((string)($request->aid_type ?? 'N/A'))) ?></strong></div>
               <div class="req-row"><span class="req-label">Amount</span><strong><?= isset($request->amount) && $request->amount !== null ? 'LKR ' . esc($request->amount) : 'N/A' ?></strong></div>
+              <div class="req-row"><span class="req-label">Student ID</span><strong><?= esc($request->student_id ?? 'N/A') ?></strong></div>
+              <div class="req-row">
+                <span class="req-label">Student ID Document</span>
+                <strong>
+                  <?php $studentIdDocUrl = $buildFileUrl($request->student_id_pdf_path ?? ''); ?>
+                  <?php if ($studentIdDocUrl !== ''): ?>
+                    <a href="<?= esc($studentIdDocUrl) ?>" target="_blank" rel="noopener">View file</a>
+                  <?php else: ?>
+                    N/A
+                  <?php endif; ?>
+                </strong>
+              </div>
+              <div class="req-row">
+                <span class="req-label">Income Statement</span>
+                <strong>
+                  <?php $incomeStatementUrl = $buildFileUrl($request->income_statement_path ?? ''); ?>
+                  <?php if ($incomeStatementUrl !== ''): ?>
+                    <a href="<?= esc($incomeStatementUrl) ?>" target="_blank" rel="noopener">View file</a>
+                  <?php else: ?>
+                    N/A
+                  <?php endif; ?>
+                </strong>
+              </div>
+              <div class="req-row">
+                <span class="req-label">Gramaseva Niladhari Certificate</span>
+                <strong>
+                  <?php $gramasevaCertUrl = $buildFileUrl($request->gramaseva_cert_path ?? ''); ?>
+                  <?php if ($gramasevaCertUrl !== ''): ?>
+                    <a href="<?= esc($gramasevaCertUrl) ?>" target="_blank" rel="noopener">View file</a>
+                  <?php else: ?>
+                    N/A
+                  <?php endif; ?>
+                </strong>
+              </div>
               <div class="req-row"><span class="req-label">Submitted</span><strong><?= esc($request->created_at ?? 'N/A') ?></strong></div>
             </div>
           <?php endforeach; ?>

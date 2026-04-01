@@ -118,20 +118,26 @@ foreach ($requests as $request) {
           <table class="aid-requests-table">
             <thead>
               <tr>
-                <th>Request ID</th>
                 <th>Type</th>
                 <th>Amount</th>
                 <th>Status</th>
+                <th>Rejection Reason</th>
                 <th>Submitted</th>
               </tr>
             </thead>
             <tbody>
               <?php foreach ($requests as $request): ?>
                 <tr>
-                  <td>#REQ-<?= (int)($request->request_id ?? 0) ?></td>
                   <td><?= esc(ucfirst((string)($request->aid_type ?? 'N/A'))) ?></td>
                   <td><?= isset($request->amount) && $request->amount !== null ? 'LKR ' . esc($request->amount) : 'N/A' ?></td>
                   <td><span class="status-badge <?= $statusClass($request->status ?? '') ?>"><?= esc($statusLabel($request->status ?? '')) ?></span></td>
+                  <td>
+                    <?php if (strtolower((string)($request->status ?? '')) === 'rejected'): ?>
+                      <?= esc($request->rejection_reason ?? 'No reason provided') ?>
+                    <?php else: ?>
+                      -
+                    <?php endif; ?>
+                  </td>
                   <td><?= esc($request->created_at ?? 'N/A') ?></td>
                 </tr>
               <?php endforeach; ?>

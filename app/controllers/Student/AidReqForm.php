@@ -178,14 +178,12 @@ class AidReqForm extends Controller
             return;
         }
 
-        $this->view('student/aid-requests-form', [
-            'studentInfo' => $studentInfo,
-            'formData' => [],
-            'flashMessage' => [
-                'type' => 'success',
-                'text' => 'Aid request submitted successfully. Counselor verification is pending.',
-            ],
-        ]);
+        $_SESSION['flash_message'] = [
+            'type' => 'success',
+            'text' => 'Aid request submitted successfully. Counselor verification is pending.',
+        ];
+
+        redirect('student/dashboard');
     }
 
     private function isValidUpload($fieldName, $allowedExtensions)

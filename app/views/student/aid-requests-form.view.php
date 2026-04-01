@@ -7,7 +7,15 @@ require '../app/views/partials/student_header.php';
 <style>
     .aid-form-wrap {
         max-width: 920px;
-        margin: 0 auto;
+        margin: var(--spacing-md, 16px) auto 0;
+    }
+
+    .aid-form-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
     }
 
     .aid-form-card {
@@ -154,37 +162,49 @@ require '../app/views/partials/student_header.php';
         .student-info-box {
             grid-template-columns: 1fr;
         }
+
+        .aid-form-wrap {
+            margin-top: 8px;
+        }
     }
 </style>
 
-<div class="dashboard-content aid-form-wrap">
-    <section class="dashboard-section aid-form-card">
-        <div>
-            <h2 class="aid-form-title">Student Aid Request</h2>
-            <p class="aid-form-subtitle">Fill in your details and upload the required documents. Counselor will review your request first.</p>
-            <div class="student-info-box">
-                <div class="student-info-item">
-                    <span class="label">Student Name</span>
-                    <span class="value"><?= htmlspecialchars($studentInfo->name ?? 'N/A') ?></span>
-                </div>
-                <div class="student-info-item">
-                    <span class="label">Student ID</span>
-                    <span class="value"><?= htmlspecialchars($studentInfo->student_id ?? 'N/A') ?></span>
-                </div>
-                <div class="student-info-item">
-                    <span class="label">Faculty</span>
-                    <span class="value"><?= htmlspecialchars($studentInfo->faculty ?? ($studentInfo->faculty_name ?? 'N/A')) ?></span>
-                </div>
-            </div>
-        </div>
+<div class="dashboard-container">
+    <?php require '../app/views/partials/student_sidebar.php'; ?>
 
-        <?php if (!empty($flashMessage)): ?>
-            <div class="alert alert-<?= htmlspecialchars($flashMessage['type']) ?>" style="margin-bottom: 16px;">
-                <?= htmlspecialchars($flashMessage['text']) ?>
-            </div>
-        <?php endif; ?>
+    <main class="main-content">
+        <section class="dashboard-section aid-form-wrap">
+            <div class="aid-form-card">
+                <div>
+                    <div class="aid-form-head">
+                        <div>
+                            <h2 class="aid-form-title">Student Aid Request</h2>
+                            <p class="aid-form-subtitle">Fill in your details and upload the required documents. Counselor will review your request first.</p>
+                        </div>
+                    </div>
+                    <div class="student-info-box">
+                        <div class="student-info-item">
+                            <span class="label">Student Name</span>
+                            <span class="value"><?= htmlspecialchars($studentInfo->name ?? 'N/A') ?></span>
+                        </div>
+                        <div class="student-info-item">
+                            <span class="label">Student ID</span>
+                            <span class="value"><?= htmlspecialchars($studentInfo->student_id ?? 'N/A') ?></span>
+                        </div>
+                        <div class="student-info-item">
+                            <span class="label">Faculty</span>
+                            <span class="value"><?= htmlspecialchars($studentInfo->faculty ?? ($studentInfo->faculty_name ?? 'N/A')) ?></span>
+                        </div>
+                    </div>
+                </div>
 
-        <form method="POST" enctype="multipart/form-data" class="aid-request-form">
+                <?php if (!empty($flashMessage)): ?>
+                    <div class="alert alert-<?= htmlspecialchars($flashMessage['type']) ?>" style="margin: 16px 0;">
+                        <?= htmlspecialchars($flashMessage['text']) ?>
+                    </div>
+                <?php endif; ?>
+
+                <form method="POST" enctype="multipart/form-data" class="aid-request-form">
             <div class="aid-section">
                 <h3>Basic Information</h3>
                 <div class="aid-form-grid">
@@ -264,12 +284,20 @@ require '../app/views/partials/student_header.php';
                 </div>
             </div>
 
-            <div class="submit-row">
-                <span class="submit-note">Please check all information before submitting.</span>
-                <button type="submit" class="btn btn-primary">Submit Aid Request</button>
+                    <div class="submit-row">
+                        <span class="submit-note">Please check all information before submitting.</span>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <a href="<?=ROOT?>/student/aidrequests" class="btn btn-outline">
+                                <i class="fas fa-arrow-left"></i>
+                                <span>Back to Aid Requests</span>
+                            </a>
+                            <button type="submit" class="btn btn-primary">Submit Aid Request</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </form>
-    </section>
+        </section>
+    </main>
 </div>
 
 <script>

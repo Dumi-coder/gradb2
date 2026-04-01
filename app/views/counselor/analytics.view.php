@@ -2,6 +2,34 @@
 $page_title = "Analytics & Reports";
 $page_subtitle = "View insights and generate reports";
 require '../app/views/partials/counselor_header.php'; 
+
+$summary = $summary ?? [
+  'total_requests' => 0,
+  'approval_rate' => 0,
+  'total_disbursed' => 0,
+  'avg_processing_days' => 0,
+];
+$breakdown = $breakdown ?? [];
+$recentRequests = $recentRequests ?? [];
+$days = (int)($days ?? 30);
+
+$statusLabel = function ($status) {
+  $status = strtolower((string)$status);
+  if ($status === 'pending_verification') {
+    return 'Pending';
+  }
+  if (in_array($status, ['open', 'approved', 'accepted'], true)) {
+    return 'Accepted';
+  }
+  if ($status === 'rejected') {
+    return 'Rejected';
+  }
+  return ucfirst($status);
+};
+
+$formatAidType = function ($aidType) {
+  return ucfirst(str_replace('_', ' ', (string)$aidType));
+};
 ?>
 
     <div class="dashboard-container">
@@ -17,7 +45,7 @@ require '../app/views/partials/counselor_header.php';
             <div class="section-actions">
               <select class="filter-select" id="timeFilter">
                 <option value="7">Last 7 Days</option>
-                <option value="30" selected>Last 30 Days</option>
+                <option value="30" selected>Last <?= (int)$days ?> Days</option>
                 <option value="90">Last 90 Days</option>
               </select>
             </div>
@@ -29,7 +57,7 @@ require '../app/views/partials/counselor_header.php';
                 <i class="fas fa-file-alt"></i>
               </div>
               <div class="stat-content">
-                <h3 class="stat-number">247</h3>
+                <h3 class="stat-number"><?= (int)($summary['total_requests'] ?? 0) ?></h3>
                 <p class="stat-label">Total Requests</p>
               </div>
             </div>
@@ -39,7 +67,7 @@ require '../app/views/partials/counselor_header.php';
                 <i class="fas fa-check-circle"></i>
               </div>
               <div class="stat-content">
-                <h3 class="stat-number">78%</h3>
+                <h3 class="stat-number"><?= esc((string)($summary['approval_rate'] ?? 0)) ?>%</h3>
                 <p class="stat-label">Approval Rate</p>
               </div>
             </div>
@@ -49,7 +77,7 @@ require '../app/views/partials/counselor_header.php';
                 <i class="fas fa-dollar-sign"></i>
               </div>
               <div class="stat-content">
-                <h3 class="stat-number">Rs. 89,450</h3>
+                <h3 class="stat-number">Rs. <?= number_format((float)($summary['total_disbursed'] ?? 0), 2) ?></h3>
                 <p class="stat-label">Total Disbursed</p>
               </div>
             </div>
@@ -59,7 +87,7 @@ require '../app/views/partials/counselor_header.php';
                 <i class="fas fa-clock"></i>
               </div>
               <div class="stat-content">
-                <h3 class="stat-number">2.3</h3>
+                <h3 class="stat-number"><?= esc((string)($summary['avg_processing_days'] ?? 0)) ?></h3>
                 <p class="stat-label">Avg. Processing Days</p>
               </div>
             </div>
@@ -73,183 +101,56 @@ require '../app/views/partials/counselor_header.php';
           </div>
           
           <div class="breakdown-grid">
-            <div class="breakdown-item">
-              <div class="breakdown-header">
-                <h4>Emergency Fund</h4>
-                <span class="breakdown-count">45</span>
-              </div>
-              <div class="breakdown-bar">
-                <div class="breakdown-fill" style="width: 85%"></div>
-              </div>
-              <div class="breakdown-stats">
-                <span>Approved: 38</span>
-                <span>Rejected: 7</span>
-              </div>
-            </div>
-
-            <div class="breakdown-item">
-              <div class="breakdown-header">
-                <h4>Tuition Assistance</h4>
-                <span class="breakdown-count">78</span>
-              </div>
-              <div class="breakdown-bar">
-                <div class="breakdown-fill" style="width: 75%"></div>
-              </div>
-              <div class="breakdown-stats">
-                <span>Approved: 62</span>
-                <span>Rejected: 16</span>
-              </div>
-            </div>
-
-            <div class="breakdown-item">
-              <div class="breakdown-header">
-                <h4>Textbook Support</h4>
-                <span class="breakdown-count">89</span>
-              </div>
-              <div class="breakdown-bar">
-                <div class="breakdown-fill" style="width: 95%"></div>
-              </div>
-              <div class="breakdown-stats">
-                <span>Approved: 85</span>
-                <span>Rejected: 4</span>
-              </div>
-            </div>
-
-            <div class="breakdown-item">
-              <div class="breakdown-header">
-                <h4>Technology Grant</h4>
-                <span class="breakdown-count">35</span>
-              </div>
-              <div class="breakdown-bar">
-                <div class="breakdown-fill" style="width: 80%"></div>
-              </div>
-              <div class="breakdown-stats">
-                <span>Approved: 28</span>
-                <span>Rejected: 7</span>
-              </div>
-            </div>
+            <?php if (empty($breakdown)): ?>
+              <p>No aid request data available for this period.</p>
+            <?php else: ?>
+              <?php foreach ($breakdown as $item): ?>
+                <div class="breakdown-item">
+                  <div class="breakdown-header">
+                    <h4><?= esc($formatAidType($item['aid_type'] ?? 'other')) ?></h4>
+                    <span class="breakdown-count"><?= (int)($item['total_count'] ?? 0) ?></span>
+                  </div>
+                  <div class="breakdown-bar">
+                    <div class="breakdown-fill" style="width: <?= (int)($item['bar_percentage'] ?? 0) ?>%"></div>
+                  </div>
+                  <div class="breakdown-stats">
+                    <span>Approved: <?= (int)($item['approved_count'] ?? 0) ?></span>
+                    <span>Rejected: <?= (int)($item['rejected_count'] ?? 0) ?></span>
+                  </div>
+                </div>
+              <?php endforeach; ?>
+            <?php endif; ?>
           </div>
         </section>
 
-        <!-- Report Generation -->
-        <section class="dashboard-section report-section">
-          <div class="section-header">
-            <h2 class="card-title">Generate Report</h2>
-            <div class="section-actions">
-              <button class="btn btn-primary" onclick="generateReport()">
-                <i class="fas fa-download"></i>
-                <span>Generate Report</span>
-              </button>
-            </div>
-          </div>
-          
-          <div class="report-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="reportType">Report Type</label>
-                <select id="reportType" class="form-select">
-                  <option value="summary">Summary Report</option>
-                  <option value="detailed">Detailed Analysis</option>
-                  <option value="financial">Financial Report</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label for="dateRange">Date Range</label>
-                <select id="dateRange" class="form-select">
-                  <option value="7">Last 7 Days</option>
-                  <option value="30" selected>Last 30 Days</option>
-                  <option value="90">Last 90 Days</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label for="format">Format</label>
-                <select id="format" class="form-select">
-                  <option value="pdf">PDF</option>
-                  <option value="excel">Excel</option>
-                  <option value="csv">CSV</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Recent Reports -->
+        <!-- Recent Aid Requests -->
         <section class="dashboard-section recent-reports-section">
           <div class="section-header">
-            <h2 class="card-title">Recent Reports</h2>
-            <div class="section-actions">
-              <button class="btn btn-outline btn-sm" onclick="refreshReports()">
-                <i class="fas fa-sync-alt"></i>
-                <span>Refresh</span>
-              </button>
-            </div>
+            <h2 class="card-title">Recent Aid Requests</h2>
           </div>
-          
+
           <div class="reports-list">
-            <div class="report-item">
-              <div class="report-info">
-                <h4 class="report-title">Monthly Summary - December 2024</h4>
-                <div class="report-meta">
-                  <span class="report-type">Summary Report</span>
-                  <span class="report-date">Dec 15, 2024</span>
-                  <span class="report-size">2.3 MB</span>
+            <?php if (empty($recentRequests)): ?>
+              <p>No recent aid requests found.</p>
+            <?php else: ?>
+              <?php foreach ($recentRequests as $request): ?>
+                <div class="report-item">
+                  <div class="report-info">
+                    <h4 class="report-title"><?= esc($request->student_name ?? 'Student') ?> · <?= esc($formatAidType($request->aid_type ?? 'aid')) ?></h4>
+                    <div class="report-meta">
+                      <span class="report-type">Student ID: <?= esc($request->student_id ?? 'N/A') ?></span>
+                      <span class="report-date"><?= esc($request->created_at ?? 'N/A') ?></span>
+                      <span class="report-size">Amount: <?= isset($request->amount) && $request->amount !== null ? 'Rs. ' . esc($request->amount) : 'N/A' ?></span>
+                    </div>
+                  </div>
+                  <div class="report-actions">
+                    <span class="status-badge status-<?= esc(strtolower((string)($request->status ?? 'pending'))) ?>">
+                      <?= esc($statusLabel($request->status ?? 'pending')) ?>
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div class="report-actions">
-                <button class="btn btn-outline btn-sm">
-                  <i class="fas fa-eye"></i>
-                  <span>View</span>
-                </button>
-                <button class="btn btn-primary btn-sm">
-                  <i class="fas fa-download"></i>
-                  <span>Download</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="report-item">
-              <div class="report-info">
-                <h4 class="report-title">Financial Analysis - Q4 2024</h4>
-                <div class="report-meta">
-                  <span class="report-type">Financial Report</span>
-                  <span class="report-date">Dec 10, 2024</span>
-                  <span class="report-size">4.1 MB</span>
-                </div>
-              </div>
-              <div class="report-actions">
-                <button class="btn btn-outline btn-sm">
-                  <i class="fas fa-eye"></i>
-                  <span>View</span>
-                </button>
-                <button class="btn btn-primary btn-sm">
-                  <i class="fas fa-download"></i>
-                  <span>Download</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="report-item">
-              <div class="report-info">
-                <h4 class="report-title">Performance Metrics - November 2024</h4>
-                <div class="report-meta">
-                  <span class="report-type">Performance Report</span>
-                  <span class="report-date">Dec 5, 2024</span>
-                  <span class="report-size">1.8 MB</span>
-                </div>
-              </div>
-              <div class="report-actions">
-                <button class="btn btn-outline btn-sm">
-                  <i class="fas fa-eye"></i>
-                  <span>View</span>
-                </button>
-                <button class="btn btn-primary btn-sm">
-                  <i class="fas fa-download"></i>
-                  <span>Download</span>
-                </button>
-              </div>
-            </div>
+              <?php endforeach; ?>
+            <?php endif; ?>
           </div>
         </section>
 
@@ -257,6 +158,5 @@ require '../app/views/partials/counselor_header.php';
     </div>
 
     <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
-    <script src="<?=ROOT?>/assets/js/counselor-dashboard.js"></script>
   </body>
 </html>

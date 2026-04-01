@@ -75,7 +75,15 @@ class Request
 		$query = "SELECT r.request_id, r.status, r.created_at,
 						 ar.aid_type, ar.amount, ar.reason,
 						 ar.mobile_number,
-						 ar.student_id_pdf_path, ar.income_statement_path, ar.gramaseva_cert_path
+						 ar.student_id_pdf_path, ar.income_statement_path, ar.gramaseva_cert_path,
+						 (
+							 SELECT REPLACE(rl.notes, '[COUNSELOR REJECTED] ', '')
+							 FROM request_logs rl
+							 WHERE rl.request_id = r.request_id
+							   AND rl.notes LIKE '[COUNSELOR REJECTED] %'
+							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
+							 LIMIT 1
+						 ) AS rejection_reason
 				  FROM requests r
 				  LEFT JOIN aid_requests ar ON ar.request_id = r.request_id
 				  WHERE r.request_type = 'aid'
@@ -137,5 +145,112 @@ class Request
 		}
 
 		return true;
+	}
+
+	public function getAidAnalyticsSummary($days = 30)
+	{
+		$days = max(1, (int)$days);
+
+		$query = "SELECT
+						COUNT(*) AS total_requests,
+						SUM(CASE WHEN r.status IN ('open', 'approved', 'accepted') THEN 1 ELSE 0 END) AS approved_requests,
+						SUM(CASE WHEN r.status = 'rejected' THEN 1 ELSE 0 END) AS rejected_requests,
+						SUM(CASE WHEN r.status = 'pending_verification' THEN 1 ELSE 0 END) AS pending_requests,
+						SUM(CASE WHEN r.status IN ('open', 'approved', 'accepted') THEN COALESCE(ar.amount, 0) ELSE 0 END) AS total_disbursed,
+						AVG(CASE WHEN r.status IN ('open', 'approved', 'accepted', 'rejected') THEN TIMESTAMPDIFF(DAY, r.created_at, NOW()) ELSE NULL END) AS avg_processing_days
+				  FROM requests r
+				  LEFT JOIN aid_requests ar ON ar.request_id = r.request_id
+				  WHERE r.request_type = 'aid'
+					AND r.created_at >= DATE_SUB(NOW(), INTERVAL :days DAY)";
+
+		$row = $this->get_row($query, ['days' => $days]);
+		if (!$row) {
+			return [
+				'total_requests' => 0,
+				'approved_requests' => 0,
+				'rejected_requests' => 0,
+				'pending_requests' => 0,
+				'total_disbursed' => 0,
+				'avg_processing_days' => 0,
+				'approval_rate' => 0,
+			];
+		}
+
+		$totalRequests = (int)($row->total_requests ?? 0);
+		$approvedRequests = (int)($row->approved_requests ?? 0);
+		$rejectedRequests = (int)($row->rejected_requests ?? 0);
+		$processed = $approvedRequests + $rejectedRequests;
+		$approvalRate = $processed > 0 ? round(($approvedRequests / $processed) * 100, 1) : 0;
+
+		return [
+			'total_requests' => $totalRequests,
+			'approved_requests' => $approvedRequests,
+			'rejected_requests' => $rejectedRequests,
+			'pending_requests' => (int)($row->pending_requests ?? 0),
+			'total_disbursed' => (float)($row->total_disbursed ?? 0),
+			'avg_processing_days' => round((float)($row->avg_processing_days ?? 0), 1),
+			'approval_rate' => $approvalRate,
+		];
+	}
+
+	public function getAidAnalyticsBreakdown($days = 30)
+	{
+		$days = max(1, (int)$days);
+
+		$query = "SELECT
+						COALESCE(ar.aid_type, 'other') AS aid_type,
+						COUNT(*) AS total_count,
+						SUM(CASE WHEN r.status IN ('open', 'approved', 'accepted') THEN 1 ELSE 0 END) AS approved_count,
+						SUM(CASE WHEN r.status = 'rejected' THEN 1 ELSE 0 END) AS rejected_count
+				  FROM requests r
+				  LEFT JOIN aid_requests ar ON ar.request_id = r.request_id
+				  WHERE r.request_type = 'aid'
+					AND r.created_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
+				  GROUP BY COALESCE(ar.aid_type, 'other')
+				  ORDER BY total_count DESC";
+
+		$rows = $this->query($query, ['days' => $days]);
+		if (!is_array($rows) || empty($rows)) {
+			return [];
+		}
+
+		$maxTotal = 0;
+		foreach ($rows as $row) {
+			$maxTotal = max($maxTotal, (int)($row->total_count ?? 0));
+		}
+
+		$result = [];
+		foreach ($rows as $row) {
+			$total = (int)($row->total_count ?? 0);
+			$result[] = [
+				'aid_type' => (string)($row->aid_type ?? 'other'),
+				'total_count' => $total,
+				'approved_count' => (int)($row->approved_count ?? 0),
+				'rejected_count' => (int)($row->rejected_count ?? 0),
+				'bar_percentage' => $maxTotal > 0 ? (int)round(($total / $maxTotal) * 100) : 0,
+			];
+		}
+
+		return $result;
+	}
+
+	public function getRecentAidRequestsForAnalytics($limit = 8)
+	{
+		$limit = max(1, (int)$limit);
+
+		$query = "SELECT r.request_id, r.status, r.created_at,
+						 u.name AS student_name,
+						 s.student_id,
+						 ar.aid_type, ar.amount
+				  FROM requests r
+				  JOIN users u ON u.user_id = r.student_user_id
+				  LEFT JOIN students s ON s.user_id = r.student_user_id
+				  LEFT JOIN aid_requests ar ON ar.request_id = r.request_id
+				  WHERE r.request_type = 'aid'
+				  ORDER BY r.created_at DESC
+				  LIMIT $limit";
+
+		$rows = $this->query($query);
+		return is_array($rows) ? $rows : [];
 	}
 }
