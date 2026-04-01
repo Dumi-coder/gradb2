@@ -8,4 +8,3 @@ class RejectedRequests extends Controller
     }
 }
 
-

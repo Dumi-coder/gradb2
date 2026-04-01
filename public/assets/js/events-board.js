@@ -59,14 +59,20 @@ function initializeEventsBoard() {
 
 // Bind click handlers to Register buttons without relying on inline onclick (CSP-safe)
 function bindRegisterButtons() {
-    const registerButtons = document.querySelectorAll('.event-actions .btn.btn-primary');
+    const registerButtons = document.querySelectorAll('.event-actions .btn.btn-primary[data-event-id]');
     registerButtons.forEach((btn) => {
         btn.addEventListener('click', function(e) {
-            // If inline onclick exists, let it proceed too; we still open here for CSP cases
+            if (btn.disabled) {
+                return;
+            }
+
             const card = btn.closest('.featured-event-card, .my-event-card');
             const titleEl = card ? card.querySelector('.event-title') : null;
-            const title = titleEl ? titleEl.textContent.trim() : 'Event';
-            openRegisterModal(title);
+            const title = btn.dataset.eventTitle || (titleEl ? titleEl.textContent.trim() : 'Event');
+            const eventId = Number.parseInt(btn.dataset.eventId || '0', 10);
+            if (Number.isInteger(eventId) && eventId > 0) {
+                openRegisterModal(eventId, title);
+            }
         });
     });
 }

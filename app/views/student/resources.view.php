@@ -55,14 +55,10 @@ require '../app/views/partials/student_header.php';
                     ?>
                     <span class="resource-category"><?= htmlspecialchars($cat) ?></span>
                     <span class="resource-size"><?= isset($res->file_size) ? number_format(($res->file_size/1024/1024), 1) . ' MB' : '' ?></span>
-                    <?php if (isset($res->is_reported) && $res->is_reported == 1): ?>
-                      <span class="resource-status" style="background: #dc2626; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">Reported</span>
-                    <?php endif; ?>
                   </div>
                   <p class="resource-description"><?= htmlspecialchars($res->description ?? '') ?></p>
                   <div class="resource-details">
                     <span class="upload-date">Uploaded: <?= isset($res->created_at) ? date('M j, Y', strtotime($res->created_at)) : '' ?></span>
-                    <span class="resource-downloads"><i class="fas fa-download"></i> <?= (int)($res->downloads ?? 0) ?> downloads</span>
                   </div>
                   <div class="resource-actions">
                     <button class="btn btn-primary btn-sm" data-action="edit" data-id="<?= $res->resource_id ?? '' ?>">
@@ -89,187 +85,91 @@ require '../app/views/partials/student_header.php';
           </div>
         </section>
 
-        <!-- Browse by Category -->
-        <section class="dashboard-section categories-section">
-          <div class="section-header">
-            <h2 class="card-title">Browse by Category</h2>
-          </div>
-          
-          <div class="categories-grid">
-            <div class="category-card" onclick="window.location.href='<?=ROOT?>/student/resources/browse?category=lecture-notes'">
-              <div class="category-icon">
-                <i class="fas fa-file-alt"></i>
-              </div>
-              <div class="category-info">
-                <h3 class="category-name">Lecture Notes</h3>
-                <p class="category-description">Class notes and study guides</p>
-                <div class="category-stats">
-                  <span class="stat"><i class="fas fa-file"></i> <?= isset($category_counts['lecture-notes']) ? $category_counts['lecture-notes'] : 0 ?> files</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="category-card" onclick="window.location.href='<?=ROOT?>/student/resources/browse?category=assignments'">
-              <div class="category-icon">
-                <i class="fas fa-tasks"></i>
-              </div>
-              <div class="category-info">
-                <h3 class="category-name">Exercises</h3>
-                <p class="category-description">Sample solutions and templates</p>
-                <div class="category-stats">
-                  <span class="stat"><i class="fas fa-file"></i> <?= isset($category_counts['assignments']) ? $category_counts['assignments'] : 0 ?> files</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="category-card" onclick="window.location.href='<?=ROOT?>/student/resources/browse?category=textbooks'">
-              <div class="category-icon">
-                <i class="fas fa-book"></i>
-              </div>
-              <div class="category-info">
-                <h3 class="category-name">Textbooks</h3>
-                <p class="category-description">Digital books and references</p>
-                <div class="category-stats">
-                  <span class="stat"><i class="fas fa-file"></i> <?= isset($category_counts['textbooks']) ? $category_counts['textbooks'] : 0 ?> files</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="category-card" onclick="window.location.href='<?=ROOT?>/student/resources/browse?category=software'">
-              <div class="category-icon">
-                <i class="fas fa-code"></i>
-              </div>
-              <div class="category-info">
-                <h3 class="category-name">Software & Tools</h3>
-                <p class="category-description">Development tools and software</p>
-                <div class="category-stats">
-                  <span class="stat"><i class="fas fa-file"></i> <?= isset($category_counts['software']) ? $category_counts['software'] : 0 ?> files</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <!-- Recent Resources -->
         <section class="dashboard-section recent-section">
           <div class="section-header">
             <h2 class="card-title">Recent Resources</h2>
             <div class="section-actions">
-              <a href="<?=ROOT?>/student/resources/browse" class="btn btn-outline btn-sm">
+              <button class="btn btn-outline btn-sm" onclick="viewAllResources()">
                 <span>View All</span>
                 <i class="fas fa-arrow-right"></i>
-              </a>
+              </button>
             </div>
           </div>
 
           <div class="resources-list">
-            <?php if(isset($recent_resources) && is_array($recent_resources) && count($recent_resources) > 0): ?>
-              <?php foreach($recent_resources as $resource): ?>
-                <div class="resource-item">
-                  <div class="resource-icon">
-                    <?php
-                      $iconClass = 'fa-file';
-                      $fileType = strtolower($resource->file_type ?? '');
-                      if ($fileType == 'pdf') $iconClass = 'fa-file-pdf';
-                      elseif (in_array($fileType, ['doc', 'docx'])) $iconClass = 'fa-file-word';
-                      elseif (in_array($fileType, ['xls', 'xlsx'])) $iconClass = 'fa-file-excel';
-                      elseif (in_array($fileType, ['ppt', 'pptx'])) $iconClass = 'fa-file-powerpoint';
-                      elseif (in_array($fileType, ['zip', 'rar'])) $iconClass = 'fa-file-archive';
-                      elseif (in_array($fileType, ['jpg', 'jpeg', 'png', 'gif'])) $iconClass = 'fa-file-image';
-                      elseif ($fileType == 'txt') $iconClass = 'fa-file-alt';
-                      elseif (in_array($fileType, ['py', 'js', 'php', 'java', 'cpp', 'c'])) $iconClass = 'fa-file-code';
-                    ?>
-                    <i class="fas <?= $iconClass ?>"></i>
-                  </div>
-                  <div class="resource-content">
-                    <h3 class="resource-title"><?= htmlspecialchars($resource->title ?? '') ?></h3>
-                    <p class="resource-description"><?= htmlspecialchars($resource->description ?? '') ?></p>
-                    <div class="resource-meta">
-                      <?php 
-                        $cat = isset($resource->category) ? ucwords(str_replace('-', ' ', $resource->category)) : ''; 
-                      ?>
-                      <span class="resource-category"><?= htmlspecialchars($cat) ?></span>
-                      <span class="resource-author">by <?= htmlspecialchars($resource->author_name ?? 'Unknown') ?></span>
-                      <?php
-                        $timeAgo = '';
-                        if (isset($resource->created_at)) {
-                          $timestamp = strtotime($resource->created_at);
-                          $diff = time() - $timestamp;
-                          if ($diff < 3600) {
-                            $timeAgo = floor($diff / 60) . ' minutes ago';
-                          } elseif ($diff < 86400) {
-                            $timeAgo = floor($diff / 3600) . ' hours ago';
-                          } elseif ($diff < 604800) {
-                            $timeAgo = floor($diff / 86400) . ' days ago';
-                          } else {
-                            $timeAgo = date('M j, Y', $timestamp);
-                          }
-                        }
-                      ?>
-                      <span class="resource-date"><?= $timeAgo ?></span>
-                      <span class="resource-downloads"><i class="fas fa-download"></i> <?= (int)($resource->downloads ?? 0) ?> downloads</span>
-                    </div>
-                  </div>
-                  <div class="resource-actions">
-                    <a class="btn btn-outline btn-sm" href="<?=ROOT?>/student/resources/download?id=<?= $resource->resource_id ?? '' ?>" target="_blank" rel="noopener">
-                      <i class="fas fa-download"></i>
-                      <span>Download</span>
-                    </a>
-                    <button class="btn btn-outline btn-sm" style="transition: all 0.3s;" onmouseover="this.style.borderColor='#dc2626'; this.style.color='#dc2626'" onmouseout="this.style.borderColor=''; this.style.color=''" onclick="openReportModal(<?= $resource->resource_id ?? 0 ?>, '<?= htmlspecialchars($resource->title ?? '', ENT_QUOTES) ?>')">
-                      <i class="fas fa-flag"></i>
-                      <span>Report</span>
-                    </button>
-                  </div>
-                </div>
-              <?php endforeach; ?>
-            <?php else: ?>
-              <div class="resource-item" style="opacity:.7">
-                <div class="resource-content" style="text-align: center; width: 100%;">
-                  <h3 class="resource-title">No recent resources available</h3>
-                  <p class="resource-description">Resources shared by other users will appear here.</p>
+            <div class="resource-item">
+              <div class="resource-icon">
+                <i class="fas fa-file-pdf"></i>
+              </div>
+              <div class="resource-content">
+                <h3 class="resource-title">Data Structures Cheat Sheet</h3>
+                <p class="resource-description">Comprehensive reference for common data structures and algorithms</p>
+                <div class="resource-meta">
+                  <span class="resource-category">Lecture Notes</span>
+                  <span class="resource-author">by Dumindu Hashen</span>
+                  <span class="resource-date">2 hours ago</span>
                 </div>
               </div>
-            <?php endif; ?>
-          </div>
-        </section>
+              <div class="resource-actions">
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-download"></i>
+                  <span>Download</span>
+                </button>
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-star"></i>
+                  <span>Save</span>
+                </button>
+              </div>
+            </div>
 
-        <!-- Resource Activity Statistics Section -->
-        <section class="dashboard-section resource-stats-section">
-          <div class="section-header">
-            <h2 class="section-title">
-              <i class="fas fa-chart-bar" style="color: #0E2072;"></i>
-              Resource Activity
-            </h2>
-          </div>
-          
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-folder-open"></i>
+            <div class="resource-item">
+              <div class="resource-icon">
+                <i class="fas fa-file-code"></i>
               </div>
-              <div class="stat-content">
-                <h3 class="stat-number"><?= number_format($stats['total_resources'] ?? 0) ?></h3>
-                <p class="stat-label">Total Number of Resources</p>
+              <div class="resource-content">
+                <h3 class="resource-title">Python Project Template</h3>
+                <p class="resource-description">Starter template for Python web applications with Flask</p>
+                <div class="resource-meta">
+                  <span class="resource-category">Software & Tools</span>
+                  <span class="resource-author">by Nethmi Perera</span>
+                  <span class="resource-date">1 day ago</span>
+                </div>
               </div>
-            </div>
-            
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-upload"></i>
-              </div>
-              <div class="stat-content">
-                <h3 class="stat-number"><?= number_format($stats['my_resources'] ?? 0) ?></h3>
-                <p class="stat-label">Number of My Resources</p>
+              <div class="resource-actions">
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-download"></i>
+                  <span>Download</span>
+                </button>
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-star"></i>
+                  <span>Save</span>
+                </button>
               </div>
             </div>
-            
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-download"></i>
+
+            <div class="resource-item">
+              <div class="resource-icon">
+                <i class="fas fa-file-alt"></i>
               </div>
-              <div class="stat-content">
-                <h3 class="stat-number"><?= number_format($stats['my_downloads'] ?? 0) ?></h3>
-                <p class="stat-label">Total My Resource Downloads</p>
+              <div class="resource-content">
+                <h3 class="resource-title">Database Design Guidelines</h3>
+                <p class="resource-description">Best practices for designing efficient database schemas</p>
+                <div class="resource-meta">
+                  <span class="resource-category">Exercises</span>
+                  <span class="resource-author">by Prasad Manoj</span>
+                  <span class="resource-date">3 days ago</span>
+                </div>
+              </div>
+              <div class="resource-actions">
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-download"></i>
+                  <span>Download</span>
+                </button>
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-star"></i>
+                  <span>Save</span>
+                </button>
               </div>
             </div>
           </div>
@@ -303,22 +203,6 @@ require '../app/views/partials/student_header.php';
               <option value="assignments">Assignments</option>
               <option value="textbooks">Textbooks</option>
               <option value="software">Software & Tools</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="resourceFaculty">Visibility *</label>
-            <select id="resourceFaculty" name="resourceFaculty" required>
-              <option value="">Select Faculty</option>
-              <option value="all-faculties">All Faculties</option>
-              <option value="UCSC">UCSC</option>
-              <option value="FOA">FOA</option>
-              <option value="FOS">FOS</option>
-              <option value="FOM">FOM</option>
-              <option value="FOMF">FOMF</option>
-              <option value="FOL">FOL</option>
-              <option value="FOE">FOE</option>
-              <option value="FOT">FOT</option>
             </select>
           </div>
 
@@ -395,154 +279,9 @@ require '../app/views/partials/student_header.php';
       </div>
     </div>
 
-    <!-- Report Modal -->
-    <div id="reportModal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title">
-            <i class="fas fa-flag" style="color: #dc2626;"></i>
-            Report Resource
-          </h2>
-          <button class="modal-close" onclick="closeReportModal()">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-
-        <form id="reportForm" class="upload-form">
-          <input type="hidden" id="reportResourceId" name="reportResourceId">
-          
-          <div class="form-group">
-            <label>Resource</label>
-            <p id="reportResourceTitle" style="color: #6b7280; margin-top: 5px;"></p>
-          </div>
-
-          <div class="form-group">
-            <label for="reportReason">Reason for Reporting *</label>
-            <textarea id="reportReason" name="reportReason" rows="4" placeholder="Please describe why you are reporting this resource..." required></textarea>
-          </div>
-
-          <div class="form-actions">
-            <button type="button" class="btn btn-outline" onclick="closeReportModal()">
-              <span>Cancel</span>
-            </button>
-            <button type="submit" class="btn" style="background: #dc2626; color: white;">
-              <i class="fas fa-flag"></i>
-              <span>Submit Report</span>
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Success/Error Modal -->
-    <div id="messageModal" class="modal" style="display: none;">
-      <div class="modal-content" style="max-width: 400px;">
-        <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
-          <button class="modal-close" onclick="closeMessageModal()">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div style="text-align: center; padding: 20px;">
-          <div id="messageIcon" style="font-size: 48px; margin-bottom: 20px;"></div>
-          <h3 id="messageTitle" style="margin-bottom: 10px; font-size: 20px;"></h3>
-          <p id="messageText" style="color: #6b7280; margin-bottom: 25px;"></p>
-          <button class="btn btn-primary" onclick="closeMessageModal()" style="min-width: 120px;">
-            <span>OK</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
     <!-- JS -->
     <script>
       window.APP_ROOT = '<?=ROOT?>';
-      
-      function openReportModal(resourceId, resourceTitle) {
-        document.getElementById('reportResourceId').value = resourceId;
-        document.getElementById('reportResourceTitle').textContent = resourceTitle;
-        document.getElementById('reportReason').value = '';
-        document.getElementById('reportModal').style.display = 'flex';
-      }
-
-      function closeReportModal() {
-        document.getElementById('reportModal').style.display = 'none';
-      }
-
-      function showMessage(type, title, message, reloadOnClose = false) {
-        const modal = document.getElementById('messageModal');
-        const icon = document.getElementById('messageIcon');
-        const titleEl = document.getElementById('messageTitle');
-        const textEl = document.getElementById('messageText');
-        
-        if (type === 'success') {
-          icon.innerHTML = '<i class="fas fa-check-circle" style="color: #10b981;"></i>';
-        } else {
-          icon.innerHTML = '<i class="fas fa-exclamation-circle" style="color: #ef4444;"></i>';
-        }
-        
-        titleEl.textContent = title;
-        textEl.textContent = message;
-        modal.style.display = 'flex';
-        modal.dataset.reloadOnClose = reloadOnClose;
-      }
-
-      function closeMessageModal() {
-        const modal = document.getElementById('messageModal');
-        modal.style.display = 'none';
-        if (modal.dataset.reloadOnClose === 'true') {
-          location.reload();
-        }
-      }
-
-      document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('reportForm').addEventListener('submit', function(e) {
-          e.preventDefault();
-          
-          const resourceId = document.getElementById('reportResourceId').value;
-          const reason = document.getElementById('reportReason').value.trim();
-
-          if (!reason) {
-            showMessage('error', 'Missing Information', 'Please provide a reason for reporting this resource.');
-            return;
-          }
-
-          const formData = new FormData();
-          formData.append('resourceId', resourceId);
-          formData.append('reason', reason);
-
-          fetch('<?=ROOT?>/student/resources/report', {
-            method: 'POST',
-            body: formData
-          })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              closeReportModal();
-              showMessage('success', 'Report Submitted', 'Thank you for helping maintain quality. Your report has been submitted successfully.', true);
-            } else {
-              showMessage('error', 'Submission Failed', data.message || 'Failed to submit report. Please try again.');
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            showMessage('error', 'Error Occurred', 'An unexpected error occurred while submitting the report. Please try again.');
-          });
-        });
-
-        // Close report modal when clicking outside
-        document.getElementById('reportModal').addEventListener('click', function(e) {
-          if (e.target === this) {
-            closeReportModal();
-          }
-        });
-
-        // Close message modal when clicking outside
-        document.getElementById('messageModal').addEventListener('click', function(e) {
-          if (e.target === this) {
-            closeMessageModal();
-          }
-        });
-      });
     </script>
     <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/student-resources.js"></script>

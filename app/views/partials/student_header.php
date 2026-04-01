@@ -25,8 +25,49 @@
     <!-- JavaScript Files -->
     <script src="<?=ROOT?>/assets/js/sidebar-toggle.js"></script>
 </head>
-<body>
+<body class="student-dashboard">
     <script>
+        let notificationsMarkedAsRead = false;
+
+        async function markNotificationsAsRead() {
+            if (notificationsMarkedAsRead) return;
+
+            const badge = document.querySelector('.notification-btn .notification-badge');
+            if (!badge) {
+                notificationsMarkedAsRead = true;
+                return;
+            }
+
+            notificationsMarkedAsRead = true;
+            try {
+                await fetch('<?=ROOT?>/student/eventsboard/marknotificationsread', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+            } catch (error) {
+                notificationsMarkedAsRead = false;
+                return;
+            }
+
+            badge.remove();
+            const unreadText = document.querySelector('#notificationDropdownMenu .dropdown-role');
+            if (unreadText) {
+                unreadText.textContent = '0 unread';
+            }
+        }
+
+        function toggleNotificationDropdown() {
+            const menu = document.getElementById('notificationDropdownMenu');
+            if (!menu) return;
+            const willOpen = !menu.classList.contains('show');
+            menu.classList.toggle('show');
+            if (willOpen) {
+                markNotificationsAsRead();
+            }
+        }
+
         function logout() {
             // Create a form to submit logout request
             const form = document.createElement('form');
@@ -45,6 +86,15 @@
             document.body.appendChild(form);
             form.submit();
         }
+
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('notificationDropdownMenu');
+            const btn = document.querySelector('.notification-btn');
+            if (!menu || !btn) return;
+            if (!menu.contains(e.target) && !btn.contains(e.target)) {
+                menu.classList.remove('show');
+            }
+        });
     </script>
     <!-- Student Dashboard Header -->
     <header class="dashboard-header">
@@ -68,10 +118,33 @@
                 </div>
                 
                 <div class="header-actions">
-                    <button class="btn btn-outline notification-btn" aria-label="Notifications">
+                    <?php
+                    $notification_count = (int)($notification_count ?? 0);
+                    $header_notifications = $header_notifications ?? [];
+                    ?>
+                    <button class="btn btn-outline notification-btn" aria-label="Notifications" onclick="toggleNotificationDropdown()">
                         <i class="fas fa-bell" style="font-size: var(--font-md);"></i>
-                        <span class="notification-badge">3</span>
+                        <?php if ($notification_count > 0): ?>
+                            <span class="notification-badge"><?= $notification_count ?></span>
+                        <?php endif; ?>
                     </button>
+                    <div class="profile-dropdown-menu" id="notificationDropdownMenu" style="min-width:320px; right:120px; left:auto; top:72px;">
+                        <div class="dropdown-header">
+                            <span class="dropdown-name">Notifications</span>
+                            <span class="dropdown-role"><?= $notification_count ?> unread</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <?php if (!empty($header_notifications)): ?>
+                            <?php foreach ($header_notifications as $notif): ?>
+                                <div class="dropdown-item" style="align-items:flex-start; gap:8px; cursor:default;">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span style="white-space:normal;"><?= esc($notif['message'] ?? 'Notification') ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="dropdown-item" style="cursor:default; color:var(--muted-foreground);">No notifications</div>
+                        <?php endif; ?>
+                    </div>
                     
                     <!-- Profile Dropdown -->
                     <div class="profile-dropdown">
