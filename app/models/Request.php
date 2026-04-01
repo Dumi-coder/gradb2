@@ -21,7 +21,15 @@ class Request
 						 s.student_id, s.academic_year,
 						 f.faculty_name,
 						 ar.mobile_number, ar.aid_type, ar.amount, ar.reason,
-						 ar.student_id_pdf_path, ar.income_statement_path, ar.gramaseva_cert_path
+						 ar.student_id_pdf_path, ar.income_statement_path, ar.gramaseva_cert_path,
+						 (
+							 SELECT REPLACE(rl.notes, '[COUNSELOR REJECTED] ', '')
+							 FROM request_logs rl
+							 WHERE rl.request_id = r.request_id
+							   AND rl.notes LIKE '[COUNSELOR REJECTED] %'
+							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
+							 LIMIT 1
+						 ) AS rejection_reason
 				  FROM requests r
 				  JOIN users u ON u.user_id = r.student_user_id
 				  LEFT JOIN students s ON s.user_id = r.student_user_id
@@ -55,7 +63,15 @@ class Request
 						 s.student_id, s.academic_year,
 						 f.faculty_name,
 						 ar.mobile_number, ar.aid_type, ar.amount, ar.reason,
-						 ar.student_id_pdf_path, ar.income_statement_path, ar.gramaseva_cert_path
+						 ar.student_id_pdf_path, ar.income_statement_path, ar.gramaseva_cert_path,
+						 (
+							 SELECT REPLACE(rl.notes, '[COUNSELOR REJECTED] ', '')
+							 FROM request_logs rl
+							 WHERE rl.request_id = r.request_id
+							   AND rl.notes LIKE '[COUNSELOR REJECTED] %'
+							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
+							 LIMIT 1
+						 ) AS rejection_reason
 				  FROM requests r
 				  JOIN users u ON u.user_id = r.student_user_id
 				  LEFT JOIN students s ON s.user_id = r.student_user_id
