@@ -43,6 +43,10 @@ $isActive = function(string $path) use ($current): string {
           
           <div class="nav-section">
             <h3 class="nav-section-title">Account</h3>
+            <a href="<?=ROOT?>/Counselor/Profile" class="nav-item<?= $isActive('counselor/profile') ?>">
+              <i class="fas fa-user"></i>
+              <span>My Profile</span>
+            </a>
             <a href="<?=ROOT?>/Counselor/Logout" class="nav-item<?= $isActive('counselor/logout') ?>">
               <i class="fas fa-sign-out-alt"></i>
               <span>Logout</span>

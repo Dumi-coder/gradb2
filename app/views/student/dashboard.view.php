@@ -2,6 +2,35 @@
 $page_title = "Welcome, " . esc($profile->name);
 $page_subtitle = esc($profile->faculty) . " • Year " . esc($profile->academic_year);
 require '../app/views/partials/student_header.php'; 
+
+$recentAidRequests = $recentAidRequests ?? [];
+$aidStatusLabel = function ($status) {
+  $status = strtolower((string)$status);
+  if ($status === 'pending_verification') {
+    return 'Pending';
+  }
+  if (in_array($status, ['open', 'approved', 'accepted'], true)) {
+    return 'Accepted';
+  }
+  if ($status === 'rejected') {
+    return 'Rejected';
+  }
+  return ucfirst($status);
+};
+
+$aidStatusClass = function ($status) {
+  $status = strtolower((string)$status);
+  if ($status === 'pending_verification') {
+    return 'status-pending';
+  }
+  if (in_array($status, ['open', 'approved', 'accepted'], true)) {
+    return 'status-accepted';
+  }
+  if ($status === 'rejected') {
+    return 'status-rejected';
+  }
+  return 'status-open';
+};
 ?>
 
 <!-- Dashboard-specific CSS -->
@@ -14,6 +43,12 @@ require '../app/views/partials/student_header.php';
 
       <!-- Main Content Area -->
       <main class="main-content">
+        <?php if (!empty($flashMessage) && is_array($flashMessage)): ?>
+          <div class="alert alert-<?= esc($flashMessage['type'] ?? 'info') ?>" style="margin-bottom: 1rem;">
+            <?= esc($flashMessage['text'] ?? '') ?>
+          </div>
+        <?php endif; ?>
+
         <!-- Student Profile Section -->
         <section class="dashboard-section profile-section">
           <div class="section-header">
@@ -131,7 +166,7 @@ require '../app/views/partials/student_header.php';
         <section class="dashboard-section aid-requests-section">
           <div class="section-header">
             <h2 class="section-title">Aid Requests</h2>
-            <a href="<?=ROOT?>/student/AidReqForm">
+            <a href="<?=ROOT?>/student/aid-req-form">
             <button class="btn btn-primary  new-aid-btn">
               <i class="fas fa-plus"></i>
               New Aid Request
@@ -140,46 +175,42 @@ require '../app/views/partials/student_header.php';
           </div>
           
           <div class="aid-requests-table">
-            <table>
-              <thead>
-                <tr>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Counselor Approval</th>
-                  <th>Alumni Acceptance</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Laptop replacement</td>
-                  <td><span class="status-badge status-pending">Pending</span></td>
-                  <td><span class="status-badge status-approved">Approved</span></td>
-                  <td><span class="status-badge status-waiting">Waiting</span></td>
-                  <td>
-                    <button class="btn btn-outline btn-sm">View Details</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Book Grant</td>
-                  <td><span class="status-badge status-approved">Approved</span></td>
-                  <td><span class="status-badge status-approved">Approved</span></td>
-                  <td><span class="status-badge status-accepted">Accepted</span></td>
-                  <td>
-                    <button class="btn btn-outline btn-sm">View Details</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Emergency Fund</td>
-                  <td><span class="status-badge status-completed">Completed</span></td>
-                  <td><span class="status-badge status-approved">Approved</span></td>
-                  <td><span class="status-badge status-accepted">Accepted</span></td>
-                  <td>
-                    <button class="btn btn-outline btn-sm">View Details</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <?php if (empty($recentAidRequests)): ?>
+              <div class="request-form-card" style="margin-top: 0.5rem;">
+                <div class="form-intro">
+                  <h3 class="form-title">No aid submissions yet</h3>
+                  <p class="form-description">Start your first aid request using the button above.</p>
+                </div>
+              </div>
+            <?php else: ?>
+              <div class="mentorship-grid" style="margin-top:0.5rem;">
+                <?php foreach ($recentAidRequests as $aid): ?>
+                  <div class="mentorship-card">
+                    <div class="mentor-info">
+                      <div class="mentor-avatar">
+                        <i class="fas fa-hand-holding-heart"></i>
+                      </div>
+                      <div class="mentor-details">
+                        <h4 class="mentor-name"><?= esc(ucfirst((string)($aid->aid_type ?? 'Aid'))) ?></h4>
+                        <p class="mentor-role">Amount: <?= isset($aid->amount) && $aid->amount !== null ? 'LKR ' . esc($aid->amount) : 'N/A' ?></p>
+                        <p class="mentor-specialty">Submitted: <?= esc($aid->created_at ?? 'N/A') ?></p>
+                      </div>
+                    </div>
+                    <div class="mentorship-status">
+                      <span class="status-badge <?= esc($aidStatusClass($aid->status ?? '')) ?>"><?= esc($aidStatusLabel($aid->status ?? '')) ?></span>
+                    </div>
+                  </div>
+                <?php endforeach; ?>
+              </div>
+              <div class="form-actions" style="margin-top:12px;">
+                <a href="<?=ROOT?>/student/aidrequests">
+                  <button class="btn btn-outline">
+                    <i class="fas fa-list"></i>
+                    <span>View All Submissions</span>
+                  </button>
+                </a>
+              </div>
+            <?php endif; ?>
           </div>
         </section>
 

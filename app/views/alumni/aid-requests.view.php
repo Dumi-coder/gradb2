@@ -2,6 +2,11 @@
 $page_title = "Aid Requests";
 $page_subtitle = "Review and respond to student aid requests";
 require '../app/views/partials/alumni_header.php'; 
+
+$aidRequestsData = $aidRequestsData ?? [];
+$pendingRequests = $aidRequestsData['pending'] ?? [];
+$approvedRequests = $aidRequestsData['approved'] ?? [];
+$completedRequests = $aidRequestsData['completed'] ?? [];
 ?>
 
 <!-- Page-specific CSS -->
@@ -20,81 +25,51 @@ require '../app/views/partials/alumni_header.php';
           </div>
           
           <div class="pending-requests-container">
-            <?php 
-            // Demo hardcoded data for payment integration showcase
-            $demoRequests = [
-              [
-                'id' => 1,
-                'student_name' => 'Chamath Madusanka',
-                'request_type' => 'Emergency Financial Aid',
-                'description' => 'Urgent need for medical payment. In a situation to perform a surgery in kidneys',
-                'amount_requested' => 'Rs. 60,000',
-                'aid_type' => 'Monetary',
-                'status' => 'urgent'
-              ],
-              [
-                'id' => 2,
-                'student_name' => 'Umaya Walpola',
-                'request_type' => 'Textbook Assistance',
-                'description' => 'Need help acquiring required textbooks for Computer Science courses.',
-                'amount_requested' => 'Rs. 4500',
-                'aid_type' => 'Monetary',
-                'status' => 'pending'
-              ]
-            ];
-            
-            foreach ($demoRequests as $request): ?>
+            <?php if (empty($pendingRequests)): ?>
+            <p>No pending requests available.</p>
+            <?php else: ?>
+            <?php foreach ($pendingRequests as $request): ?>
             <div class="aid-request-card">
               <div class="request-header">
                 <div class="request-info">
-                  <h3 class="student-name"><?= esc($request['student_name']) ?></h3>
-                  <p class="request-type"><?= esc($request['request_type']) ?></p>
+                  <h3 class="student-name"><?= esc($request['student_name'] ?? 'Student') ?></h3>
+                  <p class="request-type"><?= esc($request['request_type'] ?? 'Aid Request') ?></p>
                 </div>
-                <?php if ($request['status'] === 'urgent'): ?>
-                <span class="status-badge status-urgent">Urgent</span>
-                <?php elseif ($request['status'] === 'pending'): ?>
                 <span class="status-badge status-pending">Pending</span>
-                <?php endif; ?>
               </div>
               
               <div class="request-description">
-                <p><?= esc($request['description']) ?></p>
+                <p><?= esc($request['description'] ?? 'No description provided') ?></p>
               </div>
               
               <div class="request-details">
-                <?php if (isset($request['amount_requested'])): ?>
+                <?php if (!empty($request['amount_requested'])): ?>
                 <div class="detail-item">
                   <span class="detail-label">Amount Requested:</span>
                   <span class="detail-value"><?= esc($request['amount_requested']) ?></span>
                 </div>
-                <?php elseif (isset($request['estimated_value'])): ?>
-                <div class="detail-item">
-                  <span class="detail-label">Estimated Value:</span>
-                  <span class="detail-value"><?= esc($request['estimated_value']) ?></span>
-                </div>
                 <?php endif; ?>
                 <div class="detail-item">
                   <span class="detail-label">Type:</span>
-                  <span class="detail-value"><?= esc($request['aid_type']) ?></span>
+                  <span class="detail-value"><?= esc($request['aid_type'] ?? 'Aid') ?></span>
                 </div>
               </div>
               
               <div class="request-actions">
-                <?php if ($request['aid_type'] === 'Monetary'): ?>
-                <button class="btn btn-success btn-sm approve-pay-btn" 
-                        data-request-id="<?= $request['id'] ?>" 
-                        data-amount="<?= esc($request['amount_requested']) ?>"
-                        data-student="<?= esc($request['student_name']) ?>"
-                        data-type="<?= esc($request['request_type']) ?>">
-                  <i class="fas fa-credit-card"></i> Approve & Pay
-                </button>
-                <?php else: ?>
-                <button class="btn btn-success btn-sm approve-btn">Approve</button>
-                <?php endif; ?>
+                <form method="POST" action="<?=ROOT?>/alumni/aid-requests/approve/<?= esc($request['id'] ?? '') ?>" style="display:inline;">
+                  <?php if (strtolower((string)($request['aid_type'] ?? '')) === 'monetary'): ?>
+                  <button type="submit" class="btn btn-success btn-sm approve-btn">
+                    <i class="fas fa-credit-card"></i> Approve &amp; Pay
+                  </button>
+                  <?php else: ?>
+                  <button type="submit" class="btn btn-success btn-sm approve-btn">Approve</button>
+                  <?php endif; ?>
+                </form>
                 <button class="btn btn-danger btn-sm decline-btn">Decline</button>
               </div>
             </div>
             <?php endforeach; ?>
+            <?php endif; ?>
             
             <div class="view-all-link">
               <a href="#" class="view-all-link-text">View All Pending Aid Requests</a>
@@ -109,47 +84,31 @@ require '../app/views/partials/alumni_header.php';
           </div>
           
           <div class="approved-requests-container">
-            <?php 
-            // Demo hardcoded approved requests
-            $demoApproved = [
-              [
-                'student_name' => 'Dinel Hashan',
-                'request_type' => 'Laptop Assistance',
-                'description' => 'Provided funding for new laptop for online classes.',
-                'provided_value' => 'Rs. 80000',
-                'aid_type' => 'Monetary'
-              ],
-              [
-                'student_name' => 'Sanduni Sasanka',
-                'request_type' => 'Career Workshop Access',
-                'description' => 'Sponsored attendance to professional development workshop.',
-                'provided_value' => 'Rs. 3500',
-                'aid_type' => 'Monetary'
-              ]
-            ];
-            
-            foreach ($demoApproved as $request): ?>
+            <?php if (empty($approvedRequests)): ?>
+            <p>No recently approved requests.</p>
+            <?php else: ?>
+            <?php foreach ($approvedRequests as $request): ?>
             <div class="aid-request-card approved">
               <div class="request-header">
                 <div class="request-info">
-                  <h3 class="student-name"><?= esc($request['student_name']) ?></h3>
-                  <p class="request-type"><?= esc($request['request_type']) ?></p>
+                  <h3 class="student-name"><?= esc($request['student_name'] ?? 'Student') ?></h3>
+                  <p class="request-type"><?= esc($request['request_type'] ?? 'Aid Request') ?></p>
                 </div>
                 <span class="status-badge status-approved">Approved</span>
               </div>
               
               <div class="request-description">
-                <p><?= esc($request['description']) ?></p>
+                <p><?= esc($request['description'] ?? 'No description provided') ?></p>
               </div>
               
               <div class="request-details">
                 <div class="detail-item">
                   <span class="detail-label">Provided Value:</span>
-                  <span class="detail-value"><?= esc($request['provided_value']) ?></span>
+                  <span class="detail-value"><?= esc($request['provided_value'] ?? 'N/A') ?></span>
                 </div>
                 <div class="detail-item">
                   <span class="detail-label">Type:</span>
-                  <span class="detail-value"><?= esc($request['aid_type']) ?></span>
+                  <span class="detail-value"><?= esc($request['aid_type'] ?? 'Aid') ?></span>
                 </div>
               </div>
               
@@ -159,6 +118,7 @@ require '../app/views/partials/alumni_header.php';
               </div>
             </div>
             <?php endforeach; ?>
+            <?php endif; ?>
           </div>
         </section>
 

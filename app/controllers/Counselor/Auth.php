@@ -2,6 +2,10 @@
 
 class Auth extends Controller
 {
+    // TEMP: Development-only login bypass for counselor routes.
+    // Set to false to restore normal email/password authentication.
+    private const TEMP_BYPASS_LOGIN = false;
+
     public function index()
     {
         // Start session if not started
@@ -9,8 +13,19 @@ class Auth extends Controller
             session_start();
         }
 
+        // TEMP BYPASS: Auto-login as counselor without credentials.
+        // Remove this block or set TEMP_BYPASS_LOGIN to false before production.
+        if (self::TEMP_BYPASS_LOGIN) {
+            $_SESSION['user_id'] = 1;
+            $_SESSION['role'] = 'counselor';
+            $_SESSION['name'] = $_SESSION['name'] ?? 'Counselor';
+
+            redirect('counselor/dashboard');
+            exit();
+        }
+
         // Check if user is already logged in as counselor
-        if (isset($_SESSION['user_id']) && $_SESSION['role'] == 'counselor') {
+        if (isset($_SESSION['user_id']) && $_SESSION['role'] == 'counselor' && (int)$_SESSION['user_id'] === 1) {
             redirect('counselor/dashboard');
             exit();
         }
@@ -55,10 +70,17 @@ class Auth extends Controller
             if ($counselor) {
                 // Verify password
                 if (password_verify($password, $counselor->password)) {
-                    // Login successful - set session
-                    $_SESSION['user_id'] = $counselor->user_id;
+                    if ((int)$counselor->user_id !== 1) {
+                        $errors[] = "Access denied. Only counselor user_id 1 can access this dashboard";
+                        $data['errors'] = $errors;
+                        $this->view('auth/counselor-login', $data);
+                        return;
+                    }
+
+                    // Login successful
+                    $_SESSION['user_id'] = (int)$counselor->user_id;
                     $_SESSION['role'] = 'counselor';
-                    $_SESSION['name'] = $counselor->name;
+                    $_SESSION['name'] = $counselor->name ?? 'Counselor';
                     $_SESSION['profile_picture'] = $counselor->profile_photo_url ?? null;
                     
                     // Redirect to counselor dashboard

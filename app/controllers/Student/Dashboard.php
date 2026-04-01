@@ -58,12 +58,19 @@ class Dashboard extends Controller
 
         // Get dashboard statistics (you can expand this)
         $stats = $this->getDashboardStats();
+        $flashMessage = $_SESSION['flash_message'] ?? null;
+        unset($_SESSION['flash_message']);
+        $requestModel = new Request();
+        $aidRequests = $requestModel->getAidRequestsForStudent($_SESSION['user_id']);
+        $recentAidRequests = is_array($aidRequests) ? array_slice($aidRequests, 0, 3) : [];
 
         $data = [
             'title' => 'Student Dashboard - GradBridge',
             'profile' => $profile,  // This contains all the data you need
             'stats' => $stats,
-            'user' => $_SESSION  // Session data if needed
+            'user' => $_SESSION,  // Session data if needed
+            'flashMessage' => $flashMessage,
+            'recentAidRequests' => $recentAidRequests,
         ];
 
         $this->view('student/dashboard', $data);

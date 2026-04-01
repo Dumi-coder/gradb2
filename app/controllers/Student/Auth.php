@@ -3,10 +3,20 @@ ob_start(); // Start output buffering
 
 class Auth extends Controller
 {
+    const TEMP_BYPASS_LOGIN = false; // TEMP: Allow bypass for testing
+    
     public function index()
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
+        }
+
+        // TEMP: Bypass login for testing
+        if (self::TEMP_BYPASS_LOGIN) {
+            $_SESSION['user_id'] = $_SESSION['user_id'] ?? 1;
+            $_SESSION['role'] = 'student';
+            redirect('student/aid-req-form');
+            exit();
         }
 
         if (isset($_SESSION['user_id']) && $_SESSION['role'] == 'student') {

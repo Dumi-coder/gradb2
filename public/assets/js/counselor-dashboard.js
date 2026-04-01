@@ -112,8 +112,10 @@ function updateNotificationBadge() {
 
 // Apply filters to request cards
 function applyFilters() {
-    const urgencyFilter = document.getElementById('urgencyFilter').value;
-    const typeFilter = document.getElementById('typeFilter').value;
+    const urgencyFilterElement = document.getElementById('urgencyFilter');
+    const typeFilterElement = document.getElementById('typeFilter');
+    const urgencyFilter = urgencyFilterElement ? urgencyFilterElement.value : '';
+    const typeFilter = typeFilterElement ? typeFilterElement.value : '';
     const requestCards = document.querySelectorAll('.request-card');
     
     requestCards.forEach(card => {
@@ -181,6 +183,71 @@ function getRequestData(requestId) {
                 { name: 'Enrollment Proof', type: 'pdf', size: '0.5 MB' }
             ],
             previousAid: 'Received textbook support (Rs. 300) in Fall 2024',
+            status: 'Pending'
+        },
+        'AR-2024-002': {
+            id: 'AR-2024-002',
+            studentName: 'Michael Chen',
+            studentId: '2024002',
+            email: 'michael.chen@university.edu',
+            phone: '+1 (555) 234-5678',
+            major: 'Business Administration',
+            year: 'Senior',
+            gpa: '3.5',
+            aidType: 'Tuition Assistance',
+            amount: 'Rs. 1,800',
+            urgency: 'High',
+            reason: 'Unexpected family financial hardship affecting ability to pay semester tuition and mandatory fees on time.',
+            submittedDate: 'Dec 14, 2024 - 1 day ago',
+            documents: [
+                { name: 'Financial Statement', type: 'pdf', size: '1.9 MB' },
+                { name: 'Enrollment Proof', type: 'pdf', size: '0.6 MB' }
+            ],
+            previousAid: 'No previous aid received',
+            status: 'Pending'
+        },
+        'AR-2024-003': {
+            id: 'AR-2024-003',
+            studentName: 'Emily Rodriguez',
+            studentId: '2024003',
+            email: 'emily.rodriguez@university.edu',
+            phone: '+1 (555) 345-6789',
+            major: 'Psychology',
+            year: 'Sophomore',
+            gpa: '3.8',
+            aidType: 'Textbook Support',
+            amount: 'Rs. 350',
+            urgency: 'Medium',
+            reason: 'Required textbooks for next semester courses, currently unable to afford due to recent part-time job loss.',
+            submittedDate: 'Dec 13, 2024 - 2 days ago',
+            documents: [
+                { name: 'Financial Statement', type: 'pdf', size: '1.5 MB' },
+                { name: 'Course Schedule', type: 'pdf', size: '0.7 MB' },
+                { name: 'Enrollment Proof', type: 'pdf', size: '0.5 MB' }
+            ],
+            previousAid: 'Received transport subsidy (Rs. 120) in Spring 2024',
+            status: 'Pending'
+        },
+        'AR-2024-004': {
+            id: 'AR-2024-004',
+            studentName: 'David Kim',
+            studentId: '2024004',
+            email: 'david.kim@university.edu',
+            phone: '+1 (555) 456-7890',
+            major: 'Software Engineering',
+            year: 'Junior',
+            gpa: '3.4',
+            aidType: 'Technology Grant',
+            amount: 'Rs. 800',
+            urgency: 'Low',
+            reason: 'Laptop replacement needed for coursework and assignments because current device is failing frequently.',
+            submittedDate: 'Dec 12, 2024 - 3 days ago',
+            documents: [
+                { name: 'Financial Statement', type: 'pdf', size: '1.2 MB' },
+                { name: 'Laptop Quote', type: 'pdf', size: '0.9 MB' },
+                { name: 'Enrollment Proof', type: 'pdf', size: '0.5 MB' }
+            ],
+            previousAid: 'No previous aid received',
             status: 'Pending'
         }
     };

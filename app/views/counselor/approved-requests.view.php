@@ -1,236 +1,143 @@
 <?php 
 $page_title = "Approved Requests";
-$page_subtitle = "View and manage approved aid requests";
+$page_subtitle = "Counselor approved submissions";
 require '../app/views/partials/counselor_header.php'; 
+
+$approvedRequests = $approvedRequests ?? [];
+$buildFileUrl = static function ($path) {
+  $path = trim((string)$path);
+  if ($path === '') {
+    return '';
+  }
+  return ROOT . '/' . ltrim($path, '/');
+};
 ?>
 
-    <div class="dashboard-container">
-      <!-- sidebar -->
-      <?php require '../app/views/partials/counselor_sidebar.php'; ?>
+<style>
+  .req-grid {
+    display:grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    align-items: stretch;
+  }
+  @media (max-width: 1200px) {
+    .req-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 768px) {
+    .req-grid { grid-template-columns: 1fr; }
+  }
+  .req-card {
+    border:1px solid #e6eaf0;
+    border-radius:16px;
+    padding:16px;
+    background:#ffffff;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .req-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08); }
+  .req-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:10px; }
+  .req-meta { color:var(--muted-foreground,#6b7280); font-size:.86rem; margin-top:4px; }
+  .student-meta { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+  .student-chip {
+    display:inline-flex;
+    align-items:center;
+    border:1px solid #e2e8f0;
+    background:#f8fafc;
+    color:#334155;
+    border-radius:999px;
+    font-size:.78rem;
+    font-weight:600;
+    padding:.2rem .55rem;
+  }
+  .student-chip .k { color:#64748b; font-weight:600; margin-right:4px; }
+  .req-row {
+    display:grid;
+    grid-template-columns: 140px 1fr;
+    gap:10px;
+    align-items:start;
+    background:#f8fafc;
+    border-radius:10px;
+    padding:9px 10px;
+    margin-top:8px;
+  }
+  .req-label { color:var(--muted-foreground,#6b7280); font-size:.86rem; }
+  .req-row strong { font-size:.9rem; text-align:left; word-break: break-word; }
+  .chip-ok { background:#10b981; color:#fff; border-radius:999px; padding:.24rem .62rem; font-size:.74rem; font-weight:600; }
+</style>
 
-      <!-- Main Content Area -->
-      <main class="main-content">
-        <!-- Approved Requests Section -->
-        <section class="dashboard-section approved-requests-section">
-          <div class="section-header">
-            <h2 class="card-title">Approved Aid Requests</h2>
-            <div class="section-actions">
-              <select class="filter-select" id="typeFilter">
-                <option value="">All Request Types</option>
-                <option value="emergency">Emergency Fund</option>
-                <option value="tuition">Tuition Assistance</option>
-                <option value="textbooks">Textbook Support</option>
-                <option value="technology">Technology Grant</option>
-              </select>
-              <button class="btn btn-outline btn-sm" id="refreshBtn">
-                <i class="fas fa-sync-alt"></i>
-                <span>Refresh</span>
-              </button>
-            </div>
-          </div>
-          
-          <div class="requests-container">
-            <!-- Approved Request Card 1 -->
-            <div class="request-card approved-request" data-type="emergency">
-              <div class="request-header">
-                <div class="request-info">
-                  <h3 class="request-id">#AR-2024-005</h3>
-                  <div class="request-meta">
-                    <span class="student-name">Jennifer Martinez</span>
-                    <span class="student-id">ID: 2024005</span>
-                  </div>
-                </div>
-                <div class="request-badges">
-                  <span class="status-badge approved">Approved</span>
-                  <span class="type-badge">Emergency Fund</span>
-                </div>
-              </div>
-              
-              <div class="request-details">
-                <div class="detail-row">
-                  <span class="detail-label">Amount Approved:</span>
-                  <span class="detail-value amount">Rs. 1,200</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Approved Date:</span>
-                  <span class="detail-value">Dec 10, 2024 - 5 days ago</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Original Amount:</span>
-                  <span class="detail-value">Rs. 1,500</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Reason:</span>
-                  <span class="detail-value">Medical emergency requiring immediate financial assistance</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Approved By:</span>
-                  <span class="detail-value">Dr. Sarah Wilson</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Notes:</span>
-                  <span class="detail-value">Approved with 20% reduction due to available emergency fund limits</span>
-                </div>
-              </div>
-              
-              <div class="request-actions">
-                <button class="btn btn-outline btn-sm" onclick="viewRequestDetails('AR-2024-005')">
-                  <i class="fas fa-eye"></i>
-                  <span>View Details</span>
-                </button>
-                <button class="btn btn-info btn-sm" onclick="viewApprovalHistory('AR-2024-005')">
-                  <i class="fas fa-history"></i>
-                  <span>Approval History</span>
-                </button>
-                <button class="btn btn-success btn-sm" onclick="markAsDisbursed('AR-2024-005')">
-                  <i class="fas fa-check-double"></i>
-                  <span>Mark as Disbursed</span>
-                </button>
-              </div>
-            </div>
+<div class="dashboard-container">
+  <?php require '../app/views/partials/counselor_sidebar.php'; ?>
 
-            <!-- Approved Request Card 2 -->
-            <div class="request-card approved-request" data-type="tuition">
-              <div class="request-header">
-                <div class="request-info">
-                  <h3 class="request-id">#AR-2024-006</h3>
-                  <div class="request-meta">
-                    <span class="student-name">Robert Thompson</span>
-                    <span class="student-id">ID: 2024006</span>
-                  </div>
-                </div>
-                <div class="request-badges">
-                  <span class="status-badge approved">Approved</span>
-                  <span class="type-badge">Tuition Assistance</span>
-                </div>
-              </div>
-              
-              <div class="request-details">
-                <div class="detail-row">
-                  <span class="detail-label">Amount Approved:</span>
-                  <span class="detail-value amount">Rs. 2,000</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Approved Date:</span>
-                  <span class="detail-value">Dec 8, 2024 - 7 days ago</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Original Amount:</span>
-                  <span class="detail-value">Rs. 2,000</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Reason:</span>
-                  <span class="detail-value">Family financial hardship affecting semester tuition payment</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Approved By:</span>
-                  <span class="detail-value">Dr. Michael Brown</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Notes:</span>
-                  <span class="detail-value">Full amount approved based on documented financial need</span>
-                </div>
-              </div>
-              
-              <div class="request-actions">
-                <button class="btn btn-outline btn-sm" onclick="viewRequestDetails('AR-2024-006')">
-                  <i class="fas fa-eye"></i>
-                  <span>View Details</span>
-                </button>
-                <button class="btn btn-info btn-sm" onclick="viewApprovalHistory('AR-2024-006')">
-                  <i class="fas fa-history"></i>
-                  <span>Approval History</span>
-                </button>
-                <button class="btn btn-success btn-sm" onclick="markAsDisbursed('AR-2024-006')">
-                  <i class="fas fa-check-double"></i>
-                  <span>Mark as Disbursed</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Approved Request Card 3 -->
-            <div class="request-card approved-request" data-type="textbooks">
-              <div class="request-header">
-                <div class="request-info">
-                  <h3 class="request-id">#AR-2024-007</h3>
-                  <div class="request-meta">
-                    <span class="student-name">Lisa Anderson</span>
-                    <span class="student-id">ID: 2024007</span>
-                  </div>
-                </div>
-                <div class="request-badges">
-                  <span class="status-badge approved">Approved</span>
-                  <span class="type-badge">Textbook Support</span>
-                </div>
-              </div>
-              
-              <div class="request-details">
-                <div class="detail-row">
-                  <span class="detail-label">Amount Approved:</span>
-                  <span class="detail-value amount">Rs. 280</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Approved Date:</span>
-                  <span class="detail-value">Dec 5, 2024 - 10 days ago</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Original Amount:</span>
-                  <span class="detail-value">Rs. 350</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Reason:</span>
-                  <span class="detail-value">Required textbooks for next semester courses</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Approved By:</span>
-                  <span class="detail-value">Dr. Sarah Wilson</span>
-                </div>
-                <div class="detail-row">
-                  <span class="detail-label">Notes:</span>
-                  <span class="detail-value">Approved for core textbooks only, excluded optional materials</span>
-                </div>
-              </div>
-              
-              <div class="request-actions">
-                <button class="btn btn-outline btn-sm" onclick="viewRequestDetails('AR-2024-007')">
-                  <i class="fas fa-eye"></i>
-                  <span>View Details</span>
-                </button>
-                <button class="btn btn-info btn-sm" onclick="viewApprovalHistory('AR-2024-007')">
-                  <i class="fas fa-history"></i>
-                  <span>Approval History</span>
-                </button>
-                <button class="btn btn-success btn-sm" onclick="markAsDisbursed('AR-2024-007')">
-                  <i class="fas fa-check-double"></i>
-                  <span>Mark as Disbursed</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-      </main>
-    </div>
-
-    <!-- Request Details Modal -->
-    <div class="modal" id="requestDetailsModal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3 class="modal-title">Request Details</h3>
-          <button class="modal-close" onclick="closeModal()">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="modal-body" id="modalBody">
-          <!-- Dynamic content will be inserted here -->
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-outline" onclick="closeModal()">Close</button>
-        </div>
+  <main class="main-content">
+    <section class="dashboard-section">
+      <div class="section-header">
+        <h2 class="card-title">Approved / Sent to Alumni</h2>
       </div>
-    </div>
 
-    <script type="module" src="assets/js/main.js"></script>
-    <script src="assets/js/counselor-dashboard.js"></script>
-  </body>
+      <?php if (empty($approvedRequests)): ?>
+        <div class="request-card" style="margin-top: 1rem;">
+          <div class="request-details">
+            <p class="detail-value">No approved submissions yet.</p>
+          </div>
+        </div>
+      <?php else: ?>
+        <div class="req-grid">
+          <?php foreach ($approvedRequests as $request): ?>
+            <div class="req-card">
+              <div class="req-head">
+                <div>
+                  <div class="student-meta">
+                    <span class="student-chip"><span class="k">Name:</span><?= esc($request->student_name ?? 'Student') ?></span>
+                    <span class="student-chip"><span class="k">ID:</span><?= esc($request->student_id ?? 'N/A') ?></span>
+                  </div>
+                </div>
+                <span class="chip-ok">Accepted</span>
+              </div>
+              <div class="req-row"><span class="req-label">Aid Type</span><strong><?= esc(ucfirst((string)($request->aid_type ?? 'N/A'))) ?></strong></div>
+              <div class="req-row"><span class="req-label">Amount</span><strong><?= isset($request->amount) && $request->amount !== null ? 'LKR ' . esc($request->amount) : 'N/A' ?></strong></div>
+              <div class="req-row"><span class="req-label">Student ID</span><strong><?= esc($request->student_id ?? 'N/A') ?></strong></div>
+              <div class="req-row">
+                <span class="req-label">Student ID Document</span>
+                <strong>
+                  <?php $studentIdDocUrl = $buildFileUrl($request->student_id_pdf_path ?? ''); ?>
+                  <?php if ($studentIdDocUrl !== ''): ?>
+                    <a href="<?= esc($studentIdDocUrl) ?>" target="_blank" rel="noopener">View file</a>
+                  <?php else: ?>
+                    N/A
+                  <?php endif; ?>
+                </strong>
+              </div>
+              <div class="req-row">
+                <span class="req-label">Income Statement</span>
+                <strong>
+                  <?php $incomeStatementUrl = $buildFileUrl($request->income_statement_path ?? ''); ?>
+                  <?php if ($incomeStatementUrl !== ''): ?>
+                    <a href="<?= esc($incomeStatementUrl) ?>" target="_blank" rel="noopener">View file</a>
+                  <?php else: ?>
+                    N/A
+                  <?php endif; ?>
+                </strong>
+              </div>
+              <div class="req-row">
+                <span class="req-label">Gramaseva Niladhari Certificate</span>
+                <strong>
+                  <?php $gramasevaCertUrl = $buildFileUrl($request->gramaseva_cert_path ?? ''); ?>
+                  <?php if ($gramasevaCertUrl !== ''): ?>
+                    <a href="<?= esc($gramasevaCertUrl) ?>" target="_blank" rel="noopener">View file</a>
+                  <?php else: ?>
+                    N/A
+                  <?php endif; ?>
+                </strong>
+              </div>
+              <div class="req-row"><span class="req-label">Submitted</span><strong><?= esc($request->created_at ?? 'N/A') ?></strong></div>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
+    </section>
+  </main>
+</div>
+
+<script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
+</body>
 </html>

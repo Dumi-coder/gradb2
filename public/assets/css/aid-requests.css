@@ -83,6 +83,24 @@
   background-color: var(--secondary);
 }
 
+.aid-requests-table .status-badge.status-approved {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+.aid-requests-table .status-badge.status-accepted-stage1 {
+  background: linear-gradient(to right, #dcfce7 0 50%, #f8fafc 50% 100%);
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+.aid-requests-table .status-badge.status-accepted-stage2 {
+  background-color: #22c55e;
+  color: #ffffff;
+  border: 1px solid #16a34a;
+}
+
 .request-type {
   display: flex;
   align-items: center;

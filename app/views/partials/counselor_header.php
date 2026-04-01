@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/buttons.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/badges.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/other.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/layout.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/sidebar.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard-header.css">
@@ -98,7 +99,7 @@
                                 <i class="fas fa-user"></i>
                                 <span>My Profile</span>
                             </a>
-                            <a href="<?=ROOT?>/counselor/profile/edit" class="dropdown-item">
+                            <a href="<?=ROOT?>/Counselor/ProfileEdit" class="dropdown-item">
                                 <i class="fas fa-edit"></i>
                                 <span>Edit Profile</span>
                             </a>
