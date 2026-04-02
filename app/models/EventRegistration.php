@@ -45,7 +45,7 @@ class EventRegistration
         return $this->insert([
             'event_id' => $event_id,
             'student_id' => $student_id,
-            'alumni_id' => null,
+            'registered_alumni_id' => null,
             'registered_at' => date('Y-m-d H:i:s')
         ]);
     }
@@ -123,7 +123,7 @@ class EventRegistration
         $query = "SELECT e.*, er.registered_at, u.name as organizer_name
                   FROM {$this->table} er
                   LEFT JOIN events e ON er.event_id = e.event_id
-                  LEFT JOIN users u ON e.alumni_id = u.user_id
+                  LEFT JOIN users u ON e.host_alumnus_id = u.user_id
                   WHERE er.student_id = :student_id
                   AND e.status = 'active'
                   AND TIMESTAMP(e.event_date, COALESCE(e.end_time, e.start_time)) >= NOW()
