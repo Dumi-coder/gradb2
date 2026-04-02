@@ -632,6 +632,104 @@ class DiscussionForum extends Controller
         exit;
     }
 
+    // AJAX endpoint: Keyword search forums visible to current student
+    public function search()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        header('Content-Type: application/json');
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+            echo json_encode(['success' => false, 'message' => 'Not logged in']);
+            exit;
+        }
+
+        $student = new Student();
+        $studentData = $student->first(['user_id' => $_SESSION['user_id']]);
+        $studentFacultyId = $studentData->faculty_id ?? null;
+
+        if (!$studentFacultyId) {
+            echo json_encode(['success' => true, 'posts' => []]);
+            exit;
+        }
+
+        $keyword = trim($_GET['q'] ?? '');
+        $sort = trim($_GET['sort'] ?? 'recent');
+
+        $orderBy = 'fp.created_at DESC';
+        if ($sort === 'popular') {
+            $orderBy = 'replies DESC, fp.created_at DESC';
+        } elseif ($sort === 'active') {
+            $orderBy = 'trending_points DESC, replies DESC, fp.created_at DESC';
+        }
+
+        $forumPost = new ForumPost();
+
+        $query = "SELECT
+                    fp.post_id,
+                    fp.title,
+                    fp.content,
+                    fp.created_at,
+                    fp.tags,
+                    u.name AS author_name,
+                    COUNT(DISTINCT fr.replyid) AS replies,
+                    (
+                        2 * (SELECT COUNT(*) FROM form_replies fr2 WHERE fr2.postid = fp.post_id AND fr2.repliedtime >= DATE_SUB(NOW(), INTERVAL 48 HOUR))
+                        +
+                        (SELECT COUNT(*) FROM form_reply_likes frl
+                         INNER JOIN form_replies fr3 ON frl.replyid = fr3.replyid
+                         WHERE fr3.postid = fp.post_id AND frl.liked_time >= DATE_SUB(NOW(), INTERVAL 48 HOUR))
+                    ) AS trending_points
+                  FROM forum_posts fp
+                  LEFT JOIN users u ON fp.user_id = u.user_id
+                  LEFT JOIN form_replies fr ON fp.post_id = fr.postid
+                  WHERE (fp.visiblefaculties = :faculty_id OR fp.visiblefaculties = 999)
+                  AND (:keyword = '' OR fp.title LIKE :keyword_like OR fp.content LIKE :keyword_like OR fp.tags LIKE :keyword_like)
+                  GROUP BY fp.post_id
+                  ORDER BY {$orderBy}
+                  LIMIT 6";
+
+        $params = [
+            'faculty_id' => $studentFacultyId,
+            'keyword' => $keyword,
+            'keyword_like' => '%' . $keyword . '%'
+        ];
+
+        $posts = $forumPost->query($query, $params);
+
+        echo json_encode([
+            'success' => true,
+            'posts' => is_array($posts) ? $posts : []
+        ]);
+        exit;
+    }
+
+    // AJAX endpoint: Get current user's replies for live UI refresh
+    public function myreplies()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        header('Content-Type: application/json');
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+            echo json_encode(['success' => false, 'message' => 'Not logged in']);
+            exit;
+        }
+
+        $forumReply = new ForumReply();
+        $myReplies = $forumReply->getRepliesByUser($_SESSION['user_id']);
+
+        echo json_encode([
+            'success' => true,
+            'replies' => is_array($myReplies) ? $myReplies : []
+        ]);
+        exit;
+    }
+
     // View all forums page
     public function viewall()
     {
