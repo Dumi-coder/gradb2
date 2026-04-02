@@ -574,14 +574,9 @@
     padding-top: 1.5rem;
     border-top: 1px solid #E5E7EB;
 }
-
-. {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-}
 </style>
 
-<script>
+<!-- <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Handle approve button clicks
     document.querySelectorAll('.approve-btn').forEach(btn => {
@@ -674,4 +669,4 @@ document.getElementById('eventForm').addEventListener('submit', function(e) {
     // Here you would typically refresh the events list
     // or add the new event to the page dynamically
 });
-</script>
+</script>*/ -->
