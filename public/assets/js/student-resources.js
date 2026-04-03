@@ -83,6 +83,7 @@ function openUploadModal() {
     const resourceModeInput = document.getElementById('resourceMode');
     const resourceIdInput = document.getElementById('resourceId');
     const resourceFileInput = document.getElementById('resourceFile');
+    const resourceFacultyInput = document.getElementById('resourceFaculty');
     
     // default to create mode
     if (resourceModeInput) resourceModeInput.value = 'create';
@@ -91,6 +92,9 @@ function openUploadModal() {
     // Make file required for create mode
     if (resourceFileInput) {
         resourceFileInput.setAttribute('required', 'required');
+    }
+    if (resourceFacultyInput) {
+        resourceFacultyInput.setAttribute('required', 'required');
     }
     
     if (!uploadModal) return;
@@ -138,10 +142,16 @@ function openEditModalFromCard(card) {
     const titleInput = document.getElementById('resourceTitle');
     const categoryInput = document.getElementById('resourceCategory');
     const descriptionInput = document.getElementById('resourceDescription');
+    const facultyInput = document.getElementById('resourceFaculty');
     
     if (titleInput) titleInput.value = card.dataset.title || '';
     if (categoryInput) categoryInput.value = card.dataset.category || '';
     if (descriptionInput) descriptionInput.value = card.dataset.description || '';
+    if (facultyInput) {
+        const facultyId = card.dataset.facultyId || '';
+        facultyInput.value = facultyId === '999' ? 'all-faculties' : '';
+        facultyInput.removeAttribute('required');
+    }
 
     // Make file input optional for edit mode
     if (resourceFileInput) {
@@ -381,6 +391,7 @@ function addResourceToGrid(resource) {
         el.dataset.title = resource.title || '';
         el.dataset.description = resource.description || '';
         el.dataset.category = resource.category || '';
+        el.dataset.facultyId = resource.faculty_id || '999';
         el.dataset.filePath = resource.file_path || '';
         el.dataset.fileSize = resource.file_size || 0;
         el.dataset.createdAt = resource.created_at || new Date().toISOString();
@@ -430,6 +441,7 @@ function updateResourceInGrid(resource) {
     if (resource.title) card.dataset.title = resource.title;
     if (resource.description) card.dataset.description = resource.description;
     if (resource.category) card.dataset.category = resource.category;
+    if (resource.faculty_id !== undefined) card.dataset.facultyId = resource.faculty_id;
     if (resource.file_path) card.dataset.filePath = resource.file_path;
     if (resource.file_size) card.dataset.fileSize = resource.file_size;
 
@@ -546,6 +558,7 @@ function resetUploadForm() {
     const resourceModeInput = document.getElementById('resourceMode');
     const resourceIdInput = document.getElementById('resourceId');
     const resourceFileInput = document.getElementById('resourceFile');
+    const resourceFacultyInput = document.getElementById('resourceFaculty');
     const fileUploadArea = document.querySelector('.file-upload-area');
     
     if (uploadForm) {
@@ -559,6 +572,9 @@ function resetUploadForm() {
     // Make file required again for create mode
     if (resourceFileInput) {
         resourceFileInput.setAttribute('required', 'required');
+    }
+    if (resourceFacultyInput) {
+        resourceFacultyInput.setAttribute('required', 'required');
     }
     
     // Reset file display

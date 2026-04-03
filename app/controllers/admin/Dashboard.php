@@ -16,11 +16,15 @@ class Dashboard extends Controller
 
         // Get dashboard statistics
         $stats = $this->getDashboardStats();
+
+        $facultyAdminModel = new FacultyAdmin();
+        $facultyAdminProfile = $facultyAdminModel->getFacultyAdminProfile($_SESSION['user_id']);
         
         $data = [
             'title' => 'Faculty Admin Dashboard - GradBridge',
             'user' => $_SESSION,
-            'stats' => $stats
+            'stats' => $stats,
+            'facultyAdminProfile' => $facultyAdminProfile
         ];
 
         $this->view('admin/dashboard', $data);

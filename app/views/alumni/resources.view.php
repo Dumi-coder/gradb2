@@ -45,6 +45,7 @@ require '../app/views/partials/alumni_header.php';
                      data-title="<?= htmlspecialchars($res->title ?? '', ENT_QUOTES) ?>"
                      data-description="<?= htmlspecialchars($res->description ?? '', ENT_QUOTES) ?>"
                      data-category="<?= htmlspecialchars($res->category ?? '', ENT_QUOTES) ?>"
+                   data-faculty-id="<?= (int)($res->faculty_id ?? 999) ?>"
                      data-file-path="<?= htmlspecialchars($res->file_path ?? '', ENT_QUOTES) ?>"
                      data-file-size="<?= (int)($res->file_size ?? 0) ?>"
                      data-created-at="<?= htmlspecialchars($res->created_at ?? '', ENT_QUOTES) ?>">

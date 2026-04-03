@@ -45,6 +45,7 @@ require '../app/views/partials/student_header.php';
                      data-title="<?= htmlspecialchars($res->title ?? '', ENT_QUOTES) ?>"
                      data-description="<?= htmlspecialchars($res->description ?? '', ENT_QUOTES) ?>"
                      data-category="<?= htmlspecialchars($res->category ?? '', ENT_QUOTES) ?>"
+                   data-faculty-id="<?= (int)($res->faculty_id ?? 999) ?>"
                      data-file-path="<?= htmlspecialchars($res->file_path ?? '', ENT_QUOTES) ?>"
                      data-file-size="<?= (int)($res->file_size ?? 0) ?>"
                      data-created-at="<?= htmlspecialchars($res->created_at ?? '', ENT_QUOTES) ?>">
@@ -203,6 +204,22 @@ require '../app/views/partials/student_header.php';
               <option value="assignments">Assignments</option>
               <option value="textbooks">Textbooks</option>
               <option value="software">Software & Tools</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="resourceFaculty">Visibility *</label>
+            <select id="resourceFaculty" name="resourceFaculty">
+              <option value="">Select Faculty</option>
+              <option value="all-faculties">All Faculties</option>
+              <option value="UCSC">UCSC</option>
+              <option value="FOA">FOA</option>
+              <option value="FOS">FOS</option>
+              <option value="FOM">FOM</option>
+              <option value="FOMF">FOMF</option>
+              <option value="FOL">FOL</option>
+              <option value="FOE">FOE</option>
+              <option value="FOT">FOT</option>
             </select>
           </div>
 
