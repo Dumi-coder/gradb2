@@ -252,18 +252,18 @@ class Resources extends Controller
             echo json_encode(['success' => false, 'message' => 'Please select a category']);
             return;
         }
-        if ($faculty_input === '') {
-            echo json_encode(['success' => false, 'message' => 'Please select visibility']);
-            return;
-        }
 
         // Map faculty selection to faculty_id
-        $faculty_id = 999; // Default for "all-faculties"
-        if ($faculty_input !== 'all-faculties') {
-            $faculty_model = new Faculty();
-            $faculty_record = $faculty_model->first(['faculty_name' => $faculty_input]);
-            if ($faculty_record) {
-                $faculty_id = $faculty_record->faculty_id;
+        $faculty_id = (int)($existing->faculty_id ?? 999); // Keep current visibility if not changed
+        if ($faculty_input !== '') {
+            if ($faculty_input === 'all-faculties') {
+                $faculty_id = 999;
+            } else {
+                $faculty_model = new Faculty();
+                $faculty_record = $faculty_model->first(['faculty_name' => $faculty_input]);
+                if ($faculty_record) {
+                    $faculty_id = $faculty_record->faculty_id;
+                }
             }
         }
 
@@ -448,6 +448,16 @@ class Resources extends Controller
         $success = $resourceModel->reportResource($resourceId, $reason);
 
         if ($success) {
+            if (!empty($resource->user_id)) {
+                $notificationModel = new Notification();
+                $notificationModel->createResourceReportedNotification(
+                    (int)$resource->user_id,
+                    (int)($_SESSION['user_id'] ?? 0),
+                    (string)($resource->title ?? 'Untitled Resource'),
+                    $reason
+                );
+            }
+
             echo json_encode(['success' => true, 'message' => 'Resource reported successfully']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to report resource']);

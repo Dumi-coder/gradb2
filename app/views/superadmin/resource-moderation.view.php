@@ -1005,10 +1005,49 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Notify action is UI-only for now
+    // Notify action sends warning notification
     document.querySelectorAll('.notify-btn').forEach(btn => {
       btn.addEventListener('click', function() {
-        showMessageModal('info', 'Notify User', 'Notify user action is not implemented yet.');
+        const resourceId = this.getAttribute('data-resource-id');
+        const actionBtn = this;
+
+        openActionConfirmModal({
+          title: 'Notify User',
+          message: 'Send a warning notification to the owner of this resource about community guidelines compliance?',
+          confirmText: 'Send Warning',
+          confirmClass: 'btn-warning',
+          onConfirm: () => {
+            const originalText = actionBtn.innerHTML;
+            actionBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Notifying...</span>';
+            actionBtn.disabled = true;
+
+            fetch('<?=ROOT?>/superadmin/resourcemoderation/notifyuser', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: 'resource_id=' + resourceId
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                showMessageModal('success', 'Warning Sent', 'User has been notified about their resource.');
+                setTimeout(() => {
+                  window.location.reload();
+                }, 2000);
+              } else {
+                actionBtn.innerHTML = originalText;
+                actionBtn.disabled = false;
+                showMessageModal('error', 'Error', data.message || 'Failed to notify user');
+              }
+            })
+            .catch(error => {
+              actionBtn.innerHTML = originalText;
+              actionBtn.disabled = false;
+              showMessageModal('error', 'Error', 'Network error: ' + error.message);
+            });
+          }
+        });
       });
     });
 

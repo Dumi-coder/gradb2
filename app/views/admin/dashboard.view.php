@@ -1,3 +1,13 @@
+<?php
+$profile = $facultyAdminProfile ?? null;
+$profileName = $profile->name ?? ($_SESSION['name'] ?? 'Faculty Admin');
+$profileFacultyName = $profile->faculty_name ?? 'Faculty';
+$profileAdminId = $profile->faculty_admin_id ?? 'N/A';
+$profileFacultyId = $profile->faculty_id ?? 'N/A';
+$profileEmail = $profile->email ?? ($_SESSION['email'] ?? 'N/A');
+$profileStatus = (!isset($profile->is_deactivated) || (int)$profile->is_deactivated === 0) ? 'Active' : 'Inactive';
+?>
+
 <?php require '../app/views/partials/admin_header.php'; ?>
 
 <!-- Profile CSS for avatar styling -->
@@ -21,24 +31,24 @@
                                      alt="Profile Picture" 
                                      id="profileImage"
                                      onerror="this.style.display='none'; document.getElementById('avatarInitials').style.display='inline-block';">
-                                <span id="avatarInitials" class="avatar-initials" style="display:none;"><?= strtoupper(substr($_SESSION['name'] ?? 'FA', 0, 2)) ?></span>
+                                <span id="avatarInitials" class="avatar-initials" style="display:none;"><?= strtoupper(substr($profileName, 0, 2)) ?></span>
                             <?php else: ?>
-                                <span id="avatarInitials" class="avatar-initials"><?= strtoupper(substr($_SESSION['name'] ?? 'FA', 0, 2)) ?></span>
+                                <span id="avatarInitials" class="avatar-initials"><?= strtoupper(substr($profileName, 0, 2)) ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
                     <div class="profile-details">
-                        <h3><?= esc($_SESSION['name'] ?? 'sasa') ?></h3>
-                        <p>Faculty Administrator at Faculty</p>
-                        <p>Admin ID: FAC001</p>
+                        <h3><?= esc($profileName) ?></h3>
+                        <p>Faculty Administrator at <?= esc($profileFacultyName) ?></p>
+                        <p>Admin ID: <?= esc($profileAdminId) ?></p>
                         <div class="profile-meta">
-                            <p><strong>Faculty ID:</strong> <?= $_SESSION['faculty_id'] ?? '1' ?></p>
+                            <p><strong>Faculty ID:</strong> <?= esc((string)$profileFacultyId) ?></p>
                             <p><strong>Status:</strong> 
-                                <span class="status-badge status-active">
-                                    <i class="fas fa-check"></i> Active
+                                <span class="status-badge <?= $profileStatus === 'Active' ? 'status-active' : 'status-inactive' ?>">
+                                    <i class="fas <?= $profileStatus === 'Active' ? 'fa-check' : 'fa-times' ?>"></i> <?= esc($profileStatus) ?>
                                 </span>
                             </p>
-                            <p><strong>Email:</strong> <?= esc($_SESSION['email'] ?? 'admin@university.edu') ?></p>
+                            <p><strong>Email:</strong> <?= esc($profileEmail) ?></p>
                         </div>
                     </div>
                 </div>

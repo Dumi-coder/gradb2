@@ -489,6 +489,16 @@ class ResourceModeration extends Controller
 
         // Delete from database
         $resourceModel->delete($resourceId, 'resource_id');
+
+        if (!empty($existing->user_id)) {
+            $notificationModel = new Notification();
+            $notificationModel->createResourceDeletedNotification(
+                (int)$existing->user_id,
+                (int)($_SESSION['user_id'] ?? 0),
+                (string)($existing->title ?? 'Untitled Resource'),
+                'Faculty Admin'
+            );
+        }
         
         echo json_encode(['success' => true, 'message' => 'Resource deleted successfully']);
     }
@@ -537,6 +547,16 @@ class ResourceModeration extends Controller
         $success = $resourceModel->reportResource($resourceId, $reason);
 
         if ($success) {
+            if (!empty($resource->user_id)) {
+                $notificationModel = new Notification();
+                $notificationModel->createResourceReportedNotification(
+                    (int)$resource->user_id,
+                    (int)($_SESSION['user_id'] ?? 0),
+                    (string)($resource->title ?? 'Untitled Resource'),
+                    $reason
+                );
+            }
+
             echo json_encode(['success' => true, 'message' => 'Resource reported successfully. Thank you for helping maintain quality content.']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to report resource']);
@@ -581,6 +601,16 @@ class ResourceModeration extends Controller
         $success = $resourceModel->removeFlagFromResource($resourceId);
 
         if ($success) {
+            if (!empty($resource->user_id)) {
+                $notificationModel = new Notification();
+                $notificationModel->createResourceFlagRemovedNotification(
+                    (int)$resource->user_id,
+                    (int)($_SESSION['user_id'] ?? 0),
+                    (string)($resource->title ?? 'Untitled Resource'),
+                    'Faculty Admin'
+                );
+            }
+
             echo json_encode(['success' => true, 'message' => 'Report flag removed successfully. Resource is now visible to users.']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to remove flag']);
@@ -659,6 +689,60 @@ class ResourceModeration extends Controller
             echo json_encode(['success' => true, 'message' => 'User suspended successfully.']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to suspend user']);
+        }
+    }
+
+    public function notifyuser()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        header('Content-Type: application/json');
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'faculty_admin') {
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            return;
+        }
+
+        $resourceId = (int)($_POST['resource_id'] ?? 0);
+
+        if ($resourceId <= 0) {
+            echo json_encode(['success' => false, 'message' => 'Invalid resource ID']);
+            return;
+        }
+
+        $resourceModel = new SharedResource();
+        $resource = $resourceModel->first(['resource_id' => $resourceId]);
+
+        if (!$resource) {
+            echo json_encode(['success' => false, 'message' => 'Resource not found']);
+            return;
+        }
+
+        $ownerUserId = (int)($resource->user_id ?? 0);
+        if ($ownerUserId <= 0) {
+            echo json_encode(['success' => false, 'message' => 'Resource owner not found']);
+            return;
+        }
+
+        $notificationModel = new Notification();
+        $result = $notificationModel->createResourceWarningNotification(
+            $ownerUserId,
+            (int)($_SESSION['user_id'] ?? 0),
+            (string)($resource->title ?? 'Untitled Resource'),
+            'Your resource is under review. Please ensure it complies with our community guidelines.'
+        );
+
+        if ($result) {
+            echo json_encode(['success' => true, 'message' => 'User notified successfully.']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to notify user']);
         }
     }
 }

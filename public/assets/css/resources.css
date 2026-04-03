@@ -19,6 +19,109 @@
   line-height: var(--leading-normal);
 }
 
+/* My Resources Cards */
+.my-resources-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.my-resources-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.my-resource-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  min-height: 240px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.my-resource-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(14, 32, 114, 0.28);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
+}
+
+.resource-count {
+  font-size: var(--font-sm);
+  color: var(--muted-foreground);
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 6px 12px;
+}
+
+.my-resource-card .resource-title {
+  font-size: var(--font-lg);
+  line-height: 1.35;
+  margin-bottom: 2px;
+  overflow-wrap: anywhere;
+}
+
+.my-resource-card .resource-meta {
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+  margin-bottom: var(--spacing-xs);
+}
+
+.my-resource-card .resource-description {
+  flex: 1;
+  margin-bottom: 0;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.resource-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  font-size: var(--font-sm);
+  color: var(--muted-foreground);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-xs);
+}
+
+.resource-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-top: auto;
+  padding-top: var(--spacing-xs);
+}
+
+.resource-actions .btn {
+  min-height: 38px;
+}
+
+.resource-actions .btn-sm {
+  padding: 8px 12px;
+}
+
+.resource-status {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  padding: 0 10px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
 /* Categories Grid */
 .categories-section {
   margin-bottom: var(--spacing-2xl);
@@ -109,15 +212,19 @@
   background-color: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  display: flex;
-  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  gap: var(--spacing-lg);
+  align-items: start;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .resource-item:hover {
-  border-color: var(--primary);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-color: rgba(14, 32, 114, 0.28);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
 }
 
 .resource-icon {
@@ -148,6 +255,7 @@
   color: var(--muted-foreground);
   margin: 0 0 var(--spacing-sm) 0;
   line-height: var(--leading-normal);
+  overflow-wrap: anywhere;
 }
 
 .resource-meta {
@@ -156,6 +264,7 @@
   font-size: var(--font-sm);
   color: var(--muted-foreground);
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .resource-category {
@@ -169,7 +278,8 @@
 
 .resource-actions {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: flex-end;
   flex-shrink: 0;
   gap: var(--spacing-sm);
 }
@@ -330,6 +440,10 @@
   .categories-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .my-resources-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   
   .resource-meta {
     flex-direction: column;
@@ -339,6 +453,10 @@
 
 @media (max-width: 768px) {
   .categories-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .my-resources-grid {
     grid-template-columns: 1fr;
   }
   
@@ -352,15 +470,21 @@
   }
   
   .resource-item {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
   
   .resource-icon {
-    align-self: center;
+    width: 48px;
+    height: 48px;
   }
   
   .resource-actions {
-    justify-content: center;
+    justify-content: flex-start;
+  }
+
+  .resource-details {
+    flex-direction: column;
+    align-items: flex-start;
   }
   
   .form-actions {
