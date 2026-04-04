@@ -43,11 +43,11 @@ $statusClass = function ($status) {
   }
 
   if (in_array($status, ['approved', 'accepted'], true)) {
-    return 'status-accepted-stage2';
+    return 'status-approved';
     }
 
     if ($status === 'completed') {
-        return 'status-approved';
+      return 'status-accepted-stage2';
     }
 
     if ($status === 'rejected') {
