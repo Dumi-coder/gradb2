@@ -120,6 +120,35 @@
   margin-top: var(--spacing-lg);
 }
 
+.actions-row {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  margin-top: var(--spacing-xl);
+  flex-wrap: wrap;
+}
+
+.selected-mentor-box {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--secondary);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.selected-mentor-name {
+  margin: 0;
+  font-size: var(--font-lg);
+  color: var(--foreground);
+}
+
+.selected-mentor-meta,
+.selected-mentor-expertise {
+  margin: var(--spacing-xs) 0 0;
+  color: var(--muted-foreground);
+  line-height: var(--leading-normal);
+}
+
 /* Submit button inherits from .btn .btn-primary in buttons.css */
 .submit-btn {
   min-width: 280px; /* Wider to accommodate text */

@@ -10,19 +10,163 @@ class Mentorship extends Controller
     
     public function index()
     {
-        // Check if user is logged in and is a student
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
         if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
             header('Location: ' . ROOT . '/student/login');
             exit;
         }
 
         $studentId = $_SESSION['user_id'];
-        $requests = $this->mentorshipRequestModel->getRequestsByStudent($studentId);
-        
+
         $data = [
-            'requests' => $requests ? $requests : []
+            'mentors' => $this->mentorshipRequestModel->getAvailableMentorsForStudent($studentId),
+            'requests' => $this->mentorshipRequestModel->getStudentMentorshipRequests($studentId),
+            'activeMentorships' => $this->mentorshipRequestModel->getStudentActiveMentorships($studentId),
+            'pendingReviews' => $this->mentorshipRequestModel->getStudentPendingReviews($studentId),
         ];
-        
+
         $this->view('student/mentorship', $data);
+    }
+
+    public function request($mentorUserId = null)
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+            header('Location: ' . ROOT . '/student/login');
+            exit;
+        }
+
+        if (!$mentorUserId || !is_numeric($mentorUserId)) {
+            $_SESSION['error'] = 'Please select a valid mentor.';
+            header('Location: ' . ROOT . '/student/Mentorship');
+            exit;
+        }
+
+        $mentor = $this->mentorshipRequestModel->getMentorByUserId((int)$mentorUserId);
+        if (!$mentor) {
+            $_SESSION['error'] = 'Selected mentor is not available.';
+            header('Location: ' . ROOT . '/student/Mentorship');
+            exit;
+        }
+
+        $this->view('student/mentorship-request', [
+            'mentor' => $mentor,
+            'is_edit' => false,
+        ]);
+    }
+
+    public function sendRequest()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+            header('Location: ' . ROOT . '/student/login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . ROOT . '/student/Mentorship');
+            exit;
+        }
+
+        $mentorUserId = (int)($_POST['mentor_user_id'] ?? 0);
+        $topic = trim($_POST['topic'] ?? '');
+        $reason = trim($_POST['request_reason'] ?? '');
+
+        if ($mentorUserId < 1) {
+            $_SESSION['error'] = 'Please choose a mentor.';
+            header('Location: ' . ROOT . '/student/Mentorship');
+            exit;
+        }
+
+        if ($topic === '') {
+            $_SESSION['error'] = 'Topic is required.';
+            header('Location: ' . ROOT . '/student/Mentorship/request/' . $mentorUserId);
+            exit;
+        }
+
+        if (strlen($reason) < 10) {
+            $_SESSION['error'] = 'Please provide a clear description (at least 10 characters).';
+            header('Location: ' . ROOT . '/student/Mentorship/request/' . $mentorUserId);
+            exit;
+        }
+
+        $result = $this->mentorshipRequestModel->createDirectedRequest($_SESSION['user_id'], $mentorUserId, $topic, $reason);
+
+        if ($result) {
+            $_SESSION['success'] = 'Mentorship request sent successfully.';
+        } else {
+            $_SESSION['error'] = 'Failed to send mentorship request. Try again.';
+        }
+
+        header('Location: ' . ROOT . '/student/Mentorship');
+        exit;
+    }
+
+    public function end($requestId = null)
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+            header('Location: ' . ROOT . '/student/login');
+            exit;
+        }
+
+        if (!$requestId || !is_numeric($requestId)) {
+            $_SESSION['error'] = 'Invalid mentorship request.';
+            header('Location: ' . ROOT . '/student/Mentorship');
+            exit;
+        }
+
+        $_SESSION['error'] = 'Only mentors can end an active mentorship. You can submit a review once your mentor ends the session.';
+
+        header('Location: ' . ROOT . '/student/Mentorship');
+        exit;
+    }
+
+    public function submitReview($requestId = null)
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+            header('Location: ' . ROOT . '/student/login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !$requestId || !is_numeric($requestId)) {
+            header('Location: ' . ROOT . '/student/Mentorship');
+            exit;
+        }
+
+        $rating = (int)($_POST['rating'] ?? 0);
+        $review = trim($_POST['review_comment'] ?? '');
+
+        if ($rating < 1 || $rating > 5) {
+            $_SESSION['error'] = 'Rating is required and must be between 1 and 5.';
+            header('Location: ' . ROOT . '/student/Mentorship');
+            exit;
+        }
+
+        $ok = $this->mentorshipRequestModel->submitReviewByStudent((int)$requestId, (int)$_SESSION['user_id'], $rating, $review);
+        if ($ok) {
+            $_SESSION['success'] = 'Thanks for your review. Mentorship marked as completed.';
+        } else {
+            $_SESSION['error'] = 'Unable to submit review right now.';
+        }
+
+        header('Location: ' . ROOT . '/student/Mentorship');
+        exit;
     }
 }

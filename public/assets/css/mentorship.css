@@ -9,6 +9,30 @@
   width: 100%;
 }
 
+.mentors-section,
+.requests-section,
+.active-mentorships-section,
+.reviews-section {
+  width: 100%;
+}
+
+.mentors-section .section-header {
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.faq-first-btn {
+  white-space: nowrap;
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.faq-first-btn:hover {
+  background-color: var(--primary);
+  color: #ffffff;
+}
+
 .mentorship-card {
   background-color: var(--card);
   border: 1px solid var(--border);
@@ -517,7 +541,150 @@
   .profile-modal-body {
     padding: var(--spacing-lg);
   }
-  
+}
+
+/* New unified mentorship flow styles */
+.mentors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--spacing-md);
+  width: 100%;
+  margin: 0 auto;
+}
+
+.mentor-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.mentor-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.mentor-name {
+  margin: 0;
+  font-size: var(--font-md);
+  color: var(--foreground);
+}
+
+.mentor-meta,
+.mentor-expertise,
+.mentor-bio,
+.mentor-sessions,
+.review-note,
+.rejection-reason {
+  margin: 0;
+  color: var(--muted-foreground);
+  line-height: var(--leading-normal);
+}
+
+.mentor-bio {
+  min-height: 44px;
+}
+
+.mentor-card .btn {
+  margin-top: var(--spacing-xs);
+  align-self: flex-start;
+}
+
+.mentor-rating-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.mentor-rating {
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.rejection-reason {
+  color: #b45309;
+  font-weight: 600;
+}
+
+.active-card {
+  border-color: #9dd7b7;
+  background: #f4fff8;
+}
+
+.review-card {
+  border-color: #93c5fd;
+  background: #f8fbff;
+}
+
+.completed-card {
+  border-color: #c7d2fe;
+}
+
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.mentor-request-actions {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.reject-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.compact-empty {
+  padding: var(--spacing-md);
+}
+
+.mentor-reputation-section {
+  margin-bottom: var(--spacing-md);
+}
+
+.reputation-card {
+  background: linear-gradient(135deg, #f0f9ff, #f8fafc);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  text-align: center;
+}
+
+.reputation-card .section-title {
+  margin-bottom: var(--spacing-xs);
+}
+
+.selected-mentor-box {
+  border: 1px solid var(--border);
+  background-color: var(--secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.selected-mentor-name {
+  margin: 0;
+  font-size: var(--font-lg);
+  color: var(--foreground);
+}
+
+.selected-mentor-meta,
+.selected-mentor-expertise {
+  margin: var(--spacing-xs) 0 0;
+  color: var(--muted-foreground);
+}
+
+@media (max-width: 768px) {
   .profile-name {
     font-size: var(--font-2xl);
   }
