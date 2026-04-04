@@ -7,49 +7,76 @@ $aidRequestsData = $aidRequestsData ?? [];
 $pendingRequests = $aidRequestsData['pending'] ?? [];
 $approvedRequests = $aidRequestsData['approved'] ?? [];
 $completedRequests = $aidRequestsData['completed'] ?? [];
+
+$pendingCount = is_array($pendingRequests) ? count($pendingRequests) : 0;
+$approvedCount = is_array($approvedRequests) ? count($approvedRequests) : 0;
+$completedCount = is_array($completedRequests) ? count($completedRequests) : 0;
+$totalRequestCount = $pendingCount + $approvedCount + $completedCount;
+
+$normalizeAidType = static function ($value) {
+  return strtolower(trim((string)$value));
+};
+
+$isMonetaryType = static function ($type) {
+  return in_array($type, ['monetary', 'money', 'financial'], true);
+};
 ?>
 
 <!-- Page-specific CSS -->
 <link rel="stylesheet" href="<?=ROOT?>/assets/css/aid-requests.css">
 
 <style>
-  .aid-requests-page .aid-request-card {
-    padding: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
-    border-radius: var(--radius-sm);
+  .aid-requests-page .dashboard-section {
+    max-width: 920px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
+  .aid-requests-page .aid-request-card {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    width: 100%;
+  }
+
+  .aid-requests-page .pending-requests-container,
   .aid-requests-page .approved-requests-container,
   .aid-requests-page .completed-requests-container {
-    gap: var(--spacing-md);
+    display: grid;
+    gap: var(--spacing-sm);
   }
 
   .aid-requests-page .request-header {
     margin-bottom: var(--spacing-sm);
-    gap: var(--spacing-sm);
+    gap: var(--spacing-xs);
   }
 
   .aid-requests-page .request-info h3 {
     font-size: var(--font-base);
-    margin-bottom: 2px;
+    margin-bottom: 0;
   }
 
   .aid-requests-page .request-type {
-    font-size: var(--font-xs);
+    font-size: var(--font-sm);
+    margin: 0;
   }
 
   .aid-requests-page .request-description {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
   }
 
   .aid-requests-page .request-description p {
     font-size: var(--font-sm);
     line-height: 1.45;
+    margin: 0;
   }
 
   .aid-requests-page .request-details {
     padding: var(--spacing-sm);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-xs) var(--spacing-sm);
   }
 
   .aid-requests-page .detail-item {
@@ -59,7 +86,7 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
 
   .aid-requests-page .detail-label,
   .aid-requests-page .detail-value {
-    font-size: var(--font-xs);
+    font-size: var(--font-sm);
   }
 
   .aid-requests-page .request-actions {
@@ -68,7 +95,7 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
   }
 
   .aid-requests-page .request-actions .btn {
-    padding: 0.4rem 0.65rem;
+    padding: 0.42rem 0.72rem;
     font-size: var(--font-xs);
   }
 
@@ -77,9 +104,29 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
     padding: 0.2rem 0.55rem;
   }
 
+  .aid-requests-page .status-badge.status-approved {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+  }
+
+  .aid-requests-page .status-badge.status-completed {
+    background-color: #ede9fe;
+    color: #5b21b6;
+    border: 1px solid #c4b5fd;
+  }
+
   @media (max-width: 768px) {
+    .aid-requests-page .dashboard-section {
+      max-width: 100%;
+    }
+
     .aid-requests-page .aid-request-card {
       padding: var(--spacing-sm);
+    }
+
+    .aid-requests-page .request-details {
+      grid-template-columns: 1fr;
     }
 
     .aid-requests-page .request-header,
@@ -112,7 +159,10 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
               <div class="request-header">
                 <div class="request-info">
                   <h3 class="student-name"><?= esc($request['student_name'] ?? 'Student') ?></h3>
-                  <p class="request-type"><?= esc($request['request_type'] ?? 'Aid Request') ?></p>
+                  <?php $pendingAidType = $normalizeAidType($request['aid_type'] ?? $request['request_type'] ?? ''); ?>
+                  <?php if ($pendingAidType !== 'other' && $pendingAidType !== ''): ?>
+                  <p class="request-type\"><?= esc($request['request_type'] ?? ucfirst($pendingAidType)) ?></p>
+                  <?php endif; ?>
                 </div>
                 <span class="status-badge status-pending">Pending</span>
               </div>
@@ -122,16 +172,16 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
               </div>
               
               <div class="request-details">
-                <?php if (!empty($request['amount_requested'])): ?>
+                <?php if ($isMonetaryType($pendingAidType) && !empty($request['amount_requested'])): ?>
                 <div class="detail-item">
-                  <span class="detail-label">Amount Requested:</span>
-                  <span class="detail-value"><?= esc($request['amount_requested']) ?></span>
+                  <span class="detail-value\"><?= esc($request['amount_requested']) ?></span>
                 </div>
                 <?php endif; ?>
+                <?php if ($pendingAidType === 'laptop'): ?>
                 <div class="detail-item">
-                  <span class="detail-label">Type:</span>
-                  <span class="detail-value"><?= esc($request['aid_type'] ?? 'Aid') ?></span>
+                  <span class="detail-value">Laptop</span>
                 </div>
+                <?php endif; ?>
               </div>
               
               <div class="request-actions">
@@ -144,7 +194,6 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
                   <button type="submit" class="btn btn-success btn-sm approve-btn">Approve</button>
                   <?php endif; ?>
                 </form>
-                <button class="btn btn-danger btn-sm decline-btn">Decline</button>
               </div>
             </div>
             <?php endforeach; ?>
@@ -171,7 +220,10 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
               <div class="request-header">
                 <div class="request-info">
                   <h3 class="student-name"><?= esc($request['student_name'] ?? 'Student') ?></h3>
-                  <p class="request-type"><?= esc($request['request_type'] ?? 'Aid Request') ?></p>
+                  <?php $approvedAidType = $normalizeAidType($request['aid_type'] ?? $request['request_type'] ?? ''); ?>
+                  <?php if ($approvedAidType !== 'other' && $approvedAidType !== ''): ?>
+                  <p class="request-type\"><?= esc($request['request_type'] ?? ucfirst($approvedAidType)) ?></p>
+                  <?php endif; ?>
                 </div>
                 <span class="status-badge status-approved">Approved</span>
               </div>
@@ -181,18 +233,19 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
               </div>
               
               <div class="request-details">
+                <?php if ($isMonetaryType($approvedAidType) && !empty($request['provided_value'])): ?>
                 <div class="detail-item">
-                  <span class="detail-label">Provided Value:</span>
-                  <span class="detail-value"><?= esc($request['provided_value'] ?? 'N/A') ?></span>
+                  <span class="detail-value\"><?= esc($request['provided_value']) ?></span>
                 </div>
+                <?php endif; ?>
+                <?php if ($approvedAidType === 'laptop'): ?>
                 <div class="detail-item">
-                  <span class="detail-label">Type:</span>
-                  <span class="detail-value"><?= esc($request['aid_type'] ?? 'Aid') ?></span>
+                  <span class="detail-value">Laptop</span>
                 </div>
+                <?php endif; ?>
               </div>
               
               <div class="request-actions">
-                <button class="btn btn-primary btn-sm details-btn">View Details</button>
               </div>
             </div>
             <?php endforeach; ?>
@@ -215,7 +268,10 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
               <div class="request-header">
                 <div class="request-info">
                   <h3 class="student-name"><?= esc($request['student_name'] ?? 'Student') ?></h3>
-                  <p class="request-type"><?= esc($request['request_type'] ?? 'Aid Request') ?></p>
+                  <?php $completedAidType = $normalizeAidType($request['aid_type'] ?? $request['request_type'] ?? ''); ?>
+                  <?php if ($completedAidType !== 'other' && $completedAidType !== ''): ?>
+                  <p class="request-type\"><?= esc($request['request_type'] ?? ucfirst($completedAidType)) ?></p>
+                  <?php endif; ?>
                 </div>
                 <span class="status-badge status-completed">Completed</span>
               </div>
@@ -225,26 +281,24 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
               </div>
               
               <div class="request-details">
-                <?php if (isset($request['amount_provided'])): ?>
+                <?php if ($isMonetaryType($completedAidType) && !empty($request['amount_provided'])): ?>
                 <div class="detail-item">
-                  <span class="detail-label">Amount Provided:</span>
                   <span class="detail-value"><?= esc($request['amount_provided']) ?></span>
                 </div>
-                <?php elseif (isset($request['provided_value'])): ?>
+                <?php elseif ($isMonetaryType($completedAidType) && !empty($request['provided_value'])): ?>
                 <div class="detail-item">
-                  <span class="detail-label">Provided Value:</span>
                   <span class="detail-value"><?= esc($request['provided_value']) ?></span>
                 </div>
                 <?php endif; ?>
+                <?php if ($completedAidType === 'laptop'): ?>
                 <div class="detail-item">
-                  <span class="detail-label">Type:</span>
-                  <span class="detail-value"><?= esc($request['aid_type']) ?></span>
+                  <span class="detail-value">Laptop</span>
                 </div>
+                <?php endif; ?>
               </div>
               
               <div class="request-footer">
                 <p class="completion-date">Completed: <?= esc($request['completed_date'] ?? 'N/A') ?></p>
-                <button class="btn btn-primary btn-sm details-btn">View Details</button>
               </div>
             </div>
             <?php endforeach; ?>
@@ -264,7 +318,7 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
                 <i class="fas fa-clock"></i>
               </div>
               <div class="stat-content">
-                <div class="stat-number">3</div>
+                <div class="stat-number"><?= (int)$pendingCount ?></div>
                 <div class="stat-label">Pending Requests</div>
               </div>
             </div>
@@ -274,28 +328,28 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
                 <i class="fas fa-check"></i>
               </div>
               <div class="stat-content">
-                <div class="stat-number">8</div>
-                <div class="stat-label">Approved This Year</div>
+                <div class="stat-number"><?= (int)$approvedCount ?></div>
+                <div class="stat-label">Approved Requests</div>
               </div>
             </div>
             
             <div class="stat-card">
               <div class="stat-icon">
-                <i class="fas fa-dollar-sign"></i>
+                <i class="fas fa-flag-checkered"></i>
               </div>
               <div class="stat-content">
-                <div class="stat-number">Rs. 12,450</div>
-                <div class="stat-label">Total Aid Received</div>
+                <div class="stat-number"><?= (int)$completedCount ?></div>
+                <div class="stat-label">Completed Requests</div>
               </div>
             </div>
             
             <div class="stat-card">
               <div class="stat-icon">
-                <i class="fas fa-chart-line"></i>
+                <i class="fas fa-list"></i>
               </div>
               <div class="stat-content">
-                <div class="stat-number">85%</div>
-                <div class="stat-label">Approval Rate</div>
+                <div class="stat-number"><?= (int)$totalRequestCount ?></div>
+                <div class="stat-label">Total Requests</div>
               </div>
             </div>
           </div>
