@@ -260,6 +260,11 @@
         </div>
 
         <div class="announcement-form">
+            <div id="viewAnnouncementLoading" class="view-loading-state" style="display:none;">
+                <div class="loading-spinner"></div>
+                <p>Loading announcement...</p>
+            </div>
+
             <div class="announcement-details" style="margin-bottom:1rem;">
                 <div class="detail-item">
                     <i class="fas fa-user"></i>
@@ -839,6 +844,31 @@
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
 }
+
+.view-loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 2rem 0.5rem;
+    color: #4B5563;
+}
+
+.loading-spinner {
+    width: 34px;
+    height: 34px;
+    border: 3px solid #E5E7EB;
+    border-top-color: #0E2072;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
 </style>
 
 <script>
@@ -931,6 +961,10 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function() {
             const announcementId = this.getAttribute('data-announcement-id');
             const card = this.closest('.announcement-card');
+
+            openViewAnnouncementModal();
+            setViewAnnouncementLoading(true);
+
             postAction({ action: 'view', announcement_id: announcementId })
                 .then((data) => {
                     if (!data.success || !data.announcement) throw new Error(data.message || 'Failed to load announcement');
@@ -950,9 +984,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (countEl) countEl.textContent = String(item.view_count || 0);
                     }
 
-                    openViewAnnouncementModal();
+                    setViewAnnouncementLoading(false);
                 })
-                .catch((err) => alert(err.message || 'Failed to load announcement'));
+                .catch((err) => {
+                    document.getElementById('viewAnnouncementTitle').textContent = 'Announcement';
+                    document.getElementById('viewAnnouncementAuthor').textContent = '-';
+                    document.getElementById('viewAnnouncementCreated').textContent = '-';
+                    document.getElementById('viewAnnouncementViews').textContent = 'Views: 0';
+                    document.getElementById('viewAnnouncementContent').textContent = err.message || 'Failed to load announcement';
+                    setViewAnnouncementLoading(false);
+                });
         });
     });
 
@@ -1069,6 +1110,22 @@ function closeDeleteAnnouncementModal() {
 function openViewAnnouncementModal() {
     document.getElementById('viewAnnouncementModal').style.display = 'block';
     document.body.style.overflow = 'hidden';
+}
+
+function setViewAnnouncementLoading(isLoading) {
+    const loadingEl = document.getElementById('viewAnnouncementLoading');
+    const detailsEl = document.querySelector('#viewAnnouncementModal .announcement-details');
+    const contentEl = document.querySelector('#viewAnnouncementModal .announcement-content');
+
+    if (loadingEl) {
+        loadingEl.style.display = isLoading ? 'flex' : 'none';
+    }
+    if (detailsEl) {
+        detailsEl.style.display = isLoading ? 'none' : 'grid';
+    }
+    if (contentEl) {
+        contentEl.style.display = isLoading ? 'none' : 'block';
+    }
 }
 
 function closeViewAnnouncementModal() {

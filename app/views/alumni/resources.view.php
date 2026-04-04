@@ -70,7 +70,7 @@ require '../app/views/partials/alumni_header.php';
                       <i class="fas fa-edit"></i>
                       <span>Edit</span>
                     </button>
-                    <a class="btn btn-outline btn-sm" href="<?= htmlspecialchars($res->file_path ?? '#') ?>" target="_blank" rel="noopener">
+                    <a class="btn btn-outline btn-sm" href="<?=ROOT?>/alumni/resources/download?id=<?= $res->resource_id ?? '' ?>" target="_blank" rel="noopener">
                       <i class="fas fa-download"></i>
                       <span>Open</span>
                     </a>

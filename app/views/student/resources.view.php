@@ -60,13 +60,14 @@ require '../app/views/partials/student_header.php';
                   <p class="resource-description"><?= htmlspecialchars($res->description ?? '') ?></p>
                   <div class="resource-details">
                     <span class="upload-date">Uploaded: <?= isset($res->created_at) ? date('M j, Y', strtotime($res->created_at)) : '' ?></span>
+                    <span class="resource-downloads"><i class="fas fa-download"></i> <?= (int)($res->downloads ?? 0) ?> downloads</span>
                   </div>
                   <div class="resource-actions">
                     <button class="btn btn-primary btn-sm" data-action="edit" data-id="<?= $res->resource_id ?? '' ?>">
                       <i class="fas fa-edit"></i>
                       <span>Edit</span>
                     </button>
-                    <a class="btn btn-outline btn-sm" href="<?= htmlspecialchars($res->file_path ?? '#') ?>" target="_blank" rel="noopener">
+                    <a class="btn btn-outline btn-sm" href="<?=ROOT?>/student/resources/download?id=<?= $res->resource_id ?? '' ?>" target="_blank" rel="noopener">
                       <i class="fas fa-download"></i>
                       <span>Open</span>
                     </a>

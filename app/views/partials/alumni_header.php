@@ -95,8 +95,13 @@
                 if (markAllBtn) {
                     markAllBtn.addEventListener('click', function() {
                         const notificationIds = [];
-                        document.querySelectorAll('.notification-mark-btn').forEach(btn => {
+                        const markBtns = Array.from(document.querySelectorAll('.notification-mark-btn'));
+                        markBtns.forEach(btn => {
                             notificationIds.push(btn.getAttribute('data-notification-id'));
+                            btn.style.background = '#10b981';
+                            btn.style.borderColor = '#10b981';
+                            btn.style.color = '#fff';
+                            btn.disabled = true;
                         });
                         
                         if (notificationIds.length === 0) {
@@ -113,23 +118,38 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                const markBtns = document.querySelectorAll('.notification-mark-btn');
-                                markBtns.forEach(btn => {
-                                    btn.style.background = '#10b981';
-                                    btn.style.borderColor = '#10b981';
-                                    btn.style.color = '#fff';
-                                    btn.disabled = true;
-                                });
                                 markAllBtn.style.opacity = '0.5';
                                 markAllBtn.disabled = true;
+                            } else {
+                                markBtns.forEach(btn => {
+                                    btn.style.background = '#fff';
+                                    btn.style.borderColor = '#d1d5db';
+                                    btn.style.color = '#9ca3af';
+                                    btn.disabled = false;
+                                });
                             }
                         })
-                        .catch(error => console.error('Error:', error));
+                        .catch(error => {
+                            markBtns.forEach(btn => {
+                                btn.style.background = '#fff';
+                                btn.style.borderColor = '#d1d5db';
+                                btn.style.color = '#9ca3af';
+                                btn.disabled = false;
+                            });
+                            console.error('Error:', error);
+                        });
                     });
                 }
 
                 const body = document.getElementById('notificationWindowBody');
                 if (body) {
+                    body.innerHTML = '<div style="height:100%;min-height:180px;display:flex;align-items:center;justify-content:center;">' +
+                        '<div style="text-align:center;color:#6b7280;">' +
+                        '<div style="width:44px;height:44px;margin:0 auto 12px;border:4px solid #e5e7eb;border-top-color:#0e2072;border-radius:50%;animation:notificationSpin 0.8s linear infinite;"></div>' +
+                        '<p style="margin:0;font-size:14px;">Loading notifications...</p>' +
+                        '</div>' +
+                        '</div>';
+
                     fetch('<?=ROOT?>/home/getNotifications')
                         .then(response => response.json())
                         .then(data => {
@@ -160,6 +180,11 @@
                                     document.querySelectorAll('.notification-mark-btn').forEach(btn => {
                                         btn.addEventListener('click', function() {
                                             const notificationId = this.getAttribute('data-notification-id');
+                                            this.style.background = '#10b981';
+                                            this.style.borderColor = '#10b981';
+                                            this.style.color = '#fff';
+                                            this.disabled = true;
+
                                             fetch('<?=ROOT?>/home/markNotificationsAsRead', {
                                                 method: 'POST',
                                                 headers: { 'Content-Type': 'application/json' },
@@ -167,14 +192,20 @@
                                             })
                                             .then(response => response.json())
                                             .then(data => {
-                                                if (data.success) {
-                                                    this.style.background = '#10b981';
-                                                    this.style.borderColor = '#10b981';
-                                                    this.style.color = '#fff';
-                                                    this.disabled = true;
+                                                if (!data.success) {
+                                                    this.style.background = '#fff';
+                                                    this.style.borderColor = '#d1d5db';
+                                                    this.style.color = '#9ca3af';
+                                                    this.disabled = false;
                                                 }
                                             })
-                                            .catch(error => console.error('Error:', error));
+                                            .catch(error => {
+                                                this.style.background = '#fff';
+                                                this.style.borderColor = '#d1d5db';
+                                                this.style.color = '#9ca3af';
+                                                this.disabled = false;
+                                                console.error('Error:', error);
+                                            });
                                         });
                                     });
                                 }
@@ -196,6 +227,10 @@
                 }
             }
         }
+
+        const notificationSpinnerStyle = document.createElement('style');
+        notificationSpinnerStyle.textContent = '@keyframes notificationSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
+        document.head.appendChild(notificationSpinnerStyle);
 
         function logout() {
             // Create a form to submit logout request

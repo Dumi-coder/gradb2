@@ -577,7 +577,7 @@
     border-top: 1px solid #E5E7EB;
 }
 
-. {
+.form-actions .btn {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
 }

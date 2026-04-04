@@ -3,7 +3,7 @@ $page_title = "Discussion Forum";
 $page_subtitle = "Engage with fellow alumni and share experiences";
 
 // Trending Posts Configuration
-$trending_threshold = 50;  // Minimum points to show "Trending" badge
+$trending_threshold = 10;  // Minimum points to show "Trending" badge
 $trending_hours = 48;      // Time window in hours for calculating trending points
 
 require '../app/views/partials/alumni_header.php'; 
@@ -328,6 +328,11 @@ require '../app/views/partials/alumni_header.php';
         <div class="modal-header">
           <h2 class="modal-title" id="forumDetailTitle">Forum Topic Title</h2>
           <button class="modal-close" onclick="closeForumDetailModal()"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div id="forumDetailLoading" style="display:none; text-align:center; padding:1rem 1.5rem; color:#4B5563;">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span style="margin-left:0.5rem;">Loading forum details...</span>
         </div>
         
         <div class="forum-detail-content">
@@ -722,6 +727,13 @@ require '../app/views/partials/alumni_header.php';
 
     function openForumDetailModal(postId, shouldIncrementAfterOpen = false) {
       currentPostId = postId;
+
+      const modal = document.getElementById('forumDetailModal');
+      modal.classList.add('show');
+      modal.style.display = 'block';
+      setForumDetailLoading(true);
+      document.getElementById('forumDetailTitle').textContent = 'Loading...';
+      document.getElementById('forumDetailDescription').textContent = 'Please wait while we fetch the latest post details.';
       
       // Fetch post details and replies from server
       fetch(`<?=ROOT?>/alumni/discussionforum/getpostwithreplies?post_id=${postId}`)
@@ -794,14 +806,30 @@ require '../app/views/partials/alumni_header.php';
             if (shouldIncrementAfterOpen) {
               incrementPostView(postId);
             }
+
+            setForumDetailLoading(false);
           } else {
+            setForumDetailLoading(false);
             showNotification(data.message || 'Failed to load post', 'error');
           }
         })
         .catch(error => {
           console.error('Error:', error);
+          setForumDetailLoading(false);
           showNotification('Failed to load post details', 'error');
         });
+    }
+
+    function setForumDetailLoading(isLoading) {
+      const loadingEl = document.getElementById('forumDetailLoading');
+      const contentEl = document.querySelector('#forumDetailModal .forum-detail-content');
+
+      if (loadingEl) {
+        loadingEl.style.display = isLoading ? 'block' : 'none';
+      }
+      if (contentEl) {
+        contentEl.style.display = isLoading ? 'none' : 'block';
+      }
     }
 
     function displayReplies(replies) {

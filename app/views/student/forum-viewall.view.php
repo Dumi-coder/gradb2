@@ -154,6 +154,11 @@ require '../app/views/partials/student_header.php';
           <h2 class="modal-title" id="forumDetailTitle">Forum Topic Title</h2>
           <button class="modal-close" onclick="closeForumDetailModal()"><i class="fas fa-times"></i></button>
         </div>
+
+        <div id="forumDetailLoading" style="display:none; text-align:center; padding:1rem 1.5rem; color:#4B5563;">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span style="margin-left:0.5rem;">Loading forum details...</span>
+        </div>
         
         <div class="forum-detail-content">
           <!-- Forum Meta Info -->
@@ -253,6 +258,11 @@ require '../app/views/partials/student_header.php';
 
     // Forum View and Detail Functions
     function incrementAndViewPost(postId) {
+      loadForumDetail(postId);
+      incrementPostView(postId);
+    }
+
+    function incrementPostView(postId) {
       fetch(`<?=ROOT?>/student/discussionforum/incrementview`, {
         method: 'POST',
         headers: {
@@ -262,16 +272,43 @@ require '../app/views/partials/student_header.php';
       })
       .then(response => response.json())
       .then(data => {
-        loadForumDetail(postId);
+        if (data && data.success) {
+          incrementCardViewCount(postId);
+
+          const forumDetailViewsEl = document.getElementById('forumDetailViews');
+          if (forumDetailViewsEl) {
+            const current = parseInt(forumDetailViewsEl.textContent || '0', 10);
+            forumDetailViewsEl.textContent = String((isNaN(current) ? 0 : current) + 1);
+          }
+        }
       })
       .catch(error => {
-        console.error('Error:', error);
-        loadForumDetail(postId);
+        console.error('Error incrementing views:', error);
+      });
+    }
+
+    function incrementCardViewCount(postId) {
+      const cards = document.querySelectorAll(`.topic-card[data-post-id="${Number(postId)}"]`);
+      cards.forEach(card => {
+        const countEl = card.querySelector('.topic-views strong');
+        if (!countEl) {
+          return;
+        }
+
+        const current = parseInt(countEl.textContent || '0', 10);
+        countEl.textContent = String((isNaN(current) ? 0 : current) + 1);
       });
     }
 
     function loadForumDetail(postId) {
       currentPostId = postId;
+
+      const modal = document.getElementById('forumDetailModal');
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      setForumDetailLoading(true);
+      document.getElementById('forumDetailTitle').textContent = 'Loading...';
+      document.getElementById('forumDetailDescription').textContent = 'Please wait while we fetch the latest post details.';
       
       fetch(`<?=ROOT?>/student/discussionforum/getpostwithreplies?post_id=${postId}`)
         .then(response => {
@@ -284,12 +321,15 @@ require '../app/views/partials/student_header.php';
           if (data.success) {
             window.likedReplyIds = data.likedReplyIds || [];
             displayForumDetail(data.post, data.replies);
+            setForumDetailLoading(false);
           } else {
+            setForumDetailLoading(false);
             showNotification('Failed to load forum details: ' + (data.message || 'Unknown error'), 'error');
           }
         })
         .catch(error => {
           console.error('Error:', error);
+          setForumDetailLoading(false);
           showNotification('An error occurred while loading forum details: ' + error.message, 'error');
         });
     }
@@ -422,6 +462,18 @@ require '../app/views/partials/student_header.php';
     function closeForumDetailModal() {
       document.getElementById('forumDetailModal').style.display = 'none';
       document.body.style.overflow = 'auto';
+    }
+
+    function setForumDetailLoading(isLoading) {
+      const loadingEl = document.getElementById('forumDetailLoading');
+      const contentEl = document.querySelector('#forumDetailModal .forum-detail-content');
+
+      if (loadingEl) {
+        loadingEl.style.display = isLoading ? 'block' : 'none';
+      }
+      if (contentEl) {
+        contentEl.style.display = isLoading ? 'none' : 'block';
+      }
     }
 
     function submitReply(event, postId) {

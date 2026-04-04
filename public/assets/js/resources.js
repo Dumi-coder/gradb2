@@ -76,6 +76,23 @@ function initializeResources() {
             }
         }
     });
+
+    // Keep download counters in sync without requiring a page refresh.
+    document.addEventListener('click', function(e) {
+        const downloadLink = e.target.closest('a[href*="/resources/download"]');
+        if (!downloadLink) return;
+
+        const resourceContainer = downloadLink.closest('.resource-item, .my-resource-card');
+        const downloadsEl = resourceContainer ? resourceContainer.querySelector('.resource-downloads') : null;
+        if (!downloadsEl) return;
+
+        const currentText = downloadsEl.textContent || '';
+        const match = currentText.match(/(\d+)/);
+        const currentValue = match ? parseInt(match[1], 10) : 0;
+        const nextValue = (isNaN(currentValue) ? 0 : currentValue) + 1;
+
+        downloadsEl.innerHTML = `<i class="fas fa-download"></i> ${nextValue} downloads`;
+    });
 }
 
 // Modal functions
@@ -408,13 +425,14 @@ function addResourceToGrid(resource) {
                 <p class="resource-description">${escapeHTML(resource.description || '')}</p>
                 <div class="resource-details">
                         <span class="upload-date">Uploaded: ${created}</span>
+                        <span class="resource-downloads"><i class="fas fa-download"></i> ${Number(resource.downloads || 0)} downloads</span>
                 </div>
                 <div class="resource-actions">
                         <button class="btn btn-primary btn-sm" data-action="edit" data-id="${resource.resource_id || ''}">
                             <i class="fas fa-edit"></i>
                             <span>Edit</span>
                         </button>
-                        <a class="btn btn-outline btn-sm" href="${resource.file_path}" target="_blank" rel="noopener">
+                        <a class="btn btn-outline btn-sm" href="${base}/alumni/resources/download?id=${resource.resource_id || ''}" target="_blank" rel="noopener">
                             <i class="fas fa-download"></i>
                             <span>Open</span>
                         </a>
