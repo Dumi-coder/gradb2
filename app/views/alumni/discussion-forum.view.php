@@ -98,7 +98,7 @@ require '../app/views/partials/alumni_header.php';
                 $tags_array = preg_split('/[\s,]+/', $tags_string, -1, PREG_SPLIT_NO_EMPTY);
               }
             ?>
-            <div class="topic-card">
+            <div class="topic-card" data-post-id="<?= (int)$topic->post_id ?>">
               <div class="topic-header">
                 <div class="topic-info">
                   <h3 class="topic-title"><?= esc($topic->title) ?></h3>
@@ -129,6 +129,7 @@ require '../app/views/partials/alumni_header.php';
               
               <div class="topic-footer">
                 <div class="topic-meta">
+                  <div class="topic-views"><i class="fas fa-eye"></i> <strong><?= $topic->views ?? 0 ?></strong></div>
                   <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $topic->replies ?? 0 ?></strong> replies</div>
                   <div class="topic-activity"><i class="fas fa-clock"></i> <?= $last_activity ?></div>
                 </div>
@@ -193,7 +194,7 @@ require '../app/views/partials/alumni_header.php';
                     $tags_array = preg_split('/[\s,]+/', $tags_string, -1, PREG_SPLIT_NO_EMPTY);
                   }
                 ?>
-                  <div class="topic-card">
+                  <div class="topic-card" data-post-id="<?= (int)$forum->post_id ?>">
                     <div class="topic-header">
                       <div class="topic-info">
                         <h3 class="topic-title"><?= esc($forum->title) ?></h3>
@@ -224,6 +225,7 @@ require '../app/views/partials/alumni_header.php';
                     
                     <div class="topic-footer">
                       <div class="topic-meta">
+                        <div class="topic-views"><i class="fas fa-eye"></i> <strong><?= $forum->views ?? 0 ?></strong></div>
                         <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $forum->replies ?? 0 ?></strong> replies</div>
                         <div class="topic-activity"><i class="fas fa-clock"></i> <?= $last_activity ?></div>
                       </div>
@@ -718,7 +720,7 @@ require '../app/views/partials/alumni_header.php';
     // Forum Detail Modal Functions
     let currentPostId = null;
 
-    function openForumDetailModal(postId) {
+    function openForumDetailModal(postId, shouldIncrementAfterOpen = false) {
       currentPostId = postId;
       
       // Fetch post details and replies from server
@@ -788,6 +790,10 @@ require '../app/views/partials/alumni_header.php';
             const modal = document.getElementById('forumDetailModal');
             modal.classList.add('show');
             modal.style.display = 'block';
+
+            if (shouldIncrementAfterOpen) {
+              incrementPostView(postId);
+            }
           } else {
             showNotification(data.message || 'Failed to load post', 'error');
           }
@@ -1264,8 +1270,7 @@ require '../app/views/partials/alumni_header.php';
       deleteForumId = null;
     }
 
-    function incrementAndViewPost(postId) {
-      // First, increment the view count
+    function incrementPostView(postId) {
       fetch('<?= ROOT ?>/alumni/discussionforum/incrementview', {
         method: 'POST',
         headers: {
@@ -1275,13 +1280,33 @@ require '../app/views/partials/alumni_header.php';
       })
       .then(response => response.json())
       .then(data => {
-        // Then open the forum detail modal
-        openForumDetailModal(postId);
+        if (data && data.success) {
+          incrementCardViewCount(postId);
+
+          const forumDetailViewsEl = document.getElementById('forumDetailViews');
+          if (forumDetailViewsEl) {
+            const current = parseInt(forumDetailViewsEl.textContent || '0', 10);
+            forumDetailViewsEl.textContent = String((isNaN(current) ? 0 : current) + 1);
+          }
+        }
       })
       .catch(error => {
         console.error('Error incrementing views:', error);
-        // Still open the modal even if view increment fails
-        openForumDetailModal(postId);
+      });
+    }
+
+    function incrementAndViewPost(postId) {
+      openForumDetailModal(postId, true);
+    }
+
+    function incrementCardViewCount(postId) {
+      const cards = document.querySelectorAll(`.topic-card[data-post-id="${Number(postId)}"]`);
+      cards.forEach((card) => {
+        const countEl = card.querySelector('.topic-views strong');
+        if (!countEl) return;
+
+        const current = parseInt(countEl.textContent || '0', 10);
+        countEl.textContent = String((isNaN(current) ? 0 : current) + 1);
       });
     }
 
@@ -1694,7 +1719,7 @@ require '../app/views/partials/alumni_header.php';
         const isTrending = Number(topic.trending_points || 0) >= <?= (int)$trending_threshold ?>;
 
         return `
-          <div class="topic-card">
+          <div class="topic-card" data-post-id="${Number(topic.post_id)}">
             <div class="topic-header">
               <div class="topic-info">
                 <h3 class="topic-title">${escapeHtml(topic.title || '')}</h3>
@@ -1708,6 +1733,7 @@ require '../app/views/partials/alumni_header.php';
             ${tags.length ? `<div class="topic-tags">${tags.map(tag => `<span class="topic-tag tag-${toTagClass(tag)}">#${escapeHtml(tag)}</span>`).join('')}</div>` : ''}
             <div class="topic-footer">
               <div class="topic-meta">
+                <div class="topic-views"><i class="fas fa-eye"></i> <strong>${Number(topic.views || 0)}</strong></div>
                 <div class="topic-replies"><i class="fas fa-comment"></i> <strong>${Number(topic.replies || 0)}</strong> replies</div>
                 <div class="topic-activity"><i class="fas fa-clock"></i> ${lastActivity}</div>
               </div>

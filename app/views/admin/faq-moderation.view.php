@@ -58,6 +58,11 @@
             
             <!-- FAQs List -->
             <div class="faqs-container">
+                <?php if (empty($faqData['faq_items'])): ?>
+                <div class="empty-state-message">
+                    There are no FAQs to show.
+                </div>
+                <?php else: ?>
                 <?php foreach ($faqData['faq_items'] as $faq): ?>
                 <div class="faq-card" 
                      data-category="<?= esc($faq['category']) ?>" 
@@ -116,6 +121,7 @@
                     </div>
                 </div>
                 <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </section>
     </main>
@@ -437,6 +443,16 @@
     gap: 1rem;
 }
 
+.empty-state-message {
+    background: #F9FAFB;
+    border: 2px dashed #D1D5DB;
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    color: #4B5563;
+    font-weight: 500;
+}
+
 .faq-card {
     background: white;
     border: 2px solid #E5E7EB;
@@ -755,7 +771,7 @@
     border-top: 1px solid #E5E7EB;
 }
 
-. {
+.form-actions .btn {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
 }
