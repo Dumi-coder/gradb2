@@ -1,9 +1,9 @@
 <?php 
-$page_title = "Approved Requests";
-$page_subtitle = "Counselor approved submissions";
+$page_title = "Completed Requests";
+$page_subtitle = "Aid requests marked as completed";
 require '../app/views/partials/counselor_header.php'; 
 
-$approvedRequests = $approvedRequests ?? [];
+$completedRequests = $completedRequests ?? [];
 $flashMessage = $flashMessage ?? null;
 $buildFileUrl = static function ($path) {
   $path = trim((string)$path);
@@ -37,7 +37,6 @@ $buildFileUrl = static function ($path) {
   }
   .req-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08); }
   .req-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:10px; }
-  .req-meta { color:var(--muted-foreground,#6b7280); font-size:.86rem; margin-top:4px; }
   .student-meta { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
   .student-chip {
     display:inline-flex;
@@ -63,28 +62,16 @@ $buildFileUrl = static function ($path) {
   }
   .req-label { color:var(--muted-foreground,#6b7280); font-size:.86rem; }
   .req-row strong { font-size:.9rem; text-align:left; word-break: break-word; }
-  .chip-state {
+  .chip-completed {
+    background:#ede9fe;
+    color:#5b21b6;
+    border-color:#c4b5fd;
     border-radius:999px;
     padding:.24rem .62rem;
     font-size:.74rem;
     font-weight:700;
     letter-spacing:.01em;
-    border:1px solid transparent;
-  }
-  .chip-sent {
-    background:#dbeafe;
-    color:#1d4ed8;
-    border-color:#93c5fd;
-  }
-  .chip-accepted {
-    background:#dcfce7;
-    color:#166534;
-    border-color:#86efac;
-  }
-  .chip-completed {
-    background:#ede9fe;
-    color:#5b21b6;
-    border-color:#c4b5fd;
+    border:1px solid;
   }
 </style>
 
@@ -94,7 +81,7 @@ $buildFileUrl = static function ($path) {
   <main class="main-content">
     <section class="dashboard-section">
       <div class="section-header">
-        <h2 class="card-title">Approved / Sent to Alumni</h2>
+        <h2 class="card-title">Completed Requests</h2>
       </div>
 
       <?php if (!empty($flashMessage)): ?>
@@ -103,15 +90,15 @@ $buildFileUrl = static function ($path) {
         </div>
       <?php endif; ?>
 
-      <?php if (empty($approvedRequests)): ?>
+      <?php if (empty($completedRequests)): ?>
         <div class="request-card" style="margin-top: 1rem;">
           <div class="request-details">
-            <p class="detail-value">No approved submissions yet.</p>
+            <p class="detail-value">No completed requests yet.</p>
           </div>
         </div>
       <?php else: ?>
         <div class="req-grid">
-          <?php foreach ($approvedRequests as $request): ?>
+          <?php foreach ($completedRequests as $request): ?>
             <div class="req-card">
               <div class="req-head">
                 <div>
@@ -120,10 +107,7 @@ $buildFileUrl = static function ($path) {
                     <span class="student-chip"><span class="k">ID:</span><?= esc($request->student_id ?? 'N/A') ?></span>
                   </div>
                 </div>
-                <?php $requestStatus = strtolower((string)($request->status ?? '')); ?>
-                <span class="chip-state <?= $requestStatus === 'completed' ? 'chip-completed' : (!empty($request->alumnus_user_id) ? 'chip-accepted' : 'chip-sent') ?>">
-                  <?= $requestStatus === 'completed' ? 'Completed' : (!empty($request->alumnus_user_id) ? 'Accepted by Alumni' : 'Sent to Alumni') ?>
-                </span>
+                <span class="chip-completed">Completed</span>
               </div>
               <div class="req-row"><span class="req-label">Aid Type</span><strong><?= esc(ucfirst((string)($request->aid_type ?? 'N/A'))) ?></strong></div>
               <div class="req-row"><span class="req-label">Amount</span><strong><?= isset($request->amount) && $request->amount !== null ? 'LKR ' . esc($request->amount) : 'N/A' ?></strong></div>
@@ -168,14 +152,6 @@ $buildFileUrl = static function ($path) {
                 <div class="req-row"><span class="req-label">Accepted By</span><strong><?= esc($request->alumnus_name ?? ('Alumni User #' . (int)$request->alumnus_user_id)) ?></strong></div>
                 <div class="req-row"><span class="req-label">Alumni Email</span><strong><?= esc($request->alumnus_email ?? 'N/A') ?></strong></div>
                 <div class="req-row"><span class="req-label">Alumni Mobile</span><strong><?= esc($request->alumnus_mobile ?? 'N/A') ?></strong></div>
-              <?php endif; ?>
-
-              <?php if (!empty($request->alumnus_user_id) && in_array($requestStatus, ['approved', 'accepted'], true)): ?>
-                <form method="POST" style="margin-top:10px;">
-                  <input type="hidden" name="action" value="complete">
-                  <input type="hidden" name="request_id" value="<?= (int)($request->request_id ?? 0) ?>">
-                  <button type="submit" class="btn btn-primary btn-sm">Mark as Completed</button>
-                </form>
               <?php endif; ?>
             </div>
           <?php endforeach; ?>

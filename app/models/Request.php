@@ -16,8 +16,10 @@ class Request
 
 	public function getPendingAidRequestsForCounselor()
 	{
-		$query = "SELECT r.request_id, r.student_user_id, r.status, r.created_at,
+		$query = "SELECT r.request_id, r.student_user_id, r.alumnus_user_id, r.status, r.created_at,
 						 u.name AS student_name, u.email AS student_email,
+						 au.name AS alumnus_name, au.email AS alumnus_email,
+						 a.mobile AS alumnus_mobile,
 						 s.student_id, s.academic_year,
 						 f.faculty_name,
 						 ar.mobile_number, ar.aid_type, ar.amount, ar.reason,
@@ -32,6 +34,8 @@ class Request
 						 ) AS rejection_reason
 				  FROM requests r
 				  JOIN users u ON u.user_id = r.student_user_id
+				  LEFT JOIN users au ON au.user_id = r.alumnus_user_id
+				  LEFT JOIN alumnis a ON a.user_id = r.alumnus_user_id
 				  LEFT JOIN students s ON s.user_id = r.student_user_id
 				  LEFT JOIN faculties f ON f.faculty_id = s.faculty_id
 				  LEFT JOIN aid_requests ar ON ar.request_id = r.request_id
@@ -58,8 +62,10 @@ class Request
 			$data[$key] = $status;
 		}
 
-		$query = "SELECT r.request_id, r.student_user_id, r.status, r.created_at,
+		$query = "SELECT r.request_id, r.student_user_id, r.alumnus_user_id, r.status, r.created_at,
 						 u.name AS student_name, u.email AS student_email,
+						 au.name AS alumnus_name, au.email AS alumnus_email,
+						 a.mobile AS alumnus_mobile,
 						 s.student_id, s.academic_year,
 						 f.faculty_name,
 						 ar.mobile_number, ar.aid_type, ar.amount, ar.reason,
@@ -74,6 +80,8 @@ class Request
 						 ) AS rejection_reason
 				  FROM requests r
 				  JOIN users u ON u.user_id = r.student_user_id
+				  LEFT JOIN users au ON au.user_id = r.alumnus_user_id
+				  LEFT JOIN alumnis a ON a.user_id = r.alumnus_user_id
 				  LEFT JOIN students s ON s.user_id = r.student_user_id
 				  LEFT JOIN faculties f ON f.faculty_id = s.faculty_id
 				  LEFT JOIN aid_requests ar ON ar.request_id = r.request_id
@@ -171,12 +179,73 @@ class Request
 						  AND request_type = 'aid'
 						  AND status = 'open'";
 
-		$updated = $this->query($updateQuery, [
+		$this->query($updateQuery, [
 			'request_id' => (int)$requestId,
 			'alumnus_user_id' => (int)$alumnusUserId,
 		]);
 
-		return $updated !== false;
+		$verifyQuery = "SELECT request_id
+						FROM requests
+						WHERE request_id = :request_id
+						  AND request_type = 'aid'
+						  AND status = 'approved'
+						  AND alumnus_user_id = :alumnus_user_id
+						LIMIT 1";
+
+		$verified = $this->get_row($verifyQuery, [
+			'request_id' => (int)$requestId,
+			'alumnus_user_id' => (int)$alumnusUserId,
+		]);
+
+		return $verified !== false;
+	}
+
+	public function markAidRequestCompletedByCounselor($requestId, $counselorUserId)
+	{
+		$updateQuery = "UPDATE requests
+						SET status = 'completed'
+						WHERE request_id = :request_id
+						  AND request_type = 'aid'
+						  AND alumnus_user_id IS NOT NULL
+						  AND status IN ('approved', 'accepted')";
+
+		$this->query($updateQuery, [
+			'request_id' => (int)$requestId,
+		]);
+
+		$verifyQuery = "SELECT request_id
+						FROM requests
+						WHERE request_id = :request_id
+						  AND request_type = 'aid'
+						  AND status = 'completed'
+						LIMIT 1";
+
+		$verified = $this->get_row($verifyQuery, [
+			'request_id' => (int)$requestId,
+		]);
+
+		if ($verified !== false) {
+			try {
+				$nextLogIdQuery = "SELECT COALESCE(MAX(log_id), 0) + 1 AS next_id FROM request_logs";
+				$nextLogIdRow = $this->get_row($nextLogIdQuery);
+				$nextLogId = isset($nextLogIdRow->next_id) ? (int)$nextLogIdRow->next_id : 1;
+
+				$logQuery = "INSERT INTO request_logs (log_id, request_id, actor_user_id, action, log_timestamp, notes)
+							 VALUES (:log_id, :request_id, :actor_user_id, :action, NOW(), :notes)";
+
+				$this->query($logQuery, [
+					'log_id' => $nextLogId,
+					'request_id' => (int)$requestId,
+					'actor_user_id' => (int)$counselorUserId,
+					'action' => 'COUNSELOR_COMPLETED',
+					'notes' => '[COUNSELOR COMPLETED] Aid request marked completed after alumni acceptance.',
+				]);
+			} catch (Throwable $e) {
+				error_log('Counselor completion log failed: ' . $e->getMessage());
+			}
+		}
+
+		return $verified !== false;
 	}
 
 	public function getAidAnalyticsSummary($days = 30)

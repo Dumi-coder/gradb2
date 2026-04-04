@@ -193,7 +193,6 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
               
               <div class="request-actions">
                 <button class="btn btn-primary btn-sm details-btn">View Details</button>
-                <button class="btn btn-outline btn-sm complete-btn">Mark as Completed</button>
               </div>
             </div>
             <?php endforeach; ?>
@@ -208,39 +207,21 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
           </div>
           
           <div class="completed-requests-container">
-            <?php 
-            // Demo hardcoded completed requests
-            $demoCompleted = [
-              [
-                'student_name' => 'Gehiru Widana',
-                'request_type' => 'Laptop',
-                'description' => 'Gave away a used but working macbook',
-                'amount_provided' => 'None',
-                'aid_type' => 'Physical',
-                'completed_date' => 'March 15, 2024'
-              ],
-              [
-                'student_name' => 'Kavindu Attanayake',
-                'request_type' => 'Study Materials',
-                'description' => 'Provided funds for specialized study materials and software licenses.',
-                'amount_provided' => 'Rs. 6500',
-                'aid_type' => 'Monetary',
-                'completed_date' => 'February 28, 2024'
-              ]
-            ];
-            
-            foreach ($demoCompleted as $request): ?>
+            <?php if (empty($completedRequests)): ?>
+            <p>No completed aid requests yet.</p>
+            <?php else: ?>
+            <?php foreach ($completedRequests as $request): ?>
             <div class="aid-request-card completed">
               <div class="request-header">
                 <div class="request-info">
-                  <h3 class="student-name"><?= esc($request['student_name']) ?></h3>
-                  <p class="request-type"><?= esc($request['request_type']) ?></p>
+                  <h3 class="student-name"><?= esc($request['student_name'] ?? 'Student') ?></h3>
+                  <p class="request-type"><?= esc($request['request_type'] ?? 'Aid Request') ?></p>
                 </div>
                 <span class="status-badge status-completed">Completed</span>
               </div>
               
               <div class="request-description">
-                <p><?= esc($request['description']) ?></p>
+                <p><?= esc($request['description'] ?? 'No description provided') ?></p>
               </div>
               
               <div class="request-details">
@@ -262,11 +243,12 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
               </div>
               
               <div class="request-footer">
-                <p class="completion-date">Completed: <?= esc($request['completed_date']) ?></p>
+                <p class="completion-date">Completed: <?= esc($request['completed_date'] ?? 'N/A') ?></p>
                 <button class="btn btn-primary btn-sm details-btn">View Details</button>
               </div>
             </div>
             <?php endforeach; ?>
+            <?php endif; ?>
           </div>
         </section>
 
