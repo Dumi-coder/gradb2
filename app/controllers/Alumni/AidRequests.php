@@ -99,7 +99,7 @@ class AidRequests extends Controller
                 'student_name' => $row->student_name ?? 'Student',
                 'request_type' => ucfirst((string)($row->aid_type ?? 'Aid Request')),
                 'description' => $row->reason ?? 'No description provided',
-                'provided_value' => $formatAmount($row->amount ?? null) ?? 'N/A',
+                'provided_value' => $formatAmount($row->amount ?? null),
                 'aid_type' => ucfirst((string)($row->aid_type ?? 'Aid')),
                 'status' => 'approved',
             ];
@@ -111,7 +111,7 @@ class AidRequests extends Controller
                 'student_name' => $row->student_name ?? 'Student',
                 'request_type' => ucfirst((string)($row->aid_type ?? 'Aid Request')),
                 'description' => $row->reason ?? 'No description provided',
-                'provided_value' => $formatAmount($row->amount ?? null) ?? 'N/A',
+                'provided_value' => $formatAmount($row->amount ?? null),
                 'aid_type' => ucfirst((string)($row->aid_type ?? 'Aid')),
                 'completed_date' => $row->created_at ?? null,
                 'status' => 'completed',
