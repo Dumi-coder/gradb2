@@ -62,7 +62,24 @@ $buildFileUrl = static function ($path) {
   }
   .req-label { color:var(--muted-foreground,#6b7280); font-size:.86rem; }
   .req-row strong { font-size:.9rem; text-align:left; word-break: break-word; }
-  .chip-ok { background:#10b981; color:#fff; border-radius:999px; padding:.24rem .62rem; font-size:.74rem; font-weight:600; }
+  .chip-state {
+    border-radius:999px;
+    padding:.24rem .62rem;
+    font-size:.74rem;
+    font-weight:700;
+    letter-spacing:.01em;
+    border:1px solid transparent;
+  }
+  .chip-sent {
+    background:#dbeafe;
+    color:#1d4ed8;
+    border-color:#93c5fd;
+  }
+  .chip-accepted {
+    background:#dcfce7;
+    color:#166534;
+    border-color:#86efac;
+  }
 </style>
 
 <div class="dashboard-container">
@@ -91,7 +108,9 @@ $buildFileUrl = static function ($path) {
                     <span class="student-chip"><span class="k">ID:</span><?= esc($request->student_id ?? 'N/A') ?></span>
                   </div>
                 </div>
-                <span class="chip-ok">Accepted</span>
+                <span class="chip-state <?= !empty($request->alumnus_user_id) ? 'chip-accepted' : 'chip-sent' ?>">
+                  <?= !empty($request->alumnus_user_id) ? 'Accepted by Alumni' : 'Sent to Alumni' ?>
+                </span>
               </div>
               <div class="req-row"><span class="req-label">Aid Type</span><strong><?= esc(ucfirst((string)($request->aid_type ?? 'N/A'))) ?></strong></div>
               <div class="req-row"><span class="req-label">Amount</span><strong><?= isset($request->amount) && $request->amount !== null ? 'LKR ' . esc($request->amount) : 'N/A' ?></strong></div>
@@ -131,6 +150,12 @@ $buildFileUrl = static function ($path) {
                 </strong>
               </div>
               <div class="req-row"><span class="req-label">Submitted</span><strong><?= esc($request->created_at ?? 'N/A') ?></strong></div>
+
+              <?php if (!empty($request->alumnus_user_id)): ?>
+                <div class="req-row"><span class="req-label">Accepted By</span><strong><?= esc($request->alumnus_name ?? ('Alumni User #' . (int)$request->alumnus_user_id)) ?></strong></div>
+                <div class="req-row"><span class="req-label">Alumni Email</span><strong><?= esc($request->alumnus_email ?? 'N/A') ?></strong></div>
+                <div class="req-row"><span class="req-label">Alumni Mobile</span><strong><?= esc($request->alumnus_mobile ?? 'N/A') ?></strong></div>
+              <?php endif; ?>
             </div>
           <?php endforeach; ?>
         </div>
