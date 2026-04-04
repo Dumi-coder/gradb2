@@ -200,6 +200,54 @@ class Request
 		return $verified !== false;
 	}
 
+	public function markAidRequestCompletedByCounselor($requestId, $counselorUserId)
+	{
+		$updateQuery = "UPDATE requests
+						SET status = 'completed'
+						WHERE request_id = :request_id
+						  AND request_type = 'aid'
+						  AND alumnus_user_id IS NOT NULL
+						  AND status IN ('approved', 'accepted')";
+
+		$this->query($updateQuery, [
+			'request_id' => (int)$requestId,
+		]);
+
+		$verifyQuery = "SELECT request_id
+						FROM requests
+						WHERE request_id = :request_id
+						  AND request_type = 'aid'
+						  AND status = 'completed'
+						LIMIT 1";
+
+		$verified = $this->get_row($verifyQuery, [
+			'request_id' => (int)$requestId,
+		]);
+
+		if ($verified !== false) {
+			try {
+				$nextLogIdQuery = "SELECT COALESCE(MAX(log_id), 0) + 1 AS next_id FROM request_logs";
+				$nextLogIdRow = $this->get_row($nextLogIdQuery);
+				$nextLogId = isset($nextLogIdRow->next_id) ? (int)$nextLogIdRow->next_id : 1;
+
+				$logQuery = "INSERT INTO request_logs (log_id, request_id, actor_user_id, action, log_timestamp, notes)
+							 VALUES (:log_id, :request_id, :actor_user_id, :action, NOW(), :notes)";
+
+				$this->query($logQuery, [
+					'log_id' => $nextLogId,
+					'request_id' => (int)$requestId,
+					'actor_user_id' => (int)$counselorUserId,
+					'action' => 'COUNSELOR_COMPLETED',
+					'notes' => '[COUNSELOR COMPLETED] Aid request marked completed after alumni acceptance.',
+				]);
+			} catch (Throwable $e) {
+				error_log('Counselor completion log failed: ' . $e->getMessage());
+			}
+		}
+
+		return $verified !== false;
+	}
+
 	public function getAidAnalyticsSummary($days = 30)
 	{
 		$days = max(1, (int)$days);

@@ -71,6 +71,7 @@ class AidRequests extends Controller
 
         $pendingRows = $requestModel->getAidRequestsForCounselorByStatuses(['open']);
         $approvedRows = $requestModel->getAidRequestsForCounselorByStatuses(['approved', 'accepted']);
+        $completedRows = $requestModel->getAidRequestsForCounselorByStatuses(['completed']);
 
         $formatAmount = static function ($amount) {
             if ($amount === null || $amount === '') {
@@ -104,10 +105,23 @@ class AidRequests extends Controller
             ];
         }, is_array($approvedRows) ? $approvedRows : []);
 
+        $completed = array_map(function ($row) use ($formatAmount) {
+            return [
+                'id' => $row->request_id ?? null,
+                'student_name' => $row->student_name ?? 'Student',
+                'request_type' => ucfirst((string)($row->aid_type ?? 'Aid Request')),
+                'description' => $row->reason ?? 'No description provided',
+                'provided_value' => $formatAmount($row->amount ?? null) ?? 'N/A',
+                'aid_type' => ucfirst((string)($row->aid_type ?? 'Aid')),
+                'completed_date' => $row->created_at ?? null,
+                'status' => 'completed',
+            ];
+        }, is_array($completedRows) ? $completedRows : []);
+
         return [
             'pending' => $pending,
             'approved' => $approved,
-            'completed' => [],
+            'completed' => $completed,
         ];
     }
 }

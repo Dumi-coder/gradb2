@@ -20,6 +20,10 @@ $statusLabel = function ($status) {
     return 'Accepted (Alumni)';
     }
 
+    if ($status === 'completed') {
+        return 'Completed';
+    }
+
     if ($status === 'rejected') {
         return 'Rejected';
     }
@@ -40,6 +44,10 @@ $statusClass = function ($status) {
 
   if (in_array($status, ['approved', 'accepted'], true)) {
     return 'status-accepted-stage2';
+    }
+
+    if ($status === 'completed') {
+        return 'status-approved';
     }
 
     if ($status === 'rejected') {

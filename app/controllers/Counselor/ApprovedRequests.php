@@ -12,10 +12,30 @@ class ApprovedRequests extends Controller
         }
 
         $requestModel = new Request();
+
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+            $action = $_POST['action'] ?? '';
+            $requestId = (int)($_POST['request_id'] ?? 0);
+
+            if ($action === 'complete' && $requestId > 0) {
+                $ok = $requestModel->markAidRequestCompletedByCounselor($requestId, (int)($_SESSION['user_id'] ?? 0));
+                $_SESSION['flash_message'] = $ok
+                    ? 'Aid request marked as completed.'
+                    : 'Unable to mark this request as completed. It may not be alumni-accepted yet.';
+
+                redirect('counselor/completed-requests');
+            }
+
+            redirect('counselor/approved-requests');
+        }
+
         $approvedRequests = $requestModel->getAidRequestsForCounselorByStatuses(['open', 'approved', 'accepted']);
+        $flashMessage = $_SESSION['flash_message'] ?? null;
+        unset($_SESSION['flash_message']);
 
         $this->view('counselor/approved-requests', [
             'approvedRequests' => $approvedRequests,
+            'flashMessage' => $flashMessage,
         ]);
     }
 }

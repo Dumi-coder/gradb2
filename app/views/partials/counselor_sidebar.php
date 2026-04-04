@@ -27,6 +27,10 @@ $isActive = function(string $path) use ($current): string {
               <i class="fas fa-check-circle"></i>
               <span>Approved Requests</span>
             </a>
+            <a href="<?=ROOT?>/Counselor/CompletedRequests" class="nav-item<?= $isActive('counselor/completedrequests') ?>">
+              <i class="fas fa-flag-checkered"></i>
+              <span>Completed Requests</span>
+            </a>
             <a href="<?=ROOT?>/Counselor/RejectedRequests" class="nav-item<?= $isActive('counselor/rejectedrequests') ?>">
               <i class="fas fa-times-circle"></i>
               <span>Rejected Requests</span>
