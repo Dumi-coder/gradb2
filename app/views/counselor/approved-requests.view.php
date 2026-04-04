@@ -95,6 +95,7 @@ $buildFileUrl = static function ($path) {
               </div>
               <div class="req-row"><span class="req-label">Aid Type</span><strong><?= esc(ucfirst((string)($request->aid_type ?? 'N/A'))) ?></strong></div>
               <div class="req-row"><span class="req-label">Amount</span><strong><?= isset($request->amount) && $request->amount !== null ? 'LKR ' . esc($request->amount) : 'N/A' ?></strong></div>
+              <div class="req-row"><span class="req-label">Reason</span><strong><?= esc($request->reason ?? 'N/A') ?></strong></div>
               <div class="req-row"><span class="req-label">Student ID</span><strong><?= esc($request->student_id ?? 'N/A') ?></strong></div>
               <div class="req-row">
                 <span class="req-label">Student ID Document</span>
