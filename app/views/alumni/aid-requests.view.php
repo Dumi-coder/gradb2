@@ -12,12 +12,91 @@ $completedRequests = $aidRequestsData['completed'] ?? [];
 <!-- Page-specific CSS -->
 <link rel="stylesheet" href="<?=ROOT?>/assets/css/aid-requests.css">
 
+<style>
+  .aid-requests-page .aid-request-card {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--radius-sm);
+  }
+
+  .aid-requests-page .approved-requests-container,
+  .aid-requests-page .completed-requests-container {
+    gap: var(--spacing-md);
+  }
+
+  .aid-requests-page .request-header {
+    margin-bottom: var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+
+  .aid-requests-page .request-info h3 {
+    font-size: var(--font-base);
+    margin-bottom: 2px;
+  }
+
+  .aid-requests-page .request-type {
+    font-size: var(--font-xs);
+  }
+
+  .aid-requests-page .request-description {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .aid-requests-page .request-description p {
+    font-size: var(--font-sm);
+    line-height: 1.45;
+  }
+
+  .aid-requests-page .request-details {
+    padding: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .aid-requests-page .detail-item {
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .aid-requests-page .detail-label,
+  .aid-requests-page .detail-value {
+    font-size: var(--font-xs);
+  }
+
+  .aid-requests-page .request-actions {
+    gap: var(--spacing-xs);
+    flex-wrap: wrap;
+  }
+
+  .aid-requests-page .request-actions .btn {
+    padding: 0.4rem 0.65rem;
+    font-size: var(--font-xs);
+  }
+
+  .aid-requests-page .status-badge {
+    font-size: var(--font-xs);
+    padding: 0.2rem 0.55rem;
+  }
+
+  @media (max-width: 768px) {
+    .aid-requests-page .aid-request-card {
+      padding: var(--spacing-sm);
+    }
+
+    .aid-requests-page .request-header,
+    .aid-requests-page .request-footer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--spacing-xs);
+    }
+  }
+</style>
+
 <div class="dashboard-container">
      <!-- sidebar -->
     <?php require '../app/views/partials/alumni_sidebar.php'; ?>
 
       <!-- Main Content Area -->
-      <main class="main-content">
+      <main class="main-content aid-requests-page">
         <!-- Pending Aid Requests Section -->
         <section class="dashboard-section pending-requests-section">
           <div class="section-header">
