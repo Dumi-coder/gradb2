@@ -27,7 +27,7 @@ $isMonetaryType = static function ($type) {
 
 <style>
   .aid-requests-page .dashboard-section {
-    max-width: 920px;
+    max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -43,7 +43,12 @@ $isMonetaryType = static function ($type) {
   .aid-requests-page .approved-requests-container,
   .aid-requests-page .completed-requests-container {
     display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--spacing-sm);
+  }
+
+  .aid-requests-page .view-all-link {
+    grid-column: 1 / -1;
   }
 
   .aid-requests-page .request-header {
@@ -119,6 +124,12 @@ $isMonetaryType = static function ($type) {
   @media (max-width: 768px) {
     .aid-requests-page .dashboard-section {
       max-width: 100%;
+    }
+
+    .aid-requests-page .pending-requests-container,
+    .aid-requests-page .approved-requests-container,
+    .aid-requests-page .completed-requests-container {
+      grid-template-columns: 1fr;
     }
 
     .aid-requests-page .aid-request-card {
