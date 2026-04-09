@@ -2,10 +2,12 @@
 class Mentorship extends Controller
 {
     private $mentorshipRequestModel;
+    private $mentorshipChatModel;
 
     public function __construct()
     {
         $this->mentorshipRequestModel = new MentorshipRequest();
+        $this->mentorshipChatModel = new MentorshipChat();
     }
     
     public function index()
@@ -167,6 +169,70 @@ class Mentorship extends Controller
         }
 
         header('Location: ' . ROOT . '/student/Mentorship');
+        exit;
+    }
+
+    public function messages($requestId = null)
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        header('Content-Type: application/json');
+
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            exit;
+        }
+
+        if (!$requestId || !is_numeric($requestId)) {
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            exit;
+        }
+
+        $payload = $this->mentorshipChatModel->getThreadPayload((int)$requestId, (int)$_SESSION['user_id']);
+
+        if (!$payload) {
+            echo json_encode(['success' => false, 'message' => 'Chat not available for this mentorship.']);
+            exit;
+        }
+
+        echo json_encode(['success' => true, 'thread' => $payload['thread'], 'messages' => $payload['messages']]);
+        exit;
+    }
+
+    public function sendMessage($requestId = null)
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        header('Content-Type: application/json');
+
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !$requestId || !is_numeric($requestId)) {
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            exit;
+        }
+
+        $message = trim($_POST['message'] ?? '');
+        if ($message === '') {
+            echo json_encode(['success' => false, 'message' => 'Message cannot be empty.']);
+            exit;
+        }
+
+        $messageId = $this->mentorshipChatModel->sendMessage((int)$requestId, (int)$_SESSION['user_id'], $message);
+
+        if (!$messageId) {
+            echo json_encode(['success' => false, 'message' => 'Failed to send message.']);
+            exit;
+        }
+
+        echo json_encode(['success' => true, 'message' => 'Message sent.']);
         exit;
     }
 }

@@ -50,7 +50,10 @@ require '../app/views/partials/student_header.php';
                   <?php endif; ?>
                 </p>
                 <p class="mentor-expertise"><?= esc($mentor['expertise_area'] ?: 'General Mentorship') ?></p>
-                <p class="mentor-bio"><?= esc($mentor['mentor_bio'] ?: 'Experienced alumnus available for student mentorship.') ?></p>
+                <div class="contact-reveal-card">
+                  <h4 class="contact-reveal-title">Mentor Description</h4>
+                  <p class="mentor-bio"><?= esc($mentor['mentor_bio'] ?: 'Experienced alumnus available for student mentorship.') ?></p>
+                </div>
 
                 <div class="mentor-rating-row">
                   <span class="mentor-rating">⭐ <?= number_format((float)$mentor['avg_rating'], 1) ?></span>
@@ -116,15 +119,35 @@ require '../app/views/partials/student_header.php';
                   <span class="status-badge status-accepted">Accepted</span>
                 </div>
                 <p class="request-description"><?= esc($active['request_reason']) ?></p>
-                <p class="mentor-meta">Mentor: <?= esc($active['mentor_name']) ?></p>
-                <p class="mentor-meta">Email: <?= esc($active['mentor_email']) ?></p>
-                <p class="mentor-meta">Faculty: <?= esc($active['faculty_name'] ?: 'N/A') ?></p>
-                <?php if (!empty($active['current_job'])): ?>
-                  <p class="mentor-meta">Current Job: <?= esc($active['current_job']) ?></p>
-                <?php endif; ?>
-                <?php if (!empty($active['current_workplace'])): ?>
-                  <p class="mentor-meta">Workplace: <?= esc($active['current_workplace']) ?></p>
-                <?php endif; ?>
+                <div class="contact-reveal-card">
+                  <h4 class="contact-reveal-title">Mentor Contact</h4>
+                  <p class="mentor-meta">Name: <?= esc($active['mentor_name']) ?></p>
+                  <p class="mentor-meta">Email: <?= esc($active['mentor_email']) ?></p>
+                  <?php if (!empty($active['mentor_mobile'])): ?>
+                    <p class="mentor-meta">Mobile: +94 <?= esc($active['mentor_mobile']) ?></p>
+                  <?php endif; ?>
+                  <?php if (!empty($active['mentor_linkedin_url'])): ?>
+                    <p class="mentor-meta">LinkedIn: <a href="<?= esc($active['mentor_linkedin_url']) ?>" target="_blank" rel="noopener">View profile</a></p>
+                  <?php endif; ?>
+                  <p class="mentor-meta">Faculty: <?= esc($active['faculty_name'] ?: 'N/A') ?></p>
+                  <?php if (!empty($active['current_job'])): ?>
+                    <p class="mentor-meta">Current Job: <?= esc($active['current_job']) ?></p>
+                  <?php endif; ?>
+                  <?php if (!empty($active['current_workplace'])): ?>
+                    <p class="mentor-meta">Workplace: <?= esc($active['current_workplace']) ?></p>
+                  <?php endif; ?>
+                </div>
+                <div class="request-actions mentor-request-actions">
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-sm mentorship-chat-open"
+                    data-thread-id="<?= (int)$active['request_id'] ?>"
+                    data-thread-name="<?= esc($active['mentor_name']) ?>"
+                  >
+                    <i class="fas fa-comments"></i>
+                    Chat with Alumni
+                  </button>
+                </div>
                 <p class="mentor-meta"><small>Your mentor will end the session when mentorship is complete. Then you can submit the required review.</small></p>
               </article>
             <?php endforeach; ?>
@@ -179,6 +202,43 @@ require '../app/views/partials/student_header.php';
   </main>
 </div>
 
+<div class="mentorship-chat-modal" id="mentorshipChatModal" aria-hidden="true">
+  <div class="mentorship-chat-panel" role="dialog" aria-modal="true" aria-labelledby="mentorshipChatTitle">
+    <div class="mentorship-chat-header">
+      <div>
+        <h3 id="mentorshipChatTitle" class="mentorship-chat-title">Mentorship Chat</h3>
+        <p id="mentorshipChatMeta" class="mentorship-chat-meta">Chat with your mentor</p>
+      </div>
+      <button type="button" class="mentorship-chat-close" data-chat-close aria-label="Close chat">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="mentorship-chat-status" id="mentorshipChatStatus"></div>
+
+    <div class="mentorship-chat-body">
+      <div class="mentorship-chat-empty" id="mentorshipChatEmpty">
+        Start the conversation.
+      </div>
+      <div class="mentorship-chat-messages" id="mentorshipChatMessages"></div>
+    </div>
+
+    <form class="mentorship-chat-form" id="mentorshipChatForm">
+      <textarea id="mentorshipChatInput" name="message" class="mentorship-chat-input" rows="3" placeholder="Type a short message..."></textarea>
+      <button type="submit" class="btn btn-primary mentorship-chat-send">
+        Send
+      </button>
+    </form>
+  </div>
+</div>
+
 <script src="<?=ROOT?>/assets/js/main.js"></script>
+<script>
+  window.mentorshipChatConfig = {
+    baseUrl: '<?=ROOT?>/student/Mentorship',
+    currentUserId: '<?= (int)($_SESSION['user_id'] ?? 0) ?>'
+  };
+</script>
+<script src="<?=ROOT?>/assets/js/mentorship-chat.js?v=<?=time()?>"></script>
 </body>
 </html>

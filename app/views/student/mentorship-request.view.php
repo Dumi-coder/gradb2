@@ -25,6 +25,13 @@ require '../app/views/partials/student_header.php';
                                 <?php endif; ?>
                             </p>
                             <p class="selected-mentor-expertise"><?= esc($data['mentor']['expertise_area'] ?: 'General Mentorship') ?></p>
+                            <p class="selected-mentor-meta">Email: <?= esc($data['mentor']['mentor_email'] ?? 'N/A') ?></p>
+                            <?php if (!empty($data['mentor']['mentor_mobile'])): ?>
+                                <p class="selected-mentor-meta">Mobile: +94 <?= esc($data['mentor']['mentor_mobile']) ?></p>
+                            <?php endif; ?>
+                            <?php if (!empty($data['mentor']['mentor_linkedin_url'])): ?>
+                                <p class="selected-mentor-meta">LinkedIn: <a href="<?= esc($data['mentor']['mentor_linkedin_url']) ?>" target="_blank" rel="noopener">View profile</a></p>
+                            <?php endif; ?>
                         </div>
                     <?php endif; ?>
                     

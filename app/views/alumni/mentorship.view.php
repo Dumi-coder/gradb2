@@ -89,15 +89,35 @@ require '../app/views/partials/alumni_header.php';
                 <span class="status-badge status-accepted">Accepted</span>
               </div>
               <p class="request-description"><?= esc($active['request_reason']) ?></p>
-              <p class="student-details"><small><?= esc($active['student_name']) ?> | <?= esc($active['student_id']) ?> | Year <?= esc($active['academic_year']) ?> | <?= esc($active['faculty_name'] ?: 'Faculty N/A') ?></small></p>
-              <p class="mentor-meta">Student Email: <?= esc($active['student_email']) ?></p>
-              <div class="request-actions mentor-request-actions">
-                <form method="POST" action="<?= ROOT ?>/Alumni/Mentorship/end/<?= (int)$active['request_id'] ?>">
-                  <button type="submit" class="btn btn-outline btn-sm" onclick="return confirm('End this mentorship now? Student will be prompted to submit a required review.');">
-                    <i class="fas fa-flag-checkered"></i> End Mentorship
+                <div class="contact-reveal-card">
+                  <h4 class="contact-reveal-title">Student Contact</h4>
+                  <p class="student-details"><small><?= esc($active['student_name']) ?> | <?= esc($active['student_id']) ?> | Year <?= esc($active['academic_year']) ?> | <?= esc($active['faculty_name'] ?: 'Faculty N/A') ?></small></p>
+                  <p class="mentor-meta">Student Email: <?= esc($active['student_email']) ?></p>
+                  <?php if (!empty($active['student_mobile'])): ?>
+                    <p class="mentor-meta">Mobile: +94 <?= esc($active['student_mobile']) ?></p>
+                  <?php endif; ?>
+                  <?php if (!empty($active['student_linkedin_url'])): ?>
+                    <p class="mentor-meta">LinkedIn: <a href="<?= esc($active['student_linkedin_url']) ?>" target="_blank" rel="noopener">View profile</a></p>
+                  <?php endif; ?>
+                </div>
+                <div class="request-actions mentor-request-actions">
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-sm mentorship-chat-open"
+                    data-thread-id="<?= (int)$active['request_id'] ?>"
+                    data-thread-name="<?= esc($active['student_name']) ?>"
+                  >
+                    <i class="fas fa-comments"></i>
+                    Chat with Student
                   </button>
-                </form>
-              </div>
+                </div>
+                <div class="request-actions mentor-request-actions">
+                  <form method="POST" action="<?= ROOT ?>/Alumni/Mentorship/end/<?= (int)$active['request_id'] ?>">
+                    <button type="submit" class="btn btn-outline btn-sm" onclick="return confirm('End this mentorship now? Student will be prompted to submit a required review.');">
+                      <i class="fas fa-flag-checkered"></i> End Mentorship
+                    </button>
+                  </form>
+                </div>
             </article>
           <?php endforeach; ?>
         </div>
@@ -137,6 +157,43 @@ require '../app/views/partials/alumni_header.php';
   </main>
 </div>
 
+<div class="mentorship-chat-modal" id="mentorshipChatModal" aria-hidden="true">
+  <div class="mentorship-chat-panel" role="dialog" aria-modal="true" aria-labelledby="mentorshipChatTitle">
+    <div class="mentorship-chat-header">
+      <div>
+        <h3 id="mentorshipChatTitle" class="mentorship-chat-title">Mentorship Chat</h3>
+        <p id="mentorshipChatMeta" class="mentorship-chat-meta">Chat with your mentee</p>
+      </div>
+      <button type="button" class="mentorship-chat-close" data-chat-close aria-label="Close chat">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="mentorship-chat-status" id="mentorshipChatStatus"></div>
+
+    <div class="mentorship-chat-body">
+      <div class="mentorship-chat-empty" id="mentorshipChatEmpty">
+        Start the conversation.
+      </div>
+      <div class="mentorship-chat-messages" id="mentorshipChatMessages"></div>
+    </div>
+
+    <form class="mentorship-chat-form" id="mentorshipChatForm">
+      <textarea id="mentorshipChatInput" name="message" class="mentorship-chat-input" rows="3" placeholder="Type a short message..."></textarea>
+      <button type="submit" class="btn btn-primary mentorship-chat-send">
+        Send
+      </button>
+    </form>
+  </div>
+</div>
+
 <script src="<?=ROOT?>/assets/js/main.js"></script>
+<script>
+  window.mentorshipChatConfig = {
+    baseUrl: '<?=ROOT?>/alumni/Mentorship',
+    currentUserId: '<?= (int)($_SESSION['user_id'] ?? 0) ?>'
+  };
+</script>
+<script src="<?=ROOT?>/assets/js/mentorship-chat.js?v=<?=time()?>"></script>
 </body>
 </html>

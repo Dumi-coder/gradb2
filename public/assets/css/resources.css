@@ -221,6 +221,15 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
+.resource-item.resources-empty-state {
+  grid-template-columns: 1fr;
+}
+
+.resource-item.resources-empty-state .resource-content {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
 .resource-item:hover {
   border-color: rgba(14, 32, 114, 0.28);
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
@@ -242,6 +251,7 @@
 
 .resource-content {
   flex: 1;
+  min-width: 0;
 }
 
 .resource-title {

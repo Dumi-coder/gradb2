@@ -124,10 +124,11 @@ require '../app/views/partials/alumni_header.php';
                             <?php endif; ?>
                         </div>
 
-                        <!-- Bio -->
+                        <!-- Mentor Description / Bio -->
                         <div class="form-group full-width">
-                            <label for="bio" class="form-label">Bio</label>
-                            <textarea id="bio" name="bio" class="form-textarea" placeholder="Tell us about yourself..."><?= esc($profile->bio ?? '') ?></textarea>
+                            <label for="bio" class="form-label">Mentor Description / Bio</label>
+                            <textarea id="bio" name="bio" class="form-textarea" placeholder="Write a short description students will see on your mentor card..."><?= esc($profile->bio ?? '') ?></textarea>
+                            <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">This text appears in the student mentor list as your public mentor description.</small>
                             <?php if (isset($errors['bio'])): ?>
                                 <div class="error-message"><?= esc($errors['bio']) ?></div>
                             <?php endif; ?>

@@ -4,6 +4,8 @@ class SharedResource
 {
 	use Model;
 
+	private $tagsColumnExists = null;
+
 	protected $table = 'resources';
 	protected $order_column = 'created_at';
 	protected $id_column = 'resource_id';
@@ -13,6 +15,7 @@ class SharedResource
 		'title',
 		'description',
 		'category',
+		'tags',
 		'file_name',
 		'file_path',
 		'file_size',
@@ -24,6 +27,107 @@ class SharedResource
 		'created_at',
 		'updated_at',
 	];
+
+	public function getResourceCategories()
+	{
+		return [
+			[
+				'value' => 'lecture-notes',
+				'label' => 'Lecture Notes',
+				'icon' => 'fa-file-alt',
+				'description' => 'Class notes, summaries, and study guides',
+			],
+			[
+				'value' => 'al',
+				'label' => 'AL',
+				'icon' => 'fa-language',
+				'description' => 'Automata, languages, and formal grammar material',
+			],
+			[
+				'value' => 'computational-model-theory',
+				'label' => 'Computational Model Theory',
+				'icon' => 'fa-diagram-project',
+				'description' => 'Models, proofs, and theoretical computation resources',
+			],
+			[
+				'value' => 'algorithms',
+				'label' => 'Algorithms',
+				'icon' => 'fa-sitemap',
+				'description' => 'Algorithm design, analysis, and problem-solving notes',
+			],
+			[
+				'value' => 'programming',
+				'label' => 'Programming',
+				'icon' => 'fa-code',
+				'description' => 'Code samples, templates, and language references',
+			],
+			[
+				'value' => 'software-tools',
+				'label' => 'Software & Tools',
+				'icon' => 'fa-laptop-code',
+				'description' => 'Utilities, apps, and development tooling',
+			],
+		];
+	}
+
+	protected function normalizeSearchTerms($search)
+	{
+		$search = trim((string)$search);
+		if ($search === '') {
+			return [];
+		}
+
+		$parts = preg_split('/[\,;\n]+/', $search);
+		if (!is_array($parts) || empty($parts)) {
+			$parts = [$search];
+		}
+
+		$terms = [];
+		foreach ($parts as $part) {
+			$term = trim((string)$part);
+			if ($term === '') {
+				continue;
+			}
+			$term = ltrim($term, '#');
+			if ($term !== '') {
+				$terms[strtolower($term)] = $term;
+			}
+		}
+
+		return array_values($terms);
+	}
+
+	protected function buildSearchClause($search, array &$params, $paramPrefix = 'search')
+	{
+		$terms = $this->normalizeSearchTerms($search);
+		if (empty($terms)) {
+			return '';
+		}
+
+		$tagSearchSql = $this->hasTagsColumn() ? " OR LOWER(COALESCE(r.tags, '')) LIKE LOWER(:%s)" : '';
+
+		$clauses = [];
+		foreach ($terms as $index => $term) {
+			$paramKey = $paramPrefix . $index;
+			$tagClause = $tagSearchSql !== '' ? sprintf($tagSearchSql, $paramKey) : '';
+			$clauses[] = "(LOWER(r.title) LIKE LOWER(:{$paramKey}) OR LOWER(r.description) LIKE LOWER(:{$paramKey}){$tagClause} OR LOWER(COALESCE(r.category, '')) LIKE LOWER(:{$paramKey}))";
+			$params[$paramKey] = '%' . $term . '%';
+		}
+
+		return '(' . implode(' OR ', $clauses) . ')';
+	}
+
+	public function hasTagsColumn()
+	{
+		if ($this->tagsColumnExists !== null) {
+			return $this->tagsColumnExists;
+		}
+
+		$result = $this->query("SHOW COLUMNS FROM {$this->table} LIKE 'tags'");
+		$this->tagsColumnExists = is_array($result) && !empty($result);
+
+		return $this->tagsColumnExists;
+	}
 
 	/**
 	 * Get resources with filtering for deleted users
@@ -102,10 +206,10 @@ class SharedResource
 			$params['category'] = $category;
 		}
 
-		// Add search filter
-		if (!empty($search)) {
-			$where_clauses[] = "(r.title LIKE :search OR r.description LIKE :search)";
-			$params['search'] = '%' . $search . '%';
+		// Add search filter across title, description, and tags
+		$search_clause = $this->buildSearchClause($search, $params);
+		if ($search_clause !== '') {
+			$where_clauses[] = $search_clause;
 		}
 
 		$additional_where = !empty($where_clauses) ? 'AND ' . implode(' AND ', $where_clauses) : '';
@@ -347,9 +451,9 @@ class SharedResource
 			$params['category'] = $category;
 		}
 
-		if (!empty($search)) {
-			$conditions[] = "(r.title LIKE :search OR r.description LIKE :search)";
-			$params['search'] = '%' . $search . '%';
+		$search_clause = $this->buildSearchClause($search, $params);
+		if ($search_clause !== '') {
+			$conditions[] = $search_clause;
 		}
 
 		$where = implode(' AND ', $conditions);
@@ -369,7 +473,7 @@ class SharedResource
 	 */
 	public function getAllCategoryCounts()
 	{
-		$categories = ['lecture-notes', 'assignments', 'textbooks', 'software'];
+		$categories = array_column($this->getResourceCategories(), 'value');
 		$counts = [];
 
 		foreach ($categories as $cat) {

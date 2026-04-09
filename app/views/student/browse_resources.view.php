@@ -2,6 +2,7 @@
 $page_title = "Browse Resources";
 $page_subtitle = "Discover study materials and resources";
 require '../app/views/partials/student_header.php'; 
+
 ?>
 
 <!-- Page-specific CSS -->
@@ -16,57 +17,19 @@ require '../app/views/partials/student_header.php';
         <section class="dashboard-section">
           <div class="section-header" style="margin-bottom: 20px;">
             <h2 class="card-title">
-              <?php 
-                if (!empty($category)) {
-                  echo ucwords(str_replace('-', ' ', $category));
-                } else {
-                  echo 'All Resources';
-                }
-              ?>
+              All Resources
             </h2>
-          </div>
-
-          <!-- Category Navigation -->
-          <div class="categories-nav" style="margin-bottom: 25px; display: flex; gap: 10px; flex-wrap: wrap;">
-            <a href="<?=ROOT?>/student/resources/browse<?= !empty($search) ? '?search=' . urlencode($search) : '' ?>" 
-               class="btn <?= empty($category) ? 'btn-primary' : 'btn-outline' ?> btn-sm">
-              <i class="fas fa-th"></i>
-              <span>All</span>
-            </a>
-            <a href="<?=ROOT?>/student/resources/browse?category=lecture-notes<?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" 
-               class="btn <?= $category === 'lecture-notes' ? 'btn-primary' : 'btn-outline' ?> btn-sm">
-              <i class="fas fa-file-alt"></i>
-              <span>Lecture Notes</span>
-            </a>
-            <a href="<?=ROOT?>/student/resources/browse?category=assignments<?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" 
-               class="btn <?= $category === 'assignments' ? 'btn-primary' : 'btn-outline' ?> btn-sm">
-              <i class="fas fa-tasks"></i>
-              <span>Exercises</span>
-            </a>
-            <a href="<?=ROOT?>/student/resources/browse?category=textbooks<?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" 
-               class="btn <?= $category === 'textbooks' ? 'btn-primary' : 'btn-outline' ?> btn-sm">
-              <i class="fas fa-book"></i>
-              <span>Textbooks</span>
-            </a>
-            <a href="<?=ROOT?>/student/resources/browse?category=software<?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" 
-               class="btn <?= $category === 'software' ? 'btn-primary' : 'btn-outline' ?> btn-sm">
-              <i class="fas fa-code"></i>
-              <span>Software & Tools</span>
-            </a>
           </div>
 
           <!-- Search Bar -->
           <div class="search-bar-container" style="margin-bottom: 30px;">
             <form method="GET" action="<?=ROOT?>/student/resources/browse" style="display: flex; gap: 10px; max-width: 100%;">
-              <?php if (!empty($category)): ?>
-                <input type="hidden" name="category" value="<?= htmlspecialchars($category) ?>">
-              <?php endif; ?>
               <div style="flex: 1; position: relative; max-width: 600px;">
                 <input 
                   type="text" 
                   name="search" 
                   class="input" 
-                  placeholder="Search resources by title or description..." 
+                  placeholder="Search by keyword, tag, or category..." 
                   value="<?= htmlspecialchars($search ?? '') ?>"
                   style="width: 100%; padding-left: 40px;"
                 >
@@ -154,7 +117,7 @@ require '../app/views/partials/student_header.php';
                 </div>
               <?php endforeach; ?>
             <?php else: ?>
-              <div class="resource-item" style="opacity:.7; text-align: center;">
+              <div class="resource-item resources-empty-state" style="opacity:.7; text-align: center;">
                 <div class="resource-content" style="width: 100%;">
                   <i class="fas fa-folder-open" style="font-size: 3rem; color: #d1d5db; margin-bottom: 15px;"></i>
                   <h3 class="resource-title">No resources found</h3>
@@ -162,7 +125,7 @@ require '../app/views/partials/student_header.php';
                     <?php if (!empty($search)): ?>
                       Try adjusting your search terms or browse all resources.
                     <?php else: ?>
-                      There are no resources available in this category yet.
+                      There are no resources shared yet.
                     <?php endif; ?>
                   </p>
                 </div>

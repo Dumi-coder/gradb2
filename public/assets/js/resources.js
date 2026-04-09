@@ -147,6 +147,10 @@ function openEditModalFromCard(card) {
     
     if (titleInput) titleInput.value = card.dataset.title || '';
     if (categoryInput) categoryInput.value = card.dataset.category || '';
+    const tagsInput = document.getElementById('resourceTags');
+    if (tagsInput) tagsInput.value = card.dataset.tags || '';
+    const linkInput = document.getElementById('resourceLink');
+    if (linkInput) linkInput.value = card.dataset.filePath || '';
     if (descriptionInput) descriptionInput.value = card.dataset.description || '';
     if (facultyInput) {
         const facultyId = card.dataset.facultyId || '';
@@ -267,6 +271,45 @@ function formatFileSize(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
+function parseResourceTags(tagsValue) {
+    if (!tagsValue) return [];
+    return String(tagsValue)
+        .replace(/#/g, '')
+        .split(/[\,;\n]+/)
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0);
+}
+
+function normalizeResourceLink(linkValue) {
+    const raw = String(linkValue || '').trim();
+    if (!raw) return '';
+
+    if (/^https?:\/\//i.test(raw)) {
+        return raw;
+    }
+
+    if (/^www\./i.test(raw)) {
+        return 'https://' + raw;
+    }
+
+    if (raw.includes('.')) {
+        return 'https://' + raw;
+    }
+
+    return raw;
+}
+
+function renderResourceTags(tagsValue) {
+    const tags = parseResourceTags(tagsValue);
+    if (!tags.length) return '';
+
+    return `
+        <div class="resource-tags" style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;">
+            ${tags.map(tag => `<span class="resource-tag" style="padding:3px 8px; border-radius:999px; background:#eef2ff; color:#0f172a; font-size:12px; font-weight:600;">#${escapeHTML(tag)}</span>`).join('')}
+        </div>
+    `;
+}
+
 // Form handling
 function handleUploadSubmit(event) {
     event.preventDefault();
@@ -279,13 +322,20 @@ function handleUploadSubmit(event) {
     
     // Get form data
     const formData = new FormData(uploadForm);
+    const normalizedLink = normalizeResourceLink(formData.get('resourceLink'));
     const resourceData = {
         title: formData.get('resourceTitle'),
         category: formData.get('resourceCategory'),
         description: formData.get('resourceDescription'),
+        link: normalizedLink,
         file: formData.get('resourceFile'),
         timestamp: new Date().toISOString()
     };
+
+    const linkInput = document.getElementById('resourceLink');
+    if (linkInput && normalizedLink) {
+        linkInput.value = normalizedLink;
+    }
     const mode = (resourceModeInput && resourceModeInput.value) || 'create';
     const resourceId = (resourceIdInput && resourceIdInput.value) || '';
 
@@ -304,26 +354,25 @@ function validateResourceData(resourceData, mode = 'create') {
         return false;
     }
     
-    if (!resourceData.category) {
-        showNotification('Please select a category', 'error');
+    if (!resourceData.category || !resourceData.category.trim()) {
+        showNotification('Please enter a category', 'error');
+        return false;
+    }
+
+    if (!resourceData.link || !String(resourceData.link).trim()) {
+        showNotification('Please provide a resource link', 'error');
+        return false;
+    }
+
+    try {
+        new URL(String(resourceData.link).trim());
+    } catch (e) {
+        showNotification('Please enter a valid URL', 'error');
         return false;
     }
     
-    if (mode === 'create') {
-        if (!resourceData.file || resourceData.file.size === 0) {
-            showNotification('Please select a file to upload', 'error');
-            return false;
-        }
-    }
-    
-    if (resourceData.title.length < 5) {
-        showNotification('Title must be at least 5 characters long', 'error');
-        return false;
-    }
-    
-    // Check file size (max 10MB)
-    if (resourceData.file && resourceData.file.size && resourceData.file.size > 10 * 1024 * 1024) {
-        showNotification('File size must be less than 10MB', 'error');
+    if (resourceData.title.length < 3) {
+        showNotification('Title must be at least 3 characters long', 'error');
         return false;
     }
     
@@ -365,12 +414,13 @@ function submitResource(resourceData, mode = 'create', resourceId = '') {
         } else {
             // Success: add to grid
             addResourceToGrid(data.resource);
-            showNotification('Resource uploaded successfully!', 'success');
+            showNotification('Resource shared successfully!', 'success');
         }
         closeUploadModal();
     }).catch(err => {
         console.error(err);
         showNotification(err.message || 'Upload failed', 'error');
+        alert(err.message || 'Share failed. Please try again.');
     }).finally(() => {
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
@@ -392,6 +442,7 @@ function addResourceToGrid(resource) {
         el.dataset.title = resource.title || '';
         el.dataset.description = resource.description || '';
         el.dataset.category = resource.category || '';
+        el.dataset.tags = resource.tags || '';
         el.dataset.facultyId = resource.faculty_id || '999';
         el.dataset.filePath = resource.file_path || '';
         el.dataset.fileSize = resource.file_size || 0;
@@ -405,6 +456,7 @@ function addResourceToGrid(resource) {
                         <span class="resource-category">${escapeHTML(niceCategory)}</span>
                         <span class="resource-size">${sizeText}</span>
                 </div>
+                ${renderResourceTags(resource.tags || '')}
                 <p class="resource-description">${escapeHTML(resource.description || '')}</p>
                 <div class="resource-details">
                         <span class="upload-date">Uploaded: ${created}</span>
@@ -442,6 +494,7 @@ function updateResourceInGrid(resource) {
     if (resource.title) card.dataset.title = resource.title;
     if (resource.description) card.dataset.description = resource.description;
     if (resource.category) card.dataset.category = resource.category;
+    if (resource.tags !== undefined) card.dataset.tags = resource.tags || '';
     if (resource.faculty_id !== undefined) card.dataset.facultyId = resource.faculty_id;
     if (resource.file_path) card.dataset.filePath = resource.file_path;
     if (resource.file_size) card.dataset.fileSize = resource.file_size;
@@ -453,12 +506,21 @@ function updateResourceInGrid(resource) {
     if (catEl && resource.category) {
         catEl.textContent = resource.category.replace(/-/g,' ').replace(/\b\w/g, c => c.toUpperCase());
     }
+    const existingTags = card.querySelector('.resource-tags');
+    const renderedTags = renderResourceTags(resource.tags || '');
+    if (existingTags) {
+        existingTags.outerHTML = renderedTags;
+    } else if (renderedTags) {
+        const descEl = card.querySelector('.resource-description');
+        if (descEl) descEl.insertAdjacentHTML('beforebegin', renderedTags);
+    }
     const sizeEl = card.querySelector('.resource-size');
     if (sizeEl && resource.file_size) sizeEl.textContent = formatFileSize(parseInt(resource.file_size, 10));
     const descEl = card.querySelector('.resource-description');
     if (descEl && resource.description !== undefined) descEl.textContent = resource.description || '';
     const openA = card.querySelector('a.btn[href]');
     if (openA && resource.file_path) openA.href = resource.file_path;
+    if (resource.tags !== undefined) card.dataset.tags = resource.tags || '';
 }
 
 // Delete resource with confirmation
@@ -529,7 +591,7 @@ function deleteResource(resourceId, card) {
             emptyCard.style.opacity = '0.8';
             emptyCard.innerHTML = `
                 <h3 class="resource-title">No resources yet</h3>
-                <p class="resource-description">Upload your first resource to see it here.</p>
+                <p class="resource-description">Share your first resource link to see it here.</p>
             `;
             grid.appendChild(emptyCard);
         }
@@ -570,9 +632,9 @@ function resetUploadForm() {
     if (resourceModeInput) resourceModeInput.value = 'create';
     if (resourceIdInput) resourceIdInput.value = '';
     
-    // Make file required again for create mode
+    // File input is optional in link-based mode
     if (resourceFileInput) {
-        resourceFileInput.setAttribute('required', 'required');
+        resourceFileInput.removeAttribute('required');
     }
     if (resourceFacultyInput) {
         resourceFacultyInput.setAttribute('required', 'required');
@@ -591,7 +653,7 @@ function resetUploadForm() {
     // Reset submit button text
     const submitBtn = uploadForm ? uploadForm.querySelector('button[type="submit"]') : null;
     if (submitBtn) {
-        submitBtn.innerHTML = '<i class="fas fa-upload"></i> <span>Upload</span>';
+        submitBtn.innerHTML = '<i class="fas fa-link"></i> <span>Share</span>';
     }
 }
 
