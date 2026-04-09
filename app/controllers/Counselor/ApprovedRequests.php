@@ -23,10 +23,10 @@ class ApprovedRequests extends Controller
                     ? 'Aid request marked as completed.'
                     : 'Unable to mark this request as completed. It may not be alumni-accepted yet.';
 
-                redirect('counselor/completed-requests');
+                redirect('counselor/ApprovedRequests');
             }
 
-            redirect('counselor/approved-requests');
+            redirect('counselor/ApprovedRequests');
         }
 
         $approvedRequests = $requestModel->getAidRequestsForCounselorByStatuses(['open', 'approved', 'accepted']);

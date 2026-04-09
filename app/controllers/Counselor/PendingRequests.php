@@ -38,7 +38,7 @@ class PendingRequests extends Controller
                 }
             }
 
-            redirect('counselor/pending-requests');
+            redirect('counselor/PendingRequests');
         }
 
         $pendingRequests = $requestModel->getAidRequestsForCounselorByStatuses(['pending_verification']);

@@ -44,13 +44,13 @@ class AidRequests extends Controller
         $this->ensureAuthenticatedAlumni();
 
         if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
-            redirect('alumni/aid-requests');
+            redirect('alumni/AidRequests');
         }
 
         $requestId = (int)($requestId ?? 0);
         if ($requestId <= 0) {
             $_SESSION['error'] = 'Invalid request selected.';
-            redirect('alumni/aid-requests');
+            redirect('alumni/AidRequests');
         }
 
         $requestModel = new Request();
@@ -62,7 +62,7 @@ class AidRequests extends Controller
             $_SESSION['error'] = 'Unable to approve this request.';
         }
 
-        redirect('alumni/aid-requests');
+        redirect('alumni/AidRequests');
     }
 
     private function getAidRequestsData()

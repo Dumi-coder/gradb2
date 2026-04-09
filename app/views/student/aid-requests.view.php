@@ -86,7 +86,7 @@ foreach ($requests as $request) {
           <p class="form-description">Submit a new aid request. It first goes to counselor for manual review. If approved, then it goes to alumni.</p>
         </div>
         <div class="form-actions">
-          <a href="<?=ROOT?>/student/aid-req-form">
+          <a href="<?=ROOT?>/Student/AidReqForm">
             <button class="btn btn-primary">
               <i class="fas fa-file-alt"></i>
               <span>Start Application</span>

@@ -161,7 +161,7 @@ $isMonetaryType = static function ($type) {
                   <h3 class="student-name"><?= esc($request['student_name'] ?? 'Student') ?></h3>
                   <?php $pendingAidType = $normalizeAidType($request['aid_type'] ?? $request['request_type'] ?? ''); ?>
                   <?php if ($pendingAidType !== 'other' && $pendingAidType !== ''): ?>
-                  <p class="request-type\"><?= esc($request['request_type'] ?? ucfirst($pendingAidType)) ?></p>
+                  <p class="request-type"><?= esc($request['request_type'] ?? ucfirst($pendingAidType)) ?></p>
                   <?php endif; ?>
                 </div>
                 <span class="status-badge status-pending">Pending</span>
@@ -174,7 +174,7 @@ $isMonetaryType = static function ($type) {
               <div class="request-details">
                 <?php if ($isMonetaryType($pendingAidType) && !empty($request['amount_requested'])): ?>
                 <div class="detail-item">
-                  <span class="detail-value\"><?= esc($request['amount_requested']) ?></span>
+                  <span class="detail-value"><?= esc($request['amount_requested']) ?></span>
                 </div>
                 <?php endif; ?>
                 <?php if ($pendingAidType === 'laptop'): ?>
@@ -185,7 +185,7 @@ $isMonetaryType = static function ($type) {
               </div>
               
               <div class="request-actions">
-                <form method="POST" action="<?=ROOT?>/alumni/aid-requests/approve/<?= esc($request['id'] ?? '') ?>" style="display:inline;">
+                <form method="POST" action="<?=ROOT?>/Alumni/AidRequests/approve/<?= esc($request['id'] ?? '') ?>" style="display:inline;">
                   <?php if (strtolower((string)($request['aid_type'] ?? '')) === 'monetary'): ?>
                   <button type="submit" class="btn btn-success btn-sm approve-btn">
                     <i class="fas fa-credit-card"></i> Approve &amp; Pay
@@ -222,7 +222,7 @@ $isMonetaryType = static function ($type) {
                   <h3 class="student-name"><?= esc($request['student_name'] ?? 'Student') ?></h3>
                   <?php $approvedAidType = $normalizeAidType($request['aid_type'] ?? $request['request_type'] ?? ''); ?>
                   <?php if ($approvedAidType !== 'other' && $approvedAidType !== ''): ?>
-                  <p class="request-type\"><?= esc($request['request_type'] ?? ucfirst($approvedAidType)) ?></p>
+                  <p class="request-type"><?= esc($request['request_type'] ?? ucfirst($approvedAidType)) ?></p>
                   <?php endif; ?>
                 </div>
                 <span class="status-badge status-approved">Approved</span>
@@ -235,7 +235,7 @@ $isMonetaryType = static function ($type) {
               <div class="request-details">
                 <?php if ($isMonetaryType($approvedAidType) && !empty($request['provided_value'])): ?>
                 <div class="detail-item">
-                  <span class="detail-value\"><?= esc($request['provided_value']) ?></span>
+                  <span class="detail-value"><?= esc($request['provided_value']) ?></span>
                 </div>
                 <?php endif; ?>
                 <?php if ($approvedAidType === 'laptop'): ?>
@@ -270,7 +270,7 @@ $isMonetaryType = static function ($type) {
                   <h3 class="student-name"><?= esc($request['student_name'] ?? 'Student') ?></h3>
                   <?php $completedAidType = $normalizeAidType($request['aid_type'] ?? $request['request_type'] ?? ''); ?>
                   <?php if ($completedAidType !== 'other' && $completedAidType !== ''): ?>
-                  <p class="request-type\"><?= esc($request['request_type'] ?? ucfirst($completedAidType)) ?></p>
+                  <p class="request-type"><?= esc($request['request_type'] ?? ucfirst($completedAidType)) ?></p>
                   <?php endif; ?>
                 </div>
                 <span class="status-badge status-completed">Completed</span>
