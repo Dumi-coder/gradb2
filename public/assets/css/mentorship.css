@@ -9,6 +9,30 @@
   width: 100%;
 }
 
+.mentors-section,
+.requests-section,
+.active-mentorships-section,
+.reviews-section {
+  width: 100%;
+}
+
+.mentors-section .section-header {
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.faq-first-btn {
+  white-space: nowrap;
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.faq-first-btn:hover {
+  background-color: var(--primary);
+  color: #ffffff;
+}
+
 .mentorship-card {
   background-color: var(--card);
   border: 1px solid var(--border);
@@ -517,7 +541,349 @@
   .profile-modal-body {
     padding: var(--spacing-lg);
   }
-  
+}
+
+/* New unified mentorship flow styles */
+.mentors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--spacing-md);
+  width: 100%;
+  margin: 0 auto;
+}
+
+.mentor-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.mentor-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.mentor-name {
+  margin: 0;
+  font-size: var(--font-md);
+  color: var(--foreground);
+}
+
+.mentor-meta,
+.mentor-expertise,
+.mentor-bio,
+.mentor-sessions,
+.review-note,
+.rejection-reason {
+  margin: 0;
+  color: var(--muted-foreground);
+  line-height: var(--leading-normal);
+}
+
+.mentor-bio {
+  min-height: 44px;
+}
+
+.mentor-card .btn {
+  margin-top: var(--spacing-xs);
+  align-self: flex-start;
+}
+
+.mentor-rating-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.mentor-rating {
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.contact-reveal-card {
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.06), rgba(16, 185, 129, 0.05));
+}
+
+.contact-reveal-title {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--font-sm);
+  font-weight: 700;
+  color: var(--foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.contact-reveal-card .mentor-meta,
+.contact-reveal-card .student-details {
+  margin-bottom: var(--spacing-xs);
+}
+
+.contact-reveal-card a {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.mentorship-chat-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+}
+
+.mentorship-chat-modal.is-open {
+  display: flex;
+}
+
+.mentorship-chat-panel {
+  width: min(760px, 100%);
+  max-height: min(82vh, 760px);
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 28px 70px rgba(15, 23, 42, 0.28);
+  overflow: hidden;
+}
+
+.mentorship-chat-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(16, 185, 129, 0.06));
+}
+
+.mentorship-chat-title {
+  margin: 0;
+  font-size: var(--font-xl);
+  color: var(--foreground);
+}
+
+.mentorship-chat-meta,
+.mentorship-chat-status {
+  margin: var(--spacing-xs) 0 0;
+  color: var(--muted-foreground);
+  font-size: var(--font-sm);
+}
+
+.mentorship-chat-close {
+  border: none;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--foreground);
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.mentorship-chat-close:hover {
+  background: #ffffff;
+}
+
+.mentorship-chat-status {
+  padding: 0 var(--spacing-lg) var(--spacing-sm);
+}
+
+.mentorship-chat-body {
+  position: relative;
+  min-height: 280px;
+  max-height: 52vh;
+  overflow: hidden;
+}
+
+.mentorship-chat-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+.mentorship-chat-messages {
+  max-height: 52vh;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.chat-message {
+  display: flex;
+}
+
+.chat-message-self {
+  justify-content: flex-end;
+}
+
+.chat-message-other {
+  justify-content: flex-start;
+}
+
+.chat-message-bubble {
+  max-width: min(75%, 540px);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: #f8fafc;
+}
+
+.chat-message-self .chat-message-bubble {
+  background: linear-gradient(135deg, var(--primary), #2563eb);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.chat-message-header {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  font-size: 0.78rem;
+  margin-bottom: 6px;
+  opacity: 0.9;
+}
+
+.chat-message-name {
+  font-weight: 700;
+}
+
+.chat-message-time {
+  white-space: nowrap;
+}
+
+.chat-message-body {
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.55;
+}
+
+.mentorship-chat-form {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--border);
+  background: #fff;
+}
+
+.mentorship-chat-input {
+  flex: 1;
+  min-height: 64px;
+  resize: vertical;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font: inherit;
+}
+
+.mentorship-chat-send {
+  align-self: flex-end;
+}
+
+body.chat-open {
+  overflow: hidden;
+}
+
+.rejection-reason {
+  color: #b45309;
+  font-weight: 600;
+}
+
+.active-card {
+  border-color: #9dd7b7;
+  background: #f4fff8;
+}
+
+.review-card {
+  border-color: #93c5fd;
+  background: #f8fbff;
+}
+
+.completed-card {
+  border-color: #c7d2fe;
+}
+
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.mentor-request-actions {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.reject-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.compact-empty {
+  padding: var(--spacing-md);
+}
+
+.mentor-reputation-section {
+  margin-bottom: var(--spacing-md);
+}
+
+.reputation-card {
+  background: linear-gradient(135deg, #f0f9ff, #f8fafc);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  text-align: center;
+}
+
+.reputation-card .section-title {
+  margin-bottom: var(--spacing-xs);
+}
+
+.selected-mentor-box {
+  border: 1px solid var(--border);
+  background-color: var(--secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.selected-mentor-name {
+  margin: 0;
+  font-size: var(--font-lg);
+  color: var(--foreground);
+}
+
+.selected-mentor-meta,
+.selected-mentor-expertise {
+  margin: var(--spacing-xs) 0 0;
+  color: var(--muted-foreground);
+}
+
+@media (max-width: 768px) {
   .profile-name {
     font-size: var(--font-2xl);
   }
@@ -529,5 +895,21 @@
   
   .avatar-circle i {
     font-size: var(--font-4xl);
+  }
+
+  .mentorship-chat-panel {
+    max-height: 92vh;
+  }
+
+  .mentorship-chat-form {
+    flex-direction: column;
+  }
+
+  .mentorship-chat-send {
+    width: 100%;
+  }
+
+  .chat-message-bubble {
+    max-width: 100%;
   }
 }

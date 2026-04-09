@@ -2,6 +2,15 @@
 $page_title = "Resources";
 $page_subtitle = "Share and access study materials";
 require '../app/views/partials/alumni_header.php'; 
+
+$resourceCategories = $resourceCategories ?? [
+  ['value' => 'lecture-notes', 'label' => 'Lecture Notes', 'icon' => 'fa-file-alt', 'description' => 'Class notes, summaries, and study guides'],
+  ['value' => 'al', 'label' => 'AL', 'icon' => 'fa-language', 'description' => 'Automata, languages, and formal grammar material'],
+  ['value' => 'computational-model-theory', 'label' => 'Computational Model Theory', 'icon' => 'fa-diagram-project', 'description' => 'Models, proofs, and theoretical computation resources'],
+  ['value' => 'algorithms', 'label' => 'Algorithms', 'icon' => 'fa-sitemap', 'description' => 'Algorithm design, analysis, and problem-solving notes'],
+  ['value' => 'programming', 'label' => 'Programming', 'icon' => 'fa-code', 'description' => 'Code samples, templates, and language references'],
+  ['value' => 'software-tools', 'label' => 'Software & Tools', 'icon' => 'fa-laptop-code', 'description' => 'Utilities, apps, and development tooling'],
+];
 ?>
 
 <!-- Page-specific CSS -->
@@ -17,13 +26,13 @@ require '../app/views/partials/alumni_header.php';
           <div class="section-header">
             <h2 class="card-title">Share Resources</h2>
             <button class="btn btn-primary" onclick="openUploadModal()">
-              <i class="fas fa-upload"></i>
-              <span>Upload File</span>
+              <i class="fas fa-link"></i>
+              <span>Share</span>
             </button>
           </div>
           
           <div class="upload-info">
-            <p>Share study materials, lecture notes, and helpful resources with the community.</p>
+            <p>Share useful resource links with your faculty and alumni network.</p>
           </div>
         </section>
 
@@ -45,6 +54,7 @@ require '../app/views/partials/alumni_header.php';
                      data-title="<?= htmlspecialchars($res->title ?? '', ENT_QUOTES) ?>"
                      data-description="<?= htmlspecialchars($res->description ?? '', ENT_QUOTES) ?>"
                      data-category="<?= htmlspecialchars($res->category ?? '', ENT_QUOTES) ?>"
+                     data-tags="<?= htmlspecialchars($res->tags ?? '', ENT_QUOTES) ?>"
                    data-faculty-id="<?= (int)($res->faculty_id ?? 999) ?>"
                      data-file-path="<?= htmlspecialchars($res->file_path ?? '', ENT_QUOTES) ?>"
                      data-file-size="<?= (int)($res->file_size ?? 0) ?>"
@@ -84,71 +94,23 @@ require '../app/views/partials/alumni_header.php';
             <?php else: ?>
               <div id="my-resources-empty" class="my-resource-card" style="opacity:.8">
                 <h3 class="resource-title">No resources yet</h3>
-                <p class="resource-description">Upload your first resource to see it here.</p>
+                <p class="resource-description">Share your first resource link to see it here.</p>
               </div>
             <?php endif; ?>
           </div>
         </section>
 
-        <!-- Browse by Category -->
-        <section class="dashboard-section categories-section">
-          <div class="section-header">
-            <h2 class="card-title">Browse by Category</h2>
+        <section class="dashboard-section">
+          <div class="section-header" style="margin-bottom: 16px;">
+            <h2 class="card-title">Search Shared Resources</h2>
           </div>
-          
-          <div class="categories-grid">
-            <div class="category-card" onclick="window.location.href='<?=ROOT?>/alumni/resources/browse?category=lecture-notes'">
-              <div class="category-icon">
-                <i class="fas fa-file-alt"></i>
-              </div>
-              <div class="category-info">
-                <h3 class="category-name">Lecture Notes</h3>
-                <p class="category-description">Class notes and study guides</p>
-                <div class="category-stats">
-                  <span class="stat"><i class="fas fa-file"></i> <?= isset($category_counts['lecture-notes']) ? $category_counts['lecture-notes'] : 0 ?> files</span>
-                </div>
-              </div>
+          <form method="GET" action="<?=ROOT?>/alumni/resources/browse" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <div style="position:relative; flex:1; min-width:260px; max-width:700px;">
+              <input type="text" name="search" class="input" placeholder="Search by keyword, tag, or category (e.g. discussion forum, AL)" style="width:100%; padding-left:40px;">
+              <i class="fas fa-search" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#9ca3af;"></i>
             </div>
-
-            <div class="category-card" onclick="window.location.href='<?=ROOT?>/alumni/resources/browse?category=assignments'">
-              <div class="category-icon">
-                <i class="fas fa-tasks"></i>
-              </div>
-              <div class="category-info">
-                <h3 class="category-name">Exercises</h3>
-                <p class="category-description">Sample solutions and templates</p>
-                <div class="category-stats">
-                  <span class="stat"><i class="fas fa-file"></i> <?= isset($category_counts['assignments']) ? $category_counts['assignments'] : 0 ?> files</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="category-card" onclick="window.location.href='<?=ROOT?>/alumni/resources/browse?category=textbooks'">
-              <div class="category-icon">
-                <i class="fas fa-book"></i>
-              </div>
-              <div class="category-info">
-                <h3 class="category-name">Textbooks</h3>
-                <p class="category-description">Digital books and references</p>
-                <div class="category-stats">
-                  <span class="stat"><i class="fas fa-file"></i> <?= isset($category_counts['textbooks']) ? $category_counts['textbooks'] : 0 ?> files</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="category-card" onclick="window.location.href='<?=ROOT?>/alumni/resources/browse?category=software'">
-              <div class="category-icon">
-                <i class="fas fa-code"></i>
-              </div>
-              <div class="category-info">
-                <h3 class="category-name">Software & Tools</h3>
-                <p class="category-description">Development tools and software</p>
-                <div class="category-stats">
-                  <span class="stat"><i class="fas fa-file"></i> <?= isset($category_counts['software']) ? $category_counts['software'] : 0 ?> files</span>
-                </div>
-              </div>
-            </div>
-          </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i><span>Search</span></button>
+          </form>
         </section>
 
         <!-- Recent Resources -->
@@ -224,55 +186,13 @@ require '../app/views/partials/alumni_header.php';
                 </div>
               <?php endforeach; ?>
             <?php else: ?>
-              <div class="resource-item" style="opacity:.7">
+              <div class="resource-item resources-empty-state" style="opacity:.7">
                 <div class="resource-content" style="text-align: center; width: 100%;">
                   <h3 class="resource-title">No recent resources available</h3>
                   <p class="resource-description">Resources shared by other users will appear here.</p>
                 </div>
               </div>
             <?php endif; ?>
-          </div>
-        </section>
-
-        <!-- Resource Activity Statistics Section -->
-        <section class="dashboard-section resource-stats-section">
-          <div class="section-header">
-            <h2 class="section-title">
-              <i class="fas fa-chart-bar" style="color: #0E2072;"></i>
-              Resource Activity
-            </h2>
-          </div>
-          
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-folder-open"></i>
-              </div>
-              <div class="stat-content">
-                <h3 class="stat-number"><?= number_format($stats['total_resources'] ?? 0) ?></h3>
-                <p class="stat-label">Total Number of Resources</p>
-              </div>
-            </div>
-            
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-upload"></i>
-              </div>
-              <div class="stat-content">
-                <h3 class="stat-number"><?= number_format($stats['my_resources'] ?? 0) ?></h3>
-                <p class="stat-label">Number of My Resources</p>
-              </div>
-            </div>
-            
-            <div class="stat-card">
-              <div class="stat-icon">
-                <i class="fas fa-download"></i>
-              </div>
-              <div class="stat-content">
-                <h3 class="stat-number"><?= number_format($stats['my_downloads'] ?? 0) ?></h3>
-                <p class="stat-label">Total My Resource Downloads</p>
-              </div>
-            </div>
           </div>
         </section>
       </main>
@@ -282,13 +202,13 @@ require '../app/views/partials/alumni_header.php';
     <div id="uploadModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2 class="modal-title">Upload Resource</h2>
+          <h2 class="modal-title">Share Resource</h2>
           <button class="modal-close" onclick="closeUploadModal()">
             <i class="fas fa-times"></i>
           </button>
         </div>
 
-        <form class="upload-form" enctype="multipart/form-data">
+        <form class="upload-form" method="POST" action="<?=ROOT?>/alumni/resources/upload" enctype="multipart/form-data">
           <input type="hidden" id="resourceId" name="resourceId" value="">
           <input type="hidden" id="resourceMode" name="resourceMode" value="create">
           <div class="form-group">
@@ -298,20 +218,18 @@ require '../app/views/partials/alumni_header.php';
 
           <div class="form-group">
             <label for="resourceCategory">Category *</label>
-            <select id="resourceCategory" name="resourceCategory" required>
-              <option value="">Select a category</option>
-              <option value="lecture-notes">Lecture Notes</option>
-              <option value="assignments">Assignments</option>
-              <option value="textbooks">Textbooks</option>
-              <option value="software">Software & Tools</option>
-            </select>
+            <input type="text" id="resourceCategory" name="resourceCategory" placeholder="Enter category (e.g. AL, Computational Model Theory)" required>
+          </div>
+
+          <div class="form-group">
+            <label for="resourceTags">Tags</label>
+            <input type="text" id="resourceTags" name="resourceTags" placeholder="Add tags separated by commas, like automata, parsing, compiler">
           </div>
 
           <div class="form-group">
             <label for="resourceFaculty">Visibility *</label>
             <select id="resourceFaculty" name="resourceFaculty" required>
-              <option value="">Select Faculty</option>
-              <option value="all-faculties">All Faculties</option>
+              <option value="all-faculties" selected>All Faculties</option>
               <option value="UCSC">UCSC</option>
               <option value="FOA">FOA</option>
               <option value="FOS">FOS</option>
@@ -329,15 +247,8 @@ require '../app/views/partials/alumni_header.php';
           </div>
 
           <div class="form-group">
-            <label for="resourceFile">File *</label>
-            <div class="file-upload-area" onclick="document.getElementById('resourceFile').click()">
-              <input type="file" id="resourceFile" name="resourceFile" accept=".pdf,.doc,.docx,.txt,.zip,.rar,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.gif,image/*" style="display: none;" required>
-              <div class="upload-placeholder">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Click to select file or drag and drop</p>
-                <small>Supported: PDF, DOC, DOCX, TXT, ZIP, RAR, PPT, PPTX, XLS, XLSX, PNG, JPG, JPEG, GIF</small>
-              </div>
-            </div>
+            <label for="resourceLink">Resource Link *</label>
+            <input type="text" id="resourceLink" name="resourceLink" placeholder="https://example.com/resource" required>
           </div>
 
           <div class="form-actions">
@@ -345,8 +256,8 @@ require '../app/views/partials/alumni_header.php';
               <span>Cancel</span>
             </button>
             <button type="submit" class="btn btn-primary">
-              <i class="fas fa-upload"></i>
-              <span>Upload</span>
+              <i class="fas fa-link"></i>
+              <span>Share</span>
             </button>
           </div>
         </form>
@@ -546,6 +457,6 @@ require '../app/views/partials/alumni_header.php';
       });
     </script>
     <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
-    <script src="<?=ROOT?>/assets/js/resources.js"></script>
+    <script src="<?=ROOT?>/assets/js/resources.js?v=2"></script>
   </body>
 </html>

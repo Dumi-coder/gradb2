@@ -21,6 +21,11 @@
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/sidebar.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard-header.css">
+    <?php if (!empty($page_stylesheets) && is_array($page_stylesheets)): ?>
+        <?php foreach ($page_stylesheets as $stylesheet): ?>
+            <link rel="stylesheet" href="<?= esc($stylesheet) ?>">
+        <?php endforeach; ?>
+    <?php endif; ?>
     
     <!-- JavaScript Files -->
     <script src="<?=ROOT?>/assets/js/sidebar-toggle.js"></script>

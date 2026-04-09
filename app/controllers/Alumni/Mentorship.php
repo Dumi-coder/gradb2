@@ -2,10 +2,12 @@
 class Mentorship extends Controller
 {
     private $mentorshipRequestModel;
+    private $mentorshipChatModel;
 
     public function __construct()
     {
         $this->mentorshipRequestModel = new MentorshipRequest();
+        $this->mentorshipChatModel = new MentorshipChat();
     }
 
     public function index()
@@ -30,7 +32,6 @@ class Mentorship extends Controller
             redirect('alumni/auth');
         }
 
-        // Get real mentorship data from database
         $mentorshipData = $this->getMentorshipData();
 
         $data = [
@@ -53,13 +54,13 @@ class Mentorship extends Controller
             redirect('Alumni/Auth');
         }
 
-        if (!$requestId) {
+        if (!$requestId || !is_numeric($requestId)) {
             $_SESSION['error'] = 'Invalid request ID.';
             redirect('Alumni/Mentorship');
         }
 
-        $alumnusId = $_SESSION['user_id'];
-        $result = $this->mentorshipRequestModel->acceptRequest($requestId, $alumnusId);
+        $alumnusId = (int)$_SESSION['user_id'];
+        $result = $this->mentorshipRequestModel->acceptRequestForMentor((int)$requestId, $alumnusId);
         
         if ($result) {
             $_SESSION['success'] = 'Mentorship request accepted successfully!';
@@ -80,13 +81,24 @@ class Mentorship extends Controller
             redirect('Alumni/Auth');
         }
 
-        if (!$requestId) {
+        if (!$requestId || !is_numeric($requestId)) {
             $_SESSION['error'] = 'Invalid request ID.';
             redirect('Alumni/Mentorship');
         }
 
-        $alumnusId = $_SESSION['user_id'];
-        $result = $this->mentorshipRequestModel->rejectRequest($requestId, $alumnusId);
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $_SESSION['error'] = 'Invalid request method.';
+            redirect('Alumni/Mentorship');
+        }
+
+        $reason = trim($_POST['rejection_reason'] ?? '');
+        if ($reason === '') {
+            $_SESSION['error'] = 'Please provide a rejection reason.';
+            redirect('Alumni/Mentorship');
+        }
+
+        $alumnusId = (int)$_SESSION['user_id'];
+        $result = $this->mentorshipRequestModel->rejectRequestForMentor((int)$requestId, $alumnusId, $reason);
         
         if ($result) {
             $_SESSION['success'] = 'Mentorship request rejected.';
@@ -97,54 +109,111 @@ class Mentorship extends Controller
         redirect('Alumni/Mentorship');
     }
 
+    public function end($requestId = null)
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'alumni') {
+            redirect('Alumni/Auth');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $_SESSION['error'] = 'Invalid request method.';
+            redirect('Alumni/Mentorship');
+        }
+
+        if (!$requestId || !is_numeric($requestId)) {
+            $_SESSION['error'] = 'Invalid mentorship request.';
+            redirect('Alumni/Mentorship');
+        }
+
+        $mentorUserId = (int)$_SESSION['user_id'];
+        $ok = $this->mentorshipRequestModel->endMentorshipByMentor((int)$requestId, $mentorUserId);
+
+        if ($ok) {
+            $_SESSION['success'] = 'Mentorship ended. Student can now submit a required review.';
+        } else {
+            $_SESSION['error'] = 'Unable to end mentorship right now.';
+        }
+
+        redirect('Alumni/Mentorship');
+    }
+
+    public function messages($requestId = null)
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        header('Content-Type: application/json');
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'alumni') {
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            exit;
+        }
+
+        if (!$requestId || !is_numeric($requestId)) {
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            exit;
+        }
+
+        $payload = $this->mentorshipChatModel->getThreadPayload((int)$requestId, (int)$_SESSION['user_id']);
+
+        if (!$payload) {
+            echo json_encode(['success' => false, 'message' => 'Chat not available for this mentorship.']);
+            exit;
+        }
+
+        echo json_encode(['success' => true, 'thread' => $payload['thread'], 'messages' => $payload['messages']]);
+        exit;
+    }
+
+    public function sendMessage($requestId = null)
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        header('Content-Type: application/json');
+
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'alumni') {
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !$requestId || !is_numeric($requestId)) {
+            echo json_encode(['success' => false, 'message' => 'Invalid request']);
+            exit;
+        }
+
+        $message = trim($_POST['message'] ?? '');
+        if ($message === '') {
+            echo json_encode(['success' => false, 'message' => 'Message cannot be empty.']);
+            exit;
+        }
+
+        $messageId = $this->mentorshipChatModel->sendMessage((int)$requestId, (int)$_SESSION['user_id'], $message);
+
+        if (!$messageId) {
+            echo json_encode(['success' => false, 'message' => 'Failed to send message.']);
+            exit;
+        }
+
+        echo json_encode(['success' => true, 'message' => 'Message sent.']);
+        exit;
+    }
+
     private function getMentorshipData()
     {
-        $alumnusId = $_SESSION['user_id'];
-        
-        // Get pending mentorship requests from students in the same faculty
-        $pendingRequests = $this->mentorshipRequestModel->getRequestsForAlumnusFaculty($alumnusId);
-        
-        // Get accepted mentorship requests
-        $acceptedRequests = $this->mentorshipRequestModel->getAcceptedRequestsForAlumnus($alumnusId);
-        
-        // Format pending requests for display
-        $formattedPendingRequests = [];
-        foreach ($pendingRequests as $request) {
-            $formattedPendingRequests[] = [
-                'id' => $request['request_id'],
-                'student_name' => $request['student_name'],
-                'student_email' => $request['student_email'],
-                'student_id' => $request['student_id'],
-                'academic_year' => $request['academic_year'],
-                'faculty_name' => $request['faculty_name'],
-                'guidance_type' => $request['mentorship_category'] === 'other' ? $request['other_category'] : $request['mentorship_category'],
-                'description' => $request['request_reason'],
-                'status' => 'pending',
-                'created_at' => $request['created_at']
-            ];
-        }
-        
-        // Format accepted requests for display
-        $formattedAcceptedRequests = [];
-        foreach ($acceptedRequests as $request) {
-            $formattedAcceptedRequests[] = [
-                'id' => $request['request_id'],
-                'student_name' => $request['student_name'],
-                'student_email' => $request['student_email'],
-                'student_id' => $request['student_id'],
-                'academic_year' => $request['academic_year'],
-                'faculty_name' => $request['faculty_name'],
-                'mentorship_type' => $request['mentorship_category'] === 'other' ? $request['other_category'] : $request['mentorship_category'],
-                'description' => $request['request_reason'],
-                'status' => 'active',
-                'created_at' => $request['created_at']
-            ];
-        }
-        
+        $alumnusId = (int)$_SESSION['user_id'];
+
         return [
-            'requests' => $formattedPendingRequests,
-            'active' => $formattedAcceptedRequests,
-            'completed' => [] // TODO: Implement completed mentorships tracking
+            'requests' => $this->mentorshipRequestModel->getPendingRequestsForMentor($alumnusId),
+            'active' => $this->mentorshipRequestModel->getActiveMentorshipsForMentor($alumnusId),
+            'completed' => $this->mentorshipRequestModel->getCompletedMentorshipsForMentor($alumnusId),
+            'reputation' => $this->mentorshipRequestModel->getMentorReputation($alumnusId),
         ];
     }
 }
