@@ -2,7 +2,10 @@
 
 // Global variables
 let currentFilter = 'all';
+let myResourcesExpanded = false;
+const MY_RESOURCES_PREVIEW_COUNT = 2;
 const ALLOWED_EXTENSIONS = ['pdf','doc','docx','txt','zip','rar','ppt','pptx','xls','xlsx','png','jpg','jpeg','gif'];
+const MANAGED_RESOURCE_SEGMENT = '/assets/uploads/resources/';
 
 // Initialize the page (robust to scripts loaded after DOMContentLoaded)
 // The upload button was intermittently unresponsive when this script loaded
@@ -24,6 +27,7 @@ function initializeResources() {
     const uploadForm = document.querySelector('.upload-form');
     const fileUploadArea = document.querySelector('.file-upload-area');
     const resourceFileInput = document.getElementById('resourceFile');
+    const resourceTypeInput = document.getElementById('resourceType');
     
     // Add event listeners
     if (uploadForm) {
@@ -39,6 +43,15 @@ function initializeResources() {
     if (resourceFileInput) {
         resourceFileInput.addEventListener('change', handleFileSelect);
     }
+    if (resourceTypeInput) {
+        resourceTypeInput.addEventListener('change', function() {
+            setResourceSourceMode(resourceTypeInput.value, false);
+        });
+    }
+
+    initializeMyResourcesPreview();
+
+    setResourceSourceMode((resourceTypeInput && resourceTypeInput.value) || 'file', false);
     
     // Close modals when clicking outside
     window.addEventListener('click', function(event) {
@@ -65,6 +78,7 @@ function initializeResources() {
     
     // Delegate delete button clicks
     document.addEventListener('click', function(e) {
+        if (e.defaultPrevented) return;
         const btn = e.target.closest('[data-action="delete"]');
         if (btn) {
             const card = btn.closest('.my-resource-card');
@@ -77,22 +91,65 @@ function initializeResources() {
     });
 }
 
+function initializeMyResourcesPreview() {
+    const toggleBtn = document.getElementById('my-resources-toggle');
+    if (toggleBtn && !toggleBtn.dataset.bound) {
+        toggleBtn.addEventListener('click', function() {
+            myResourcesExpanded = !myResourcesExpanded;
+            applyMyResourcesPreview();
+        });
+        toggleBtn.dataset.bound = '1';
+    }
+
+    applyMyResourcesPreview();
+}
+
+function applyMyResourcesPreview() {
+    const grid = document.getElementById('my-resources-grid');
+    const toggleBtn = document.getElementById('my-resources-toggle');
+    if (!grid) return;
+
+    const cards = Array.from(grid.querySelectorAll('.my-resource-card')).filter(card => card.id !== 'my-resources-empty');
+    const total = cards.length;
+
+    cards.forEach((card, index) => {
+        const showCard = myResourcesExpanded || index < MY_RESOURCES_PREVIEW_COUNT;
+        card.style.display = showCard ? '' : 'none';
+    });
+
+    if (!toggleBtn) return;
+
+    if (total > MY_RESOURCES_PREVIEW_COUNT) {
+        toggleBtn.style.display = 'inline-flex';
+        const labelEl = toggleBtn.querySelector('span');
+        const iconEl = toggleBtn.querySelector('i');
+        if (labelEl) labelEl.textContent = myResourcesExpanded ? 'Show Less' : 'View All';
+        if (iconEl) {
+            iconEl.className = myResourcesExpanded ? 'fas fa-chevron-up' : 'fas fa-arrow-right';
+        }
+    } else {
+        toggleBtn.style.display = 'none';
+    }
+}
+
 // Modal functions
 function openUploadModal() {
     const uploadModal = document.getElementById('uploadModal');
     const resourceModeInput = document.getElementById('resourceMode');
     const resourceIdInput = document.getElementById('resourceId');
     const resourceFileInput = document.getElementById('resourceFile');
+    const resourceTypeInput = document.getElementById('resourceType');
     const resourceFacultyInput = document.getElementById('resourceFaculty');
     
     // default to create mode
     if (resourceModeInput) resourceModeInput.value = 'create';
     if (resourceIdInput) resourceIdInput.value = '';
     
+    if (resourceTypeInput) resourceTypeInput.value = 'file';
+    setResourceSourceMode('file', false);
+
     // Make file required for create mode
-    if (resourceFileInput) {
-        resourceFileInput.setAttribute('required', 'required');
-    }
+    if (resourceFileInput) resourceFileInput.setAttribute('required', 'required');
     if (resourceFacultyInput) {
         resourceFacultyInput.setAttribute('required', 'required');
     }
@@ -132,6 +189,8 @@ function openEditModalFromCard(card) {
     const resourceModeInput = document.getElementById('resourceMode');
     const resourceIdInput = document.getElementById('resourceId');
     const resourceFileInput = document.getElementById('resourceFile');
+    const resourceTypeInput = document.getElementById('resourceType');
+    const resourceLinkInput = document.getElementById('resourceLink');
     const fileUploadArea = document.querySelector('.file-upload-area');
     const uploadForm = document.querySelector('.upload-form');
     
@@ -141,21 +200,26 @@ function openEditModalFromCard(card) {
     // Prefill fields
     const titleInput = document.getElementById('resourceTitle');
     const categoryInput = document.getElementById('resourceCategory');
-    const tagsInput = document.getElementById('resourceTags');
     const descriptionInput = document.getElementById('resourceDescription');
     const facultyInput = document.getElementById('resourceFaculty');
     
     if (titleInput) titleInput.value = card.dataset.title || '';
     if (categoryInput) categoryInput.value = card.dataset.category || '';
-    if (tagsInput) tagsInput.value = card.dataset.tags || '';
-    const linkInput = document.getElementById('resourceLink');
-    if (linkInput) linkInput.value = card.dataset.filePath || '';
     if (descriptionInput) descriptionInput.value = card.dataset.description || '';
     if (facultyInput) {
         const facultyId = card.dataset.facultyId || '';
         facultyInput.value = facultyId === '999' ? 'all-faculties' : '';
         facultyInput.removeAttribute('required');
     }
+
+    const sourceType = detectResourceSourceType(card.dataset.filePath || '', card.dataset.fileType || '');
+    if (resourceTypeInput) {
+        resourceTypeInput.value = sourceType;
+    }
+    if (resourceLinkInput) {
+        resourceLinkInput.value = sourceType === 'link' ? (card.dataset.filePath || '') : '';
+    }
+    setResourceSourceMode(sourceType, true);
 
     // Make file input optional for edit mode
     if (resourceFileInput) {
@@ -270,43 +334,66 @@ function formatFileSize(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-function parseResourceTags(tagsValue) {
-    if (!tagsValue) return [];
-    return String(tagsValue)
-        .replace(/#/g, '')
-        .split(/[\,;\n]+/)
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0);
+function normalizeResourceLink(value) {
+    const trimmed = String(value || '').trim();
+    if (!trimmed) return '';
+    return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
 }
 
-function normalizeResourceLink(linkValue) {
-    const raw = String(linkValue || '').trim();
-    if (!raw) return '';
-
-    if (/^https?:\/\//i.test(raw)) {
-        return raw;
-    }
-
-    if (/^www\./i.test(raw)) {
-        return 'https://' + raw;
-    }
-
-    if (raw.includes('.')) {
-        return 'https://' + raw;
-    }
-
-    return raw;
+function detectResourceSourceType(filePath, fileType) {
+    if (String(fileType || '').toLowerCase() === 'link') return 'link';
+    return String(filePath || '').includes(MANAGED_RESOURCE_SEGMENT) ? 'file' : 'link';
 }
 
-function renderResourceTags(tagsValue) {
-    const tags = parseResourceTags(tagsValue);
-    if (!tags.length) return '';
+function setResourceSourceMode(mode, isEditMode) {
+    const safeMode = mode === 'link' ? 'link' : 'file';
+    const fileGroup = document.getElementById('resourceFileGroup');
+    const linkGroup = document.getElementById('resourceLinkGroup');
+    const resourceFileInput = document.getElementById('resourceFile');
+    const resourceLinkInput = document.getElementById('resourceLink');
+    const fileUploadArea = document.querySelector('.file-upload-area');
+    const placeholder = fileUploadArea ? fileUploadArea.querySelector('.upload-placeholder') : null;
 
-    return `
-        <div class="resource-tags" style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;">
-            ${tags.map(tag => `<span class="resource-tag" style="padding:3px 8px; border-radius:999px; background:#eef2ff; color:#0f172a; font-size:12px; font-weight:600;">#${escapeHTML(tag)}</span>`).join('')}
-        </div>
-    `;
+    if (fileGroup) fileGroup.style.display = safeMode === 'file' ? '' : 'none';
+    if (linkGroup) linkGroup.style.display = safeMode === 'link' ? '' : 'none';
+
+    if (resourceFileInput) {
+        if (safeMode === 'file' && !isEditMode) {
+            resourceFileInput.setAttribute('required', 'required');
+        } else {
+            resourceFileInput.removeAttribute('required');
+        }
+    }
+
+    if (resourceLinkInput) {
+        if (safeMode === 'link') {
+            resourceLinkInput.setAttribute('required', 'required');
+        } else {
+            resourceLinkInput.removeAttribute('required');
+            resourceLinkInput.value = '';
+        }
+    }
+
+    if (!placeholder) return;
+    if (safeMode === 'link') {
+        placeholder.innerHTML = `
+            <i class="fas fa-link"></i>
+            <p>External link mode selected</p>
+            <small>Paste the resource URL below</small>
+        `;
+    } else if (isEditMode) {
+        placeholder.innerHTML = `
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Replace file (optional)</p>
+            <small>Leave empty to keep current file</small>
+        `;
+    } else {
+        placeholder.innerHTML = `
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Click to select file or drag and drop</p>
+            <small>Supported: PDF, DOC, DOCX, TXT, ZIP, RAR, PPT, PPTX, XLS, XLSX, PNG, JPG, JPEG, GIF</small>
+        `;
+    }
 }
 
 // Form handling
@@ -321,20 +408,16 @@ function handleUploadSubmit(event) {
     
     // Get form data
     const formData = new FormData(uploadForm);
-    const normalizedLink = normalizeResourceLink(formData.get('resourceLink'));
     const resourceData = {
         title: formData.get('resourceTitle'),
         category: formData.get('resourceCategory'),
         description: formData.get('resourceDescription'),
-        link: normalizedLink,
+        source: formData.get('resourceType') || 'file',
+        link: formData.get('resourceLink') || '',
         file: formData.get('resourceFile'),
         timestamp: new Date().toISOString()
     };
 
-    const linkInput = document.getElementById('resourceLink');
-    if (linkInput && normalizedLink) {
-        linkInput.value = normalizedLink;
-    }
     const mode = (resourceModeInput && resourceModeInput.value) || 'create';
     const resourceId = (resourceIdInput && resourceIdInput.value) || '';
 
@@ -358,16 +441,36 @@ function validateResourceData(resourceData, mode = 'create') {
         return false;
     }
 
-    if (!resourceData.link || !String(resourceData.link).trim()) {
-        showNotification('Please provide a resource link', 'error');
-        return false;
-    }
 
-    try {
-        new URL(String(resourceData.link).trim());
-    } catch (e) {
-        showNotification('Please enter a valid URL', 'error');
-        return false;
+    const source = resourceData.source === 'link' ? 'link' : 'file';
+    const fileObj = resourceData.file;
+    const hasFile = fileObj && typeof fileObj === 'object' && Number(fileObj.size || 0) > 0;
+
+    if (source === 'link') {
+        const normalized = normalizeResourceLink(resourceData.link);
+        try {
+            new URL(normalized);
+        } catch (_) {
+            showNotification('Please enter a valid resource link', 'error');
+            return false;
+        }
+    } else {
+        if (mode === 'create' && !hasFile) {
+            showNotification('Please select a file to upload', 'error');
+            return false;
+        }
+
+        if (hasFile) {
+            if (!isAllowedFile(fileObj)) {
+                const ext = getExtension(fileObj.name || '');
+                showNotification(`Unsupported file type: .${ext}. Allowed: ${ALLOWED_EXTENSIONS.join(', ')}`, 'error');
+                return false;
+            }
+            if (Number(fileObj.size || 0) > 10 * 1024 * 1024) {
+                showNotification('File too large (max 10MB)', 'error');
+                return false;
+            }
+        }
     }
     
     if (resourceData.title.length < 3) {
@@ -394,6 +497,10 @@ function submitResource(resourceData, mode = 'create', resourceId = '') {
     const fd = new FormData(uploadForm);
     if (mode === 'edit') {
         fd.set('resourceId', resourceId);
+    }
+    const source = (fd.get('resourceType') || 'file') === 'link' ? 'link' : 'file';
+    if (source === 'link') {
+        fd.set('resourceLink', normalizeResourceLink(fd.get('resourceLink')));
     }
 
     // Determine endpoint
@@ -441,10 +548,10 @@ function addResourceToGrid(resource) {
         el.dataset.title = resource.title || '';
         el.dataset.description = resource.description || '';
         el.dataset.category = resource.category || '';
-        el.dataset.tags = resource.tags || '';
         el.dataset.facultyId = resource.faculty_id || '999';
         el.dataset.filePath = resource.file_path || '';
         el.dataset.fileSize = resource.file_size || 0;
+        el.dataset.fileType = resource.file_type || '';
         el.dataset.createdAt = resource.created_at || new Date().toISOString();
         const sizeText = resource.file_size ? formatFileSize(parseInt(resource.file_size, 10)) : '';
         const created = resource.created_at ? formatDate(resource.created_at) : formatDate(new Date().toISOString());
@@ -455,7 +562,6 @@ function addResourceToGrid(resource) {
                         <span class="resource-category">${escapeHTML(niceCategory)}</span>
                         <span class="resource-size">${sizeText}</span>
                 </div>
-                ${renderResourceTags(resource.tags || '')}
                 <p class="resource-description">${escapeHTML(resource.description || '')}</p>
                 <div class="resource-details">
                         <span class="upload-date">Uploaded: ${created}</span>
@@ -469,7 +575,7 @@ function addResourceToGrid(resource) {
                             <i class="fas fa-download"></i>
                             <span>Open</span>
                         </a>
-                        <button class="btn btn-outline btn-sm" data-action="delete" data-id="${resource.resource_id || ''}">
+                        <button type="button" class="btn btn-outline btn-sm" data-action="delete" data-id="${resource.resource_id || ''}">
                             <i class="fas fa-trash"></i>
                             <span>Delete</span>
                         </button>
@@ -484,6 +590,8 @@ function addResourceToGrid(resource) {
         const n = parseInt(countEl.textContent || '0', 10) + 1;
         countEl.textContent = String(n);
     }
+
+    applyMyResourcesPreview();
 }
 
 function updateResourceInGrid(resource) {
@@ -493,10 +601,10 @@ function updateResourceInGrid(resource) {
     if (resource.title) card.dataset.title = resource.title;
     if (resource.description) card.dataset.description = resource.description;
     if (resource.category) card.dataset.category = resource.category;
-    if (resource.tags !== undefined) card.dataset.tags = resource.tags || '';
     if (resource.faculty_id !== undefined) card.dataset.facultyId = resource.faculty_id;
     if (resource.file_path) card.dataset.filePath = resource.file_path;
     if (resource.file_size) card.dataset.fileSize = resource.file_size;
+    if (resource.file_type !== undefined) card.dataset.fileType = resource.file_type || '';
 
     // visible
     const titleEl = card.querySelector('.resource-title');
@@ -504,14 +612,6 @@ function updateResourceInGrid(resource) {
     const catEl = card.querySelector('.resource-category');
     if (catEl && resource.category) {
         catEl.textContent = resource.category.replace(/-/g,' ').replace(/\b\w/g, c => c.toUpperCase());
-    }
-    const existingTags = card.querySelector('.resource-tags');
-    const renderedTags = renderResourceTags(resource.tags || '');
-    if (existingTags) {
-        existingTags.outerHTML = renderedTags;
-    } else if (renderedTags) {
-        const descEl = card.querySelector('.resource-description');
-        if (descEl) descEl.insertAdjacentHTML('beforebegin', renderedTags);
     }
     const sizeEl = card.querySelector('.resource-size');
     if (sizeEl && resource.file_size) sizeEl.textContent = formatFileSize(parseInt(resource.file_size, 10));
@@ -526,12 +626,19 @@ function confirmDeleteResource(resourceId, title, card) {
     const deleteModal = document.getElementById('deleteModal');
     const deleteResourceName = document.getElementById('deleteResourceName');
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    if (!deleteModal || !confirmDeleteBtn) {
+        showNotification('Delete dialog is not available', 'error');
+        return;
+    }
     
-    // Set the resource name in the modal
-    deleteResourceName.textContent = title;
+    // Set the resource name if the placeholder exists.
+    if (deleteResourceName) {
+        deleteResourceName.textContent = title;
+    }
     
     // Show the modal
     deleteModal.classList.add('show');
+    deleteModal.style.display = 'flex';
     
     // Remove any existing click handlers
     const newConfirmBtn = confirmDeleteBtn.cloneNode(true);
@@ -548,6 +655,9 @@ function confirmDeleteResource(resourceId, title, card) {
 function closeDeleteModal() {
     const deleteModal = document.getElementById('deleteModal');
     deleteModal.classList.remove('show');
+    if (deleteModal) {
+        deleteModal.style.display = 'none';
+    }
 }
 
 function deleteResource(resourceId, card) {
@@ -589,10 +699,12 @@ function deleteResource(resourceId, card) {
             emptyCard.style.opacity = '0.8';
             emptyCard.innerHTML = `
                 <h3 class="resource-title">No resources yet</h3>
-                <p class="resource-description">Share your first resource link to see it here.</p>
+                <p class="resource-description">Share your first resource file to see it here.</p>
             `;
             grid.appendChild(emptyCard);
         }
+
+        applyMyResourcesPreview();
         
         showNotification('Resource deleted successfully', 'success');
     }).catch(err => {
@@ -619,8 +731,9 @@ function resetUploadForm() {
     const resourceModeInput = document.getElementById('resourceMode');
     const resourceIdInput = document.getElementById('resourceId');
     const resourceFileInput = document.getElementById('resourceFile');
+    const resourceTypeInput = document.getElementById('resourceType');
+    const resourceLinkInput = document.getElementById('resourceLink');
     const resourceFacultyInput = document.getElementById('resourceFaculty');
-    const fileUploadArea = document.querySelector('.file-upload-area');
     
     if (uploadForm) {
         uploadForm.reset();
@@ -629,24 +742,18 @@ function resetUploadForm() {
     // Reset mode to create
     if (resourceModeInput) resourceModeInput.value = 'create';
     if (resourceIdInput) resourceIdInput.value = '';
+    if (resourceTypeInput) resourceTypeInput.value = 'file';
+    if (resourceLinkInput) resourceLinkInput.value = '';
     
-    // File input is optional in link-based mode
+    // Default to file source for create mode
     if (resourceFileInput) {
-        resourceFileInput.removeAttribute('required');
+        resourceFileInput.setAttribute('required', 'required');
     }
     if (resourceFacultyInput) {
         resourceFacultyInput.setAttribute('required', 'required');
     }
     
-    // Reset file display
-    const placeholder = fileUploadArea ? fileUploadArea.querySelector('.upload-placeholder') : null;
-    if (placeholder) {
-        placeholder.innerHTML = `
-            <i class="fas fa-cloud-upload-alt"></i>
-            <p>Click to select file or drag and drop</p>
-            <small>Supported: PDF, DOC, DOCX, TXT, ZIP, RAR, PPT, PPTX, XLS, XLSX, PNG, JPG, JPEG, GIF</small>
-        `;
-    }
+    setResourceSourceMode('file', false);
     
     // Reset submit button text
     const submitBtn = uploadForm ? uploadForm.querySelector('button[type="submit"]') : null;

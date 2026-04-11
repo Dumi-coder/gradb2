@@ -2,15 +2,6 @@
 $page_title = "Resources";
 $page_subtitle = "Share and access study materials";
 require '../app/views/partials/alumni_header.php'; 
-
-$resourceCategories = $resourceCategories ?? [
-  ['value' => 'lecture-notes', 'label' => 'Lecture Notes', 'icon' => 'fa-file-alt', 'description' => 'Class notes, summaries, and study guides'],
-  ['value' => 'al', 'label' => 'AL', 'icon' => 'fa-language', 'description' => 'Automata, languages, and formal grammar material'],
-  ['value' => 'computational-model-theory', 'label' => 'Computational Model Theory', 'icon' => 'fa-diagram-project', 'description' => 'Models, proofs, and theoretical computation resources'],
-  ['value' => 'algorithms', 'label' => 'Algorithms', 'icon' => 'fa-sitemap', 'description' => 'Algorithm design, analysis, and problem-solving notes'],
-  ['value' => 'programming', 'label' => 'Programming', 'icon' => 'fa-code', 'description' => 'Code samples, templates, and language references'],
-  ['value' => 'software-tools', 'label' => 'Software & Tools', 'icon' => 'fa-laptop-code', 'description' => 'Utilities, apps, and development tooling'],
-];
 ?>
 
 <!-- Page-specific CSS -->
@@ -43,13 +34,20 @@ $resourceCategories = $resourceCategories ?? [
               <i class="fas fa-folder"></i>
               My Resources
             </h2>
-            <span class="resource-count"><span id="my-resources-count"><?= isset($my_resources) && is_array($my_resources) ? count($my_resources) : 0 ?></span> resources</span>
+            <div class="section-actions" style="display:flex; align-items:center; gap:10px;">
+              <span class="resource-count"><span id="my-resources-count"><?= isset($my_resources) && is_array($my_resources) ? count($my_resources) : 0 ?></span> resources</span>
+              <a href="javascript:void(0)" id="my-resources-toggle" class="btn btn-outline btn-sm" style="<?= (isset($my_resources) && is_array($my_resources) && count($my_resources) > 2) ? '' : 'display:none;' ?>">
+                <span>View All</span>
+                <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
           </div>
           
           <div class="my-resources-grid" id="my-resources-grid">
             <?php if(isset($my_resources) && is_array($my_resources) && count($my_resources)): ?>
-              <?php foreach($my_resources as $res): ?>
+              <?php foreach($my_resources as $idx => $res): ?>
                 <div class="my-resource-card" 
+                     style="<?= ($idx >= 2) ? 'display:none;' : '' ?>"
                      data-id="<?= $res->resource_id ?? '' ?>"
                      data-title="<?= htmlspecialchars($res->title ?? '', ENT_QUOTES) ?>"
                      data-description="<?= htmlspecialchars($res->description ?? '', ENT_QUOTES) ?>"
@@ -76,7 +74,7 @@ $resourceCategories = $resourceCategories ?? [
                     <span class="resource-downloads"><i class="fas fa-download"></i> <?= (int)($res->downloads ?? 0) ?> downloads</span>
                   </div>
                   <div class="resource-actions">
-                    <button class="btn btn-primary btn-sm" data-action="edit" data-id="<?= $res->resource_id ?? '' ?>">
+                    <button type="button" class="btn btn-primary btn-sm" data-action="edit" data-id="<?= $res->resource_id ?? '' ?>">
                       <i class="fas fa-edit"></i>
                       <span>Edit</span>
                     </button>
@@ -84,7 +82,7 @@ $resourceCategories = $resourceCategories ?? [
                       <i class="fas fa-download"></i>
                       <span>Open</span>
                     </a>
-                    <button class="btn btn-danger btn-sm" data-action="delete" data-id="<?= $res->resource_id ?? '' ?>">
+                    <button type="button" class="btn btn-danger btn-sm" data-action="delete" data-id="<?= $res->resource_id ?? '' ?>">
                       <i class="fas fa-trash"></i>
                       <span>Delete</span>
                     </button>
@@ -94,7 +92,7 @@ $resourceCategories = $resourceCategories ?? [
             <?php else: ?>
               <div id="my-resources-empty" class="my-resource-card" style="opacity:.8">
                 <h3 class="resource-title">No resources yet</h3>
-                <p class="resource-description">Share your first resource link to see it here.</p>
+                <p class="resource-description">Share your first resource file to see it here.</p>
               </div>
             <?php endif; ?>
           </div>
@@ -106,7 +104,7 @@ $resourceCategories = $resourceCategories ?? [
           </div>
           <form method="GET" action="<?=ROOT?>/alumni/resources/browse" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
             <div style="position:relative; flex:1; min-width:260px; max-width:700px;">
-              <input type="text" name="search" class="input" placeholder="Search by keyword, tag, or category (e.g. discussion forum, AL)" style="width:100%; padding-left:40px;">
+              <input type="text" name="search" class="input" placeholder="Search by keyword or category (e.g. discussion forum, AL)" style="width:100%; padding-left:40px;">
               <i class="fas fa-search" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#9ca3af;"></i>
             </div>
             <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i><span>Search</span></button>
@@ -178,10 +176,12 @@ $resourceCategories = $resourceCategories ?? [
                       <i class="fas fa-download"></i>
                       <span>Download</span>
                     </a>
-                    <button class="btn btn-outline btn-sm" style="transition: all 0.3s;" onmouseover="this.style.borderColor='#dc2626'; this.style.color='#dc2626'" onmouseout="this.style.borderColor=''; this.style.color=''" onclick="openReportModal(<?= $resource->resource_id ?? 0 ?>, '<?= htmlspecialchars($resource->title ?? '', ENT_QUOTES) ?>')">
-                      <i class="fas fa-flag"></i>
-                      <span>Report</span>
-                    </button>
+                    <?php if ((int)($resource->user_id ?? 0) !== (int)($_SESSION['user_id'] ?? 0)): ?>
+                      <button class="btn btn-outline btn-sm" style="transition: all 0.3s;" onmouseover="this.style.borderColor='#dc2626'; this.style.color='#dc2626'" onmouseout="this.style.borderColor=''; this.style.color=''" onclick="openReportModal(<?= $resource->resource_id ?? 0 ?>, '<?= htmlspecialchars($resource->title ?? '', ENT_QUOTES) ?>')">
+                        <i class="fas fa-flag"></i>
+                        <span>Report</span>
+                      </button>
+                    <?php endif; ?>
                   </div>
                 </div>
               <?php endforeach; ?>
@@ -222,11 +222,6 @@ $resourceCategories = $resourceCategories ?? [
           </div>
 
           <div class="form-group">
-            <label for="resourceTags">Tags</label>
-            <input type="text" id="resourceTags" name="resourceTags" placeholder="Add tags separated by commas, like automata, parsing, compiler">
-          </div>
-
-          <div class="form-group">
             <label for="resourceFaculty">Visibility *</label>
             <select id="resourceFaculty" name="resourceFaculty" required>
               <option value="all-faculties" selected>All Faculties</option>
@@ -247,8 +242,28 @@ $resourceCategories = $resourceCategories ?? [
           </div>
 
           <div class="form-group">
+            <label for="resourceType">Resource Source *</label>
+            <select id="resourceType" name="resourceType" required>
+              <option value="file" selected>Upload File</option>
+              <option value="link">Share External Link</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="resourceFileGroup">
+            <label for="resourceFile">Resource File *</label>
+            <div class="file-upload-area" onclick="document.getElementById('resourceFile').click()">
+              <input type="file" id="resourceFile" name="resourceFile" accept=".pdf,.doc,.docx,.txt,.zip,.rar,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.gif" style="display: none;" required>
+              <div class="upload-placeholder">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click to select file or drag and drop</p>
+                <small>Supported: PDF, DOC, DOCX, TXT, ZIP, RAR, PPT, PPTX, XLS, XLSX, PNG, JPG, JPEG, GIF</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" id="resourceLinkGroup" style="display:none;">
             <label for="resourceLink">Resource Link *</label>
-            <input type="text" id="resourceLink" name="resourceLink" placeholder="https://example.com/resource" required>
+            <input type="text" id="resourceLink" name="resourceLink" placeholder="https://example.com/resource">
           </div>
 
           <div class="form-actions">
@@ -278,31 +293,14 @@ $resourceCategories = $resourceCategories ?? [
         </div>
 
         <div class="modal-body">
-          <div class="delete-warning">
-            <div class="warning-icon-wrapper">
-              <i class="fas fa-trash-alt"></i>
-            </div>
-            <h3>Are you sure you want to delete this resource?</h3>
-            <p class="delete-resource-name" id="deleteResourceName"></p>
-          </div>
+          <p class="delete-confirm-text">Are you sure you want to delete this resource?</p>
         </div>
 
         <div class="form-actions">
-          <button type="button" class="btn btn-outline btn-sm" onclick="closeDeleteModal()">
-            <i class="fas fa-times"></i>
-            <span>Cancel</span>
-          </button>
           <button type="button" class="btn btn-danger btn-sm" id="confirmDeleteBtn">
             <i class="fas fa-trash"></i>
-            <span>Delete Resource</span>
+            <span>Delete</span>
           </button>
-        </div>
-
-        <div class="modal-footer">
-          <p class="warning-text">
-            <i class="fas fa-info-circle"></i>
-            This action cannot be undone. The file will be permanently deleted from the system.
-          </p>
         </div>
       </div>
     </div>
@@ -457,6 +455,6 @@ $resourceCategories = $resourceCategories ?? [
       });
     </script>
     <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
-    <script src="<?=ROOT?>/assets/js/resources.js?v=2"></script>
+    <script src="<?=ROOT?>/assets/js/resources.js?v=6"></script>
   </body>
 </html>

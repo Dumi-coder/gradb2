@@ -445,6 +445,48 @@
   border-top: 1px solid var(--border);
 }
 
+/* Delete modal polish */
+#deleteModal {
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+#deleteModal .modal-content {
+  width: min(520px, 92vw);
+  max-width: 520px;
+  margin: 0;
+  max-height: none;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+#deleteModal .modal-header {
+  padding: 20px 24px;
+}
+
+#deleteModal .modal-body {
+  padding: 20px 24px 16px;
+  border-top: 1px solid var(--border);
+}
+
+#deleteModal .delete-confirm-text {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+#deleteModal .form-actions {
+  padding: 14px 24px 20px;
+  margin: 0;
+  border-top: 1px solid var(--border);
+}
+
+#deleteModal .btn-danger {
+  min-width: 140px;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .categories-grid {
@@ -505,6 +547,18 @@
     width: 95%;
     margin: 10% auto;
     max-height: 85vh;
+  }
+
+  #deleteModal .modal-content {
+    width: 94vw;
+    border-radius: 16px;
+  }
+
+  #deleteModal .modal-header,
+  #deleteModal .modal-body,
+  #deleteModal .form-actions {
+    padding-left: 16px;
+    padding-right: 16px;
   }
 }
 
