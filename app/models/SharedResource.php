@@ -3,8 +3,7 @@
 class SharedResource
 {
 	use Model;
-
-	private $tagsColumnExists = null;
+	private $resourceReportsTableExists = null;
 
 	protected $table = 'resources';
 	protected $order_column = 'created_at';
@@ -15,7 +14,6 @@ class SharedResource
 		'title',
 		'description',
 		'category',
-		'tags',
 		'file_name',
 		'file_path',
 		'file_size',
@@ -27,6 +25,53 @@ class SharedResource
 		'created_at',
 		'updated_at',
 	];
+
+	private function reportsTableExists()
+	{
+		if ($this->resourceReportsTableExists !== null) {
+			return $this->resourceReportsTableExists;
+		}
+
+		$result = $this->query(
+			"SELECT COUNT(*) AS total
+			 FROM information_schema.TABLES
+			 WHERE TABLE_SCHEMA = DATABASE()
+			   AND TABLE_NAME = :table_name",
+			['table_name' => 'resource_reports']
+		);
+
+		$this->resourceReportsTableExists = is_array($result)
+			&& !empty($result)
+			&& ((int)($result[0]->total ?? 0) > 0);
+
+		return $this->resourceReportsTableExists;
+	}
+
+	private function buildViewerHiddenClause($resourceAlias = 'r', $viewerParam = 'viewer_user_id')
+	{
+		if (!$this->reportsTableExists()) {
+			return '';
+		}
+
+		return " AND NOT EXISTS (
+			SELECT 1 FROM resource_reports rr
+			WHERE rr.resource_id = {$resourceAlias}.resource_id
+			  AND rr.reporter_user_id = :{$viewerParam}
+		)";
+	}
+
+	private function buildGlobalThresholdClause($resourceAlias = 'r', $thresholdParam = 'report_threshold')
+	{
+		if (!$this->reportsTableExists()) {
+			return " AND (COALESCE({$resourceAlias}.is_reported, 0) = 0)";
+		}
+
+		return " AND (
+			SELECT COUNT(*)
+			FROM resource_reports rr_all
+			WHERE rr_all.resource_id = {$resourceAlias}.resource_id
+		) < :{$thresholdParam}";
+	}
 
 	public function getResourceCategories()
 	{
@@ -104,29 +149,14 @@ class SharedResource
 			return '';
 		}
 
-		$tagSearchSql = $this->hasTagsColumn() ? " OR LOWER(COALESCE(r.tags, '')) LIKE LOWER(:%s)" : '';
-
 		$clauses = [];
 		foreach ($terms as $index => $term) {
 			$paramKey = $paramPrefix . $index;
-			$tagClause = $tagSearchSql !== '' ? sprintf($tagSearchSql, $paramKey) : '';
-			$clauses[] = "(LOWER(r.title) LIKE LOWER(:{$paramKey}) OR LOWER(r.description) LIKE LOWER(:{$paramKey}){$tagClause} OR LOWER(COALESCE(r.category, '')) LIKE LOWER(:{$paramKey}))";
+			$clauses[] = "(LOWER(r.title) LIKE LOWER(:{$paramKey}) OR LOWER(r.description) LIKE LOWER(:{$paramKey}) OR LOWER(COALESCE(r.category, '')) LIKE LOWER(:{$paramKey}) OR LOWER(REPLACE(REPLACE(COALESCE(r.category, ''), '-', ' '), '_', ' ')) LIKE LOWER(:{$paramKey}))";
 			$params[$paramKey] = '%' . $term . '%';
 		}
 
 		return '(' . implode(' OR ', $clauses) . ')';
-	}
-
-	public function hasTagsColumn()
-	{
-		if ($this->tagsColumnExists !== null) {
-			return $this->tagsColumnExists;
-		}
-
-		$result = $this->query("SHOW COLUMNS FROM {$this->table} LIKE 'tags'");
-		$this->tagsColumnExists = is_array($result) && !empty($result);
-
-		return $this->tagsColumnExists;
 	}
 
 	/**
@@ -165,10 +195,24 @@ class SharedResource
 	 * Shows resources with matching faculty_id OR faculty_id = 999 (All Faculties)
 	 * Excludes resources uploaded by the current user
 	 */
-	public function getRecentResourcesByFaculty($user_faculty_id, $limit = 3)
+	public function getRecentResourcesByFaculty($user_faculty_id, $limit = 3, $viewer_user_id = null)
 	{
 		// Cast limit to integer for SQL safety
 		$limit = (int)$limit;
+		$viewerClause = '';
+		$excludeOwnClause = '';
+		$params = [
+			'faculty_id' => $user_faculty_id,
+		];
+		if ($viewer_user_id !== null && (int)$viewer_user_id > 0) {
+			$viewerClause = $this->buildViewerHiddenClause('r', 'viewer_user_id');
+			$excludeOwnClause = 'AND r.user_id <> :viewer_user_id';
+			$params['viewer_user_id'] = (int)$viewer_user_id;
+		}
+		$thresholdClause = $this->buildGlobalThresholdClause('r', 'report_threshold');
+		if (strpos($thresholdClause, ':report_threshold') !== false) {
+			$params['report_threshold'] = 5;
+		}
 		
 		$query = "SELECT r.*, u.name as author_name
 				  FROM {$this->table} r
@@ -180,13 +224,11 @@ class SharedResource
 				     OR (u.role NOT IN ('student', 'alumni')))
 				  AND (r.faculty_id = :faculty_id OR r.faculty_id = 999)
 				  AND r.status = 'approved'
-				  AND (r.is_reported IS NULL OR r.is_reported = 0)
+				  {$excludeOwnClause}
+				  {$thresholdClause}
+				  {$viewerClause}
 				  ORDER BY r.created_at DESC
 				  LIMIT {$limit}";
-
-		$params = [
-			'faculty_id' => $user_faculty_id
-		];
 
 		return $this->query($query, $params);
 	}
@@ -195,10 +237,21 @@ class SharedResource
 	 * Browse resources with optional category and search filters
 	 * Shows resources visible to user based on faculty_id
 	 */
-	public function browseResources($user_faculty_id, $category = '', $search = '')
+	public function browseResources($user_faculty_id, $category = '', $search = '', $viewer_user_id = null)
 	{
 		$where_clauses = [];
 		$params = ['faculty_id' => $user_faculty_id];
+		$viewerClause = '';
+		if ($viewer_user_id !== null && (int)$viewer_user_id > 0) {
+			$viewerClause = $this->buildViewerHiddenClause('r', 'viewer_user_id');
+			if ($viewerClause !== '') {
+				$params['viewer_user_id'] = (int)$viewer_user_id;
+			}
+		}
+		$thresholdClause = $this->buildGlobalThresholdClause('r', 'report_threshold');
+		if (strpos($thresholdClause, ':report_threshold') !== false) {
+			$params['report_threshold'] = 5;
+		}
 
 		// Add category filter
 		if (!empty($category)) {
@@ -224,7 +277,8 @@ class SharedResource
 				     OR (u.role NOT IN ('student', 'alumni')))
 				  AND (r.faculty_id = :faculty_id OR r.faculty_id = 999)
 				  AND r.status = 'approved'
-				  AND (r.is_reported IS NULL OR r.is_reported = 0)
+				  {$thresholdClause}
+				  {$viewerClause}
 				  {$additional_where}
 				  ORDER BY r.created_at DESC";
 
@@ -243,8 +297,21 @@ class SharedResource
 	/**
 	 * Get count of resources by category for a specific faculty
 	 */
-	public function getCategoryCounts($user_faculty_id)
+	public function getCategoryCounts($user_faculty_id, $viewer_user_id = null)
 	{
+		$viewerClause = '';
+		$params = ['faculty_id' => $user_faculty_id];
+		if ($viewer_user_id !== null && (int)$viewer_user_id > 0) {
+			$viewerClause = $this->buildViewerHiddenClause('r', 'viewer_user_id');
+			if ($viewerClause !== '') {
+				$params['viewer_user_id'] = (int)$viewer_user_id;
+			}
+		}
+		$thresholdClause = $this->buildGlobalThresholdClause('r', 'report_threshold');
+		if (strpos($thresholdClause, ':report_threshold') !== false) {
+			$params['report_threshold'] = 5;
+		}
+
 		$query = "SELECT r.category, COUNT(*) as count
 				  FROM {$this->table} r
 				  JOIN users u ON r.user_id = u.user_id
@@ -255,10 +322,11 @@ class SharedResource
 				     OR (u.role NOT IN ('student', 'alumni')))
 				  AND (r.faculty_id = :faculty_id OR r.faculty_id = 999)
 				  AND r.status = 'approved'
-				  AND (r.is_reported IS NULL OR r.is_reported = 0)
+				  {$thresholdClause}
+				  {$viewerClause}
 				  GROUP BY r.category";
 
-		$result = $this->query($query, ['faculty_id' => $user_faculty_id]);
+		$result = $this->query($query, $params);
 		
 		// Convert to associative array
 		$counts = [];
@@ -285,10 +353,75 @@ class SharedResource
 		]);
 	}
 
+	public function submitResourceReport($resource_id, $reporter_user_id, $reason, $threshold = 5)
+	{
+		$resource_id = (int)$resource_id;
+		$reporter_user_id = (int)$reporter_user_id;
+		$threshold = max(1, (int)$threshold);
+
+		if ($resource_id <= 0 || $reporter_user_id <= 0) {
+			return ['success' => false, 'message' => 'Invalid report data'];
+		}
+
+		if (!$this->reportsTableExists()) {
+			return ['success' => false, 'message' => 'Reporting storage is not configured'];
+		}
+
+		$existing = $this->query(
+			"SELECT report_id FROM resource_reports WHERE resource_id = :resource_id AND reporter_user_id = :reporter_user_id LIMIT 1",
+			[
+				'resource_id' => $resource_id,
+				'reporter_user_id' => $reporter_user_id,
+			]
+		);
+
+		if (is_array($existing) && !empty($existing)) {
+			return ['success' => false, 'message' => 'You have already reported this resource'];
+		}
+
+		$insertOk = $this->query(
+			"INSERT INTO resource_reports (resource_id, reporter_user_id, reason, created_at) VALUES (:resource_id, :reporter_user_id, :reason, :created_at)",
+			[
+				'resource_id' => $resource_id,
+				'reporter_user_id' => $reporter_user_id,
+				'reason' => $reason,
+				'created_at' => date('Y-m-d H:i:s'),
+			]
+		);
+
+		if ($insertOk === false) {
+			return ['success' => false, 'message' => 'Failed to save report'];
+		}
+
+		$countResult = $this->query(
+			"SELECT COUNT(*) as total FROM resource_reports WHERE resource_id = :resource_id",
+			['resource_id' => $resource_id]
+		);
+		$totalReports = (is_array($countResult) && isset($countResult[0])) ? (int)$countResult[0]->total : 0;
+
+		$globallyHidden = $totalReports >= $threshold;
+		if ($globallyHidden) {
+			$this->query(
+				"UPDATE {$this->table} SET is_reported = 1, rep_reason = :reason WHERE resource_id = :resource_id",
+				[
+					'resource_id' => $resource_id,
+					'reason' => 'Auto hidden after ' . $totalReports . ' reports',
+				]
+			);
+		}
+
+		return [
+			'success' => true,
+			'total_reports' => $totalReports,
+			'threshold' => $threshold,
+			'globally_hidden' => $globallyHidden,
+		];
+	}
+
 	/**
 	 * Get resource statistics for a user
 	 */
-	public function getUserStats($user_id, $user_faculty_id)
+	public function getUserStats($user_id, $user_faculty_id, $viewer_user_id = null)
 	{
 		// Get count of user's resources
 		$my_resources_query = "SELECT COUNT(*) as count FROM {$this->table} WHERE user_id = :user_id AND status = 'approved'";
@@ -301,6 +434,19 @@ class SharedResource
 		$my_downloads_count = is_array($my_downloads_result) && isset($my_downloads_result[0]) ? (int)$my_downloads_result[0]->total : 0;
 
 		// Get total number of resources available to user (based on faculty)
+		$viewerClause = '';
+		$params = ['faculty_id' => $user_faculty_id];
+		if ($viewer_user_id !== null && (int)$viewer_user_id > 0) {
+			$viewerClause = $this->buildViewerHiddenClause('r', 'viewer_user_id');
+			if ($viewerClause !== '') {
+				$params['viewer_user_id'] = (int)$viewer_user_id;
+			}
+		}
+		$thresholdClause = $this->buildGlobalThresholdClause('r', 'report_threshold');
+		if (strpos($thresholdClause, ':report_threshold') !== false) {
+			$params['report_threshold'] = 5;
+		}
+
 		$total_resources_query = "SELECT COUNT(*) as count
 								  FROM {$this->table} r
 								  JOIN users u ON r.user_id = u.user_id
@@ -311,8 +457,9 @@ class SharedResource
 								     OR (u.role NOT IN ('student', 'alumni')))
 								  AND (r.faculty_id = :faculty_id OR r.faculty_id = 999)
 								  AND r.status = 'approved'
-								  AND (r.is_reported IS NULL OR r.is_reported = 0)";
-		$total_resources_result = $this->query($total_resources_query, ['faculty_id' => $user_faculty_id]);
+								  {$thresholdClause}
+								  {$viewerClause}";
+		$total_resources_result = $this->query($total_resources_query, $params);
 		$total_resources_count = is_array($total_resources_result) && isset($total_resources_result[0]) ? (int)$total_resources_result[0]->count : 0;
 
 		return [

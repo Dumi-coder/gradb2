@@ -29,7 +29,7 @@ require '../app/views/partials/alumni_header.php';
                   type="text" 
                   name="search" 
                   class="input" 
-                  placeholder="Search by keyword, tag, or category..." 
+                  placeholder="Search by keyword or category..." 
                   value="<?= htmlspecialchars($search ?? '') ?>"
                   style="width: 100%; padding-left: 40px;"
                 >
@@ -109,10 +109,12 @@ require '../app/views/partials/alumni_header.php';
                       <i class="fas fa-download"></i>
                       <span>Download</span>
                     </a>
-                    <button class="btn btn-outline btn-sm" style="transition: all 0.3s;" onmouseover="this.style.borderColor='#dc2626'; this.style.color='#dc2626'" onmouseout="this.style.borderColor=''; this.style.color=''" onclick="openReportModal(<?= $resource->resource_id ?? 0 ?>, '<?= htmlspecialchars($resource->title ?? '', ENT_QUOTES) ?>')">
-                      <i class="fas fa-flag"></i>
-                      <span>Report</span>
-                    </button>
+                    <?php if ((int)($resource->user_id ?? 0) !== (int)($_SESSION['user_id'] ?? 0)): ?>
+                      <button class="btn btn-outline btn-sm" style="transition: all 0.3s;" onmouseover="this.style.borderColor='#dc2626'; this.style.color='#dc2626'" onmouseout="this.style.borderColor=''; this.style.color=''" onclick="openReportModal(<?= $resource->resource_id ?? 0 ?>, '<?= htmlspecialchars($resource->title ?? '', ENT_QUOTES) ?>')">
+                        <i class="fas fa-flag"></i>
+                        <span>Report</span>
+                      </button>
+                    <?php endif; ?>
                   </div>
                 </div>
               <?php endforeach; ?>

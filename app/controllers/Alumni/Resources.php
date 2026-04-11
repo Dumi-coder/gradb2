@@ -1,28 +1,18 @@
 <?php
 class Resources extends Controller
 {
-    private function normalizeResourceTags($rawTags)
+    private function normalizeExternalLink($link)
     {
-        $rawTags = trim((string)$rawTags);
-        if ($rawTags === '') {
+        $link = trim((string)$link);
+        if ($link === '') {
             return '';
         }
 
-        $parts = preg_split('/[\,;\n]+/', $rawTags);
-        if (!is_array($parts) || empty($parts)) {
-            $parts = [$rawTags];
+        if (!preg_match('/^https?:\/\//i', $link)) {
+            $link = 'https://' . $link;
         }
 
-        $tags = [];
-        foreach ($parts as $part) {
-            $tag = trim(ltrim((string)$part, '#'));
-            if ($tag === '') {
-                continue;
-            }
-            $tags[strtolower($tag)] = $tag;
-        }
-
-        return implode(', ', array_values($tags));
+        return filter_var($link, FILTER_VALIDATE_URL) ? $link : '';
     }
     public function index()
     {
@@ -48,9 +38,10 @@ class Resources extends Controller
         $stats = ['total_resources' => 0, 'my_resources' => 0, 'my_downloads' => 0];
         $resourceCategories = $resourceModel->getResourceCategories();
         if ($user_faculty_id) {
-            $recent_resources = $resourceModel->getRecentResourcesByFaculty($user_faculty_id);
-            $category_counts = $resourceModel->getCategoryCounts($user_faculty_id);
-            $stats = $resourceModel->getUserStats($_SESSION['user_id'], $user_faculty_id);
+            $viewerUserId = (int)($_SESSION['user_id'] ?? 0);
+            $recent_resources = $resourceModel->getRecentResourcesByFaculty($user_faculty_id, 3, $viewerUserId);
+            $category_counts = $resourceModel->getCategoryCounts($user_faculty_id, $viewerUserId);
+            $stats = $resourceModel->getUserStats($_SESSION['user_id'], $user_faculty_id, $viewerUserId);
         }
 
         $this->view('alumni/resources', [
@@ -87,7 +78,8 @@ class Resources extends Controller
         $resourceCategories = $resourceModel->getResourceCategories();
         $resources = [];
         if ($user_faculty_id) {
-            $result = $resourceModel->browseResources($user_faculty_id, $category, $search);
+            $viewerUserId = (int)($_SESSION['user_id'] ?? 0);
+            $result = $resourceModel->browseResources($user_faculty_id, $category, $search, $viewerUserId);
             $resources = is_array($result) ? $result : [];
         }
 
@@ -122,8 +114,6 @@ class Resources extends Controller
         $title = trim($_POST['resourceTitle'] ?? '');
         $category = trim($_POST['resourceCategory'] ?? '');
         $description = trim($_POST['resourceDescription'] ?? '');
-        $tags = $this->normalizeResourceTags($_POST['resourceTags'] ?? '');
-        $resourceLink = trim($_POST['resourceLink'] ?? '');
         $faculty_input = trim($_POST['resourceFaculty'] ?? '');
 
         if ($title === '' || strlen($title) < 3) {
@@ -138,24 +128,70 @@ class Resources extends Controller
             echo json_encode(['success' => false, 'message' => 'Please select visibility']);
             return;
         }
-        if ($resourceLink === '') {
-            echo json_encode(['success' => false, 'message' => 'Please provide a resource link']);
-            return;
+        $resourceType = trim(strtolower($_POST['resourceType'] ?? 'file'));
+        if (!in_array($resourceType, ['file', 'link'], true)) {
+            $resourceType = 'file';
         }
 
-        if (!filter_var($resourceLink, FILTER_VALIDATE_URL)) {
-            echo json_encode(['success' => false, 'message' => 'Please provide a valid URL']);
-            return;
-        }
+        $publicPath = '';
+        $originalName = '';
+        $fileSize = 0;
+        $storedFileType = 'link';
 
-        $linkPath = parse_url($resourceLink, PHP_URL_PATH);
-        $originalName = $linkPath ? basename($linkPath) : '';
-        if ($originalName === '' || $originalName === '/') {
-            $originalName = $title . '.url';
-        }
-        $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-        if ($ext === '') {
-            $ext = 'link';
+        if ($resourceType === 'link') {
+            $resourceLink = $this->normalizeExternalLink($_POST['resourceLink'] ?? '');
+            if ($resourceLink === '') {
+                echo json_encode(['success' => false, 'message' => 'Please provide a valid resource link']);
+                return;
+            }
+
+            $publicPath = $resourceLink;
+            $originalName = $resourceLink;
+        } else {
+            if (!isset($_FILES['resourceFile'])) {
+                echo json_encode(['success' => false, 'message' => 'Please upload a file']);
+                return;
+            }
+
+            $file = $_FILES['resourceFile'];
+            if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+                echo json_encode(['success' => false, 'message' => 'File upload failed. Please try again']);
+                return;
+            }
+
+            $allowedExt = ['pdf', 'doc', 'docx', 'txt', 'zip', 'rar', 'ppt', 'pptx', 'xls', 'xlsx', 'png', 'jpg', 'jpeg', 'gif'];
+            $originalName = $file['name'];
+            $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+            if (!in_array($ext, $allowedExt, true)) {
+                echo json_encode(['success' => false, 'message' => 'Unsupported file type']);
+                return;
+            }
+            if ((int)$file['size'] > 10 * 1024 * 1024) {
+                echo json_encode(['success' => false, 'message' => 'File too large (max 10MB)']);
+                return;
+            }
+
+            $dir = RESOURCE_UPLOAD_PATH;
+            if (!is_dir($dir)) {
+                @mkdir($dir, 0777, true);
+            }
+            if (!is_dir($dir) || !is_writable($dir)) {
+                echo json_encode(['success' => false, 'message' => 'Upload folder is not writable']);
+                return;
+            }
+
+            $safeTitle = preg_replace('/[^a-zA-Z0-9-_]+/', '-', strtolower($title));
+            $newName = $safeTitle . '-' . time() . '.' . $ext;
+            $targetPath = $dir . $newName;
+
+            if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+                echo json_encode(['success' => false, 'message' => 'Failed to save uploaded file']);
+                return;
+            }
+
+            $publicPath = ROOT . '/assets/uploads/resources/' . $newName;
+            $fileSize = (int)$file['size'];
+            $storedFileType = $ext;
         }
 
         // Map faculty selection to faculty_id
@@ -176,9 +212,9 @@ class Resources extends Controller
             'description' => $description,
             'category' => $category,
             'file_name' => $originalName,
-            'file_path' => $resourceLink,
-            'file_size' => 0,
-            'file_type' => $ext,
+            'file_path' => $publicPath,
+            'file_size' => $fileSize,
+            'file_type' => $storedFileType,
             'downloads' => 0,
             'likes' => 0,
             'status' => 'approved',
@@ -186,10 +222,6 @@ class Resources extends Controller
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ];
-
-        if ($resourceModel->hasTagsColumn()) {
-            $data['tags'] = $tags;
-        }
         $ok = $resourceModel->insert($data);
         if (!$ok) {
             echo json_encode(['success' => false, 'message' => 'Failed to share resource']);
@@ -200,7 +232,7 @@ class Resources extends Controller
             "SELECT * FROM resources WHERE user_id = :user_id AND file_path = :file_path ORDER BY resource_id DESC LIMIT 1",
             [
                 'user_id' => (int)$_SESSION['user_id'],
-                'file_path' => $resourceLink,
+                'file_path' => $publicPath,
             ]
         );
         $resource = (is_array($resource) && !empty($resource)) ? $resource[0] : null;
@@ -246,9 +278,12 @@ class Resources extends Controller
         $title = trim($_POST['resourceTitle'] ?? '');
         $category = trim($_POST['resourceCategory'] ?? '');
         $description = trim($_POST['resourceDescription'] ?? '');
-        $tags = $this->normalizeResourceTags($_POST['resourceTags'] ?? '');
-        $resourceLink = trim($_POST['resourceLink'] ?? '');
         $faculty_input = trim($_POST['resourceFaculty'] ?? '');
+        $resourceType = trim(strtolower($_POST['resourceType'] ?? ''));
+
+        if (!in_array($resourceType, ['file', 'link'], true)) {
+            $resourceType = (($existing->file_type ?? '') === 'link') ? 'link' : 'file';
+        }
 
         if ($title === '' || strlen($title) < 3) {
             echo json_encode(['success' => false, 'message' => 'Please provide a valid title']);
@@ -281,29 +316,65 @@ class Resources extends Controller
             'updated_at' => date('Y-m-d H:i:s'),
         ];
 
-        if ($resourceModel->hasTagsColumn()) {
-            $update['tags'] = $tags;
+        $resourceLink = $this->normalizeExternalLink($_POST['resourceLink'] ?? '');
+        $hasNewFile = isset($_FILES['resourceFile'])
+            && is_array($_FILES['resourceFile'])
+            && (int)$_FILES['resourceFile']['error'] !== UPLOAD_ERR_NO_FILE;
+
+        if ($resourceType === 'link') {
+            if ($resourceLink === '') {
+                echo json_encode(['success' => false, 'message' => 'Please provide a valid resource link']);
+                return;
+            }
+
+            $update['file_name'] = $resourceLink;
+            $update['file_path'] = $resourceLink;
+            $update['file_size'] = 0;
+            $update['file_type'] = 'link';
         }
 
-        if ($resourceLink === '' || !filter_var($resourceLink, FILTER_VALIDATE_URL)) {
-            echo json_encode(['success' => false, 'message' => 'Please provide a valid resource link']);
-            return;
-        }
+        if ($resourceType === 'file' && $hasNewFile) {
+            $file = $_FILES['resourceFile'];
+            if ((int)$file['error'] !== UPLOAD_ERR_OK) {
+                echo json_encode(['success' => false, 'message' => 'File upload failed. Please try again']);
+                return;
+            }
 
-        $linkPath = parse_url($resourceLink, PHP_URL_PATH);
-        $originalName = $linkPath ? basename($linkPath) : '';
-        if ($originalName === '' || $originalName === '/') {
-            $originalName = $title . '.url';
-        }
-        $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-        if ($ext === '') {
-            $ext = 'link';
-        }
+            $allowedExt = ['pdf', 'doc', 'docx', 'txt', 'zip', 'rar', 'ppt', 'pptx', 'xls', 'xlsx', 'png', 'jpg', 'jpeg', 'gif'];
+            $originalName = $file['name'];
+            $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+            if (!in_array($ext, $allowedExt, true)) {
+                echo json_encode(['success' => false, 'message' => 'Unsupported file type']);
+                return;
+            }
+            if ((int)$file['size'] > 10 * 1024 * 1024) {
+                echo json_encode(['success' => false, 'message' => 'File too large (max 10MB)']);
+                return;
+            }
 
-        $update['file_name'] = $originalName;
-        $update['file_path'] = $resourceLink;
-        $update['file_size'] = 0;
-        $update['file_type'] = $ext;
+            $dir = RESOURCE_UPLOAD_PATH;
+            if (!is_dir($dir)) {
+                @mkdir($dir, 0777, true);
+            }
+            if (!is_dir($dir) || !is_writable($dir)) {
+                echo json_encode(['success' => false, 'message' => 'Upload folder is not writable']);
+                return;
+            }
+
+            $safeTitle = preg_replace('/[^a-zA-Z0-9-_]+/', '-', strtolower($title));
+            $newName = $safeTitle . '-' . time() . '.' . $ext;
+            $targetPath = $dir . $newName;
+
+            if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+                echo json_encode(['success' => false, 'message' => 'Failed to save uploaded file']);
+                return;
+            }
+
+            $update['file_name'] = $originalName;
+            $update['file_path'] = ROOT . '/assets/uploads/resources/' . $newName;
+            $update['file_size'] = (int)$file['size'];
+            $update['file_type'] = $ext;
+        }
 
         $resourceModel->update($resourceId, $update, 'resource_id');
         $updated = $resourceModel->first(['resource_id' => $resourceId]);
@@ -344,7 +415,8 @@ class Resources extends Controller
         // Extract physical file path from file_path (which is a URL)
         // file_path looks like: http://localhost/gradb2/public/assets/uploads/resources/filename.pdf
         // We need to convert it to: C:\xampp\htdocs\gradb2\public\assets\uploads\resources\filename.pdf
-        if (!empty($existing->file_path)) {
+        $managedPrefix = ROOT . '/assets/uploads/resources/';
+        if (!empty($existing->file_path) && strpos((string)$existing->file_path, $managedPrefix) === 0) {
             // Extract just the filename from the URL
             $fileName = basename($existing->file_path);
             $physicalPath = RESOURCE_UPLOAD_PATH . $fileName;
@@ -355,8 +427,30 @@ class Resources extends Controller
             }
         }
 
+        // Remove report log rows first to avoid FK constraint failures.
+        $reportsTable = $resourceModel->query(
+            "SELECT COUNT(*) AS total
+             FROM information_schema.TABLES
+             WHERE TABLE_SCHEMA = DATABASE()
+               AND TABLE_NAME = :table_name",
+            ['table_name' => 'resource_reports']
+        );
+        $hasReportsTable = is_array($reportsTable)
+            && !empty($reportsTable)
+            && ((int)($reportsTable[0]->total ?? 0) > 0);
+        if ($hasReportsTable) {
+            $resourceModel->query(
+                "DELETE FROM resource_reports WHERE resource_id = :resource_id",
+                ['resource_id' => $resourceId]
+            );
+        }
+
         // Delete from database
-        $resourceModel->delete($resourceId, 'resource_id');
+        $deleted = $resourceModel->delete($resourceId, 'resource_id');
+        if (!$deleted) {
+            echo json_encode(['success' => false, 'message' => 'Unable to delete resource right now']);
+            return;
+        }
         
         echo json_encode(['success' => true, 'message' => 'Resource deleted successfully']);
     }
@@ -436,10 +530,14 @@ class Resources extends Controller
             return;
         }
 
-        // Update resource as reported
-        $success = $resourceModel->reportResource($resourceId, $reason);
+        if ((int)($resource->user_id ?? 0) === (int)($_SESSION['user_id'] ?? 0)) {
+            echo json_encode(['success' => false, 'message' => 'You cannot report your own resource']);
+            return;
+        }
 
-        if ($success) {
+        $reportResult = $resourceModel->submitResourceReport($resourceId, (int)($_SESSION['user_id'] ?? 0), $reason, 5);
+
+        if (!empty($reportResult['success'])) {
             if (!empty($resource->user_id)) {
                 $notificationModel = new Notification();
                 $notificationModel->createResourceReportedNotification(
@@ -450,9 +548,23 @@ class Resources extends Controller
                 );
             }
 
-            echo json_encode(['success' => true, 'message' => 'Resource reported successfully']);
+            $totalReports = (int)($reportResult['total_reports'] ?? 1);
+            $threshold = (int)($reportResult['threshold'] ?? 5);
+            $globallyHidden = !empty($reportResult['globally_hidden']);
+
+            $message = $globallyHidden
+                ? 'Resource hidden after reaching ' . $threshold . ' reports'
+                : 'Report submitted. This resource is hidden only from your view for now';
+
+            echo json_encode([
+                'success' => true,
+                'message' => $message,
+                'total_reports' => $totalReports,
+                'threshold' => $threshold,
+                'globally_hidden' => $globallyHidden,
+            ]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to report resource']);
+            echo json_encode(['success' => false, 'message' => $reportResult['message'] ?? 'Failed to report resource']);
         }
     }
 }
