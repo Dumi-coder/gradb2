@@ -108,7 +108,7 @@ require '../app/views/partials/admin_header.php';
                         <div class="topic-activity"><i class="fas fa-clock"></i> <?= $last_activity ?></div>
                       </div>
                       <div class="topic-actions" style="display: flex; gap: 0.5rem;">
-                        <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $forum->post_id ?>)">
+                        <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $forum->post_id ?>, this)">
                           <i class="fas fa-eye"></i> View
                         </button>
                         <button class="btn-action btn-edit" onclick="openEditForumModal(<?= $forum->post_id ?>)">
@@ -240,7 +240,7 @@ require '../app/views/partials/admin_header.php';
                   <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $topic->replies ?? 0 ?></strong> replies</div>
                   <div class="topic-activity"><i class="fas fa-clock"></i> <?= $last_activity ?></div>
                 </div>
-                <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $topic->post_id ?>)">
+                <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $topic->post_id ?>, this)">
                   <i class="fas fa-eye"></i> View
                 </button>
               </div>
@@ -285,7 +285,7 @@ require '../app/views/partials/admin_header.php';
                     <div class="reply-card-header">
                       <div class="forum-link-info">
                         <span class="forum-label">Replied to:</span>
-                        <a href="javascript:void(0)" class="forum-link" onclick="incrementAndViewPost(<?= $reply->forum_id ?>)">
+                        <a href="javascript:void(0)" class="forum-link" onclick="incrementAndViewPost(<?= $reply->forum_id ?>, this)">
                           <?= esc($reply->forum_title ?? 'Deleted Post') ?>
                         </a>
                       </div>
@@ -1116,24 +1116,31 @@ require '../app/views/partials/admin_header.php';
     }
 
     // View Post and Increment Views
-    function incrementAndViewPost(postId) {
-      // Increment view count
+    function incrementAndViewPost(postId, triggerBtn = null) {
+      if (triggerBtn) {
+        const viewCountEl = triggerBtn.closest('.topic-card')?.querySelector('.topic-views strong');
+        if (viewCountEl) {
+          const currentViews = parseInt(viewCountEl.textContent, 10) || 0;
+          viewCountEl.textContent = String(currentViews + 1);
+        }
+      }
+
+      // Open the modal immediately for better responsiveness.
+      loadForumDetail(postId);
+
+      // Increment view count in the background.
       fetch(`<?=ROOT?>/admin/forummoderation/incrementView/${postId}`, {
         method: 'POST'
       })
       .then(response => response.json())
-      .then(data => {
-        // Load and show forum detail
-        loadForumDetail(postId);
-      })
       .catch(error => {
         console.error('Error:', error);
-        loadForumDetail(postId);
       });
     }
 
     // Load Forum Detail
     function loadForumDetail(postId) {
+      showForumLoadingState();
       currentPostId = postId;
       
       fetch(`<?=ROOT?>/admin/forummoderation/getPostDetail/${postId}`)
@@ -1142,12 +1149,15 @@ require '../app/views/partials/admin_header.php';
           if (data.success) {
             // Store liked reply IDs globally
             window.likedReplyIds = data.likedReplyIds || [];
+            hideForumLoadingState();
             displayForumDetail(data.post, data.replies);
           } else {
+            hideForumLoadingState();
             showNotification('Failed to load forum details', 'error');
           }
         })
         .catch(error => {
+          hideForumLoadingState();
           console.error('Error:', error);
           showNotification('An error occurred while loading forum details', 'error');
         });
@@ -1295,7 +1305,49 @@ require '../app/views/partials/admin_header.php';
       }
     }
 
+    function showForumLoadingState() {
+      const modal = document.getElementById('forumDetailModal');
+      if (!modal) return;
+
+      let overlay = modal.querySelector('.forum-loading-overlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'forum-loading-overlay';
+        overlay.innerHTML = `
+          <div style="display:flex; flex-direction:column; align-items:center; gap:10px; color:#374151;">
+            <i class="fas fa-spinner fa-spin" style="font-size:28px;"></i>
+            <span style="font-weight:600;">Loading discussion...</span>
+          </div>
+        `;
+        Object.assign(overlay.style, {
+          position: 'absolute',
+          inset: '0',
+          background: 'rgba(255, 255, 255, 0.85)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: '20'
+        });
+
+        const modalContent = modal.querySelector('.modal-content');
+        if (modalContent) {
+          modalContent.style.position = 'relative';
+          modalContent.appendChild(overlay);
+        }
+      }
+
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function hideForumLoadingState() {
+      const modal = document.getElementById('forumDetailModal');
+      const overlay = modal ? modal.querySelector('.forum-loading-overlay') : null;
+      if (overlay) overlay.remove();
+    }
+
     function closeForumDetailModal() {
+      hideForumLoadingState();
       document.getElementById('forumDetailModal').style.display = 'none';
       document.body.style.overflow = 'auto';
     }

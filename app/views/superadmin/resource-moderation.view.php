@@ -43,7 +43,11 @@
                                     <p class="resource-type"><?= esc($resource['resource_type']) ?> • <?= esc($resource['file_size']) ?></p>
                                 </div>
                                 <div class="resource-meta">
-                                    <span class="report-reason">Reported</span>
+                                    <?php
+                                      $reportCount = (int)($resource['report_count'] ?? 0);
+                                      $isPermanentlyReported = !empty($resource['permanently_reported']) || $reportCount >= 5;
+                                    ?>
+                                    <span class="report-reason"><?= $isPermanentlyReported ? 'Reported' : ('Reports : ' . $reportCount) ?></span>
                                 </div>
                             </div>
                             
@@ -131,7 +135,16 @@
           <div class="my-resources-grid" id="my-resources-grid">
             <?php if(isset($resourceData['my_resources']) && is_array($resourceData['my_resources']) && count($resourceData['my_resources'])): ?>
               <?php foreach($resourceData['my_resources'] as $res): ?>
+                <?php
+                  $myReportCount = (int)($res->report_count ?? 0);
+                  $myIsPermanentlyReported = ((int)($res->permanently_reported ?? 0) === 1) || $myReportCount >= 5;
+                  $myIsLink = strtolower((string)($res->file_type ?? '')) === 'link';
+                  $myCountLabel = $myIsLink ? 'visits' : 'downloads';
+                  $myActionLabel = $myIsLink ? 'Open' : 'Download';
+                  $myActionIcon = $myIsLink ? 'fa-external-link-alt' : 'fa-download';
+                ?>
                 <div class="my-resource-card" 
+                     style="position: relative;"
                      data-id="<?= $res->resource_id ?? '' ?>"
                      data-title="<?= htmlspecialchars($res->title ?? '', ENT_QUOTES) ?>"
                      data-description="<?= htmlspecialchars($res->description ?? '', ENT_QUOTES) ?>"
@@ -139,6 +152,11 @@
                      data-file-path="<?= htmlspecialchars($res->file_path ?? '', ENT_QUOTES) ?>"
                      data-file-size="<?= (int)($res->file_size ?? 0) ?>"
                      data-created-at="<?= htmlspecialchars($res->created_at ?? '', ENT_QUOTES) ?>">
+                  <?php if ($myIsPermanentlyReported): ?>
+                    <span class="resource-status" style="position: absolute; top: 10px; right: 10px; background: #dc2626; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; z-index: 1;">Reported</span>
+                  <?php elseif ($myReportCount > 0): ?>
+                    <span class="resource-status" style="position: absolute; top: 10px; right: 10px; background: #dc2626; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; z-index: 1;">Reports : <?= $myReportCount ?></span>
+                  <?php endif; ?>
                   <h3 class="resource-title"><?= htmlspecialchars($res->title ?? '') ?></h3>
                   <div class="resource-meta">
                     <?php 
@@ -146,14 +164,11 @@
                     ?>
                     <span class="resource-category"><?= htmlspecialchars($cat) ?></span>
                     <span class="resource-size"><?= isset($res->file_size) ? number_format(($res->file_size/1024/1024), 1) . ' MB' : '' ?></span>
-                    <?php if (isset($res->is_reported) && $res->is_reported == 1): ?>
-                      <span class="resource-status" style="background: #dc2626; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">Reported</span>
-                    <?php endif; ?>
                   </div>
                   <p class="resource-description"><?= htmlspecialchars($res->description ?? '') ?></p>
                   <div class="resource-details">
                     <span class="upload-date">Uploaded: <?= isset($res->created_at) ? date('M j, Y', strtotime($res->created_at)) : '' ?></span>
-                    <span class="resource-downloads"><i class="fas fa-download"></i> <?= (int)($res->downloads ?? 0) ?> downloads</span>
+                    <span class="resource-downloads"><i class="fas <?= $myIsLink ? 'fa-eye' : 'fa-download' ?>"></i> <?= (int)($res->downloads ?? 0) ?> <?= $myCountLabel ?></span>
                   </div>
                   <div class="resource-actions">
                     <button class="btn btn-primary btn-sm" data-action="edit" data-id="<?= $res->resource_id ?? '' ?>">
@@ -161,8 +176,8 @@
                       <span>Edit</span>
                     </button>
                     <a class="btn btn-outline btn-sm" href="<?= htmlspecialchars($res->file_path ?? '#') ?>" target="_blank" rel="noopener">
-                      <i class="fas fa-download"></i>
-                      <span>Open</span>
+                      <i class="fas <?= $myActionIcon ?>"></i>
+                      <span><?= $myActionLabel ?></span>
                     </a>
                     <button class="btn btn-danger btn-sm" data-action="delete" data-id="<?= $res->resource_id ?? '' ?>">
                       <i class="fas fa-trash"></i>
@@ -256,6 +271,12 @@
           <div class="resources-list">
             <?php if(isset($resourceData['recent_resources']) && is_array($resourceData['recent_resources']) && count($resourceData['recent_resources']) > 0): ?>
               <?php foreach($resourceData['recent_resources'] as $resource): ?>
+                <?php
+                  $recentIsLink = strtolower((string)($resource->file_type ?? '')) === 'link';
+                  $recentCountLabel = $recentIsLink ? 'visits' : 'downloads';
+                  $recentActionLabel = $recentIsLink ? 'Open' : 'Download';
+                  $recentActionIcon = $recentIsLink ? 'fa-external-link-alt' : 'fa-download';
+                ?>
                 <div class="resource-item">
                   <div class="resource-icon">
                     <?php
@@ -298,13 +319,13 @@
                         }
                       ?>
                       <span class="resource-date"><?= $timeAgo ?></span>
-                      <span class="resource-downloads"><i class="fas fa-download"></i> <?= (int)($resource->downloads ?? 0) ?> downloads</span>
+                      <span class="resource-downloads"><i class="fas <?= $recentIsLink ? 'fa-eye' : 'fa-download' ?>"></i> <?= (int)($resource->downloads ?? 0) ?> <?= $recentCountLabel ?></span>
                     </div>
                   </div>
                   <div class="resource-actions">
                     <a class="btn btn-outline btn-sm" href="<?=ROOT?>/superadmin/resourcemoderation/download?id=<?= $resource->resource_id ?? '' ?>" target="_blank" rel="noopener">
-                      <i class="fas fa-download"></i>
-                      <span>Download</span>
+                      <i class="fas <?= $recentActionIcon ?>"></i>
+                      <span><?= $recentActionLabel ?></span>
                     </a>
                     <button class="btn btn-outline btn-sm" onclick="openReportModal(<?= $resource->resource_id ?? 0 ?>, '<?= htmlspecialchars(addslashes($resource->title ?? ''), ENT_QUOTES) ?>')" style="color: #dc2626; border-color: #dc2626;" onmouseover="this.style.background='#dc2626'; this.style.color='white';" onmouseout="this.style.background='transparent'; this.style.color='#dc2626';">
                       <i class="fas fa-flag"></i>

@@ -901,6 +901,7 @@
   flex-direction: row;
 }
 
+.topic-views,
 .topic-replies,
 .topic-activity {
   font-size: 0.875rem;
@@ -912,11 +913,13 @@
   white-space: nowrap;
 }
 
+.topic-views strong,
 .topic-replies strong {
   color: var(--foreground);
   font-weight: 600;
 }
 
+.topic-views i,
 .topic-replies i,
 .topic-activity i {
   color: var(--primary);

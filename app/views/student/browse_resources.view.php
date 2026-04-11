@@ -58,6 +58,12 @@ require '../app/views/partials/student_header.php';
           <div class="resources-list">
             <?php if(isset($resources) && is_array($resources) && count($resources) > 0): ?>
               <?php foreach($resources as $resource): ?>
+                <?php
+                  $browseIsLink = strtolower((string)($resource->file_type ?? '')) === 'link';
+                  $browseCountLabel = $browseIsLink ? 'visits' : 'downloads';
+                  $browseActionLabel = $browseIsLink ? 'Open' : 'Download';
+                  $browseActionIcon = $browseIsLink ? 'fa-external-link-alt' : 'fa-download';
+                ?>
                 <div class="resource-item">
                   <div class="resource-icon">
                     <?php
@@ -101,13 +107,15 @@ require '../app/views/partials/student_header.php';
                       ?>
                       <span class="resource-date"><?= $timeAgo ?></span>
                       <span class="resource-size"><?= isset($resource->file_size) ? number_format(($resource->file_size/1024/1024), 1) . ' MB' : '' ?></span>
-                      <span class="resource-downloads"><i class="fas fa-download"></i> <?= (int)($resource->downloads ?? 0) ?> downloads</span>
+                    </div>
+                    <div class="resource-details">
+                      <span class="resource-downloads"><i class="fas <?= $browseIsLink ? 'fa-eye' : 'fa-download' ?>"></i> <?= (int)($resource->downloads ?? 0) ?> <?= $browseCountLabel ?></span>
                     </div>
                   </div>
                   <div class="resource-actions">
                     <a class="btn btn-outline btn-sm" href="<?=ROOT?>/student/resources/download?id=<?= $resource->resource_id ?? '' ?>" target="_blank" rel="noopener">
-                      <i class="fas fa-download"></i>
-                      <span>Download</span>
+                      <i class="fas <?= $browseActionIcon ?>"></i>
+                      <span><?= $browseActionLabel ?></span>
                     </a>
                     <?php if ((int)($resource->user_id ?? 0) !== (int)($_SESSION['user_id'] ?? 0)): ?>
                       <button class="btn btn-outline btn-sm" style="transition: all 0.3s;" onmouseover="this.style.borderColor='#dc2626'; this.style.color='#dc2626'" onmouseout="this.style.borderColor=''; this.style.color=''" onclick="openReportModal(<?= $resource->resource_id ?? 0 ?>, '<?= htmlspecialchars($resource->title ?? '', ENT_QUOTES) ?>')">

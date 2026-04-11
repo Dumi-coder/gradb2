@@ -307,7 +307,7 @@ require '../app/views/partials/alumni_header.php';
               <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $topic['replies'] ?></strong> replies</div>
               <div class="topic-activity"><i class="fas fa-clock"></i> <?= esc($topic['last_activity']) ?></div>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="window.location.href='<?= ROOT ?>/alumni/discussionforum?view=<?= $topic['id'] ?>'">
+            <button class="btn btn-primary btn-sm" onclick="viewForumWithLoading(<?= $topic['id'] ?>, this)">
               <i class="fas fa-eye"></i> View
             </button>
           </div>
@@ -447,6 +447,43 @@ function showNoResultsMessage(visibleCount) {
       noResultsMsg.style.display = 'none';
     }
   }
+}
+
+function showForumPageLoading() {
+  let overlay = document.getElementById('forumPageLoadingOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'forumPageLoadingOverlay';
+    overlay.innerHTML = `
+      <div style="display:flex; flex-direction:column; align-items:center; gap:10px; color:#ffffff;">
+        <i class="fas fa-spinner fa-spin" style="font-size:28px;"></i>
+        <span style="font-weight:600;">Opening discussion...</span>
+      </div>
+    `;
+    Object.assign(overlay.style, {
+      position: 'fixed',
+      inset: '0',
+      background: 'rgba(17, 24, 39, 0.55)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: '9999'
+    });
+    document.body.appendChild(overlay);
+  }
+}
+
+function viewForumWithLoading(postId, triggerBtn) {
+  if (triggerBtn) {
+    const viewCountEl = triggerBtn.closest('.topic-card')?.querySelector('.topic-views strong');
+    if (viewCountEl) {
+      const currentViews = parseInt(viewCountEl.textContent, 10) || 0;
+      viewCountEl.textContent = String(currentViews + 1);
+    }
+  }
+
+  showForumPageLoading();
+  window.location.href = '<?= ROOT ?>/alumni/discussionforum?view=' + encodeURIComponent(postId);
 }
 </script>
 </body>

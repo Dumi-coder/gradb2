@@ -76,6 +76,14 @@ function initializeResources() {
             if (card) openEditModalFromCard(card);
         }
     });
+
+    // Optimistically increment visible download count when opening a resource.
+    document.addEventListener('click', function(e) {
+        const downloadLink = e.target.closest('a[href*="/resources/download?id="]');
+        if (downloadLink) {
+            incrementResourceDownloadCount(downloadLink);
+        }
+    });
     
     // Delegate delete button clicks
     document.addEventListener('click', function(e) {
@@ -130,6 +138,18 @@ function applyMyResourcesPreview() {
     } else {
         toggleBtn.style.display = 'none';
     }
+}
+
+function incrementResourceDownloadCount(linkElement) {
+    const container = linkElement.closest('.resource-item, .my-resource-card');
+    if (!container) return;
+
+    const countEl = container.querySelector('.resource-downloads');
+    if (!countEl) return;
+
+    countEl.innerHTML = countEl.innerHTML.replace(/(\d+)/, function(match) {
+        return String((parseInt(match, 10) || 0) + 1);
+    });
 }
 
 // Modal functions
