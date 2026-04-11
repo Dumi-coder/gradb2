@@ -135,9 +135,14 @@ require '../app/views/partials/admin_header.php';
                   <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $topic->replies ?? 0 ?></strong> replies</div>
                   <div class="topic-activity"><i class="fas fa-clock"></i> <?= $last_activity ?></div>
                 </div>
-                <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $topic->post_id ?>, this)">
-                  <i class="fas fa-eye"></i> View
-                </button>
+                <div class="topic-actions" style="display: flex; gap: 0.5rem;">
+                  <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $topic->post_id ?>, this)">
+                    <i class="fas fa-eye"></i> View
+                  </button>
+                  <button class="btn btn-outline btn-sm" style="color:#dc2626;border-color:#dc2626;" onclick="deleteVisiblePost(<?= $topic->post_id ?>)">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
+                </div>
               </div>
             </div>
             <?php endforeach; 
@@ -304,6 +309,29 @@ require '../app/views/partials/admin_header.php';
       .catch(error => {
         console.error('Error:', error);
         loadForumDetail(postId);
+      });
+    }
+
+    function deleteVisiblePost(postId) {
+      if (!confirm('Are you sure you want to delete this forum post? This cannot be undone.')) {
+        return;
+      }
+
+      fetch(`<?=ROOT?>/admin/forummoderation/deletePost/${postId}`, {
+        method: 'POST'
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          showNotification(data.message || 'Post deleted successfully', 'success');
+          setTimeout(() => location.reload(), 400);
+        } else {
+          showNotification(data.message || 'Failed to delete post', 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showNotification('An error occurred while deleting the post', 'error');
       });
     }
 

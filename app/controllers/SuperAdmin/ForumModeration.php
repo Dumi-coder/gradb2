@@ -163,14 +163,22 @@ class ForumModeration extends Controller
 
     public function deletePost($post_id)
     {
+        header('Content-Type: application/json');
+
         // Start session if not started
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Check if user is logged in
-        if (empty($_SESSION['user_id'])) {
+        // Check if user is logged in as superadmin
+        if (empty($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'super_admin') {
             echo json_encode(['success' => false, 'message' => 'Not authenticated']);
+            return;
+        }
+
+        $post_id = (int)$post_id;
+        if ($post_id <= 0) {
+            echo json_encode(['success' => false, 'message' => 'Invalid post ID']);
             return;
         }
 
@@ -182,6 +190,24 @@ class ForumModeration extends Controller
         if (!$existingPost) {
             echo json_encode(['success' => false, 'message' => 'Post not found']);
             return;
+        }
+
+        // Delete likes for each reply first to satisfy FK constraints where present.
+        $replies = $forumModel->query(
+            "SELECT replyid FROM form_replies WHERE postid = :post_id",
+            ['post_id' => $post_id]
+        );
+
+        if (is_array($replies)) {
+            foreach ($replies as $reply) {
+                $replyId = (int)($reply->replyid ?? 0);
+                if ($replyId > 0) {
+                    $forumModel->query(
+                        "DELETE FROM form_reply_likes WHERE replyid = :reply_id",
+                        ['reply_id' => $replyId]
+                    );
+                }
+            }
         }
 
         // Delete all replies first

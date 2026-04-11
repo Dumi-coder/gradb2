@@ -174,25 +174,78 @@ class ForumModeration extends Controller
 
     public function deletePost($post_id)
     {
+        header('Content-Type: application/json');
+
         // Start session if not started
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Check if user is logged in
-        if (empty($_SESSION['user_id'])) {
+        // Check if user is logged in as faculty admin
+        if (empty($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'faculty_admin') {
             echo json_encode(['success' => false, 'message' => 'Not authenticated']);
+            return;
+        }
+
+        $post_id = (int)$post_id;
+        if ($post_id <= 0) {
+            echo json_encode(['success' => false, 'message' => 'Invalid post ID']);
             return;
         }
 
         $forumModel = new ForumPost();
         $replyModel = new ForumReply();
+        $facultyAdminModel = new FacultyAdmin();
+
+        $facultyAdmin = $facultyAdminModel->first(['user_id' => (int)$_SESSION['user_id']]);
+        $faculty_id = (int)($facultyAdmin->faculty_id ?? 0);
+        if ($faculty_id <= 0) {
+            echo json_encode(['success' => false, 'message' => 'Faculty scope not found']);
+            return;
+        }
         
-        // Check ownership (admin can delete any post in their faculty)
+        // Check post existence
         $existingPost = $forumModel->getPostForOwnership($post_id);
         if (!$existingPost) {
             echo json_encode(['success' => false, 'message' => 'Post not found']);
             return;
+        }
+
+        // Scope check: faculty admin can only delete posts in their faculty visibility scope.
+        $visibleRaw = trim((string)($existingPost->visiblefaculties ?? ''));
+        $hasScope = false;
+
+        if ($visibleRaw === '' || $visibleRaw === '999') {
+            // Empty/999 means globally visible; admin has moderation scope.
+            $hasScope = true;
+        } else {
+            $facList = array_filter(array_map('trim', explode(',', $visibleRaw)), static function($v) {
+                return $v !== '';
+            });
+            $hasScope = in_array((string)$faculty_id, $facList, true);
+        }
+
+        if (!$hasScope) {
+            echo json_encode(['success' => false, 'message' => 'Unauthorized for this faculty scope']);
+            return;
+        }
+
+        // Delete likes for each reply first to satisfy FK constraints where present.
+        $replies = $forumModel->query(
+            "SELECT replyid FROM form_replies WHERE postid = :post_id",
+            ['post_id' => $post_id]
+        );
+
+        if (is_array($replies)) {
+            foreach ($replies as $reply) {
+                $replyId = (int)($reply->replyid ?? 0);
+                if ($replyId > 0) {
+                    $forumModel->query(
+                        "DELETE FROM form_reply_likes WHERE replyid = :reply_id",
+                        ['reply_id' => $replyId]
+                    );
+                }
+            }
         }
 
         // Delete all replies first
