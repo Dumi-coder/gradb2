@@ -4,6 +4,10 @@ class Notification
 {
 	use Model;
 
+	private const ANNOUNCEMENT_TYPE_FACULTY = 0;
+	private const ANNOUNCEMENT_TYPE_UNIVERSITY = 1;
+	private const ANNOUNCEMENT_TYPE_ADMIN = 2;
+
 	protected $table = 'notifications';
 	protected $order_column = 'created_at';
 	protected $id_column = 'notification_id';
@@ -17,6 +21,108 @@ class Notification
 		'read_at',
 		'created_at',
 	];
+
+	public function createAnnouncementPublishedNotifications($announcementType, $announcementTitle, $actorUserId = null, $facultyId = null)
+	{
+		$type = (int)$announcementType;
+		$now = date('Y-m-d H:i:s');
+		$notificationTitle = 'New Announcement Published';
+		$message = 'You got a new university announcement.';
+		if ($type === self::ANNOUNCEMENT_TYPE_FACULTY) {
+			$message = 'You got a new faculty announcement.';
+		} elseif ($type === self::ANNOUNCEMENT_TYPE_ADMIN) {
+			$message = 'You got a new admin announcement.';
+		}
+
+		[$recipientQuery, $params] = $this->buildAnnouncementRecipientQuery($type, $facultyId !== null ? (int)$facultyId : null);
+		if ($recipientQuery === '') {
+			return 0;
+		}
+
+		$actor = ($actorUserId !== null && (int)$actorUserId > 0) ? (int)$actorUserId : null;
+
+		$insertQuery = "INSERT INTO notifications (
+					recipient_user_id,
+					actor_user_id,
+					title,
+					message,
+					is_read,
+					read_at,
+					created_at
+				)
+				SELECT DISTINCT r.user_id, :actor_user_id, :title, :message, 0, NULL, :created_at
+				FROM (" . $recipientQuery . ") r
+				WHERE r.user_id IS NOT NULL
+				  AND r.user_id > 0
+				  AND (:actor_filter IS NULL OR r.user_id <> :actor_filter)";
+
+		$params['actor_user_id'] = $actor;
+		$params['actor_filter'] = $actor;
+		$params['title'] = $notificationTitle;
+		$params['message'] = $message;
+		$params['created_at'] = $now;
+
+		$ok = $this->query($insertQuery, $params);
+		return $ok ? 1 : 0;
+	}
+
+	private function buildAnnouncementRecipientQuery($announcementType, $facultyId = null)
+	{
+		$type = (int)$announcementType;
+
+		if ($type === self::ANNOUNCEMENT_TYPE_ADMIN) {
+			return [
+				"SELECT u.user_id
+				 FROM users u
+				 WHERE u.role IN ('faculty_admin', 'super_admin')",
+				[]
+			];
+		}
+
+		if ($type === self::ANNOUNCEMENT_TYPE_UNIVERSITY) {
+			return [
+				"SELECT u.user_id
+				 FROM users u",
+				[]
+			];
+		}
+
+		if ($type === self::ANNOUNCEMENT_TYPE_FACULTY) {
+			$params = [];
+			$studentFilter = '';
+			$alumniFilter = '';
+			$facultyAdminFilter = '';
+
+			if ($facultyId !== null && $facultyId > 0) {
+				$studentFilter = ' AND s.faculty_id = :faculty_id_students';
+				$alumniFilter = ' AND a.faculty_id = :faculty_id_alumnis';
+				$facultyAdminFilter = ' AND fa.faculty_id = :faculty_id_admins';
+				$params['faculty_id_students'] = (int)$facultyId;
+				$params['faculty_id_alumnis'] = (int)$facultyId;
+				$params['faculty_id_admins'] = (int)$facultyId;
+			}
+
+			$query = "SELECT s.user_id
+					  FROM students s
+					  WHERE (s.is_deleted IS NULL OR s.is_deleted = 0)" . $studentFilter . "
+
+					UNION
+
+					SELECT a.user_id
+					FROM alumnis a
+					WHERE (a.is_deleted IS NULL OR a.is_deleted = 0)" . $alumniFilter . "
+
+					UNION
+
+					SELECT fa.user_id
+					FROM faculty_admins fa
+					WHERE (fa.is_deactivated IS NULL OR fa.is_deactivated = 0)" . $facultyAdminFilter;
+
+			return [$query, $params];
+		}
+
+		return ['', []];
+	}
 
 	public function createResourceReportedNotification($recipientUserId, $actorUserId, $resourceName, $reason)
 	{

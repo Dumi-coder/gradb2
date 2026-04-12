@@ -35,6 +35,10 @@ $isActive = function(string $path) use ($current): string {
               <i class="fas fa-calendar-alt"></i>
               <span>Events Board</span>
             </a>
+            <a href="<?=ROOT?>/Student/FacultyAnnouncements" class="nav-item<?= $isActive('student/facultyannouncements') ?>">
+              <i class="fas fa-bullhorn"></i>
+              <span>Faculty Announcements</span>
+            </a>
           </div>
           
           <div class="nav-section">

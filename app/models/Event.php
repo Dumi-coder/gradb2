@@ -148,6 +148,80 @@ class Event
             'upcoming_this_week' => (int)($row['upcoming_this_week'] ?? 0),
         ];
     }
+
+    public function getModerationEvents($facultyId = null)
+    {
+        $data = [];
+        $facultyFilter = '';
+
+        if ($facultyId !== null) {
+            $facultyFilter = ' AND a.faculty_id = :faculty_id';
+            $data['faculty_id'] = (int)$facultyId;
+        }
+
+        $query = "SELECT e.*, u.name as organizer_name, u.email as organizer_email,
+                         a.faculty_id as organizer_faculty_id,
+                         f.faculty_name as organizer_faculty_name,
+                         COALESCE(er.registered_count, 0) as registered_count,
+                         CASE
+                             WHEN e.max_attendees IS NOT NULL
+                              AND COALESCE(er.registered_count, 0) >= e.max_attendees THEN 1
+                             ELSE 0
+                         END as is_full
+                  FROM {$this->table} e
+                  LEFT JOIN users u ON e.host_alumnus_id = u.user_id
+                  LEFT JOIN alumnis a ON a.user_id = e.host_alumnus_id
+                  LEFT JOIN faculties f ON f.faculty_id = a.faculty_id
+                  LEFT JOIN (
+                      SELECT event_id, COUNT(*) as registered_count
+                      FROM event_registrations
+                      GROUP BY event_id
+                  ) er ON er.event_id = e.event_id
+                  WHERE e.status = 'active'" . $facultyFilter . "
+                  ORDER BY e.event_date ASC, e.start_time ASC, e.created_at DESC";
+
+        $result = $this->query($query, $data);
+        if (!is_array($result)) {
+            return [];
+        }
+
+        return array_map([$this, 'toArrayRow'], $result);
+    }
+
+    public function getModerationEventById($eventId, $facultyId = null)
+    {
+        $data = ['event_id' => (int)$eventId];
+        $facultyFilter = '';
+
+        if ($facultyId !== null) {
+            $facultyFilter = ' AND a.faculty_id = :faculty_id';
+            $data['faculty_id'] = (int)$facultyId;
+        }
+
+        $query = "SELECT e.*, u.name as organizer_name, u.email as organizer_email,
+                         a.faculty_id as organizer_faculty_id,
+                         f.faculty_name as organizer_faculty_name,
+                         COALESCE(er.registered_count, 0) as registered_count
+                  FROM {$this->table} e
+                  LEFT JOIN users u ON e.host_alumnus_id = u.user_id
+                  LEFT JOIN alumnis a ON a.user_id = e.host_alumnus_id
+                  LEFT JOIN faculties f ON f.faculty_id = a.faculty_id
+                  LEFT JOIN (
+                      SELECT event_id, COUNT(*) as registered_count
+                      FROM event_registrations
+                      GROUP BY event_id
+                  ) er ON er.event_id = e.event_id
+                  WHERE e.event_id = :event_id
+                    AND e.status = 'active'" . $facultyFilter . "
+                  LIMIT 1";
+
+        $result = $this->query($query, $data);
+        if (!is_array($result) || empty($result)) {
+            return false;
+        }
+
+        return $this->toArrayRow($result[0]);
+    }
 }
 
 
