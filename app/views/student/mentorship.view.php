@@ -26,44 +26,75 @@ require '../app/views/partials/student_header.php';
         <?php unset($_SESSION['error']); ?>
       <?php endif; ?>
 
+      <section class="dashboard-section faq-first-section">
+        <div class="faq-first-strip" role="note" aria-label="FAQ first guidance">
+          <div class="faq-first-copy">
+            <h3>FAQ First</h3>
+            <p>Check the FAQ before requesting mentorship to avoid generic questions already answered there and keep mentor time for personalized guidance.</p>
+          </div>
+          <a href="<?=ROOT?>/student/Faq" class="btn btn-outline btn-sm faq-first-btn">
+            <i class="fas fa-question-circle"></i>
+            FAQ
+          </a>
+        </div>
+      </section>
+
       <section class="dashboard-section mentors-section">
         <div class="section-header">
           <h2 class="section-title">Available Mentors</h2>
-          <a href="<?=ROOT?>/student/Faq" class="btn btn-outline btn-sm faq-first-btn">
-            <i class="fas fa-question-circle"></i>
-            FAQ First
-          </a>
+          <div class="section-actions mentors-actions">
+            <a href="javascript:void(0)" id="mentors-toggle" class="btn btn-outline btn-sm" style="<?= (!empty($data['mentors']) && count($data['mentors']) > 3) ? '' : 'display:none;' ?>">
+              <span>View All</span>
+              <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
         </div>
 
         <?php if (!empty($data['mentors'])): ?>
           <div class="mentors-grid">
-            <?php foreach ($data['mentors'] as $mentor): ?>
-              <article class="mentor-card">
-                <div class="mentor-card-top">
-                  <h3 class="mentor-name"><?= esc($mentor['mentor_name']) ?></h3>
-                  <span class="status-badge status-open">Mentor</span>
-                </div>
-                <p class="mentor-meta">
-                  <?= esc($mentor['faculty_name'] ?: 'Faculty N/A') ?>
-                  <?php if (!empty($mentor['current_job'])): ?>
-                    | <?= esc($mentor['current_job']) ?>
+            <?php foreach ($data['mentors'] as $idx => $mentor): ?>
+              <article class="mentor-card" style="<?= ($idx >= 3) ? 'display:none;' : '' ?>">
+                <div class="mentor-avatar-col">
+                  <?php
+                    $mentorName = trim((string)($mentor['mentor_name'] ?? 'Mentor'));
+                    $nameParts = preg_split('/\s+/', $mentorName);
+                    $initials = '';
+                    if (!empty($nameParts) && is_array($nameParts)) {
+                      $initials .= strtoupper(substr((string)$nameParts[0], 0, 1));
+                      if (isset($nameParts[1])) {
+                        $initials .= strtoupper(substr((string)$nameParts[1], 0, 1));
+                      }
+                    }
+                    if ($initials === '') {
+                      $initials = 'M';
+                    }
+                  ?>
+                  <?php if (!empty($mentor['mentor_profile_photo_url'])): ?>
+                    <img class="mentor-avatar" src="<?= esc($mentor['mentor_profile_photo_url']) ?>" alt="<?= esc($mentorName) ?>" loading="lazy" decoding="async">
+                  <?php else: ?>
+                    <span class="mentor-avatar-fallback" aria-hidden="true"><?= esc($initials) ?></span>
                   <?php endif; ?>
-                </p>
-                <p class="mentor-expertise"><?= esc($mentor['expertise_area'] ?: 'General Mentorship') ?></p>
-                <div class="contact-reveal-card">
-                  <h4 class="contact-reveal-title">Mentor Description</h4>
-                  <p class="mentor-bio"><?= esc($mentor['mentor_bio'] ?: 'Experienced alumnus available for student mentorship.') ?></p>
                 </div>
-
-                <div class="mentor-rating-row">
-                  <span class="mentor-rating">⭐ <?= number_format((float)$mentor['avg_rating'], 1) ?></span>
-                  <span class="mentor-sessions">(<?= (int)$mentor['sessions_count'] ?> sessions)</span>
+                <div class="mentor-content">
+                  <h3 class="mentor-name"><?= esc($mentor['mentor_name']) ?></h3>
+                  <p class="mentor-meta mentor-quick-meta">
+                    <?= esc($mentor['faculty_name'] ?: 'Faculty N/A') ?>
+                    <?php if (!empty($mentor['current_job'])): ?>
+                      • <?= esc($mentor['current_job']) ?>
+                    <?php endif; ?>
+                    <?php if (!empty($mentor['expertise_area'])): ?>
+                      • <?= esc($mentor['expertise_area']) ?>
+                    <?php endif; ?>
+                    • <?= (int)$mentor['sessions_count'] ?> sessions completed
+                  </p>
+                  <p class="mentor-description"><?= esc($mentor['mentor_bio'] ?: 'Experienced alumnus available for student mentorship.') ?></p>
                 </div>
-
-                <a class="btn btn-primary btn-sm" href="<?=ROOT?>/student/Mentorship/request/<?= (int)$mentor['mentor_user_id'] ?>">
-                  <i class="fas fa-paper-plane"></i>
-                  Request Mentorship
-                </a>
+                <div class="mentor-actions-col">
+                  <a class="btn btn-primary btn-sm" href="<?=ROOT?>/student/Mentorship/request/<?= (int)$mentor['mentor_user_id'] ?>">
+                    <i class="fas fa-paper-plane"></i>
+                    Request
+                  </a>
+                </div>
               </article>
             <?php endforeach; ?>
           </div>
@@ -72,37 +103,6 @@ require '../app/views/partials/student_header.php';
             <div class="empty-icon"><i class="fas fa-user-graduate"></i></div>
             <h3>No mentors available right now</h3>
             <p>Please check back later.</p>
-          </div>
-        <?php endif; ?>
-      </section>
-
-      <section class="dashboard-section requests-section">
-        <h2 class="section-title">My Mentorship Requests</h2>
-
-        <?php if (!empty($data['requests'])): ?>
-          <div class="requests-grid">
-            <?php foreach ($data['requests'] as $request): ?>
-              <article class="request-card">
-                <div class="request-header">
-                  <h3 class="request-title"><?= esc($request['topic'] ?: 'Mentorship Request') ?></h3>
-                  <span class="status-badge status-<?= esc(strtolower(str_replace('_', '-', $request['status']))) ?>">
-                    <?= esc(ucfirst(str_replace('_', ' ', $request['status']))) ?>
-                  </span>
-                </div>
-                <p class="request-description"><?= esc($request['request_reason']) ?></p>
-                <p class="mentor-meta">Mentor: <?= esc($request['mentor_name'] ?: 'Not assigned') ?></p>
-                <?php if (!empty($request['rejection_reason']) && $request['status'] === 'rejected'): ?>
-                  <p class="rejection-reason">Rejected Reason: <?= esc($request['rejection_reason']) ?></p>
-                <?php endif; ?>
-                <small class="request-date">Created: <?= date('M j, Y', strtotime($request['created_at'])) ?></small>
-              </article>
-            <?php endforeach; ?>
-          </div>
-        <?php else: ?>
-          <div class="empty-state">
-            <div class="empty-icon"><i class="fas fa-inbox"></i></div>
-            <h3>No requests sent yet</h3>
-            <p>Pick a mentor and send your first mentorship request.</p>
           </div>
         <?php endif; ?>
       </section>
@@ -140,7 +140,7 @@ require '../app/views/partials/student_header.php';
                 <div class="request-actions mentor-request-actions">
                   <button
                     type="button"
-                    class="btn btn-outline btn-sm mentorship-chat-open"
+                    class="btn btn-primary btn-sm mentorship-chat-open"
                     data-thread-id="<?= (int)$active['request_id'] ?>"
                     data-thread-name="<?= esc($active['mentor_name']) ?>"
                   >
@@ -148,7 +148,7 @@ require '../app/views/partials/student_header.php';
                     Chat with Alumni
                   </button>
                 </div>
-                <p class="mentor-meta"><small>Your mentor will end the session when mentorship is complete. Then you can submit the required review.</small></p>
+                <p class="mentor-meta"><small>Your mentor will end the session when mentorship is complete. Then you can submit the required feedback.</small></p>
               </article>
             <?php endforeach; ?>
           </div>
@@ -159,22 +159,53 @@ require '../app/views/partials/student_header.php';
         <?php endif; ?>
       </section>
 
+      <section class="dashboard-section requests-section">
+        <h2 class="section-title">My Mentorship Requests</h2>
+
+        <?php if (!empty($data['requests'])): ?>
+          <div class="requests-grid">
+            <?php foreach ($data['requests'] as $request): ?>
+              <article class="request-card">
+                <div class="request-header">
+                  <h3 class="request-title"><?= esc($request['topic'] ?: 'Mentorship Request') ?></h3>
+                  <span class="status-badge status-<?= esc(strtolower(str_replace('_', '-', $request['status']))) ?>">
+                    <?= esc(ucfirst(str_replace('_', ' ', $request['status']))) ?>
+                  </span>
+                </div>
+                <p class="request-description"><?= esc($request['request_reason']) ?></p>
+                <p class="mentor-meta">Mentor: <?= esc($request['mentor_name'] ?: 'Not assigned') ?></p>
+                <?php if (!empty($request['rejection_reason']) && $request['status'] === 'rejected'): ?>
+                  <p class="rejection-reason">Rejected Reason: <?= esc($request['rejection_reason']) ?></p>
+                <?php endif; ?>
+                <small class="request-date">Created: <?= date('M j, Y', strtotime($request['created_at'])) ?></small>
+              </article>
+            <?php endforeach; ?>
+          </div>
+        <?php else: ?>
+          <div class="empty-state">
+            <div class="empty-icon"><i class="fas fa-inbox"></i></div>
+            <h3>No requests sent yet</h3>
+            <p>Pick a mentor and send your first mentorship request.</p>
+          </div>
+        <?php endif; ?>
+      </section>
+
       <section class="dashboard-section reviews-section">
-        <h2 class="section-title">Pending Reviews (Required)</h2>
+        <h2 class="section-title">Pending Feedback (Required)</h2>
 
         <?php if (!empty($data['pendingReviews'])): ?>
           <div class="requests-grid">
             <?php foreach ($data['pendingReviews'] as $reviewItem): ?>
               <article class="request-card review-card">
                 <div class="request-header">
-                  <h3 class="request-title"><?= esc($reviewItem['topic'] ?: 'Mentorship Review') ?></h3>
-                  <span class="status-badge status-pending-review">Pending Review</span>
+                  <h3 class="request-title"><?= esc($reviewItem['topic'] ?: 'Mentorship Feedback') ?></h3>
+                  <span class="status-badge status-pending-review">Pending Feedback</span>
                 </div>
                 <p class="mentor-meta">Mentor: <?= esc($reviewItem['mentor_name']) ?></p>
                 <form method="POST" action="<?=ROOT?>/student/Mentorship/submitReview/<?= (int)$reviewItem['request_id'] ?>" class="review-form">
-                  <label class="form-label" for="rating-<?= (int)$reviewItem['request_id'] ?>">Rating (required)</label>
+                  <label class="form-label" for="rating-<?= (int)$reviewItem['request_id'] ?>">Feedback Score (required)</label>
                   <select id="rating-<?= (int)$reviewItem['request_id'] ?>" name="rating" class="form-select" required>
-                    <option value="">Choose rating</option>
+                    <option value="">Choose feedback score</option>
                     <option value="5">5 - Excellent</option>
                     <option value="4">4 - Good</option>
                     <option value="3">3 - Average</option>
@@ -182,11 +213,11 @@ require '../app/views/partials/student_header.php';
                     <option value="1">1 - Very Poor</option>
                   </select>
 
-                  <label class="form-label" for="comment-<?= (int)$reviewItem['request_id'] ?>">Comment (optional)</label>
-                  <textarea id="comment-<?= (int)$reviewItem['request_id'] ?>" name="review_comment" class="form-textarea" rows="3" placeholder="Share your mentorship experience"></textarea>
+                  <label class="form-label" for="comment-<?= (int)$reviewItem['request_id'] ?>">Feedback Note (optional)</label>
+                  <textarea id="comment-<?= (int)$reviewItem['request_id'] ?>" name="review_comment" class="form-textarea" rows="3" placeholder="Share feedback about your mentorship experience"></textarea>
 
                   <button type="submit" class="btn btn-primary btn-sm">
-                    Submit Review & Complete
+                    Submit Feedback & Complete
                   </button>
                 </form>
               </article>
@@ -194,7 +225,7 @@ require '../app/views/partials/student_header.php';
           </div>
         <?php else: ?>
           <div class="empty-state compact-empty">
-            <p>No pending reviews.</p>
+            <p>No pending feedback.</p>
           </div>
         <?php endif; ?>
       </section>
@@ -234,6 +265,27 @@ require '../app/views/partials/student_header.php';
 
 <script src="<?=ROOT?>/assets/js/main.js"></script>
 <script>
+  (function() {
+    const toggleBtn = document.getElementById('mentors-toggle');
+    const cards = Array.from(document.querySelectorAll('.mentors-section .mentor-card'));
+    const previewCount = 3;
+    let expanded = false;
+
+    if (!toggleBtn || cards.length <= previewCount) return;
+
+    toggleBtn.addEventListener('click', function() {
+      expanded = !expanded;
+      cards.forEach((card, index) => {
+        card.style.display = (expanded || index < previewCount) ? '' : 'none';
+      });
+
+      const label = toggleBtn.querySelector('span');
+      const icon = toggleBtn.querySelector('i');
+      if (label) label.textContent = expanded ? 'Show Less' : 'View All';
+      if (icon) icon.className = expanded ? 'fas fa-chevron-up' : 'fas fa-arrow-right';
+    });
+  })();
+
   window.mentorshipChatConfig = {
     baseUrl: '<?=ROOT?>/student/Mentorship',
     currentUserId: '<?= (int)($_SESSION['user_id'] ?? 0) ?>'

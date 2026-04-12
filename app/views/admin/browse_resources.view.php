@@ -78,7 +78,7 @@ require '../app/views/partials/admin_header.php';
               </button>
               <a href="<?=ROOT?>/admin/resourcemoderation/index" class="btn btn-outline">
                 <i class="fas fa-arrow-left"></i>
-                <span>Back to Resources</span>
+                <span>Back</span>
               </a>
             </form>
           </div>

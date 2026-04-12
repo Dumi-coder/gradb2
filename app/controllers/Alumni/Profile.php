@@ -86,7 +86,14 @@ class Profile extends Controller
         $github_url = trim($_POST['github_url'] ?? '');
         $twitter_url = trim($_POST['twitter_url'] ?? '');
         $personal_website = trim($_POST['personal_website'] ?? '');
+        $is_verified_mentor = isset($_POST['is_verified_mentor']) ? 1 : 0;
+        $mentor_terms_agree = isset($_POST['mentor_terms_agree']) ? 1 : 0;
+        $mentorship_availability_status = strtolower(trim($_POST['mentorship_availability_status'] ?? 'available'));
         $profile_picture = $_FILES['profile_picture'] ?? null;
+
+        if ($mentorship_availability_status !== 'available' && $mentorship_availability_status !== 'unavailable') {
+            $mentorship_availability_status = 'available';
+        }
 
         // Validation
         if (empty($name)) {
@@ -106,6 +113,11 @@ class Profile extends Controller
         }
         if (strlen($bio) > 1000) {
             $errors['bio'] = "Bio must be less than 1000 characters";
+        }
+
+        $currentMentorFlag = (int)($current_profile->is_verified_mentor ?? 0);
+        if ($currentMentorFlag !== 1 && $is_verified_mentor === 1 && $mentor_terms_agree !== 1) {
+            $errors['mentor_terms_agree'] = "You must agree to mentor terms and conditions before enabling mentor visibility.";
         }
 
         // Validate profile picture
@@ -153,6 +165,17 @@ class Profile extends Controller
                 if ($github_url !== ($current_profile->github_url ?? '')) $alumni_data['github_url'] = $github_url ?: null;
                 if ($twitter_url !== ($current_profile->twitter_url ?? '')) $alumni_data['twitter_url'] = $twitter_url ?: null;
                 if ($personal_website !== ($current_profile->personal_website ?? '')) $alumni_data['personal_website'] = $personal_website ?: null;
+
+                $currentMentorFlag = (int)($current_profile->is_verified_mentor ?? 0);
+                $currentAvailability = strtolower(trim((string)($current_profile->mentorship_availability_status ?? 'available')));
+                $newAvailability = $is_verified_mentor === 1 ? $mentorship_availability_status : 'unavailable';
+
+                if ($is_verified_mentor !== $currentMentorFlag) {
+                    $alumni_data['is_verified_mentor'] = $is_verified_mentor;
+                }
+                if ($newAvailability !== $currentAvailability) {
+                    $alumni_data['mentorship_availability_status'] = $newAvailability;
+                }
 
                 $profile_photo_url = $current_profile->profile_photo_url; // Keep current if no new upload
 

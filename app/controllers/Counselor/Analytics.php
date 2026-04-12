@@ -15,13 +15,13 @@ class Analytics extends Controller
         $days = 30;
 
         $summary = $requestModel->getAidAnalyticsSummary($days);
-        $breakdown = $requestModel->getAidAnalyticsBreakdown($days);
-        $recentRequests = $requestModel->getRecentAidRequestsForAnalytics(8);
+        $timeline = $requestModel->getAidAnalyticsTimeline($days);
+        $statusMix = $requestModel->getAidAnalyticsStatusMix($days);
 
         $this->view('counselor/analytics', [
             'summary' => $summary,
-            'breakdown' => $breakdown,
-            'recentRequests' => $recentRequests,
+            'timeline' => $timeline,
+            'statusMix' => $statusMix,
             'days' => $days,
         ]);
     }

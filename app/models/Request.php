@@ -354,4 +354,79 @@ class Request
 		$rows = $this->query($query);
 		return is_array($rows) ? $rows : [];
 	}
+
+	public function getAidAnalyticsTimeline($days = 30)
+	{
+		$days = max(1, (int)$days);
+
+		$query = "SELECT
+						DATE(r.created_at) AS day,
+						COUNT(*) AS total_requests,
+						SUM(CASE WHEN r.status = 'pending_verification' THEN 1 ELSE 0 END) AS pending_count,
+						SUM(CASE WHEN r.status IN ('open', 'approved', 'accepted') THEN 1 ELSE 0 END) AS approved_count,
+						SUM(CASE WHEN r.status = 'completed' THEN 1 ELSE 0 END) AS completed_count,
+						SUM(CASE WHEN r.status = 'rejected' THEN 1 ELSE 0 END) AS rejected_count,
+						SUM(CASE WHEN r.status IN ('open', 'approved', 'accepted', 'completed') THEN COALESCE(ar.amount, 0) ELSE 0 END) AS disbursed_amount
+				  FROM requests r
+				  LEFT JOIN aid_requests ar ON ar.request_id = r.request_id
+				  WHERE r.request_type = 'aid'
+					AND r.created_at >= DATE_SUB(CURDATE(), INTERVAL :days DAY)
+				  GROUP BY DATE(r.created_at)
+				  ORDER BY day ASC";
+
+		$rows = $this->query($query, ['days' => $days]);
+		if (!is_array($rows) || empty($rows)) {
+			return [];
+		}
+
+		$result = [];
+		foreach ($rows as $row) {
+			$key = (string)($row->day ?? '');
+			if ($key === '') {
+				continue;
+			}
+
+			$result[$key] = [
+				'total' => (int)($row->total_requests ?? 0),
+				'pending' => (int)($row->pending_count ?? 0),
+				'approved' => (int)($row->approved_count ?? 0),
+				'completed' => (int)($row->completed_count ?? 0),
+				'rejected' => (int)($row->rejected_count ?? 0),
+				'disbursed' => (float)($row->disbursed_amount ?? 0),
+			];
+		}
+
+		return $result;
+	}
+
+	public function getAidAnalyticsStatusMix($days = 30)
+	{
+		$days = max(1, (int)$days);
+
+		$query = "SELECT
+						SUM(CASE WHEN r.status = 'pending_verification' THEN 1 ELSE 0 END) AS pending_count,
+						SUM(CASE WHEN r.status IN ('open', 'approved', 'accepted') THEN 1 ELSE 0 END) AS approved_count,
+						SUM(CASE WHEN r.status = 'completed' THEN 1 ELSE 0 END) AS completed_count,
+						SUM(CASE WHEN r.status = 'rejected' THEN 1 ELSE 0 END) AS rejected_count
+				  FROM requests r
+				  WHERE r.request_type = 'aid'
+					AND r.created_at >= DATE_SUB(CURDATE(), INTERVAL :days DAY)";
+
+		$row = $this->get_row($query, ['days' => $days]);
+		if (!$row) {
+			return [
+				'pending' => 0,
+				'approved' => 0,
+				'completed' => 0,
+				'rejected' => 0,
+			];
+		}
+
+		return [
+			'pending' => (int)($row->pending_count ?? 0),
+			'approved' => (int)($row->approved_count ?? 0),
+			'completed' => (int)($row->completed_count ?? 0),
+			'rejected' => (int)($row->rejected_count ?? 0),
+		];
+	}
 }

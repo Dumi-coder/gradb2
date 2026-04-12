@@ -57,6 +57,12 @@ class Mentorship extends Controller
             exit;
         }
 
+        if ($this->mentorshipRequestModel->hasBlockingRequestWithMentor((int)$_SESSION['user_id'], (int)$mentorUserId)) {
+            $_SESSION['error'] = 'You already have a pending or active mentorship with this mentor. Complete the current session before requesting again.';
+            header('Location: ' . ROOT . '/student/Mentorship');
+            exit;
+        }
+
         $this->view('student/mentorship-request', [
             'mentor' => $mentor,
             'is_edit' => false,
@@ -101,6 +107,12 @@ class Mentorship extends Controller
             exit;
         }
 
+        if ($this->mentorshipRequestModel->hasBlockingRequestWithMentor((int)$_SESSION['user_id'], (int)$mentorUserId)) {
+            $_SESSION['error'] = 'You already have a pending or active mentorship with this mentor. Complete the current session before requesting again.';
+            header('Location: ' . ROOT . '/student/Mentorship');
+            exit;
+        }
+
         $result = $this->mentorshipRequestModel->createDirectedRequest($_SESSION['user_id'], $mentorUserId, $topic, $reason);
 
         if ($result) {
@@ -130,7 +142,7 @@ class Mentorship extends Controller
             exit;
         }
 
-        $_SESSION['error'] = 'Only mentors can end an active mentorship. You can submit a review once your mentor ends the session.';
+        $_SESSION['error'] = 'Only mentors can end an active mentorship. You can submit feedback once your mentor ends the session.';
 
         header('Location: ' . ROOT . '/student/Mentorship');
         exit;
@@ -156,16 +168,16 @@ class Mentorship extends Controller
         $review = trim($_POST['review_comment'] ?? '');
 
         if ($rating < 1 || $rating > 5) {
-            $_SESSION['error'] = 'Rating is required and must be between 1 and 5.';
+            $_SESSION['error'] = 'Feedback score is required and must be between 1 and 5.';
             header('Location: ' . ROOT . '/student/Mentorship');
             exit;
         }
 
         $ok = $this->mentorshipRequestModel->submitReviewByStudent((int)$requestId, (int)$_SESSION['user_id'], $rating, $review);
         if ($ok) {
-            $_SESSION['success'] = 'Thanks for your review. Mentorship marked as completed.';
+            $_SESSION['success'] = 'Thanks for your feedback. Mentorship marked as completed.';
         } else {
-            $_SESSION['error'] = 'Unable to submit review right now.';
+            $_SESSION['error'] = 'Unable to submit feedback right now.';
         }
 
         header('Location: ' . ROOT . '/student/Mentorship');

@@ -135,7 +135,7 @@
                 <div class="form-actions">
                     <a href="<?= ROOT ?>/admin/profile" class="btn btn-outline">
                         <i class="fas fa-arrow-left"></i>
-                        Cancel
+                        Back
                     </a>
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save"></i>

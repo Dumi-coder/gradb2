@@ -133,7 +133,7 @@ class Mentorship extends Controller
         $ok = $this->mentorshipRequestModel->endMentorshipByMentor((int)$requestId, $mentorUserId);
 
         if ($ok) {
-            $_SESSION['success'] = 'Mentorship ended. Student can now submit a required review.';
+            $_SESSION['success'] = 'Mentorship ended. Student can now submit required feedback.';
         } else {
             $_SESSION['error'] = 'Unable to end mentorship right now.';
         }

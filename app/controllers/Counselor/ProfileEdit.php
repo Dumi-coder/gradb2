@@ -58,6 +58,7 @@ class ProfileEdit extends Controller
         
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
+        $passwordCurrent = $_POST['password_current'] ?? '';
         $passwordNew = $_POST['password_new'] ?? '';
         $passwordConfirm = $_POST['password_confirm'] ?? '';
 
@@ -79,7 +80,11 @@ class ProfileEdit extends Controller
 
         $passwordToUpdate = null;
         if ($passwordNew !== '' || $passwordConfirm !== '') {
-            if ($passwordNew === '') {
+            if ($passwordCurrent === '') {
+                $errors[] = 'Current password is required to change password';
+            } elseif (!$this->verifyCurrentPassword($passwordCurrent, $counselor)) {
+                $errors[] = 'Current password is incorrect';
+            } elseif ($passwordNew === '') {
                 $errors[] = 'New password is required';
             } elseif (strlen($passwordNew) < 6) {
                 $errors[] = 'Password must be at least 6 characters';
@@ -127,6 +132,9 @@ class ProfileEdit extends Controller
         }
 
         if (!empty($errors)) {
+            $counselor->name = $name !== '' ? $name : ($counselor->name ?? '');
+            $counselor->email = $email !== '' ? $email : ($counselor->email ?? '');
+
             $this->view('counselor/profile-edit', [
                 'title' => 'Edit Profile - GradBridge',
                 'user' => $counselor,
@@ -167,6 +175,10 @@ class ProfileEdit extends Controller
 
         if ($updated) {
             $_SESSION['name'] = $name;
+            if ($profilePhotoUrl !== null) {
+                $_SESSION['profile_photo_url'] = $profilePhotoUrl;
+                $_SESSION['profile_picture'] = $profilePhotoUrl;
+            }
             $_SESSION['flash_message'] = [
                 'type' => 'success',
                 'text' => 'Profile updated successfully!',
@@ -182,5 +194,20 @@ class ProfileEdit extends Controller
                 ],
             ]);
         }
+    }
+
+    private function verifyCurrentPassword($rawPassword, $counselor)
+    {
+        $storedHash = (string)($counselor->password ?? '');
+        if ($storedHash === '') {
+            return false;
+        }
+
+        if (password_verify($rawPassword, $storedHash)) {
+            return true;
+        }
+
+        // Fallback for legacy plain-text records.
+        return hash_equals($storedHash, $rawPassword);
     }
 }

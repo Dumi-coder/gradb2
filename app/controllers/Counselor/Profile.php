@@ -46,6 +46,8 @@ class Profile extends Controller
         $photo = $counselor->profile_photo_url ?? ($user->profile_photo_url ?? null);
 
         $_SESSION['name'] = $name;
+        $_SESSION['profile_photo_url'] = $photo;
+        $_SESSION['profile_picture'] = $photo;
 
         $profile = (object) [
             'name' => $name,
