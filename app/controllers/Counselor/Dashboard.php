@@ -47,6 +47,7 @@ class Dashboard extends Controller
 
         $pendingRequests = $requestModel->getAidRequestsForCounselorByStatuses(['pending_verification']);
         $acceptedRequests = $requestModel->getAidRequestsForCounselorByStatuses(['open', 'approved', 'accepted']);
+        $completedRequests = $requestModel->getAidRequestsForCounselorByStatuses(['completed']);
         $rejectedRequests = $requestModel->getAidRequestsForCounselorByStatuses(['rejected']);
         $flashMessage = $_SESSION['flash_message'] ?? null;
         if (is_array($flashMessage)) {
@@ -64,6 +65,7 @@ class Dashboard extends Controller
             'user' => $_SESSION,
             'pendingRequests' => $pendingRequests,
             'acceptedRequests' => $acceptedRequests,
+            'completedRequests' => $completedRequests,
             'rejectedRequests' => $rejectedRequests,
             'flashMessage' => $flashMessage,
         ];

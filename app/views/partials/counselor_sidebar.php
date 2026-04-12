@@ -21,19 +21,19 @@ $isActive = function(string $path) use ($current): string {
             </a>
             <a href="<?=ROOT?>/Counselor/PendingRequests" class="nav-item<?= $isActive('counselor/pendingrequests') ?>">
               <i class="fas fa-clock"></i>
-              <span>Pending Requests</span>
+              <span>Pending</span>
             </a>
             <a href="<?=ROOT?>/Counselor/ApprovedRequests" class="nav-item<?= $isActive('counselor/approvedrequests') ?>">
               <i class="fas fa-check-circle"></i>
-              <span>Approved Requests</span>
+              <span>Approved</span>
             </a>
             <a href="<?=ROOT?>/Counselor/CompletedRequests" class="nav-item<?= $isActive('counselor/completedrequests') ?>">
               <i class="fas fa-flag-checkered"></i>
-              <span>Completed Requests</span>
+              <span>Completed</span>
             </a>
             <a href="<?=ROOT?>/Counselor/RejectedRequests" class="nav-item<?= $isActive('counselor/rejectedrequests') ?>">
               <i class="fas fa-times-circle"></i>
-              <span>Rejected Requests</span>
+              <span>Rejected</span>
             </a>
           </div>
           

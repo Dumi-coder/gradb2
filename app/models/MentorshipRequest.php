@@ -21,6 +21,7 @@ class MentorshipRequest
                 a.alumni_id,
                 u.name AS mentor_name,
                 u.email AS mentor_email,
+                COALESCE(a.profile_photo_url, '') AS mentor_profile_photo_url,
                 a.mobile AS mentor_mobile,
                 a.linkedin_url AS mentor_linkedin_url,
                 f.faculty_name,
@@ -50,14 +51,45 @@ class MentorshipRequest
               AND (a.is_deleted IS NULL OR a.is_deleted = 0)
               AND (a.is_suspended IS NULL OR a.is_suspended = 0)
               AND (a.mentorship_availability_status IS NULL OR a.mentorship_availability_status != 'unavailable')
+                            AND NOT EXISTS (
+                                    SELECT 1
+                                    FROM requests r_block
+                                    WHERE r_block.request_type = 'mentorship'
+                                        AND r_block.student_user_id = :student_user_id
+                                        AND r_block.alumnus_user_id = a.user_id
+                                        AND r_block.status IN ('pending', 'accepted', 'pending_review')
+                            )
             ORDER BY stats.avg_rating DESC, stats.sessions_count DESC, u.name ASC
         ";
 
         $stmt = $pdo->prepare($query);
-        $stmt->execute();
+                $stmt->execute(['student_user_id' => (int)$studentUserId]);
 
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result ? $result : [];
+    }
+
+    public function hasBlockingRequestWithMentor($studentUserId, $mentorUserId)
+    {
+        $pdo = $this->connect();
+
+        $query = "
+            SELECT 1
+            FROM requests
+            WHERE request_type = 'mentorship'
+              AND student_user_id = :student_user_id
+              AND alumnus_user_id = :mentor_user_id
+              AND status IN ('pending', 'accepted', 'pending_review')
+            LIMIT 1
+        ";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([
+            'student_user_id' => (int)$studentUserId,
+            'mentor_user_id' => (int)$mentorUserId,
+        ]);
+
+        return (bool)$stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function getMentorByUserId($mentorUserId)
@@ -106,6 +138,17 @@ class MentorshipRequest
             $mentor = $mentorStmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$mentor) {
+                $pdo->rollBack();
+                return false;
+            }
+
+            $blockStmt = $pdo->prepare("\n                SELECT 1\n                FROM requests\n                WHERE request_type = 'mentorship'\n                  AND student_user_id = :student_user_id\n                  AND alumnus_user_id = :mentor_user_id\n                  AND status IN ('pending', 'accepted', 'pending_review')\n                LIMIT 1\n            ");
+            $blockStmt->execute([
+                'student_user_id' => (int)$studentUserId,
+                'mentor_user_id' => (int)$mentorUserId,
+            ]);
+
+            if ($blockStmt->fetch(PDO::FETCH_ASSOC)) {
                 $pdo->rollBack();
                 return false;
             }

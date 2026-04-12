@@ -46,6 +46,7 @@ class AidReqForm extends Controller
         $formData = [
             'mobile_number' => trim($_POST['mobile_number'] ?? ''),
             'aid_type' => trim($_POST['aid_type'] ?? ''),
+            'other_aid_type' => trim($_POST['other_aid_type'] ?? ''),
             'amount' => trim($_POST['amount'] ?? ''),
             'reason' => trim($_POST['reason'] ?? ''),
         ];
@@ -64,6 +65,12 @@ class AidReqForm extends Controller
         if ($formData['aid_type'] === 'money') {
             if ($formData['amount'] === '' || !is_numeric($formData['amount']) || (int)$formData['amount'] <= 0) {
                 $errors[] = 'Valid amount is required for money aid requests';
+            }
+        }
+
+        if ($formData['aid_type'] === 'other') {
+            if ($formData['other_aid_type'] === '' || strlen($formData['other_aid_type']) < 3) {
+                $errors[] = 'Please specify the aid needed when selecting Other';
             }
         }
 
@@ -155,12 +162,18 @@ class AidReqForm extends Controller
         }
 
         $aidRequestModel = new AidRequest();
+        $reasonText = $formData['reason'];
+        if ($formData['aid_type'] === 'other' && $formData['other_aid_type'] !== '') {
+            $specifiedItem = preg_replace('/\s+/', ' ', trim($formData['other_aid_type']));
+            $reasonText = 'Requested item (' . $specifiedItem . '): ' . $reasonText;
+        }
+
         $savedDetails = $aidRequestModel->insert([
             'request_id' => (int)$latestRequest->request_id,
             'mobile_number' => $formData['mobile_number'],
             'aid_type' => $formData['aid_type'],
             'amount' => $formData['aid_type'] === 'money' ? (int)$formData['amount'] : null,
-            'reason' => $formData['reason'],
+            'reason' => $reasonText,
             'student_id_pdf_path' => $studentIdPdf,
             'income_statement_path' => $incomeStatement,
             'gramaseva_cert_path' => $gramasevaCertificate,
@@ -183,7 +196,7 @@ class AidReqForm extends Controller
             'text' => 'Aid request submitted successfully. Counselor verification is pending.',
         ];
 
-        redirect('student/dashboard');
+        redirect('student/aidrequests');
     }
 
     private function isValidUpload($fieldName, $allowedExtensions)

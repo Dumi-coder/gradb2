@@ -1,0 +1,269 @@
+/* alumni-aid-requests.css - page-specific styles for alumni aid requests */
+
+@import url("aid-requests.css");
+
+.aid-requests-page .dashboard-section {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.aid-requests-page .alumni-req-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-sm);
+}
+
+.aid-requests-page .req-card {
+  border: 1px solid #e6eaf0;
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  overflow: hidden;
+}
+
+.aid-requests-page .req-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  border-color: #d6deea;
+}
+
+.aid-requests-page .req-summary {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.2fr) minmax(130px, .6fr) minmax(140px, .7fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.aid-requests-page .req-summary > div {
+  min-width: 0;
+}
+
+.aid-requests-page .summary-label {
+  display: block;
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: #64748b;
+  margin-bottom: 3px;
+  font-weight: 600;
+}
+
+.aid-requests-page .summary-value {
+  margin: 0;
+  color: #0f172a;
+  font-size: .98rem;
+  font-weight: 700;
+}
+
+.aid-requests-page .summary-meta {
+  margin: 3px 0 0;
+  color: #64748b;
+  font-size: .82rem;
+  line-height: 1.35;
+}
+
+.aid-requests-page .summary-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.aid-requests-page .empty-state {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 12px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #475569;
+  font-size: .9rem;
+}
+
+.aid-requests-page .chip-state {
+  border-radius: 999px;
+  padding: .24rem .62rem;
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: .01em;
+  border: 1px solid transparent;
+}
+
+.aid-requests-page .chip-pending {
+  background: #fff7ed;
+  color: #9a3412;
+  border-color: #fed7aa;
+}
+
+.aid-requests-page .chip-approved {
+  background: #e0f2fe;
+  color: #075985;
+  border-color: #bae6fd;
+}
+
+.aid-requests-page .chip-completed {
+  background: #dcfce7;
+  color: #166534;
+  border-color: #86efac;
+}
+
+.aid-requests-page .review-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.52);
+  backdrop-filter: blur(3px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 12000;
+  padding: 16px;
+}
+
+.aid-requests-page .review-modal-panel {
+  width: min(760px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  background: #ffffff;
+  border: 1px solid #dbe3ee;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 20px 48px rgba(2, 6, 23, 0.26);
+}
+
+.aid-requests-page .review-modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.aid-requests-page .review-modal-title {
+  margin: 0;
+  font-size: 1.06rem;
+  color: #0f172a;
+}
+
+.aid-requests-page .review-modal-meta {
+  margin: 2px 0 0;
+  color: #64748b;
+  font-size: .83rem;
+}
+
+.aid-requests-page .modal-close-btn {
+  border: 1px solid #d1dae6;
+  background: #fff;
+  color: #334155;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.aid-requests-page .req-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 10px;
+  align-items: start;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid #e8eef5;
+  padding: 9px 10px;
+  margin-top: 8px;
+}
+
+.aid-requests-page .req-label {
+  color: #6b7280;
+  font-size: .86rem;
+}
+
+.aid-requests-page .req-row strong {
+  font-size: .9rem;
+  text-align: left;
+  word-break: break-word;
+  line-height: 1.45;
+}
+
+.aid-requests-page .action-wrap {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.aid-requests-page .statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.aid-requests-page .statistics-grid .stat-card {
+  padding: 10px 12px;
+  border-radius: 12px;
+  min-height: 86px;
+  align-items: center;
+  gap: 10px;
+  box-shadow: none;
+}
+
+.aid-requests-page .statistics-grid .stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  font-size: .95rem;
+  flex-shrink: 0;
+}
+
+.aid-requests-page .statistics-grid .stat-content {
+  min-width: 0;
+}
+
+.aid-requests-page .statistics-grid .stat-number {
+  font-size: 1.55rem;
+  margin: 0 0 2px 0;
+}
+
+.aid-requests-page .statistics-grid .stat-label {
+  font-size: .82rem;
+  line-height: 1.2;
+}
+
+@media (max-width: 1040px) {
+  .aid-requests-page .alumni-req-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .aid-requests-page .req-summary {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  .aid-requests-page .summary-actions {
+    justify-content: flex-start;
+    grid-column: 1 / -1;
+  }
+
+  .aid-requests-page .statistics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .aid-requests-page .req-summary,
+  .aid-requests-page .req-row {
+    grid-template-columns: 1fr;
+  }
+
+  .aid-requests-page .statistics-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -20,6 +20,7 @@ $flashMessage = $flashMessage ?? null;
     border: 1px solid var(--border, #e5e7eb);
     border-radius: 14px;
     padding: 24px;
+    font-family: inherit;
   }
   .form-group {
     margin-bottom: 16px;
@@ -38,7 +39,20 @@ $flashMessage = $flashMessage ?? null;
     border-radius: 10px;
     padding: 10px 12px;
     font-size: 0.95rem;
+    font-family: inherit;
     background: #fff;
+  }
+  .form-group input::placeholder {
+    font-family: inherit;
+  }
+  .edit-card .btn,
+  .edit-card label,
+  .edit-card small,
+  .edit-card h2,
+  .edit-card h3,
+  .edit-card span,
+  .edit-card p {
+    font-family: inherit;
   }
   .form-group input:focus {
     outline: none;
@@ -57,6 +71,16 @@ $flashMessage = $flashMessage ?? null;
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
+  }
+  .form-actions .btn {
+    padding: 8px 12px;
+    font-size: 0.88rem;
+    line-height: 1.2;
+    min-width: 0;
+  }
+  .form-actions .btn.btn-outline {
+    padding-left: 9px;
+    padding-right: 9px;
   }
   .alert {
     padding: 12px 14px;
@@ -140,6 +164,17 @@ $flashMessage = $flashMessage ?? null;
 
           <div style="border-top: 1px dashed var(--border, #e5e7eb); margin: 24px 0; padding-top: 24px;">
             <h3 style="margin: 0 0 16px 0; font-size: 1rem; font-weight: 600;">Change Password (Optional)</h3>
+
+            <div class="form-group">
+              <label for="password_current">Current Password</label>
+              <input
+                type="password"
+                id="password_current"
+                name="password_current"
+                placeholder="Enter current password to confirm identity"
+              >
+              <small>Required only when changing password</small>
+            </div>
 
             <div class="form-group">
               <label for="password_new">New Password</label>

@@ -10,28 +10,55 @@ require '../app/views/partials/alumni_header.php';
 
   <main class="main-content">
     <?php if (isset($_SESSION['success'])): ?>
-      <div class="alert alert-success">
+      <div class="mentorship-toast mentorship-toast-success" role="status" aria-live="polite">
         <i class="fas fa-check-circle"></i>
-        <?= esc($_SESSION['success']) ?>
+        <span><?= esc($_SESSION['success']) ?></span>
+        <button type="button" class="mentorship-toast-close" aria-label="Close message">&times;</button>
       </div>
       <?php unset($_SESSION['success']); ?>
     <?php endif; ?>
 
     <?php if (isset($_SESSION['error'])): ?>
-      <div class="alert alert-danger">
+      <div class="mentorship-toast mentorship-toast-error" role="alert" aria-live="assertive">
         <i class="fas fa-exclamation-circle"></i>
-        <?= esc($_SESSION['error']) ?>
+        <span><?= esc($_SESSION['error']) ?></span>
+        <button type="button" class="mentorship-toast-close" aria-label="Close message">&times;</button>
       </div>
       <?php unset($_SESSION['error']); ?>
     <?php endif; ?>
 
+    <?php
+      $mentorEnabled = (int)($profile->is_verified_mentor ?? 0) === 1;
+      $mentorAvailability = strtolower(trim((string)($profile->mentorship_availability_status ?? 'available')));
+      $mentorHidden = (!$mentorEnabled || $mentorAvailability === 'unavailable');
+    ?>
+
     <section class="dashboard-section mentor-reputation-section">
       <div class="reputation-card">
-        <h2 class="section-title">Your Mentor Reputation</h2>
-        <p class="mentor-rating">⭐ <?= number_format((float)($mentorshipData['reputation']['avg_rating'] ?? 0), 1) ?></p>
+        <h2 class="section-title">Your Mentor Feedback</h2>
+        <p class="mentor-rating">⭐ <?= number_format((float)($mentorshipData['reputation']['avg_rating'] ?? 0), 1) ?> Feedback Score</p>
         <p class="mentor-sessions">Completed Sessions: <?= (int)($mentorshipData['reputation']['total_completed_sessions'] ?? 0) ?></p>
       </div>
     </section>
+
+    <?php if ($mentorHidden): ?>
+      <section class="dashboard-section mentor-onboarding-section">
+        <div class="mentor-onboarding-card">
+          <h3 class="mentor-onboarding-title">
+            <?= !$mentorEnabled ? 'Become a Mentor' : 'Mentorship Is Currently Paused' ?>
+          </h3>
+          <p class="mentor-onboarding-copy">
+            <?= !$mentorEnabled
+              ? 'You are not visible in the student mentor list yet. Turn on mentor mode and help students with real guidance from your experience.'
+              : 'Your profile is currently hidden from students because availability is set to unavailable. Switch availability to start receiving mentorship requests again.' ?>
+          </p>
+          <a href="<?= ROOT ?>/alumni/profile?action=edit" class="btn btn-primary btn-sm">
+            <i class="fas fa-user-edit"></i>
+            Go to Edit Profile
+          </a>
+        </div>
+      </section>
+    <?php endif; ?>
 
     <section class="dashboard-section mentorship-requests-section">
       <h2 class="section-title">Pending Requests</h2>
@@ -100,21 +127,19 @@ require '../app/views/partials/alumni_header.php';
                     <p class="mentor-meta">LinkedIn: <a href="<?= esc($active['student_linkedin_url']) ?>" target="_blank" rel="noopener">View profile</a></p>
                   <?php endif; ?>
                 </div>
-                <div class="request-actions mentor-request-actions">
+                <div class="request-actions mentor-request-actions active-mentor-actions">
                   <button
                     type="button"
-                    class="btn btn-outline btn-sm mentorship-chat-open"
+                    class="btn btn-primary btn-sm mentorship-chat-open"
                     data-thread-id="<?= (int)$active['request_id'] ?>"
                     data-thread-name="<?= esc($active['student_name']) ?>"
                   >
                     <i class="fas fa-comments"></i>
                     Chat with Student
                   </button>
-                </div>
-                <div class="request-actions mentor-request-actions">
                   <form method="POST" action="<?= ROOT ?>/Alumni/Mentorship/end/<?= (int)$active['request_id'] ?>">
-                    <button type="submit" class="btn btn-outline btn-sm" onclick="return confirm('End this mentorship now? Student will be prompted to submit a required review.');">
-                      <i class="fas fa-flag-checkered"></i> End Mentorship
+                    <button type="submit" class="btn btn-outline btn-sm" onclick="return confirm('End this mentorship now? Student will be prompted to submit required feedback.');">
+                      <i class="fas fa-flag-checkered"></i> Mark Completed
                     </button>
                   </form>
                 </div>
@@ -141,9 +166,9 @@ require '../app/views/partials/alumni_header.php';
               </div>
               <p class="request-description"><?= esc($completed['request_reason']) ?></p>
               <p class="mentor-meta">Student: <?= esc($completed['student_name']) ?></p>
-              <p class="mentor-meta">Rating: ⭐ <?= (int)($completed['rating'] ?? 0) ?></p>
+              <p class="mentor-meta">Feedback Score: ⭐ <?= (int)($completed['rating'] ?? 0) ?></p>
               <?php if (!empty($completed['review_comment'])): ?>
-                <p class="review-note">"<?= esc($completed['review_comment']) ?>"</p>
+                <p class="review-note"><strong>Feedback Note:</strong> "<?= esc($completed['review_comment']) ?>"</p>
               <?php endif; ?>
             </article>
           <?php endforeach; ?>
@@ -188,6 +213,29 @@ require '../app/views/partials/alumni_header.php';
 </div>
 
 <script src="<?=ROOT?>/assets/js/main.js"></script>
+<script>
+  (function () {
+    const toast = document.querySelector('.mentorship-toast');
+    if (!toast) return;
+
+    const closeBtn = toast.querySelector('.mentorship-toast-close');
+
+    const dismissToast = function () {
+      toast.classList.add('is-hiding');
+      setTimeout(() => {
+        if (toast && toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 260);
+    };
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', dismissToast);
+    }
+
+    setTimeout(dismissToast, 3200);
+  })();
+</script>
 <script>
   window.mentorshipChatConfig = {
     baseUrl: '<?=ROOT?>/alumni/Mentorship',

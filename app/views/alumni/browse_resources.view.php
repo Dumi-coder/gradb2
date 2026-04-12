@@ -41,7 +41,7 @@ require '../app/views/partials/alumni_header.php';
               </button>
               <a href="<?=ROOT?>/alumni/resources/index" class="btn btn-outline">
                 <i class="fas fa-arrow-left"></i>
-                <span>Back to Resources</span>
+                <span>Back</span>
               </a>
             </form>
           </div>

@@ -234,9 +234,9 @@
                     <!-- Profile Dropdown -->
                     <div class="profile-dropdown">
                         <button class="profile-dropdown-btn" onclick="toggleProfileDropdown()">
-                            <?php 
-                            $profile_pic = $_SESSION['profile_picture'] ?? null;
-                            if ($profile_pic): 
+                            <?php
+                            $profile_pic = $_SESSION['profile_picture'] ?? ($_SESSION['profile_photo_url'] ?? null);
+                            if ($profile_pic):
                             ?>
                                 <img src="<?= esc($profile_pic) ?>" alt="Profile" class="profile-avatar">
                             <?php else: ?>

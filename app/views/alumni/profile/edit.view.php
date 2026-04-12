@@ -133,6 +133,52 @@ require '../app/views/partials/alumni_header.php';
                                 <div class="error-message"><?= esc($errors['bio']) ?></div>
                             <?php endif; ?>
                         </div>
+
+                        <!-- Mentorship Preferences -->
+                        <div class="form-group full-width">
+                            <label class="form-label">Mentorship Preferences</label>
+                            <div style="padding: 14px; border: 1px solid #dbe2ea; border-radius: 8px; background: #f9fbff;">
+                                <label style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #1f2937; cursor: pointer;">
+                                    <input
+                                        type="checkbox"
+                                        id="is_verified_mentor"
+                                        name="is_verified_mentor"
+                                        value="1"
+                                        <?= ((int)($profile->is_verified_mentor ?? 0) === 1) ? 'checked' : '' ?>
+                                    >
+                                    Be visible as a mentor to students
+                                </label>
+
+                                <div id="mentorAvailabilityWrap" style="margin-top: 12px; <?= ((int)($profile->is_verified_mentor ?? 0) === 1) ? '' : 'display:none;' ?>">
+                                    <label for="mentorship_availability_status" class="form-label" style="margin-bottom: 6px; display: block;">Mentor Availability</label>
+                                    <select id="mentorship_availability_status" name="mentorship_availability_status" class="form-input">
+                                        <?php $availability = strtolower(trim((string)($profile->mentorship_availability_status ?? 'available'))); ?>
+                                        <option value="available" <?= ($availability !== 'unavailable') ? 'selected' : '' ?>>Available</option>
+                                        <option value="unavailable" <?= ($availability === 'unavailable') ? 'selected' : '' ?>>Unavailable</option>
+                                    </select>
+                                    <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">If unavailable, students will not see you in the mentor list.</small>
+
+                                    <?php $needsMentorAgreement = ((int)($profile->is_verified_mentor ?? 0) !== 1); ?>
+                                    <div id="mentorTermsWrap" style="margin-top: 12px; <?= ((int)($profile->is_verified_mentor ?? 0) === 1) ? 'display:none;' : '' ?>">
+                                        <div style="padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: #ffffff;">
+                                            <p style="margin: 0 0 8px; font-size: 13px; color: #0f172a; font-weight: 600;">Mentor Terms & Responsibilities</p>
+                                            <ul style="margin: 0 0 8px 18px; padding: 0; color: #334155; font-size: 12px; line-height: 1.45;">
+                                                <li>Provide respectful, professional, and constructive guidance to students.</li>
+                                                <li>Maintain confidentiality and avoid sharing personal data outside mentorship needs.</li>
+                                                <li>Respond within a reasonable time and end mentorship when guidance is complete.</li>
+                                            </ul>
+                                            <label style="display: flex; align-items: flex-start; gap: 8px; color: #1f2937; font-size: 13px;">
+                                                <input type="checkbox" id="mentor_terms_agree" name="mentor_terms_agree" value="1" <?= !$needsMentorAgreement ? 'checked' : '' ?> <?= !$needsMentorAgreement ? 'disabled' : '' ?>>
+                                                <span>I agree to these mentor terms and understand I may be shown to students as a mentor.</span>
+                                            </label>
+                                        </div>
+                                        <?php if (isset($errors['mentor_terms_agree'])): ?>
+                                            <div class="error-message" style="margin-top: 8px;"><?= esc($errors['mentor_terms_agree']) ?></div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Social Media Links Section -->
@@ -186,7 +232,7 @@ require '../app/views/partials/alumni_header.php';
                     <div class="form-actions">
                         <a href="<?= ROOT ?>/alumni/profile" class="btn btn-outline">
                             <i class="fas fa-arrow-left"></i>
-                            Cancel
+                            Back
                         </a>
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save"></i>
@@ -299,5 +345,27 @@ require '../app/views/partials/alumni_header.php';
             });
         }
     }
+})();
+
+(function(){
+    const mentorCheckbox = document.getElementById('is_verified_mentor');
+    const availabilityWrap = document.getElementById('mentorAvailabilityWrap');
+    const termsWrap = document.getElementById('mentorTermsWrap');
+    const termsCheck = document.getElementById('mentor_terms_agree');
+
+    if (!mentorCheckbox || !availabilityWrap) return;
+
+    function syncMentorFields() {
+        availabilityWrap.style.display = mentorCheckbox.checked ? '' : 'none';
+        if (termsWrap) {
+            termsWrap.style.display = mentorCheckbox.checked ? '' : 'none';
+        }
+        if (termsCheck && !mentorCheckbox.checked) {
+            termsCheck.checked = false;
+        }
+    }
+
+    mentorCheckbox.addEventListener('change', syncMentorFields);
+    syncMentorFields();
 })();
 </script>
