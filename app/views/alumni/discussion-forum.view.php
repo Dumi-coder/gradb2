@@ -129,10 +129,11 @@ require '../app/views/partials/alumni_header.php';
               
               <div class="topic-footer">
                 <div class="topic-meta">
+                  <div class="topic-views"><i class="fas fa-eye"></i> <strong><?= $topic->views ?? 0 ?></strong></div>
                   <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $topic->replies ?? 0 ?></strong> replies</div>
                   <div class="topic-activity"><i class="fas fa-clock"></i> <?= $last_activity ?></div>
                 </div>
-                <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $topic->post_id ?>)">
+                <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $topic->post_id ?>, this)">
                   <i class="fas fa-eye"></i> View
                 </button>
               </div>
@@ -224,11 +225,12 @@ require '../app/views/partials/alumni_header.php';
                     
                     <div class="topic-footer">
                       <div class="topic-meta">
+                        <div class="topic-views"><i class="fas fa-eye"></i> <strong><?= $forum->views ?? 0 ?></strong></div>
                         <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $forum->replies ?? 0 ?></strong> replies</div>
                         <div class="topic-activity"><i class="fas fa-clock"></i> <?= $last_activity ?></div>
                       </div>
                       <div class="topic-actions">
-                        <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $forum->post_id ?>)">
+                        <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $forum->post_id ?>, this)">
                           <i class="fas fa-eye"></i> View
                         </button>
                         <button class="btn-action btn-edit" onclick="openEditForumModal(<?= $forum->post_id ?>)">
@@ -283,7 +285,7 @@ require '../app/views/partials/alumni_header.php';
                     <div class="reply-card-header">
                       <div class="forum-link-info">
                         <span class="forum-label">Replied to:</span>
-                        <a href="javascript:void(0)" class="forum-link" onclick="incrementAndViewPost(<?= $reply->forum_id ?>)">
+                        <a href="javascript:void(0)" class="forum-link" onclick="incrementAndViewPost(<?= $reply->forum_id ?>, this)">
                           <?= esc($reply->forum_title ?? 'Deleted Post') ?>
                         </a>
                       </div>
@@ -337,6 +339,7 @@ require '../app/views/partials/alumni_header.php';
             </div>
             <div class="forum-stats">
               <span class="status-badge" id="forumDetailStatus">Active</span>
+              <span><i class="fas fa-eye"></i> <strong id="forumDetailViews">0</strong> views</span>
               <span><i class="fas fa-comment"></i> <strong id="forumDetailReplies">0</strong> replies</span>
               <span><i class="fas fa-clock"></i> <span id="forumDetailActivity">Last activity</span></span>
             </div>
@@ -720,6 +723,7 @@ require '../app/views/partials/alumni_header.php';
 
     function openForumDetailModal(postId) {
       currentPostId = postId;
+      showForumLoadingState();
       
       // Fetch post details and replies from server
       fetch(`<?=ROOT?>/alumni/discussionforum/getpostwithreplies?post_id=${postId}`)
@@ -784,15 +788,18 @@ require '../app/views/partials/alumni_header.php';
               }
             }
             
+            hideForumLoadingState();
             // Show modal
             const modal = document.getElementById('forumDetailModal');
             modal.classList.add('show');
             modal.style.display = 'block';
           } else {
+            hideForumLoadingState();
             showNotification(data.message || 'Failed to load post', 'error');
           }
         })
         .catch(error => {
+          hideForumLoadingState();
           console.error('Error:', error);
           showNotification('Failed to load post details', 'error');
         });
@@ -851,7 +858,7 @@ require '../app/views/partials/alumni_header.php';
           <div class="reply-header">
             <div class="reply-author">
               <i class="fas fa-user-circle"></i>
-              <strong>${reply.user_name || 'Anonymous'}</strong>
+              <strong>${reply.author_name || reply.user_name || 'Anonymous'}</strong>
             </div>
             <span class="reply-time">${displayTime}</span>
           </div>
@@ -890,9 +897,51 @@ require '../app/views/partials/alumni_header.php';
       }
     }
 
+    function showForumLoadingState() {
+      const modal = document.getElementById('forumDetailModal');
+      if (!modal) return;
+
+      let overlay = modal.querySelector('.forum-loading-overlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'forum-loading-overlay';
+        overlay.innerHTML = `
+          <div style="display:flex; flex-direction:column; align-items:center; gap:10px; color:#374151;">
+            <i class="fas fa-spinner fa-spin" style="font-size:28px;"></i>
+            <span style="font-weight:600;">Loading discussion...</span>
+          </div>
+        `;
+        Object.assign(overlay.style, {
+          position: 'absolute',
+          inset: '0',
+          background: 'rgba(255, 255, 255, 0.85)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: '20'
+        });
+
+        const modalContent = modal.querySelector('.modal-content');
+        if (modalContent) {
+          modalContent.style.position = 'relative';
+          modalContent.appendChild(overlay);
+        }
+      }
+
+      modal.classList.add('show');
+      modal.style.display = 'block';
+    }
+
+    function hideForumLoadingState() {
+      const modal = document.getElementById('forumDetailModal');
+      const overlay = modal ? modal.querySelector('.forum-loading-overlay') : null;
+      if (overlay) overlay.remove();
+    }
+
     function closeForumDetailModal() {
       console.log('Closing Forum Detail Modal');
       const modal = document.getElementById('forumDetailModal');
+      hideForumLoadingState();
       if (modal) {
         modal.classList.remove('show');
         setTimeout(() => {
@@ -1004,7 +1053,7 @@ require '../app/views/partials/alumni_header.php';
             <div class="reply-card-header">
               <div class="forum-link-info">
                 <span class="forum-label">Replied to:</span>
-                <a href="javascript:void(0)" class="forum-link" onclick="incrementAndViewPost(${Number(reply.forum_id || 0)})">
+                <a href="javascript:void(0)" class="forum-link" onclick="incrementAndViewPost(${Number(reply.forum_id || 0)}, this)">
                   ${escapeHtml(reply.forum_title || 'Deleted Post')}
                 </a>
               </div>
@@ -1264,8 +1313,18 @@ require '../app/views/partials/alumni_header.php';
       deleteForumId = null;
     }
 
-    function incrementAndViewPost(postId) {
-      // First, increment the view count
+    function incrementAndViewPost(postId, triggerBtn = null) {
+      if (triggerBtn) {
+        const viewCountEl = triggerBtn.closest('.topic-card')?.querySelector('.topic-views strong');
+        if (viewCountEl) {
+          const currentViews = parseInt(viewCountEl.textContent, 10) || 0;
+          viewCountEl.textContent = String(currentViews + 1);
+        }
+      }
+
+      // Open modal immediately and load content while increment happens in background.
+      openForumDetailModal(postId);
+
       fetch('<?= ROOT ?>/alumni/discussionforum/incrementview', {
         method: 'POST',
         headers: {
@@ -1274,14 +1333,8 @@ require '../app/views/partials/alumni_header.php';
         body: 'post_id=' + postId
       })
       .then(response => response.json())
-      .then(data => {
-        // Then open the forum detail modal
-        openForumDetailModal(postId);
-      })
       .catch(error => {
         console.error('Error incrementing views:', error);
-        // Still open the modal even if view increment fails
-        openForumDetailModal(postId);
       });
     }
 
@@ -1321,6 +1374,13 @@ require '../app/views/partials/alumni_header.php';
     
     // Form submission
     document.addEventListener('DOMContentLoaded', function() {
+      const mainContent = document.querySelector('.main-content');
+      const myPublishedSection = document.querySelector('.my-published-forums-section');
+      const forumTopicsSection = document.querySelector('.forum-topics-section');
+      if (mainContent && myPublishedSection && forumTopicsSection) {
+        mainContent.insertBefore(myPublishedSection, forumTopicsSection);
+      }
+
       // New Post Form
       const newPostForm = document.querySelector('.new-post-form');
       if (newPostForm) {
@@ -1708,10 +1768,11 @@ require '../app/views/partials/alumni_header.php';
             ${tags.length ? `<div class="topic-tags">${tags.map(tag => `<span class="topic-tag tag-${toTagClass(tag)}">#${escapeHtml(tag)}</span>`).join('')}</div>` : ''}
             <div class="topic-footer">
               <div class="topic-meta">
+                <div class="topic-views"><i class="fas fa-eye"></i> <strong>${Number(topic.views || 0)}</strong></div>
                 <div class="topic-replies"><i class="fas fa-comment"></i> <strong>${Number(topic.replies || 0)}</strong> replies</div>
                 <div class="topic-activity"><i class="fas fa-clock"></i> ${lastActivity}</div>
               </div>
-              <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(${Number(topic.post_id)})">
+              <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(${Number(topic.post_id)}, this)">
                 <i class="fas fa-eye"></i> View
               </button>
             </div>

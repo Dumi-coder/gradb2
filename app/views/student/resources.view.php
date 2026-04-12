@@ -51,8 +51,12 @@ require '../app/views/partials/student_header.php';
           <div class="my-resources-grid" id="my-resources-grid">
             <?php if(isset($my_resources) && is_array($my_resources) && count($my_resources)): ?>
               <?php foreach($my_resources as $idx => $res): ?>
+                <?php
+                  $reportCount = (int)($res->report_count ?? 0);
+                  $isPermanentlyReported = ((int)($res->permanently_reported ?? 0) === 1) || $reportCount >= 5;
+                ?>
                 <div class="my-resource-card"
-                     style="<?= ($idx >= 2) ? 'display:none;' : '' ?>"
+                   style="<?= ($idx >= 2) ? 'display:none;' : '' ?> position: relative;"
                      data-id="<?= $res->resource_id ?? '' ?>"
                      data-title="<?= htmlspecialchars($res->title ?? '', ENT_QUOTES) ?>"
                      data-description="<?= htmlspecialchars($res->description ?? '', ENT_QUOTES) ?>"
@@ -61,6 +65,11 @@ require '../app/views/partials/student_header.php';
                      data-file-path="<?= htmlspecialchars($res->file_path ?? '', ENT_QUOTES) ?>"
                      data-file-size="<?= (int)($res->file_size ?? 0) ?>"
                      data-created-at="<?= htmlspecialchars($res->created_at ?? '', ENT_QUOTES) ?>">
+                  <?php if ($isPermanentlyReported): ?>
+                    <span class="resource-status" style="position: absolute; top: 10px; right: 10px; background: #dc2626; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; z-index: 1;">Reported</span>
+                  <?php elseif ($reportCount > 0): ?>
+                    <span class="resource-status" style="position: absolute; top: 10px; right: 10px; background: #dc2626; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; z-index: 1;">Reports : <?= $reportCount ?></span>
+                  <?php endif; ?>
                   <h3 class="resource-title"><?= htmlspecialchars($res->title ?? '') ?></h3>
                   <div class="resource-meta">
                     <span class="resource-category"><?= htmlspecialchars(ucwords(str_replace('-', ' ', $res->category ?? ''))) ?></span>
@@ -100,6 +109,12 @@ require '../app/views/partials/student_header.php';
           <div class="resources-list">
             <?php if(isset($recent_resources) && is_array($recent_resources) && count($recent_resources) > 0): ?>
               <?php foreach($recent_resources as $resource): ?>
+                <?php
+                  $recentIsLink = strtolower((string)($resource->file_type ?? '')) === 'link';
+                  $recentCountLabel = $recentIsLink ? 'visits' : 'downloads';
+                  $recentActionLabel = $recentIsLink ? 'Open' : 'Download';
+                  $recentActionIcon = $recentIsLink ? 'fa-external-link-alt' : 'fa-download';
+                ?>
                 <div class="resource-item">
                   <div class="resource-icon"><i class="fas fa-link"></i></div>
                   <div class="resource-content">
@@ -108,12 +123,14 @@ require '../app/views/partials/student_header.php';
                     <div class="resource-meta">
                       <span class="resource-category"><?= htmlspecialchars(ucwords(str_replace('-', ' ', $resource->category ?? ''))) ?></span>
                       <span class="resource-author">by <?= htmlspecialchars($resource->author_name ?? 'Unknown') ?></span>
-                      <span class="resource-downloads"><i class="fas fa-download"></i> <?= (int)($resource->downloads ?? 0) ?> visits</span>
+                    </div>
+                    <div class="resource-details">
+                      <span class="resource-downloads"><i class="fas <?= $recentIsLink ? 'fa-eye' : 'fa-download' ?>"></i> <?= (int)($resource->downloads ?? 0) ?> <?= $recentCountLabel ?></span>
                     </div>
                   </div>
                   <div class="resource-actions">
                     <a class="btn btn-outline btn-sm" href="<?=ROOT?>/student/resources/download?id=<?= $resource->resource_id ?? '' ?>" target="_blank" rel="noopener">
-                      <i class="fas fa-external-link-alt"></i><span>Open</span>
+                      <i class="fas <?= $recentActionIcon ?>"></i><span><?= $recentActionLabel ?></span>
                     </a>
                     <?php if ((int)($resource->user_id ?? 0) !== (int)($_SESSION['user_id'] ?? 0)): ?>
                       <button class="btn btn-outline btn-sm" style="transition: all 0.3s;" onmouseover="this.style.borderColor='#dc2626'; this.style.color='#dc2626'" onmouseout="this.style.borderColor=''; this.style.color=''" onclick="openReportModal(<?= $resource->resource_id ?? 0 ?>, '<?= htmlspecialchars($resource->title ?? '', ENT_QUOTES) ?>')">
@@ -364,6 +381,6 @@ require '../app/views/partials/student_header.php';
   });
 </script>
 <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
-<script src="<?=ROOT?>/assets/js/student-resources.js?v=8"></script>
+<script src="<?=ROOT?>/assets/js/student-resources.js?v=9"></script>
 </body>
 </html>

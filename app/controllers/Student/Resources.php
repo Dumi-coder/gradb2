@@ -27,7 +27,7 @@ class Resources extends Controller
         
         // Load user's resources
         $resourceModel = new SharedResource();
-        $resources = $resourceModel->where(['user_id' => $_SESSION['user_id']]);
+        $resources = $resourceModel->getOwnerResourcesWithReportMeta((int)($_SESSION['user_id'] ?? 0), 5);
 
         // Get current user's faculty_id
         $student = new Student();
@@ -542,12 +542,26 @@ class Resources extends Controller
         if (!empty($reportResult['success'])) {
             if (!empty($resource->user_id)) {
                 $notificationModel = new Notification();
-                $notificationModel->createResourceReportedNotification(
-                    (int)$resource->user_id,
-                    (int)($_SESSION['user_id'] ?? 0),
-                    (string)($resource->title ?? 'Untitled Resource'),
-                    $reason
-                );
+                $totalReports = (int)($reportResult['total_reports'] ?? 1);
+                $threshold = (int)($reportResult['threshold'] ?? 5);
+                $globallyHidden = !empty($reportResult['globally_hidden']);
+
+                if ($globallyHidden) {
+                    // Send permanently hidden notification
+                    $notificationModel->createResourcePermanentlyHiddenNotification(
+                        (int)$resource->user_id,
+                        (string)($resource->title ?? 'Untitled Resource'),
+                        $totalReports
+                    );
+                } else {
+                    // Send single report notification
+                    $notificationModel->createResourceReportedNotification(
+                        (int)$resource->user_id,
+                        (int)($_SESSION['user_id'] ?? 0),
+                        (string)($resource->title ?? 'Untitled Resource'),
+                        $reason
+                    );
+                }
             }
 
             $totalReports = (int)($reportResult['total_reports'] ?? 1);

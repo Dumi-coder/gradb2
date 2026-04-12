@@ -135,6 +135,13 @@
 
                 const body = document.getElementById('notificationWindowBody');
                 if (body) {
+                    body.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;">' +
+                        '<div style="text-align:center;color:#6b7280;max-width:260px;">' +
+                        '<div style="width:56px;height:56px;border-radius:50%;border:4px solid #e5e7eb;border-top-color:#0e2072;margin:0 auto 12px;animation:notificationSpin 0.9s linear infinite;"></div>' +
+                        '<p style="margin:0;font-size:14px;line-height:1.5;">Loading notifications...</p>' +
+                        '</div>' +
+                        '</div>';
+
                     fetch('<?=ROOT?>/home/getNotifications')
                         .then(response => response.json())
                         .then(data => {
@@ -200,6 +207,13 @@
                         });
                 }
             }
+        }
+
+        if (!document.getElementById('notificationLoadingSpinStyle')) {
+            const style = document.createElement('style');
+            style.id = 'notificationLoadingSpinStyle';
+            style.textContent = '@keyframes notificationSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
+            document.head.appendChild(style);
         }
 
         function logout() {

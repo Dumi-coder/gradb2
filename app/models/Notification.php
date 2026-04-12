@@ -112,6 +112,29 @@ class Notification
 		]);
 	}
 
+	public function createResourcePermanentlyHiddenNotification($recipientUserId, $resourceName, $reportCount = 5)
+	{
+		$resourceName = trim((string)$resourceName);
+
+		if ($recipientUserId <= 0 || $resourceName === '') {
+			return false;
+		}
+
+		$hiddenAt = date('Y-m-d H:i:s');
+		$title = 'Your resource has been permanently hidden';
+		$message = 'Your resource (' . $resourceName . ') has received ' . (int)$reportCount . ' reports and is now hidden from all users on (' . $hiddenAt . ')';
+
+		return $this->insert([
+			'recipient_user_id' => (int)$recipientUserId,
+			'actor_user_id' => null,
+			'title' => $title,
+			'message' => $message,
+			'is_read' => 0,
+			'read_at' => null,
+			'created_at' => $hiddenAt,
+		]);
+	}
+
 	public function markAsRead($notificationId)
 	{
 		if ((int)$notificationId <= 0) {

@@ -108,7 +108,7 @@ require '../app/views/partials/admin_header.php';
                         <div class="topic-activity"><i class="fas fa-clock"></i> <?= $last_activity ?></div>
                       </div>
                       <div class="topic-actions" style="display: flex; gap: 0.5rem;">
-                        <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $forum->post_id ?>)">
+                        <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $forum->post_id ?>, this)">
                           <i class="fas fa-eye"></i> View
                         </button>
                         <button class="btn-action btn-edit" onclick="openEditForumModal(<?= $forum->post_id ?>)">
@@ -240,9 +240,14 @@ require '../app/views/partials/admin_header.php';
                   <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $topic->replies ?? 0 ?></strong> replies</div>
                   <div class="topic-activity"><i class="fas fa-clock"></i> <?= $last_activity ?></div>
                 </div>
-                <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $topic->post_id ?>)">
-                  <i class="fas fa-eye"></i> View
-                </button>
+                <div class="topic-actions" style="display: flex; gap: 0.5rem;">
+                  <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $topic->post_id ?>, this)">
+                    <i class="fas fa-eye"></i> View
+                  </button>
+                  <button class="btn-action btn-delete" onclick="confirmDeleteForum(<?= $topic->post_id ?>)">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
+                </div>
               </div>
             </div>
             <?php endforeach; 
@@ -285,7 +290,7 @@ require '../app/views/partials/admin_header.php';
                     <div class="reply-card-header">
                       <div class="forum-link-info">
                         <span class="forum-label">Replied to:</span>
-                        <a href="javascript:void(0)" class="forum-link" onclick="incrementAndViewPost(<?= $reply->forum_id ?>)">
+                        <a href="javascript:void(0)" class="forum-link" onclick="incrementAndViewPost(<?= $reply->forum_id ?>, this)">
                           <?= esc($reply->forum_title ?? 'Deleted Post') ?>
                         </a>
                       </div>
@@ -317,113 +322,6 @@ require '../app/views/partials/admin_header.php';
                   </div>
                 <?php endforeach; ?>
               </div>
-            <?php endif; ?>
-          </div>
-        </section>
-
-        <!-- Reported Posts Section -->
-        <section class="dashboard-section reported-posts-section">
-          <div class="section-header">
-            <div class="section-title-container">
-              <h2 class="section-title">
-                <i class="fas fa-flag"></i> Reported Posts
-              </h2>
-            </div>
-          </div>
-          
-          <div class="topics-container">
-            <?php
-            // Hardcoded demo data for reported posts
-            $reportedPosts = [
-              (object)[
-                'post_id' => 1001,
-                'title' => 'Looking for study group members',
-                'author_name' => 'John Doe',
-                'content' => 'I am looking for study group members for CS 301. Anyone interested in joining? We plan to meet twice a week to review course materials and work on assignments together.',
-                'report_reason' => 'Spam',
-                'reported_by' => 'Jane Smith',
-                'reported_date' => date('Y-m-d H:i:s', strtotime('-2 hours')),
-                'report_count' => 1
-              ],
-              (object)[
-                'post_id' => 1002,
-                'title' => 'Job opportunities in tech',
-                'author_name' => 'Mike Johnson',
-                'content' => 'Sharing some great job opportunities I found in the tech industry. Check out these amazing positions at top companies!',
-                'report_reason' => 'Inappropriate Content',
-                'reported_by' => 'Sarah Wilson',
-                'reported_date' => date('Y-m-d H:i:s', strtotime('-1 day')),
-                'report_count' => 3
-              ],
-              (object)[
-                'post_id' => 1003,
-                'title' => 'Help with assignment deadline',
-                'author_name' => 'Emily Brown',
-                'content' => 'Can someone help me understand the requirements for the final project? The deadline is approaching and I want to make sure I am on the right track.',
-                'report_reason' => 'Off-topic',
-                'reported_by' => 'David Lee',
-                'reported_date' => date('Y-m-d H:i:s', strtotime('-3 days')),
-                'report_count' => 1
-              ]
-            ];
-            ?>
-            
-            <?php if (empty($reportedPosts)): ?>
-              <div style="text-align: center; padding: 40px; color: #666;">
-                <i class="fas fa-check-circle" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5; color: #10b981;"></i>
-                <p style="font-size: 16px; margin: 0;">No Reported Posts</p>
-                <p style="font-size: 14px; margin-top: 8px; opacity: 0.8;">Great! There are no posts requiring moderation at this time.</p>
-              </div>
-            <?php else: ?>
-              <?php foreach ($reportedPosts as $post): 
-                // Format reported_date as "X time ago"
-                $timestamp = strtotime($post->reported_date);
-                $diff = time() - $timestamp;
-                if ($diff < 60) $reported_time = $diff . ' seconds ago';
-                elseif ($diff < 3600) $reported_time = floor($diff / 60) . ' minutes ago';
-                elseif ($diff < 86400) $reported_time = floor($diff / 3600) . ' hours ago';
-                else $reported_time = floor($diff / 86400) . ' days ago';
-              ?>
-                <div class="topic-card reported-card">
-                  <div class="topic-header">
-                    <div class="topic-info">
-                      <h3 class="topic-title"><?= esc($post->title) ?></h3>
-                      <p class="topic-creator">By <?= esc($post->author_name) ?> • Reported by <?= esc($post->reported_by) ?></p>
-                    </div>
-                    <span class="status-badge status-reported">
-                      <i class="fas fa-flag"></i> Reported
-                    </span>
-                  </div>
-                  
-                  <div class="topic-description">
-                    <p><?= esc(substr($post->content, 0, 150)) ?><?= strlen($post->content) > 150 ? '...' : '' ?></p>
-                  </div>
-                  
-                  <div class="topic-tags">
-                    <span class="topic-tag tag-report"><?= esc($post->report_reason) ?></span>
-                    <?php if ($post->report_count > 1): ?>
-                      <span class="topic-tag tag-trending"><?= $post->report_count ?> Reports</span>
-                    <?php endif; ?>
-                  </div>
-                  
-                  <div class="topic-footer">
-                    <div class="topic-meta">
-                      <div class="topic-activity"><i class="fas fa-clock"></i> <?= $reported_time ?></div>
-                    </div>
-                    <div class="topic-actions" style="display: flex; gap: 0.5rem;">
-                      <button class="btn btn-primary btn-sm" onclick="viewFullPost(<?= $post->post_id ?>)">
-                        <i class="fas fa-eye"></i> View
-                      </button>
-                      <button class="btn-action btn-edit" onclick="approvePost(<?= $post->post_id ?>)">
-                        <i class="fas fa-check"></i> Approve
-                      </button>
-                      <button class="btn-action btn-delete" onclick="deletePost(<?= $post->post_id ?>)">
-                        <i class="fas fa-trash"></i> Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              <?php endforeach; ?>
             <?php endif; ?>
           </div>
         </section>
@@ -1116,24 +1014,31 @@ require '../app/views/partials/admin_header.php';
     }
 
     // View Post and Increment Views
-    function incrementAndViewPost(postId) {
-      // Increment view count
+    function incrementAndViewPost(postId, triggerBtn = null) {
+      if (triggerBtn) {
+        const viewCountEl = triggerBtn.closest('.topic-card')?.querySelector('.topic-views strong');
+        if (viewCountEl) {
+          const currentViews = parseInt(viewCountEl.textContent, 10) || 0;
+          viewCountEl.textContent = String(currentViews + 1);
+        }
+      }
+
+      // Open the modal immediately for better responsiveness.
+      loadForumDetail(postId);
+
+      // Increment view count in the background.
       fetch(`<?=ROOT?>/admin/forummoderation/incrementView/${postId}`, {
         method: 'POST'
       })
       .then(response => response.json())
-      .then(data => {
-        // Load and show forum detail
-        loadForumDetail(postId);
-      })
       .catch(error => {
         console.error('Error:', error);
-        loadForumDetail(postId);
       });
     }
 
     // Load Forum Detail
     function loadForumDetail(postId) {
+      showForumLoadingState();
       currentPostId = postId;
       
       fetch(`<?=ROOT?>/admin/forummoderation/getPostDetail/${postId}`)
@@ -1142,12 +1047,15 @@ require '../app/views/partials/admin_header.php';
           if (data.success) {
             // Store liked reply IDs globally
             window.likedReplyIds = data.likedReplyIds || [];
+            hideForumLoadingState();
             displayForumDetail(data.post, data.replies);
           } else {
+            hideForumLoadingState();
             showNotification('Failed to load forum details', 'error');
           }
         })
         .catch(error => {
+          hideForumLoadingState();
           console.error('Error:', error);
           showNotification('An error occurred while loading forum details', 'error');
         });
@@ -1295,7 +1203,49 @@ require '../app/views/partials/admin_header.php';
       }
     }
 
+    function showForumLoadingState() {
+      const modal = document.getElementById('forumDetailModal');
+      if (!modal) return;
+
+      let overlay = modal.querySelector('.forum-loading-overlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'forum-loading-overlay';
+        overlay.innerHTML = `
+          <div style="display:flex; flex-direction:column; align-items:center; gap:10px; color:#374151;">
+            <i class="fas fa-spinner fa-spin" style="font-size:28px;"></i>
+            <span style="font-weight:600;">Loading discussion...</span>
+          </div>
+        `;
+        Object.assign(overlay.style, {
+          position: 'absolute',
+          inset: '0',
+          background: 'rgba(255, 255, 255, 0.85)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: '20'
+        });
+
+        const modalContent = modal.querySelector('.modal-content');
+        if (modalContent) {
+          modalContent.style.position = 'relative';
+          modalContent.appendChild(overlay);
+        }
+      }
+
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function hideForumLoadingState() {
+      const modal = document.getElementById('forumDetailModal');
+      const overlay = modal ? modal.querySelector('.forum-loading-overlay') : null;
+      if (overlay) overlay.remove();
+    }
+
     function closeForumDetailModal() {
+      hideForumLoadingState();
       document.getElementById('forumDetailModal').style.display = 'none';
       document.body.style.overflow = 'auto';
     }
@@ -1522,7 +1472,7 @@ require '../app/views/partials/admin_header.php';
       incrementAndViewPost(postId);
     }
 
-    // Moderation Actions for Reported Posts
+    // Moderation actions
     function approvePost(postId) {
       if (confirm('Are you sure you want to approve this post?')) {
         fetch(`<?=ROOT?>/admin/forummoderation/approvePost/${postId}`, {
@@ -1881,6 +1831,12 @@ require '../app/views/partials/admin_header.php';
       margin-top: 1.5rem;
       display: flex;
       flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .forum-topics-section .topics-container {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 1.5rem;
     }
 
@@ -2579,28 +2535,6 @@ require '../app/views/partials/admin_header.php';
       border-color: var(--primary);
     }
 
-    /* Reported Posts Section */
-    .reported-posts-section {
-      margin-bottom: 2rem;
-    }
-
-    /* Reported Posts - use same card styling as Forum Topics */
-    .status-badge.status-reported {
-      background: #fef2f2;
-      color: #dc2626;
-      border: 1px solid #fecaca;
-    }
-
-    .topic-card.reported-card {
-      border-left: 3px solid #dc2626;
-    }
-
-    .tag-report {
-      background: #fef2f2;
-      color: #dc2626;
-      border: 1px solid #fecaca;
-    }
-
     /* Status Badge */
     .status-badge {
       padding: 0.25rem 0.625rem;
@@ -2665,6 +2599,10 @@ require '../app/views/partials/admin_header.php';
       
       .hashtag-pills {
         width: 100%;
+      }
+
+      .forum-topics-section .topics-container {
+        grid-template-columns: 1fr;
       }
     }
 

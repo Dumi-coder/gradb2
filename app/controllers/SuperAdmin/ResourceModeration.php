@@ -39,6 +39,8 @@ class ResourceModeration extends Controller
         $reported_resources = [];
         if (is_array($reported_resources_raw)) {
             foreach ($reported_resources_raw as $resource) {
+                $reportCount = (int)($resource->report_count ?? 0);
+                $isPermanentlyReported = ((int)($resource->permanently_reported ?? 0) === 1) || $reportCount >= 5;
                 $reported_resources[] = [
                     'id' => $resource->resource_id,
                     'title' => $resource->title,
@@ -47,10 +49,12 @@ class ResourceModeration extends Controller
                     'resource_type' => ucwords(str_replace('-', ' ', $resource->category)),
                     'file_size' => number_format(($resource->file_size ?? 0) / 1024 / 1024, 1) . ' MB',
                     'description' => $resource->description,
-                    'report_reason' => $resource->rep_reason ?? 'No reason provided',
-                    'reported_date' => $resource->updated_at ?? $resource->created_at,
+                    'report_reason' => $resource->latest_report_reason ?? $resource->rep_reason ?? 'No reason provided',
+                    'reported_date' => $resource->latest_reported_at ?? $resource->updated_at ?? $resource->created_at,
                     'status' => 'pending',
                     'downloads' => $resource->downloads ?? 0,
+                    'report_count' => $reportCount,
+                    'permanently_reported' => $isPermanentlyReported,
                     'user_role' => $resource->user_role ?? 'Unknown',
                     'uploader_role' => $resource->uploader_role ?? '',
                     'user_is_suspended' => (int)($resource->user_is_suspended ?? 0),
@@ -60,7 +64,7 @@ class ResourceModeration extends Controller
         }
         
         // Get super admin's own resources
-        $my_resources = $resourceModel->where(['user_id' => $_SESSION['user_id']]);
+        $my_resources = $resourceModel->getOwnerResourcesWithReportMeta((int)($_SESSION['user_id'] ?? 0), 5);
         
         // Get recent resources from all faculties
         $recent_resources = $resourceModel->getAllRecentResources();
@@ -476,23 +480,33 @@ class ResourceModeration extends Controller
             return;
         }
 
-        // Update resource as reported
-        $success = $resourceModel->reportResource($resourceId, $reason);
+        $reportResult = $resourceModel->submitResourceReport($resourceId, (int)($_SESSION['user_id'] ?? 0), $reason, 5);
 
-        if ($success) {
+        if (!empty($reportResult['success'])) {
             if (!empty($resource->user_id)) {
                 $notificationModel = new Notification();
-                $notificationModel->createResourceReportedNotification(
-                    (int)$resource->user_id,
-                    (int)($_SESSION['user_id'] ?? 0),
-                    (string)($resource->title ?? 'Untitled Resource'),
-                    $reason
-                );
+                $totalReports = (int)($reportResult['total_reports'] ?? 1);
+                $globallyHidden = !empty($reportResult['globally_hidden']);
+
+                if ($globallyHidden) {
+                    $notificationModel->createResourcePermanentlyHiddenNotification(
+                        (int)$resource->user_id,
+                        (string)($resource->title ?? 'Untitled Resource'),
+                        $totalReports
+                    );
+                } else {
+                    $notificationModel->createResourceReportedNotification(
+                        (int)$resource->user_id,
+                        (int)($_SESSION['user_id'] ?? 0),
+                        (string)($resource->title ?? 'Untitled Resource'),
+                        $reason
+                    );
+                }
             }
 
             echo json_encode(['success' => true, 'message' => 'Resource reported successfully. Thank you for helping maintain quality content.']);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to report resource']);
+            echo json_encode(['success' => false, 'message' => $reportResult['message'] ?? 'Failed to report resource']);
         }
     }
 

@@ -135,9 +135,14 @@ require '../app/views/partials/admin_header.php';
                   <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $topic->replies ?? 0 ?></strong> replies</div>
                   <div class="topic-activity"><i class="fas fa-clock"></i> <?= $last_activity ?></div>
                 </div>
-                <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $topic->post_id ?>)">
-                  <i class="fas fa-eye"></i> View
-                </button>
+                <div class="topic-actions" style="display: flex; gap: 0.5rem;">
+                  <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $topic->post_id ?>, this)">
+                    <i class="fas fa-eye"></i> View
+                  </button>
+                  <button class="btn btn-outline btn-sm" style="color:#dc2626;border-color:#dc2626;" onclick="deleteVisiblePost(<?= $topic->post_id ?>)">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
+                </div>
               </div>
             </div>
             <?php endforeach; 
@@ -252,7 +257,48 @@ require '../app/views/partials/admin_header.php';
     }
 
     // Forum View and Detail Functions
-    function incrementAndViewPost(postId) {
+    function showForumLoadingState() {
+      const modal = document.getElementById('forumDetailModal');
+      if (!modal) return;
+
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+
+      let loader = document.getElementById('forumDetailLoadingOverlay');
+      if (!loader) {
+        loader = document.createElement('div');
+        loader.id = 'forumDetailLoadingOverlay';
+        loader.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.82);z-index:20;';
+        loader.innerHTML = '<div style="text-align:center;color:#6b7280;"><i class="fas fa-spinner fa-spin" style="font-size:36px;color:#0e2072;"></i><div style="margin-top:10px;font-size:14px;">Loading forum content...</div></div>';
+        const modalContent = modal.querySelector('.modal-content');
+        if (modalContent) {
+          if (!modalContent.style.position) {
+            modalContent.style.position = 'relative';
+          }
+          modalContent.appendChild(loader);
+        }
+      }
+
+      loader.style.display = 'flex';
+    }
+
+    function hideForumLoadingState() {
+      const loader = document.getElementById('forumDetailLoadingOverlay');
+      if (loader) loader.style.display = 'none';
+    }
+
+    function incrementAndViewPost(postId, triggerBtn) {
+      if (triggerBtn) {
+        const card = triggerBtn.closest('.topic-card');
+        const viewsEl = card ? card.querySelector('.topic-views strong') : null;
+        if (viewsEl) {
+          const currentViews = parseInt(viewsEl.textContent || '0', 10) || 0;
+          viewsEl.textContent = String(currentViews + 1);
+        }
+      }
+
+      showForumLoadingState();
+
       fetch(`<?=ROOT?>/admin/forummoderation/incrementView/${postId}`, {
         method: 'POST'
       })
@@ -266,8 +312,32 @@ require '../app/views/partials/admin_header.php';
       });
     }
 
+    function deleteVisiblePost(postId) {
+      if (!confirm('Are you sure you want to delete this forum post? This cannot be undone.')) {
+        return;
+      }
+
+      fetch(`<?=ROOT?>/admin/forummoderation/deletePost/${postId}`, {
+        method: 'POST'
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          showNotification(data.message || 'Post deleted successfully', 'success');
+          setTimeout(() => location.reload(), 400);
+        } else {
+          showNotification(data.message || 'Failed to delete post', 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showNotification('An error occurred while deleting the post', 'error');
+      });
+    }
+
     function loadForumDetail(postId) {
       currentPostId = postId;
+      showForumLoadingState();
       
       fetch(`<?=ROOT?>/admin/forummoderation/getPostDetail/${postId}`)
         .then(response => {
@@ -280,11 +350,14 @@ require '../app/views/partials/admin_header.php';
           if (data.success) {
             window.likedReplyIds = data.likedReplyIds || [];
             displayForumDetail(data.post, data.replies);
+            hideForumLoadingState();
           } else {
+            hideForumLoadingState();
             showNotification('Failed to load forum details: ' + (data.message || 'Unknown error'), 'error');
           }
         })
         .catch(error => {
+          hideForumLoadingState();
           console.error('Error:', error);
           showNotification('An error occurred while loading forum details: ' + error.message, 'error');
         });
@@ -416,6 +489,7 @@ require '../app/views/partials/admin_header.php';
     }
 
     function closeForumDetailModal() {
+      hideForumLoadingState();
       document.getElementById('forumDetailModal').style.display = 'none';
       document.body.style.overflow = 'auto';
     }

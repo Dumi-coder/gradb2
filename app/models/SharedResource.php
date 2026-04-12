@@ -353,6 +353,42 @@ class SharedResource
 		]);
 	}
 
+	public function getOwnerResourcesWithReportMeta($owner_user_id, $threshold = 5)
+	{
+		$owner_user_id = (int)$owner_user_id;
+		$threshold = max(1, (int)$threshold);
+
+		if ($owner_user_id <= 0) {
+			return [];
+		}
+
+		if ($this->reportsTableExists()) {
+			$query = "SELECT r.*, COALESCE(rr.total_reports, 0) AS report_count,
+						 CASE WHEN COALESCE(rr.total_reports, 0) >= :report_threshold THEN 1 ELSE 0 END AS permanently_reported
+				  FROM {$this->table} r
+				  LEFT JOIN (
+					  SELECT resource_id, COUNT(*) AS total_reports
+					  FROM resource_reports
+					  GROUP BY resource_id
+				  ) rr ON rr.resource_id = r.resource_id
+				  WHERE r.user_id = :owner_user_id
+				  ORDER BY r.created_at DESC";
+
+			return $this->query($query, [
+				'owner_user_id' => $owner_user_id,
+				'report_threshold' => $threshold,
+			]);
+		}
+
+		$query = "SELECT r.*, 0 AS report_count,
+					 CASE WHEN COALESCE(r.is_reported, 0) = 1 THEN 1 ELSE 0 END AS permanently_reported
+			  FROM {$this->table} r
+			  WHERE r.user_id = :owner_user_id
+			  ORDER BY r.created_at DESC";
+
+		return $this->query($query, ['owner_user_id' => $owner_user_id]);
+	}
+
 	public function submitResourceReport($resource_id, $reporter_user_id, $reason, $threshold = 5)
 	{
 		$resource_id = (int)$resource_id;
@@ -474,8 +510,49 @@ class SharedResource
 	 */
 	public function getReportedResourcesByFaculty($faculty_id)
 	{
+		if ($this->reportsTableExists()) {
+			$query = "SELECT r.*, u.name as author_name, u.email as author_email,
+						 s.student_id, a.alumni_id, u.role as uploader_role,
+						 COALESCE(rr.total_reports, 0) AS report_count,
+						 rr.latest_reason AS latest_report_reason,
+						 rr.latest_reported_at,
+						 CASE WHEN COALESCE(rr.total_reports, 0) >= 5 THEN 1 ELSE 0 END AS permanently_reported,
+						 CASE
+							 WHEN u.role = 'student' THEN COALESCE(s.is_suspended, 0)
+							 WHEN u.role = 'alumni' THEN COALESCE(a.is_suspended, 0)
+							 ELSE 0
+						 END as user_is_suspended,
+						 CASE 
+							 WHEN u.role = 'student' THEN 'Student'
+							 WHEN u.role = 'alumni' THEN 'Alumni'
+							 ELSE u.role
+						 END as user_role
+					 FROM {$this->table} r
+					 JOIN users u ON r.user_id = u.user_id
+					 LEFT JOIN students s ON u.user_id = s.user_id
+					 LEFT JOIN alumnis a ON u.user_id = a.user_id
+					 LEFT JOIN (
+						 SELECT rr1.resource_id,
+								COUNT(*) AS total_reports,
+								MAX(rr1.created_at) AS latest_reported_at,
+								SUBSTRING_INDEX(GROUP_CONCAT(rr1.reason ORDER BY rr1.created_at DESC SEPARATOR '||'), '||', 1) AS latest_reason
+						 FROM resource_reports rr1
+						 GROUP BY rr1.resource_id
+					 ) rr ON rr.resource_id = r.resource_id
+					 WHERE r.faculty_id = :faculty_id
+					   AND r.status = 'approved'
+					   AND COALESCE(rr.total_reports, 0) > 0
+					 ORDER BY rr.latest_reported_at DESC, r.updated_at DESC, r.created_at DESC";
+
+			return $this->query($query, ['faculty_id' => $faculty_id]);
+		}
+
 		$query = "SELECT r.*, u.name as author_name, u.email as author_email,
 					 s.student_id, a.alumni_id, u.role as uploader_role,
+					 CASE WHEN COALESCE(r.is_reported, 0) = 1 THEN 5 ELSE 0 END AS report_count,
+					 r.rep_reason AS latest_report_reason,
+					 r.updated_at AS latest_reported_at,
+					 CASE WHEN COALESCE(r.is_reported, 0) = 1 THEN 1 ELSE 0 END AS permanently_reported,
 					 CASE
 						 WHEN u.role = 'student' THEN COALESCE(s.is_suspended, 0)
 						 WHEN u.role = 'alumni' THEN COALESCE(a.is_suspended, 0)
@@ -491,7 +568,8 @@ class SharedResource
 				  LEFT JOIN students s ON u.user_id = s.user_id
 				  LEFT JOIN alumnis a ON u.user_id = a.user_id
 				  WHERE r.is_reported = 1
-				  AND r.faculty_id = :faculty_id
+				    AND r.faculty_id = :faculty_id
+				    AND r.status = 'approved'
 				  ORDER BY r.updated_at DESC, r.created_at DESC";
 
 		return $this->query($query, ['faculty_id' => $faculty_id]);
@@ -508,9 +586,24 @@ class SharedResource
 		$total_resources = is_array($total_result) && isset($total_result[0]) ? (int)$total_result[0]->count : 0;
 
 		// Reported resources for this faculty
-		$reported_query = "SELECT COUNT(*) as count FROM {$this->table} WHERE faculty_id = :faculty_id AND is_reported = 1";
-		$reported_result = $this->query($reported_query, ['faculty_id' => $faculty_id]);
-		$reported_resources = is_array($reported_result) && isset($reported_result[0]) ? (int)$reported_result[0]->count : 0;
+		$reported_resources = 0;
+		if ($this->reportsTableExists()) {
+			$reported_query = "SELECT COUNT(*) as count
+							FROM (
+								SELECT rr.resource_id
+								FROM resource_reports rr
+								JOIN {$this->table} r ON r.resource_id = rr.resource_id
+								WHERE r.faculty_id = :faculty_id
+								  AND r.status = 'approved'
+								GROUP BY rr.resource_id
+							) reported";
+			$reported_result = $this->query($reported_query, ['faculty_id' => $faculty_id]);
+			$reported_resources = is_array($reported_result) && isset($reported_result[0]) ? (int)$reported_result[0]->count : 0;
+		} else {
+			$reported_query = "SELECT COUNT(*) as count FROM {$this->table} WHERE faculty_id = :faculty_id AND is_reported = 1";
+			$reported_result = $this->query($reported_query, ['faculty_id' => $faculty_id]);
+			$reported_resources = is_array($reported_result) && isset($reported_result[0]) ? (int)$reported_result[0]->count : 0;
+		}
 
 		// Total downloads for this faculty
 		$downloads_query = "SELECT SUM(downloads) as total FROM {$this->table} WHERE faculty_id = :faculty_id AND status = 'approved'";
@@ -531,6 +624,19 @@ class SharedResource
 	 */
 	public function removeFlagFromResource($resource_id)
 	{
+		$resource_id = (int)$resource_id;
+
+		if ($resource_id <= 0) {
+			return false;
+		}
+
+		if ($this->reportsTableExists()) {
+			$this->query(
+				"DELETE FROM resource_reports WHERE resource_id = :resource_id",
+				['resource_id' => $resource_id]
+			);
+		}
+
 		$query = "UPDATE {$this->table} 
 				  SET is_reported = 0, rep_reason = NULL 
 				  WHERE resource_id = :resource_id";
@@ -544,8 +650,50 @@ class SharedResource
 	 */
 	public function getAllReportedResources()
 	{
+		if ($this->reportsTableExists()) {
+			$query = "SELECT r.*, u.name as author_name, u.email as author_email,
+						 s.student_id, a.alumni_id, u.role as uploader_role,
+						 COALESCE(rr.total_reports, 0) AS report_count,
+						 rr.latest_reason AS latest_report_reason,
+						 rr.latest_reported_at,
+						 CASE WHEN COALESCE(rr.total_reports, 0) >= 5 THEN 1 ELSE 0 END AS permanently_reported,
+						 CASE
+							 WHEN u.role = 'student' THEN COALESCE(s.is_suspended, 0)
+							 WHEN u.role = 'alumni' THEN COALESCE(a.is_suspended, 0)
+							 ELSE 0
+						 END as user_is_suspended,
+						 CASE 
+							 WHEN u.role = 'student' THEN 'Student'
+							 WHEN u.role = 'alumni' THEN 'Alumni'
+							 WHEN u.role = 'faculty_admin' THEN 'Faculty Admin'
+							 ELSE u.role
+						 END as user_role,
+						 f.faculty_name
+					 FROM {$this->table} r
+					 JOIN users u ON r.user_id = u.user_id
+					 LEFT JOIN students s ON u.user_id = s.user_id
+					 LEFT JOIN alumnis a ON u.user_id = a.user_id
+					 LEFT JOIN faculties f ON r.faculty_id = f.faculty_id
+					 LEFT JOIN (
+						 SELECT rr1.resource_id,
+								COUNT(*) AS total_reports,
+								MAX(rr1.created_at) AS latest_reported_at,
+								SUBSTRING_INDEX(GROUP_CONCAT(rr1.reason ORDER BY rr1.created_at DESC SEPARATOR '||'), '||', 1) AS latest_reason
+						 FROM resource_reports rr1
+						 GROUP BY rr1.resource_id
+					 ) rr ON rr.resource_id = r.resource_id
+					 WHERE r.status = 'approved'
+					   AND COALESCE(rr.total_reports, 0) > 0
+					 ORDER BY rr.latest_reported_at DESC, r.updated_at DESC";
+			return $this->query($query);
+		}
+
 		$query = "SELECT r.*, u.name as author_name, u.email as author_email,
 					 s.student_id, a.alumni_id, u.role as uploader_role,
+					 CASE WHEN COALESCE(r.is_reported, 0) = 1 THEN 5 ELSE 0 END AS report_count,
+					 r.rep_reason AS latest_report_reason,
+					 r.updated_at AS latest_reported_at,
+					 CASE WHEN COALESCE(r.is_reported, 0) = 1 THEN 1 ELSE 0 END AS permanently_reported,
 					 CASE
 						 WHEN u.role = 'student' THEN COALESCE(s.is_suspended, 0)
 						 WHEN u.role = 'alumni' THEN COALESCE(a.is_suspended, 0)
@@ -574,15 +722,21 @@ class SharedResource
 	 */
 	public function getAllRecentResources($limit = 3)
 	{
+		$params = [];
+		$thresholdClause = $this->buildGlobalThresholdClause('r', 'report_threshold');
+		if (strpos($thresholdClause, ':report_threshold') !== false) {
+			$params['report_threshold'] = 5;
+		}
+
 		$query = "SELECT r.*, u.name as author_name, f.faculty_name
 				  FROM {$this->table} r
 				  JOIN users u ON r.user_id = u.user_id
 				  LEFT JOIN faculties f ON r.faculty_id = f.faculty_id
-				  WHERE r.is_reported = 0 
-				    AND r.status = 'approved'
+				  WHERE r.status = 'approved'
+				    {$thresholdClause}
 				  ORDER BY r.created_at DESC 
 				  LIMIT " . (int)$limit;
-		return $this->query($query);
+		return $this->query($query, $params);
 	}
 
 	/**
@@ -591,7 +745,14 @@ class SharedResource
 	public function browseAllResources($category = '', $search = '')
 	{
 		$params = [];
-		$conditions = ["r.is_reported = 0", "r.status = 'approved'"];
+		$conditions = ["r.status = 'approved'"];
+		$thresholdClause = $this->buildGlobalThresholdClause('r', 'report_threshold');
+		if (strpos($thresholdClause, ':report_threshold') !== false) {
+			$params['report_threshold'] = 5;
+		}
+		if (trim($thresholdClause) !== '') {
+			$conditions[] = trim(preg_replace('/^AND\s+/i', '', trim($thresholdClause)));
+		}
 
 		if (!empty($category)) {
 			$conditions[] = "r.category = :category";
@@ -622,15 +783,21 @@ class SharedResource
 	{
 		$categories = array_column($this->getResourceCategories(), 'value');
 		$counts = [];
+		$thresholdClause = $this->buildGlobalThresholdClause('r', 'report_threshold');
 
 		foreach ($categories as $cat) {
+			$params = ['category' => $cat];
+			if (strpos($thresholdClause, ':report_threshold') !== false) {
+				$params['report_threshold'] = 5;
+			}
+
 			$query = "SELECT COUNT(*) as count 
 					  FROM {$this->table} r
 					  JOIN users u ON r.user_id = u.user_id
 					  WHERE r.category = :category 
-					    AND r.is_reported = 0 
-					    AND r.status = 'approved'";
-			$result = $this->query($query, ['category' => $cat]);
+					    AND r.status = 'approved'
+					    {$thresholdClause}";
+			$result = $this->query($query, $params);
 			$counts[$cat] = is_array($result) && isset($result[0]) ? (int)$result[0]->count : 0;
 		}
 
@@ -651,13 +818,27 @@ class SharedResource
 		$total_resources = is_array($total_result) && isset($total_result[0]) ? (int)$total_result[0]->count : 0;
 
 		// Get reported resources count
-		$reported_query = "SELECT COUNT(*) as count 
-						   FROM {$this->table} r
-						   JOIN users u ON r.user_id = u.user_id
-						   WHERE r.is_reported = 1 
-						     AND r.status = 'approved'";
-		$reported_result = $this->query($reported_query);
-		$reported_resources = is_array($reported_result) && isset($reported_result[0]) ? (int)$reported_result[0]->count : 0;
+		$reported_resources = 0;
+		if ($this->reportsTableExists()) {
+			$reported_query = "SELECT COUNT(*) as count
+							   FROM (
+								   SELECT rr.resource_id
+								   FROM resource_reports rr
+								   JOIN {$this->table} r ON r.resource_id = rr.resource_id
+								   WHERE r.status = 'approved'
+								   GROUP BY rr.resource_id
+							   ) reported";
+			$reported_result = $this->query($reported_query);
+			$reported_resources = is_array($reported_result) && isset($reported_result[0]) ? (int)$reported_result[0]->count : 0;
+		} else {
+			$reported_query = "SELECT COUNT(*) as count 
+							   FROM {$this->table} r
+							   JOIN users u ON r.user_id = u.user_id
+							   WHERE r.is_reported = 1 
+							     AND r.status = 'approved'";
+			$reported_result = $this->query($reported_query);
+			$reported_resources = is_array($reported_result) && isset($reported_result[0]) ? (int)$reported_result[0]->count : 0;
+		}
 
 		// Get total downloads
 		$downloads_query = "SELECT SUM(downloads) as total 

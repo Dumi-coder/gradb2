@@ -95,6 +95,12 @@ require '../app/views/partials/admin_header.php';
           <div class="resources-list">
             <?php if(isset($resources) && is_array($resources) && count($resources) > 0): ?>
               <?php foreach($resources as $resource): ?>
+                <?php
+                  $browseIsLink = strtolower((string)($resource->file_type ?? '')) === 'link';
+                  $browseCountLabel = $browseIsLink ? 'visits' : 'downloads';
+                  $browseActionLabel = $browseIsLink ? 'Open' : 'Download';
+                  $browseActionIcon = $browseIsLink ? 'fa-external-link-alt' : 'fa-download';
+                ?>
                 <div class="resource-item">
                   <div class="resource-icon">
                     <?php
@@ -137,13 +143,13 @@ require '../app/views/partials/admin_header.php';
                         }
                       ?>
                       <span class="resource-date"><?= $timeAgo ?></span>
-                      <span class="resource-downloads"><i class="fas fa-download"></i> <?= (int)($resource->downloads ?? 0) ?> downloads</span>
+                      <span class="resource-downloads"><i class="fas <?= $browseIsLink ? 'fa-eye' : 'fa-download' ?>"></i> <?= (int)($resource->downloads ?? 0) ?> <?= $browseCountLabel ?></span>
                     </div>
                   </div>
                   <div class="resource-actions">
                     <a class="btn btn-outline btn-sm" href="<?=ROOT?>/admin/resourcemoderation/download?id=<?= $resource->resource_id ?? '' ?>" target="_blank" rel="noopener">
-                      <i class="fas fa-download"></i>
-                      <span>Download</span>
+                      <i class="fas <?= $browseActionIcon ?>"></i>
+                      <span><?= $browseActionLabel ?></span>
                     </a>
                     <button class="btn btn-outline btn-sm" onclick="openReportModal(<?= $resource->resource_id ?? 0 ?>, '<?= htmlspecialchars(addslashes($resource->title ?? ''), ENT_QUOTES) ?>')" style="color: #dc2626; border-color: #dc2626;" onmouseover="this.style.background='#dc2626'; this.style.color='white';" onmouseout="this.style.background='transparent'; this.style.color='#dc2626';">
                       <i class="fas fa-flag"></i>
