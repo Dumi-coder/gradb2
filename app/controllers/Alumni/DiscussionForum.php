@@ -722,7 +722,15 @@ class DiscussionForum extends Controller
 
         // Get user's faculty
         $user_faculty = $_SESSION['faculty'] ?? null;
-        
+                // Ensure faculty is set in session
+                if (!isset($_SESSION['faculty'])) {
+                    $alumni = new Alumni();
+                    $alumniData = $alumni->first(['user_id' => $_SESSION['user_id']]);
+                    if (isset($alumniData->faculty_id)) {
+                        $_SESSION['faculty'] = $alumniData->faculty_id;
+                    }
+                }
+                $user_faculty = $_SESSION['faculty'] ?? null;
         $forumPost = new ForumPost();
         
         // Fetch ALL forum posts for this faculty with trending points calculation

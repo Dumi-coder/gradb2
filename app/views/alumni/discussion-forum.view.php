@@ -889,9 +889,9 @@ require '../app/views/partials/alumni_header.php';
         overlay = document.createElement('div');
         overlay.className = 'forum-loading-overlay';
         overlay.innerHTML = `
-          <div style="display:flex; flex-direction:column; align-items:center; gap:10px; color:#374151;">
-            <i class="fas fa-spinner fa-spin" style="font-size:28px;"></i>
-            <span style="font-weight:600;">Loading discussion...</span>
+          <div class="forum-loading-content">
+            <i class="fas fa-spinner fa-spin forum-loading-icon"></i>
+            <span class="forum-loading-text">Loading discussion...</span>
           </div>
         `;
         Object.assign(overlay.style, {
