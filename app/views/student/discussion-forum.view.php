@@ -17,7 +17,14 @@ require '../app/views/partials/student_header.php';
     <?php require '../app/views/partials/student_sidebar.php'; ?>
 
       <!-- Main Content Area -->
-      <main class="main-content">
+      <main class="main-content forum-ui discussion-main-page">
+
+        <nav class="forum-quick-nav" aria-label="Forum sections">
+          <a href="#forum-topics" class="forum-nav-link">Forum Topics</a>
+          <a href="#my-forums" class="forum-nav-link">My Published Forums</a>
+          <a href="#my-replies" class="forum-nav-link">My Replies</a>
+        </nav>
+
         <!-- Hashtag Search Section -->
         <div class="hashtag-search-section">
           <div class="search-input-wrapper">
@@ -49,7 +56,7 @@ require '../app/views/partials/student_header.php';
         
 
         <!-- Forum Topics Section -->
-        <section class="dashboard-section forum-topics-section">
+        <section id="forum-topics" class="dashboard-section forum-topics-section">
           <div class="section-header">
             <div class="section-title-container">
               <h2 class="card-title forum-topics-title">
@@ -144,7 +151,7 @@ require '../app/views/partials/student_header.php';
         </section>
 
 <!-- My Published Forums Section -->
-        <section class="dashboard-section my-published-forums-section">
+        <section id="my-forums" class="dashboard-section my-published-forums-section">
           <div class="section-header">
             <div class="section-title-container">
               <h2 class="card-title">
@@ -249,7 +256,7 @@ require '../app/views/partials/student_header.php';
         </section>
 
         <!-- My Replies Section -->
-        <section class="dashboard-section my-replies-section">
+        <section id="my-replies" class="dashboard-section my-replies-section">
           <div class="section-header">
             <h2 class="card-title">My Replies</h2>
           </div>
@@ -1365,12 +1372,49 @@ require '../app/views/partials/student_header.php';
     
     // Form submission
     document.addEventListener('DOMContentLoaded', function() {
-      const mainContent = document.querySelector('.main-content');
-      const myPublishedSection = document.querySelector('.my-published-forums-section');
-      const forumTopicsSection = document.querySelector('.forum-topics-section');
-      if (mainContent && myPublishedSection && forumTopicsSection) {
-        mainContent.insertBefore(myPublishedSection, forumTopicsSection);
-      }
+      const navLinks = Array.from(document.querySelectorAll('.forum-nav-link'));
+      const sectionIds = ['forum-topics', 'my-forums', 'my-replies'];
+
+      const setActiveNav = function (id) {
+        navLinks.forEach((link) => {
+          const href = link.getAttribute('href') || '';
+          link.classList.toggle('is-active', href === '#' + id);
+        });
+      };
+
+      const getNearestVisibleSection = function () {
+        let nearestId = sectionIds[0];
+        let nearestDistance = Number.POSITIVE_INFINITY;
+
+        sectionIds.forEach((id) => {
+          const section = document.getElementById(id);
+          if (!section) return;
+          const rect = section.getBoundingClientRect();
+          const distance = Math.abs(rect.top - 130);
+          if (distance < nearestDistance) {
+            nearestDistance = distance;
+            nearestId = id;
+          }
+        });
+
+        return nearestId;
+      };
+
+      const initialHash = (window.location.hash || '').replace('#', '');
+      setActiveNav(sectionIds.includes(initialHash) ? initialHash : sectionIds[0]);
+
+      navLinks.forEach((link) => {
+        link.addEventListener('click', function () {
+          const targetId = (link.getAttribute('href') || '').replace('#', '');
+          if (targetId) {
+            setActiveNav(targetId);
+          }
+        });
+      });
+
+      window.addEventListener('scroll', function () {
+        setActiveNav(getNearestVisibleSection());
+      }, { passive: true });
 
       // New Post Form
       const newPostForm = document.querySelector('.new-post-form');
