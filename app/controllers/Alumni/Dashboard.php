@@ -61,7 +61,7 @@ class Dashboard extends Controller
         $mentorshipRequestModel = new MentorshipRequest();
         $alumnusId = $_SESSION['user_id'];
         
-        // Get pending mentorship requests from students in the same faculty (limit to 1 for dashboard)
+        // Get directed pending mentorship requests sent to this alumnus (limit to 1 for dashboard)
         $pendingRequests = $mentorshipRequestModel->getRequestsForAlumnusFaculty($alumnusId);
         
         // Limit to 1 request for dashboard preview
@@ -77,7 +77,9 @@ class Dashboard extends Controller
                 'student_id' => $request['student_id'],
                 'academic_year' => $request['academic_year'],
                 'faculty_name' => $request['faculty_name'],
-                'guidance_type' => $request['mentorship_category'] === 'other' ? $request['other_category'] : $request['mentorship_category'],
+                'guidance_type' => $request['mentorship_category'] === 'other'
+                    ? ($request['other_category'] ?: 'General Mentorship')
+                    : $request['mentorship_category'],
                 'description' => $request['request_reason'],
                 'status' => 'pending',
                 'created_at' => $request['created_at']

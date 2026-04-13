@@ -216,6 +216,7 @@ class MentorshipRequest
             LEFT JOIN faculties f ON f.faculty_id = a.faculty_id
             WHERE r.request_type = 'mentorship'
               AND r.student_user_id = :student_user_id
+                            AND r.alumnus_user_id IS NOT NULL
             ORDER BY r.created_at DESC
         ";
 
@@ -708,12 +709,10 @@ class MentorshipRequest
             JOIN users u ON r.student_user_id = u.user_id
             JOIN students s ON r.student_user_id = s.user_id
             JOIN faculties f ON s.faculty_id = f.faculty_id
-            JOIN alumnis a ON a.user_id = :alumnus_id
             WHERE r.request_type = 'mentorship' 
             AND r.status = 'pending'
-            AND s.faculty_id = a.faculty_id
+            AND r.alumnus_user_id = :alumnus_id
             AND (s.is_deleted IS NULL OR s.is_deleted = 0)
-            AND (a.is_deleted IS NULL OR a.is_deleted = 0)
             ORDER BY r.created_at DESC
         ";
         
@@ -885,5 +884,70 @@ class MentorshipRequest
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         return $result ? $result : [];
+    }
+
+    public function getMentorshipCardsByStatuses($statuses = [], $facultyId = null)
+    {
+        if (!is_array($statuses) || empty($statuses)) {
+            return [];
+        }
+
+        $pdo = $this->connect();
+
+        $placeholders = [];
+        $params = [];
+        foreach (array_values($statuses) as $i => $status) {
+            $key = 'status_' . $i;
+            $placeholders[] = ':' . $key;
+            $params[$key] = (string)$status;
+        }
+
+        $facultyFilter = '';
+        if ($facultyId !== null) {
+            $facultyFilter = ' AND s.faculty_id = :faculty_id';
+            $params['faculty_id'] = (int)$facultyId;
+        }
+
+        $query = "
+            SELECT
+                r.request_id,
+                r.student_user_id,
+                r.alumnus_user_id,
+                r.status,
+                r.created_at,
+                mr.topic,
+                mr.request_reason,
+                mr.rating,
+                mr.review_comment,
+                mr.reviewed_at,
+                su.name AS student_name,
+                su.email AS student_email,
+                s.student_id,
+                s.academic_year,
+                f.faculty_name,
+                mu.name AS mentor_name,
+                mu.email AS mentor_email,
+                COALESCE(a.current_job, '') AS mentor_current_job,
+                COALESCE(a.current_workplace, '') AS mentor_current_workplace
+            FROM requests r
+            INNER JOIN mentorship_requests mr ON mr.request_id = r.request_id
+            LEFT JOIN users su ON su.user_id = r.student_user_id
+            LEFT JOIN students s ON s.user_id = r.student_user_id
+            LEFT JOIN faculties f ON f.faculty_id = s.faculty_id
+            LEFT JOIN users mu ON mu.user_id = r.alumnus_user_id
+            LEFT JOIN alumnis a ON a.user_id = r.alumnus_user_id
+            WHERE r.request_type = 'mentorship'
+                            AND r.alumnus_user_id IS NOT NULL
+              AND r.status IN (" . implode(',', $placeholders) . ")
+              " . $facultyFilter . "
+            ORDER BY
+                CASE WHEN r.status = 'completed' THEN COALESCE(mr.reviewed_at, r.created_at) ELSE r.created_at END DESC
+        ";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $rows ? $rows : [];
     }
 }

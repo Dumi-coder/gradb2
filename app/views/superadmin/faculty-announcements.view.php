@@ -7,67 +7,36 @@
     <!-- Main Content -->
     <main class="main-content">
         <!-- Faculty Announcements Section -->
-        <section class="dashboard-section">
+        <section class="dashboard-section announcement-section faculty-section">
             <div class="section-header">
                 <h2 class="section-title">Faculty Announcements</h2>
-                <div class="section-stats">
-                    <div class="stat-item">
-                        <span class="stat-number"><?= $announcementsData['stats']['total_announcements'] ?></span>
-                        <span class="stat-label">Total Announcements</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number"><?= $announcementsData['stats']['published_announcements'] ?></span>
-                        <span class="stat-label">Published</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number"><?= $announcementsData['stats']['high_priority'] ?></span>
-                        <span class="stat-label">High Priority</span>
-                    </div>
+                <div class="section-sort">
+                    <select id="faculty-sort" class="filter-select">
+                        <option value="time">Time (Newest First)</option>
+                        <option value="priority">Priority (High to Low)</option>
+                    </select>
                 </div>
             </div>
-            
-            <!-- Create New Announcement Button -->
+
             <div class="create-announcement-section">
-                <button class="btn btn-primary create-btn" onclick="openCreateAnnouncementModal()">
+                <button class="btn btn-primary create-btn" data-announcement-type="0">
                     <i class="fas fa-plus"></i>
-                    Create New Announcement
+                    New Announcement
                 </button>
-            </div>
-            
-            <!-- Announcements Filters -->
-            <div class="announcements-filters">
-                <div class="search-box">
-                    <input type="text" id="announcement-search" placeholder="Search announcements..." class="search-input">
-                    <i class="fas fa-search search-icon"></i>
-                </div>
-                <div class="filter-options">
-                    <select id="priority-filter" class="filter-select">
-                        <option value="">All Priorities</option>
-                        <option value="high">High Priority</option>
-                        <option value="medium">Medium Priority</option>
-                        <option value="low">Low Priority</option>
-                    </select>
-                    <select id="status-filter" class="filter-select">
-                        <option value="">All Status</option>
-                        <option value="published">Published</option>
-                        <option value="draft">Draft</option>
-                    </select>
-                </div>
             </div>
             
             <!-- Announcements List -->
             <div class="announcements-container">
+                <?php if (!empty($announcementsData['announcements'])): ?>
                 <?php foreach ($announcementsData['announcements'] as $announcement): ?>
-                <div class="announcement-card" data-priority="<?= $announcement['priority'] ?>" data-status="<?= $announcement['status'] ?>">
+                <div class="announcement-card <?= ($announcement['status'] ?? '') === 'published' ? '' : 'is-unpublished' ?>" data-priority="<?= $announcement['priority'] ?>" data-status="<?= $announcement['status'] ?>" data-created="<?= strtotime($announcement['created_date']) ?>">
                     <div class="announcement-header">
                         <div class="announcement-info">
                             <h4 class="announcement-title"><?= esc($announcement['title']) ?></h4>
                             <p class="announcement-author">By: <?= esc($announcement['author']) ?> (<?= esc($announcement['author_email']) ?>)</p>
-                            <p class="announcement-audience">Target: <?= esc($announcement['target_audience']) ?></p>
                         </div>
                         <div class="announcement-meta">
                             <span class="priority-badge priority-<?= $announcement['priority'] ?>"><?= ucfirst($announcement['priority']) ?> Priority</span>
-                            <span class="status-badge status-<?= $announcement['status'] ?>"><?= ucfirst($announcement['status']) ?></span>
                         </div>
                     </div>
                     
@@ -78,15 +47,11 @@
                     <div class="announcement-details">
                         <div class="detail-item">
                             <i class="fas fa-calendar"></i>
-                            <span><strong>Created:</strong> <?= date('M j, Y', strtotime($announcement['created_date'])) ?></span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-clock"></i>
-                            <span><strong>Expires:</strong> <?= date('M j, Y', strtotime($announcement['expiry_date'])) ?></span>
+                            <span><strong>Created:</strong> <?= date('M j, Y g:i A', strtotime($announcement['created_date'])) ?></span>
                         </div>
                         <div class="detail-item">
                             <i class="fas fa-eye"></i>
-                            <span><strong>Views:</strong> <?= $announcement['views'] ?></span>
+                            <span><strong>Views:</strong> <span class="announcement-view-count"><?= $announcement['views'] ?></span></span>
                         </div>
                     </div>
                     
@@ -102,7 +67,7 @@
                             Unpublish
                         </button>
                         <?php endif; ?>
-                        
+
                         <button class="btn btn-primary btn-sm edit-btn" data-announcement-id="<?= $announcement['id'] ?>">
                             <i class="fas fa-edit"></i>
                             Edit
@@ -118,9 +83,226 @@
                     </div>
                 </div>
                 <?php endforeach; ?>
+                <?php else: ?>
+                <div class="empty-announcement-state">
+                    <i class="fas fa-bell-slash"></i>
+                    <h4>No faculty announcements yet</h4>
+                    <p>New faculty updates will appear here once they are published.</p>
+                </div>
+                <?php endif; ?>
+            </div>
+        </section>
+
+        <!-- University Announcements Section -->
+        <section class="dashboard-section announcement-section university-section">
+            <div class="section-header">
+                <h2 class="section-title">University Announcements</h2>
+                <div class="section-sort">
+                    <select id="university-sort" class="filter-select">
+                        <option value="time">Time (Newest First)</option>
+                        <option value="priority">Priority (High to Low)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="create-announcement-section">
+                <button class="btn btn-primary create-btn" data-announcement-type="1">
+                    <i class="fas fa-plus"></i>
+                    New Announcement
+                </button>
+            </div>
+
+            <div class="announcements-container">
+                <?php if (!empty($universityAnnouncementsData['announcements'])): ?>
+                <?php foreach ($universityAnnouncementsData['announcements'] as $announcement): ?>
+                <div class="announcement-card <?= ($announcement['status'] ?? '') === 'published' ? '' : 'is-unpublished' ?>" data-priority="<?= $announcement['priority'] ?>" data-status="<?= $announcement['status'] ?>" data-created="<?= strtotime($announcement['created_date']) ?>">
+                    <div class="announcement-header">
+                        <div class="announcement-info">
+                            <h4 class="announcement-title"><?= esc($announcement['title']) ?></h4>
+                            <p class="announcement-author">By: <?= esc($announcement['author']) ?> (<?= esc($announcement['author_email']) ?>)</p>
+                        </div>
+                        <div class="announcement-meta">
+                            <span class="priority-badge priority-<?= $announcement['priority'] ?>"><?= ucfirst($announcement['priority']) ?> Priority</span>
+                        </div>
+                    </div>
+
+                    <div class="announcement-content">
+                        <p><?= esc($announcement['content']) ?></p>
+                    </div>
+
+                    <div class="announcement-details">
+                        <div class="detail-item">
+                            <i class="fas fa-calendar"></i>
+                            <span><strong>Created:</strong> <?= date('M j, Y g:i A', strtotime($announcement['created_date'])) ?></span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-eye"></i>
+                            <span><strong>Views:</strong> <span class="announcement-view-count"><?= $announcement['views'] ?></span></span>
+                        </div>
+                    </div>
+
+                    <div class="announcement-actions">
+                        <?php if ($announcement['status'] === 'draft'): ?>
+                        <button class="btn btn-success btn-sm publish-btn" data-announcement-id="<?= $announcement['id'] ?>">
+                            <i class="fas fa-paper-plane"></i>
+                            Publish
+                        </button>
+                        <?php else: ?>
+                        <button class="btn btn-warning btn-sm unpublish-btn" data-announcement-id="<?= $announcement['id'] ?>">
+                            <i class="fas fa-eye-slash"></i>
+                            Unpublish
+                        </button>
+                        <?php endif; ?>
+
+                        <button class="btn btn-primary btn-sm edit-btn" data-announcement-id="<?= $announcement['id'] ?>">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="btn btn-outline btn-sm view-btn" data-announcement-id="<?= $announcement['id'] ?>">
+                            <i class="fas fa-eye"></i>
+                            View
+                        </button>
+                        <button class="btn btn-danger btn-sm delete-btn" data-announcement-id="<?= $announcement['id'] ?>">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+                <?php else: ?>
+                <div class="empty-announcement-state">
+                    <i class="fas fa-university"></i>
+                    <h4>No university announcements yet</h4>
+                    <p>University-wide notices will show up here when available.</p>
+                </div>
+                <?php endif; ?>
+            </div>
+        </section>
+
+        <!-- Admin Announcements Section -->
+        <section class="dashboard-section announcement-section admin-section">
+            <div class="section-header">
+                <h2 class="section-title">Admin Announcements</h2>
+                <div class="section-sort">
+                    <select id="admin-sort" class="filter-select">
+                        <option value="time">Time (Newest First)</option>
+                        <option value="priority">Priority (High to Low)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="create-announcement-section">
+                <button class="btn btn-primary create-btn" data-announcement-type="2">
+                    <i class="fas fa-plus"></i>
+                    New Announcement
+                </button>
+            </div>
+
+            <div class="announcements-container">
+                <?php if (!empty($adminAnnouncementsData['announcements'])): ?>
+                <?php foreach ($adminAnnouncementsData['announcements'] as $announcement): ?>
+                <div class="announcement-card <?= ($announcement['status'] ?? '') === 'published' ? '' : 'is-unpublished' ?>" data-priority="<?= $announcement['priority'] ?>" data-status="<?= $announcement['status'] ?>" data-created="<?= strtotime($announcement['created_date']) ?>">
+                    <div class="announcement-header">
+                        <div class="announcement-info">
+                            <h4 class="announcement-title"><?= esc($announcement['title']) ?></h4>
+                            <p class="announcement-author">By: <?= esc($announcement['author']) ?> (<?= esc($announcement['author_email']) ?>)</p>
+                        </div>
+                        <div class="announcement-meta">
+                            <span class="priority-badge priority-<?= $announcement['priority'] ?>"><?= ucfirst($announcement['priority']) ?> Priority</span>
+                        </div>
+                    </div>
+
+                    <div class="announcement-content">
+                        <p><?= esc($announcement['content']) ?></p>
+                    </div>
+
+                    <div class="announcement-details">
+                        <div class="detail-item">
+                            <i class="fas fa-calendar"></i>
+                            <span><strong>Created:</strong> <?= date('M j, Y g:i A', strtotime($announcement['created_date'])) ?></span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-eye"></i>
+                            <span><strong>Views:</strong> <span class="announcement-view-count"><?= $announcement['views'] ?></span></span>
+                        </div>
+                    </div>
+
+                    <div class="announcement-actions">
+                        <?php if ($announcement['status'] === 'draft'): ?>
+                        <button class="btn btn-success btn-sm publish-btn" data-announcement-id="<?= $announcement['id'] ?>">
+                            <i class="fas fa-paper-plane"></i>
+                            Publish
+                        </button>
+                        <?php else: ?>
+                        <button class="btn btn-warning btn-sm unpublish-btn" data-announcement-id="<?= $announcement['id'] ?>">
+                            <i class="fas fa-eye-slash"></i>
+                            Unpublish
+                        </button>
+                        <?php endif; ?>
+
+                        <button class="btn btn-primary btn-sm edit-btn" data-announcement-id="<?= $announcement['id'] ?>">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="btn btn-outline btn-sm view-btn" data-announcement-id="<?= $announcement['id'] ?>">
+                            <i class="fas fa-eye"></i>
+                            View
+                        </button>
+                        <button class="btn btn-danger btn-sm delete-btn" data-announcement-id="<?= $announcement['id'] ?>">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+                <?php else: ?>
+                <div class="empty-announcement-state">
+                    <i class="fas fa-user-shield"></i>
+                    <h4>No admin announcements yet</h4>
+                    <p>Admin-only notices will appear here when they are posted.</p>
+                </div>
+                <?php endif; ?>
             </div>
         </section>
     </main>
+</div>
+
+<!-- View Announcement Modal -->
+<div id="viewAnnouncementModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="viewAnnouncementTitle">Announcement</h2>
+            <button class="modal-close" onclick="closeViewAnnouncementModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="announcement-form">
+            <div id="viewAnnouncementLoading" class="view-loading-state" style="display:none;">
+                <div class="loading-spinner"></div>
+                <p>Loading announcement...</p>
+            </div>
+
+            <div class="announcement-details" style="margin-bottom:1rem;">
+                <div class="detail-item">
+                    <i class="fas fa-user"></i>
+                    <span id="viewAnnouncementAuthor">-</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-calendar"></i>
+                    <span id="viewAnnouncementCreated">-</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-eye"></i>
+                    <span id="viewAnnouncementViews">0</span>
+                </div>
+            </div>
+
+            <div class="announcement-content">
+                <p id="viewAnnouncementContent"></p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Create Announcement Modal -->
@@ -148,27 +330,10 @@
                 <label for="announcementPriority">Priority *</label>
                 <select id="announcementPriority" name="announcementPriority" required>
                     <option value="">Select priority</option>
-                    <option value="high">High Priority</option>
-                    <option value="medium">Medium Priority</option>
-                    <option value="low">Low Priority</option>
+                    <option value="2">High</option>
+                    <option value="1">Medium</option>
+                    <option value="0">Low</option>
                 </select>
-            </div>
-
-            <div class="form-group">
-                <label for="announcementAudience">Target Audience *</label>
-                <select id="announcementAudience" name="announcementAudience" required>
-                    <option value="">Select audience</option>
-                    <option value="All Faculty">All Faculty</option>
-                    <option value="Faculty Admins">Faculty Admins</option>
-                    <option value="All Users">All Users</option>
-                    <option value="Students Only">Students Only</option>
-                    <option value="Alumni Only">Alumni Only</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="announcementExpiry">Expiry Date</label>
-                <input type="date" id="announcementExpiry" name="announcementExpiry">
             </div>
 
             <div class="form-actions">
@@ -181,6 +346,69 @@
                 </button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Edit Announcement Modal -->
+<div id="editAnnouncementModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Edit Announcement</h2>
+            <button class="modal-close" onclick="closeEditAnnouncementModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <form class="announcement-form" id="editAnnouncementForm">
+            <input type="hidden" id="editAnnouncementId">
+
+            <div class="form-group">
+                <label for="editAnnouncementTitle">Announcement Title *</label>
+                <input type="text" id="editAnnouncementTitle" placeholder="Enter announcement title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="editAnnouncementContent">Content *</label>
+                <textarea id="editAnnouncementContent" rows="6" placeholder="Enter announcement content..." required></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" onclick="closeEditAnnouncementModal()">
+                    <span>Cancel</span>
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    <span>Confirm</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Announcement Confirmation Modal -->
+<div id="deleteAnnouncementModal" class="modal">
+    <div class="modal-content modal-content-sm">
+        <div class="modal-header">
+            <h2 class="modal-title">Confirm Delete</h2>
+            <button class="modal-close" onclick="closeDeleteAnnouncementModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="announcement-form">
+            <p style="margin:0 0 1rem 0; color:#374151;">Are you sure you want to delete this announcement?</p>
+            <p style="margin:0; color:#6B7280; font-size:0.9rem;">This will hide the announcement from the system.</p>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" onclick="closeDeleteAnnouncementModal()">
+                    <span>Cancel</span>
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteAnnouncementBtn">
+                    <i class="fas fa-trash"></i>
+                    <span>Confirm Delete</span>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -272,12 +500,48 @@
     gap: 1rem;
 }
 
+.empty-announcement-state {
+    background: #F9FAFB;
+    border: 2px dashed #D1D5DB;
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    color: #4B5563;
+}
+
+.empty-announcement-state i {
+    font-size: 1.75rem;
+    color: #6B7280;
+    margin-bottom: 0.75rem;
+}
+
+.empty-announcement-state h4 {
+    margin: 0 0 0.4rem 0;
+    color: #1F2937;
+    font-size: 1.05rem;
+}
+
+.empty-announcement-state p {
+    margin: 0;
+}
+
 .announcement-card {
     background: white;
     border: 2px solid #E5E7EB;
     border-radius: 12px;
     padding: 1.5rem;
     transition: all 0.3s ease;
+}
+
+.announcement-card.is-unpublished {
+    background: #F3F4F6;
+    border-color: #D1D5DB;
+    opacity: 0.85;
+}
+
+.announcement-card.is-unpublished .announcement-title,
+.announcement-card.is-unpublished .announcement-content p {
+    color: #4B5563;
 }
 
 .announcement-card:hover {
@@ -436,6 +700,44 @@
     color: white;
 }
 
+.announcement-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.announcement-section .section-title {
+    margin: 0;
+    line-height: 1.2;
+}
+
+.announcement-section .section-sort {
+    display: flex;
+    align-items: center;
+}
+
+.announcement-section .section-sort .filter-select {
+    margin: 0;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.university-section {
+    order: 1;
+}
+
+.faculty-section {
+    order: 3;
+}
+
+.admin-section {
+    order: 2;
+}
+
 .section-stats {
     display: flex;
     gap: 2rem;
@@ -573,28 +875,107 @@
     border-top: 1px solid #E5E7EB;
 }
 
-. {
+.form-actions .btn {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
+}
+
+.view-loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 2rem 0.5rem;
+    color: #4B5563;
+}
+
+.loading-spinner {
+    width: 34px;
+    height: 34px;
+    border: 3px solid #E5E7EB;
+    border-top-color: #0E2072;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    window.pendingDeleteAnnouncementId = null;
+
+    const postAction = (payload) => {
+        const formData = new FormData();
+        Object.keys(payload).forEach((key) => formData.append(key, payload[key]));
+
+        return fetch(window.location.href, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then((response) => response.json());
+    };
+
     // Handle create announcement button
-    document.querySelector('.create-btn').addEventListener('click', function() {
-        openCreateAnnouncementModal();
+        let selectedAnnouncementType = 0;
+    document.querySelectorAll('.create-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            selectedAnnouncementType = parseInt(this.getAttribute('data-announcement-type') || '0', 10);
+            openCreateAnnouncementModal();
+        });
     });
+
+    const createAnnouncementForm = document.getElementById('announcementForm');
+    if (createAnnouncementForm) {
+        createAnnouncementForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('announcementTitle').value.trim();
+            const content = document.getElementById('announcementContent').value.trim();
+            const priority = document.getElementById('announcementPriority').value;
+
+            if (!title || !content || priority === '') {
+                alert('Title, content and priority are required');
+                return;
+            }
+
+            postAction({
+                action: 'add',
+                title,
+                content,
+                priority,
+                type: selectedAnnouncementType
+            })
+                .then((data) => {
+                    if (!data.success) {
+                        throw new Error(data.message || 'Failed to publish announcement');
+                    }
+                    closeCreateAnnouncementModal();
+                    window.location.reload();
+                })
+                .catch((err) => {
+                    alert(err.message || 'Failed to publish announcement');
+                });
+        });
+    }
 
     // Handle publish button clicks
     document.querySelectorAll('.publish-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const announcementId = this.getAttribute('data-announcement-id');
-            if (confirm('Are you sure you want to publish this announcement?')) {
-                alert('Announcement published successfully!');
-                this.closest('.announcement-card').style.opacity = '0.5';
-                this.disabled = true;
-            }
+            postAction({ action: 'publish', announcement_id: announcementId })
+                .then((data) => {
+                    if (!data.success) throw new Error();
+                    window.location.reload();
+                })
+                .catch(() => alert('Failed to publish announcement'));
         });
     });
 
@@ -602,11 +983,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.unpublish-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const announcementId = this.getAttribute('data-announcement-id');
-            if (confirm('Are you sure you want to unpublish this announcement?')) {
-                alert('Announcement unpublished successfully!');
-                this.closest('.announcement-card').style.opacity = '0.5';
-                this.disabled = true;
-            }
+            postAction({ action: 'unpublish', announcement_id: announcementId })
+                .then((data) => {
+                    if (!data.success) throw new Error();
+                    window.location.reload();
+                })
+                .catch(() => alert('Failed to unpublish announcement'));
         });
     });
 
@@ -614,73 +996,161 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.edit-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const announcementId = this.getAttribute('data-announcement-id');
-            alert('Edit announcement functionality would be implemented here for announcement ID: ' + announcementId);
+            const card = this.closest('.announcement-card');
+            const currentTitle = card?.querySelector('.announcement-title')?.textContent?.trim() || '';
+            const currentContent = card?.querySelector('.announcement-content p')?.textContent?.trim() || '';
+
+            document.getElementById('editAnnouncementId').value = announcementId;
+            document.getElementById('editAnnouncementTitle').value = currentTitle;
+            document.getElementById('editAnnouncementContent').value = currentContent;
+            openEditAnnouncementModal();
         });
     });
+
+    const editAnnouncementForm = document.getElementById('editAnnouncementForm');
+    if (editAnnouncementForm) {
+        editAnnouncementForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const announcementId = document.getElementById('editAnnouncementId').value;
+            const title = document.getElementById('editAnnouncementTitle').value.trim();
+            const content = document.getElementById('editAnnouncementContent').value.trim();
+
+            if (!announcementId || !title || !content) {
+                alert('Title and content are required');
+                return;
+            }
+
+            postAction({ action: 'edit', announcement_id: announcementId, title, content })
+                .then((data) => {
+                    if (!data.success) throw new Error(data.message || 'Failed to edit');
+                    closeEditAnnouncementModal();
+                    window.location.reload();
+                })
+                .catch((err) => alert(err.message || 'Failed to edit announcement'));
+        });
+    }
 
     // Handle view button clicks
     document.querySelectorAll('.view-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const announcementId = this.getAttribute('data-announcement-id');
-            alert('View announcement functionality would be implemented here for announcement ID: ' + announcementId);
+            const card = this.closest('.announcement-card');
+
+            openViewAnnouncementModal();
+            setViewAnnouncementLoading(true);
+
+            postAction({ action: 'view', announcement_id: announcementId })
+                .then((data) => {
+                    if (!data.success || !data.announcement) throw new Error(data.message || 'Failed to load announcement');
+
+                    const item = data.announcement;
+                    document.getElementById('viewAnnouncementTitle').textContent = item.title || 'Announcement';
+                    document.getElementById('viewAnnouncementAuthor').textContent =
+                        `By: ${item.creator_email || 'unknown@unknown.com'} (${item.creator_faculty_label || 'Unknown Faculty'})`;
+                    document.getElementById('viewAnnouncementCreated').textContent =
+                        `Created: ${new Date(item.created_at).toLocaleString()}`;
+                    document.getElementById('viewAnnouncementViews').textContent = `Views: ${item.view_count || 0}`;
+                    document.getElementById('viewAnnouncementContent').textContent = item.content || '';
+
+                    if (card) {
+                        card.setAttribute('data-views', String(item.view_count || 0));
+                        const countEl = card.querySelector('.announcement-view-count');
+                        if (countEl) countEl.textContent = String(item.view_count || 0);
+                    }
+
+                    setViewAnnouncementLoading(false);
+                })
+                .catch((err) => {
+                    document.getElementById('viewAnnouncementTitle').textContent = 'Announcement';
+                    document.getElementById('viewAnnouncementAuthor').textContent = '-';
+                    document.getElementById('viewAnnouncementCreated').textContent = '-';
+                    document.getElementById('viewAnnouncementViews').textContent = 'Views: 0';
+                    document.getElementById('viewAnnouncementContent').textContent = err.message || 'Failed to load announcement';
+                    setViewAnnouncementLoading(false);
+                });
         });
     });
 
     // Handle delete button clicks
     document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            const announcementId = this.getAttribute('data-announcement-id');
-            if (confirm('Are you sure you want to delete this announcement? This action cannot be undone.')) {
-                alert('Announcement deleted successfully!');
-                this.closest('.announcement-card').remove();
-            }
+            window.pendingDeleteAnnouncementId = this.getAttribute('data-announcement-id');
+            openDeleteAnnouncementModal();
         });
     });
 
-    // Handle search functionality
-    document.getElementById('announcement-search').addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        const announcementCards = document.querySelectorAll('.announcement-card');
-        
-        announcementCards.forEach(card => {
-            const title = card.querySelector('.announcement-title').textContent.toLowerCase();
-            const content = card.querySelector('.announcement-content p').textContent.toLowerCase();
-            
-            if (title.includes(searchTerm) || content.includes(searchTerm)) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
+    const confirmDeleteBtn = document.getElementById('confirmDeleteAnnouncementBtn');
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', function() {
+            if (!window.pendingDeleteAnnouncementId) {
+                closeDeleteAnnouncementModal();
+                return;
             }
-        });
-    });
 
-    // Handle priority filter
-    document.getElementById('priority-filter').addEventListener('change', function() {
-        const selectedPriority = this.value;
-        const announcementCards = document.querySelectorAll('.announcement-card');
-        
-        announcementCards.forEach(card => {
-            if (selectedPriority === '' || card.getAttribute('data-priority') === selectedPriority) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
+            postAction({ action: 'delete', announcement_id: window.pendingDeleteAnnouncementId })
+                .then((data) => {
+                    if (!data.success) throw new Error();
+                    closeDeleteAnnouncementModal();
+                    window.location.reload();
+                })
+                .catch(() => alert('Failed to delete announcement'));
         });
-    });
+    }
 
-    // Handle status filter
-    document.getElementById('status-filter').addEventListener('change', function() {
-        const selectedStatus = this.value;
-        const announcementCards = document.querySelectorAll('.announcement-card');
-        
-        announcementCards.forEach(card => {
-            if (selectedStatus === '' || card.getAttribute('data-status') === selectedStatus) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    });
+    function attachSectionSorting(sortId, sectionElement) {
+        const sortSelect = document.getElementById(sortId);
+
+        if (!sortSelect || !sectionElement) {
+            return;
+        }
+
+        const container = sectionElement.querySelector('.announcements-container');
+        if (!container) {
+            return;
+        }
+
+        const priorityRank = {
+            high: 3,
+            medium: 2,
+            low: 1
+        };
+
+        const applySorting = function() {
+            const cards = Array.from(container.querySelectorAll('.announcement-card'));
+
+            cards.sort((a, b) => {
+                if (sortSelect.value === 'priority') {
+                    const aRank = priorityRank[a.getAttribute('data-priority')] || 0;
+                    const bRank = priorityRank[b.getAttribute('data-priority')] || 0;
+                    return bRank - aRank;
+                }
+
+                const aTime = parseInt(a.getAttribute('data-created') || '0', 10);
+                const bTime = parseInt(b.getAttribute('data-created') || '0', 10);
+                return bTime - aTime;
+            });
+            cards.forEach(card => container.appendChild(card));
+        };
+
+        sortSelect.addEventListener('change', applySorting);
+        applySorting();
+    }
+
+    const facultySort = document.getElementById('faculty-sort');
+    if (facultySort) {
+        attachSectionSorting('faculty-sort', facultySort.closest('.announcement-section'));
+    }
+
+    const universitySort = document.getElementById('university-sort');
+    if (universitySort) {
+        attachSectionSorting('university-sort', universitySort.closest('.announcement-section'));
+    }
+
+    const adminSort = document.getElementById('admin-sort');
+    if (adminSort) {
+        attachSectionSorting('admin-sort', adminSort.closest('.announcement-section'));
+    }
 });
 
 // Modal Functions
@@ -696,37 +1166,73 @@ function closeCreateAnnouncementModal() {
     document.getElementById('announcementForm').reset();
 }
 
-// Close modal when clicking outside
-window.onclick = function(event) {
-    const modal = document.getElementById('createAnnouncementModal');
-    if (event.target === modal) {
-        closeCreateAnnouncementModal();
+function openEditAnnouncementModal() {
+    document.getElementById('editAnnouncementModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeEditAnnouncementModal() {
+    document.getElementById('editAnnouncementModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    const form = document.getElementById('editAnnouncementForm');
+    if (form) form.reset();
+}
+
+function openDeleteAnnouncementModal() {
+    document.getElementById('deleteAnnouncementModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDeleteAnnouncementModal() {
+    document.getElementById('deleteAnnouncementModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    window.pendingDeleteAnnouncementId = null;
+}
+
+function openViewAnnouncementModal() {
+    document.getElementById('viewAnnouncementModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function setViewAnnouncementLoading(isLoading) {
+    const loadingEl = document.getElementById('viewAnnouncementLoading');
+    const detailsEl = document.querySelector('#viewAnnouncementModal .announcement-details');
+    const contentEl = document.querySelector('#viewAnnouncementModal .announcement-content');
+
+    if (loadingEl) {
+        loadingEl.style.display = isLoading ? 'flex' : 'none';
+    }
+    if (detailsEl) {
+        detailsEl.style.display = isLoading ? 'none' : 'grid';
+    }
+    if (contentEl) {
+        contentEl.style.display = isLoading ? 'none' : 'block';
     }
 }
 
-// Handle form submission
-document.getElementById('announcementForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    const announcementData = {
-        title: formData.get('announcementTitle'),
-        content: formData.get('announcementContent'),
-        priority: formData.get('announcementPriority'),
-        audience: formData.get('announcementAudience'),
-        expiry: formData.get('announcementExpiry')
-    };
-    
-    // Here you would typically send the data to the server
-    console.log('Announcement Data:', announcementData);
-    
-    // Show success message
-    alert('Announcement created successfully!');
-    
-    // Close modal
-    closeCreateAnnouncementModal();
-    
-    // Here you would typically refresh the announcements list
-    // or add the new announcement to the page dynamically
-});
+function closeViewAnnouncementModal() {
+    document.getElementById('viewAnnouncementModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('createAnnouncementModal');
+    const viewModal = document.getElementById('viewAnnouncementModal');
+    const editModal = document.getElementById('editAnnouncementModal');
+    const deleteModal = document.getElementById('deleteAnnouncementModal');
+    if (event.target === modal) {
+        closeCreateAnnouncementModal();
+    }
+    if (event.target === viewModal) {
+        closeViewAnnouncementModal();
+    }
+    if (event.target === editModal) {
+        closeEditAnnouncementModal();
+    }
+    if (event.target === deleteModal) {
+        closeDeleteAnnouncementModal();
+    }
+}
+
 </script>

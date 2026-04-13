@@ -105,7 +105,7 @@ require '../app/views/partials/alumni_header.php';
                   <i class="fas fa-user-graduate"></i>
                 </div>
                 <h3>No Pending Mentorship Requests</h3>
-                <p>There are currently no mentorship requests from students in your faculty.</p>
+                <p>There are currently no mentorship requests sent to you.</p>
               </div>
             <?php endif; ?>
                     </div>

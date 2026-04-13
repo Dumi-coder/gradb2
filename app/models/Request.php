@@ -94,6 +94,59 @@ class Request
 		return is_array($result) ? $result : [];
 	}
 
+	public function getAidRequestsForStatuses($statuses = [], $facultyId = null)
+	{
+		if (!is_array($statuses) || empty($statuses)) {
+			return [];
+		}
+
+		$placeholders = [];
+		$data = [];
+		foreach (array_values($statuses) as $index => $status) {
+			$key = 'status_' . $index;
+			$placeholders[] = ':' . $key;
+			$data[$key] = (string)$status;
+		}
+
+		$facultyFilter = '';
+		if ($facultyId !== null) {
+			$facultyFilter = ' AND s.faculty_id = :faculty_id';
+			$data['faculty_id'] = (int)$facultyId;
+		}
+
+		$query = "SELECT r.request_id, r.student_user_id, r.alumnus_user_id, r.status, r.created_at,
+						 u.name AS student_name, u.email AS student_email,
+						 au.name AS alumnus_name, au.email AS alumnus_email,
+						 a.mobile AS alumnus_mobile,
+						 s.student_id, s.academic_year,
+						 f.faculty_name,
+						 ar.mobile_number, ar.aid_type, ar.amount, ar.reason,
+						 ar.student_id_pdf_path, ar.income_statement_path, ar.gramaseva_cert_path,
+						 (
+							 SELECT REPLACE(rl.notes, '[COUNSELOR REJECTED] ', '')
+							 FROM request_logs rl
+							 WHERE rl.request_id = r.request_id
+							   AND rl.notes LIKE '[COUNSELOR REJECTED] %'
+							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
+							 LIMIT 1
+						 ) AS rejection_reason
+				  FROM requests r
+				  JOIN users u ON u.user_id = r.student_user_id
+				  LEFT JOIN users au ON au.user_id = r.alumnus_user_id
+				  LEFT JOIN alumnis a ON a.user_id = r.alumnus_user_id
+				  LEFT JOIN students s ON s.user_id = r.student_user_id
+				  LEFT JOIN faculties f ON f.faculty_id = s.faculty_id
+				  LEFT JOIN aid_requests ar ON ar.request_id = r.request_id
+				  WHERE r.request_type = 'aid'
+					AND r.status IN (" . implode(',', $placeholders) . ")
+					AND (s.is_deleted IS NULL OR s.is_deleted = 0)
+					" . $facultyFilter . "
+				  ORDER BY r.created_at DESC";
+
+		$result = $this->query($query, $data);
+		return is_array($result) ? $result : [];
+	}
+
 	public function getAidRequestsForStudent($studentUserId)
 	{
 		$query = "SELECT r.request_id, r.status, r.created_at,
