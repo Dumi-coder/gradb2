@@ -116,32 +116,6 @@ foreach ($requests as $request) {
       </div>
     </section>
 
-    <section class="dashboard-section stats-section">
-      <div class="section-header">
-        <h2 class="card-title">Submission Status</h2>
-      </div>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-content">
-            <h3 class="stat-number"><?= (int)$pendingCount ?></h3>
-            <p class="stat-label">Pending</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-content">
-            <h3 class="stat-number"><?= (int)$acceptedCount ?></h3>
-            <p class="stat-label">Accepted</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-content">
-            <h3 class="stat-number"><?= (int)$rejectedCount ?></h3>
-            <p class="stat-label">Rejected</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section class="dashboard-section active-requests-section">
       <div class="section-header">
         <h2 class="card-title">Your Submissions</h2>
@@ -348,6 +322,32 @@ foreach ($requests as $request) {
           </table>
         </div>
       <?php endif; ?>
+    </section>
+
+    <section class="dashboard-section stats-section">
+      <div class="section-header">
+        <h2 class="card-title">Submission Status</h2>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-content">
+            <h3 class="stat-number"><?= (int)$pendingCount ?></h3>
+            <p class="stat-label">Pending</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-content">
+            <h3 class="stat-number"><?= (int)$acceptedCount ?></h3>
+            <p class="stat-label">Accepted</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-content">
+            <h3 class="stat-number"><?= (int)$rejectedCount ?></h3>
+            <p class="stat-label">Rejected</p>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 </div>

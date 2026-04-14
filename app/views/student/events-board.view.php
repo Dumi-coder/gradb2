@@ -6,40 +6,6 @@ require '../app/views/partials/student_header.php';
 
 <!-- Page-specific CSS -->
 <link rel="stylesheet" href="<?=ROOT?>/assets/css/events-board.css">
-<style>
-/* Final layout guard for upcoming cards: 3 desktop, 2 tablet, 1 mobile */
-body.student-dashboard .featured-events-section .featured-events-grid {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(260px, 1fr)) !important;
-  gap: var(--spacing-lg) !important;
-  align-items: stretch;
-}
-
-body.student-dashboard .featured-events-section .featured-events-grid .featured-event-card {
-  width: auto !important;
-  max-width: none !important;
-  min-width: 0;
-}
-
-body.student-dashboard .featured-events-section .featured-event-card .event-title,
-body.student-dashboard .featured-events-section .featured-event-card .event-description,
-body.student-dashboard .featured-events-section .featured-event-card .event-meta span {
-  white-space: normal;
-  overflow-wrap: anywhere;
-}
-
-@media (max-width: 1200px) {
-  body.student-dashboard .featured-events-section .featured-events-grid {
-    grid-template-columns: repeat(2, minmax(240px, 1fr)) !important;
-  }
-}
-
-@media (max-width: 768px) {
-  body.student-dashboard .featured-events-section .featured-events-grid {
-    grid-template-columns: 1fr !important;
-  }
-}
-</style>
 
 <div class="dashboard-container">
       

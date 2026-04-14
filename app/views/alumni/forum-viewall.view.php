@@ -20,13 +20,13 @@ require '../app/views/partials/alumni_header.php';
     <?php require '../app/views/partials/alumni_sidebar.php'; ?>
 
       <!-- Main Content Area -->
-      <main class="main-content">
+      <main class="main-content forum-ui discussion-main-page all-forums-page">
         <!-- All Forum Topics Section -->
         <section class="dashboard-section forum-topics-section">
           <div class="section-header">
             <div class="section-title-container">
-              <h2 class="section-title" style="font-size: 1.5rem;">
-                <i class="fas fa-comments"></i> All Forum Topics
+              <h2 class="section-title forum-topics-title">
+                All Forum Topics
               </h2>
               <div class="filter-controls">
                 <select class="filter-select">
@@ -44,18 +44,20 @@ require '../app/views/partials/alumni_header.php';
 
           <!-- Hashtag Search Section -->
           <div class="hashtag-search-section">
-            <div class="search-input-wrapper">
-              <i class="fas fa-hashtag"></i>
-              <input 
-                type="text" 
-                id="hashtagSearch" 
-                class="hashtag-search-input" 
-                placeholder="Search by hashtag (e.g., career, mentorship, AI)"
-                autocomplete="off"
-              >
-              <button class="clear-search-btn" id="clearSearchBtn" style="display: none;">
-                <i class="fas fa-times"></i>
-              </button>
+            <div class="forum-search-row">
+              <div class="search-input-wrapper">
+                <i class="fas fa-hashtag"></i>
+                <input 
+                  type="text" 
+                  id="hashtagSearch" 
+                  class="hashtag-search-input" 
+                  placeholder="Search by hashtag (e.g., career, mentorship, AI)"
+                  autocomplete="off"
+                >
+                <button class="clear-search-btn" id="clearSearchBtn">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
             </div>
             
             <div class="trending-hashtags">
@@ -77,10 +79,10 @@ require '../app/views/partials/alumni_header.php';
             $displayTopics = isset($all_posts) && is_array($all_posts) ? $all_posts : [];
             
             if (empty($displayTopics)): ?>
-              <div style="text-align: center; padding: 40px; color: #666;">
-                <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
-                <p style="font-size: 16px; margin: 0;">No forum topics available yet.</p>
-                <p style="font-size: 14px; margin-top: 8px; opacity: 0.8;">No discussions have been started yet.</p>
+              <div class="forum-empty-state">
+                <i class="fas fa-comments forum-empty-state-icon"></i>
+                <p class="forum-empty-state-title">No forum topics available yet.</p>
+                <p class="forum-empty-state-subtitle">No discussions have been started yet.</p>
               </div>
             <?php else:
             foreach ($displayTopics as $topic): 
@@ -100,7 +102,7 @@ require '../app/views/partials/alumni_header.php';
                 $tags_array = preg_split('/[\s,]+/', $tags_string, -1, PREG_SPLIT_NO_EMPTY);
               }
             ?>
-            <div class="topic-card">
+            <div class="topic-card topic-card-clickable" data-post-id="<?= (int)$topic->post_id ?>" onclick="incrementAndViewPost(<?= $topic->post_id ?>, this)" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();incrementAndViewPost(<?= $topic->post_id ?>, this);}">
               <div class="topic-header">
                 <div class="topic-info">
                   <h3 class="topic-title"><?= esc($topic->title) ?></h3>
@@ -135,9 +137,6 @@ require '../app/views/partials/alumni_header.php';
                   <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $topic->replies ?? 0 ?></strong> replies</div>
                   <div class="topic-activity"><i class="fas fa-clock"></i> <?= $last_activity ?></div>
                 </div>
-                <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $topic->post_id ?>, this)">
-                  <i class="fas fa-eye"></i> View
-                </button>
               </div>
             </div>
             <?php endforeach; 
@@ -148,7 +147,7 @@ require '../app/views/partials/alumni_header.php';
     </div>
 
     <!-- Forum Detail Modal -->
-    <div id="forumDetailModal" class="modal" style="display: none;">
+    <div id="forumDetailModal" class="modal">
       <div class="modal-content modal-large">
         <div class="modal-header">
           <h2 class="modal-title" id="forumDetailTitle">Forum Topic Title</h2>
@@ -263,8 +262,8 @@ require '../app/views/partials/alumni_header.php';
       if (!loader) {
         loader = document.createElement('div');
         loader.id = 'forumDetailLoadingOverlay';
-        loader.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.82);z-index:20;';
-        loader.innerHTML = '<div style="text-align:center;color:#6b7280;"><i class="fas fa-spinner fa-spin" style="font-size:36px;color:#0e2072;"></i><div style="margin-top:10px;font-size:14px;">Loading forum content...</div></div>';
+        loader.className = 'forum-detail-loading-overlay';
+        loader.innerHTML = '<div class="forum-detail-loading-content"><i class="fas fa-spinner fa-spin forum-detail-loading-icon"></i><div class="forum-detail-loading-text">Loading forum content...</div></div>';
         const modalContent = modal.querySelector('.modal-content');
         if (modalContent) {
           if (!modalContent.style.position) {
@@ -377,7 +376,7 @@ require '../app/views/partials/alumni_header.php';
       repliesList.innerHTML = '';
       
       if (!replies || replies.length === 0) {
-        repliesList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No replies yet. Be the first to reply!</p>';
+        repliesList.innerHTML = '<p class="replies-empty-message">No replies yet. Be the first to reply!</p>';
       } else {
         replies.forEach((reply, index) => {
           const replyItem = document.createElement('div');
@@ -698,388 +697,4 @@ require '../app/views/partials/alumni_header.php';
       }
     }
     </script>
-    <style>
-    /* Section Header Layout */
-    .section-title-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-    }
-
-    /* Filter Controls Styles */
-    .filter-controls {
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-      margin-left: auto;
-    }
-
-    .filter-select {
-      padding: 0.625rem 2.5rem 0.625rem 1rem;
-      border: 2px solid var(--border);
-      border-radius: 8px;
-      background: var(--card);
-      color: var(--foreground);
-      font-size: 0.875rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 0.75rem center;
-      background-size: 12px;
-    }
-
-    .filter-select:hover {
-      border-color: var(--primary);
-      background-color: var(--background);
-    }
-
-    .filter-select:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-    }
-
-    /* Hashtag Search Styles */
-    .hashtag-search-section {
-      background: var(--card);
-      padding: 1.5rem;
-      border-radius: 12px;
-      margin-bottom: 1.5rem;
-      border: 1px solid var(--border);
-    }
-    
-    .search-input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    
-    .search-input-wrapper > .fa-hashtag {
-      position: absolute;
-      left: 1rem;
-      color: var(--muted-foreground);
-      font-size: 1.1rem;
-    }
-    
-    .hashtag-search-input {
-      width: 100%;
-      padding: 0.875rem 3rem 0.875rem 3rem;
-      border: 2px solid var(--border);
-      border-radius: 8px;
-      font-size: 0.95rem;
-      background: var(--background);
-      color: var(--foreground);
-      transition: all 0.3s ease;
-    }
-    
-    .hashtag-search-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-    }
-    
-    .clear-search-btn {
-      position: absolute;
-      right: 0.75rem;
-      background: var(--muted);
-      border: none;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: var(--muted-foreground);
-      transition: all 0.2s ease;
-    }
-    
-    .clear-search-btn:hover {
-      background: var(--accent);
-      color: var(--accent-foreground);
-    }
-    
-    .trending-hashtags {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-    
-    .trending-label {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--muted-foreground);
-      white-space: nowrap;
-    }
-    
-    .hashtag-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    
-    .hashtag-pill {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.4rem 0.875rem;
-      background: var(--muted);
-      color: var(--foreground);
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border: 2px solid transparent;
-    }
-    
-    .hashtag-pill:hover {
-      background: var(--primary);
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2);
-    }
-    
-    .hashtag-pill.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-    }
-
-    .no-results-message {
-      text-align: center;
-      padding: 3rem 2rem;
-      color: var(--muted-foreground);
-    }
-    
-    .no-results-message i {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      opacity: 0.5;
-    }
-    
-    .no-results-message p {
-      font-size: 1.1rem;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-      color: var(--foreground);
-    }
-    
-    .no-results-message small {
-      font-size: 0.875rem;
-      color: var(--muted-foreground);
-    }
-
-    /* Topic Card Styles */
-    .topic-card {
-      background-color: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      transition: all 0.2s ease;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    .topic-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .topic-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1rem;
-    }
-
-    .topic-info {
-      flex: 1;
-    }
-
-    .topic-title {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--foreground);
-      margin: 0 0 0.5rem 0;
-      line-height: 1.3;
-    }
-
-    .topic-creator {
-      font-size: 0.875rem;
-      color: var(--muted-foreground);
-      margin: 0;
-      font-weight: 400;
-    }
-
-    .topic-description {
-      margin-bottom: 1rem;
-    }
-
-    .topic-description p {
-      font-size: 1rem;
-      color: var(--foreground);
-      line-height: 1.6;
-      margin: 0;
-    }
-
-    .topic-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .topic-tag {
-      padding: 0.375rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .tag-career {
-      background-color: #E3F2FD;
-      color: #1976D2;
-    }
-
-    .tag-mentorship {
-      background-color: #E8F5E8;
-      color: #2E7D32;
-    }
-
-    .tag-general {
-      background-color: #F5F5F5;
-      color: #616161;
-    }
-
-    .tag-networking {
-      background-color: #FFF3E0;
-      color: #F57C00;
-    }
-
-    .tag-leadership {
-      background-color: #F3E5F5;
-      color: #7B1FA2;
-    }
-
-    .tag-entrepreneurship {
-      background-color: #FCE4EC;
-      color: #C2185B;
-    }
-
-    .tag-tech {
-      background-color: #E1F5FE;
-      color: #0277BD;
-    }
-
-    .tag-ai {
-      background-color: #FFF9C4;
-      color: #F57F17;
-    }
-
-    .tag-experience {
-      background-color: #E0F2F1;
-      color: #00695C;
-    }
-
-    .tag-advice {
-      background-color: #FFF3E0;
-      color: #EF6C00;
-    }
-
-    .tag-trending {
-      background-color: #FFF8E1;
-      color: #F57C00;
-    }
-
-    .tag-remote {
-      background-color: #E8EAF6;
-      color: #3F51B5;
-    }
-
-    .tag-management {
-      background-color: #FCE4EC;
-      color: #AD1457;
-    }
-
-    .tag-software {
-      background-color: #E0F7FA;
-      color: #00838F;
-    }
-
-    .tag-productivity {
-      background-color: #F1F8E9;
-      color: #558B2F;
-    }
-
-    .topic-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 1rem;
-    }
-
-    .topic-meta {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      align-items: center;
-      flex-direction: row;
-    }
-
-    .topic-views,
-    .topic-replies,
-    .topic-activity {
-      font-size: 0.875rem;
-      color: var(--muted-foreground);
-      font-weight: 400;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.375rem;
-      white-space: nowrap;
-    }
-
-    .topic-views strong,
-    .topic-replies strong {
-      color: var(--foreground);
-      font-weight: 600;
-    }
-
-    .topic-views i,
-    .topic-replies i,
-    .topic-activity i {
-      color: var(--primary);
-    }
-
-    .status-badge {
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .status-trending {
-      background: #ef4444;
-      color: white;
-    }
-
-    .status-active {
-      background: #10b981;
-      color: white;
-    }
-
-    .status-pending {
-      background: #f59e0b;
-      color: white;
-    }
-    </style>
 

@@ -17,44 +17,43 @@ require '../app/views/partials/alumni_header.php';
     <?php require '../app/views/partials/alumni_sidebar.php'; ?>
 
       <!-- Main Content Area -->
-      <main class="main-content">
+      <main class="main-content forum-ui discussion-main-page">
+
+        <nav class="forum-quick-nav" aria-label="Forum sections">
+          <a href="#forum-topics" class="forum-nav-link">Forum Topics</a>
+          <a href="#my-forums" class="forum-nav-link">My Published Forums</a>
+          <a href="#my-replies" class="forum-nav-link">My Replies</a>
+        </nav>
+
         <!-- Hashtag Search Section -->
         <div class="hashtag-search-section">
-          <div class="search-input-wrapper">
-            <i class="fas fa-hashtag"></i>
-            <input 
-              type="text" 
-              id="hashtagSearch" 
-              class="hashtag-search-input" 
-              placeholder="Search by hashtag (e.g., career, mentorship, AI)"
-              autocomplete="off"
-            >
-            <button class="clear-search-btn" id="clearSearchBtn">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-          
-          <div class="trending-hashtags">
-            <span class="trending-label">Trending:</span>
-            <div class="hashtag-pills">
-              <span class="hashtag-pill" data-tag="career">#career</span>
-              <span class="hashtag-pill" data-tag="mentorship">#mentorship</span>
-              <span class="hashtag-pill" data-tag="AI">#AI</span>
-              <span class="hashtag-pill" data-tag="networking">#networking</span>
-              <span class="hashtag-pill" data-tag="experience">#experience</span>
-              <span class="hashtag-pill" data-tag="tech">#tech</span>
+          <div class="forum-search-row">
+            <div class="search-input-wrapper">
+              <i class="fas fa-hashtag"></i>
+              <input 
+                type="text" 
+                id="hashtagSearch" 
+                class="hashtag-search-input" 
+                placeholder="Search topics (e.g., #career, internship, AI ethics, mentorship)"
+                autocomplete="off"
+              >
+              <button class="clear-search-btn" id="clearSearchBtn">
+                <i class="fas fa-times"></i>
+              </button>
             </div>
+            <button class="btn btn-primary top-new-post-btn" onclick="openNewPostModal()">
+              <i class="fas fa-plus"></i>
+              <span>New Post</span>
+            </button>
           </div>
         </div>
         
 
         <!-- Forum Topics Section -->
-        <section class="dashboard-section forum-topics-section">
+        <section id="forum-topics" class="dashboard-section forum-topics-section">
           <div class="section-header">
             <div class="section-title-container">
-              <h2 class="section-title forum-topics-title">
-                <i class="fas fa-comments"></i> Forum Topics
-              </h2>
+              <h2 class="section-title forum-topics-title">Forum Topics</h2>
               <div class="filter-controls">
                 <select class="filter-select">
                   <option>Most Recent</option>
@@ -71,8 +70,8 @@ require '../app/views/partials/alumni_header.php';
 
           <div class="topics-container">
             <?php 
-            // Show only first 5 topics visible to alumni's faculty
-            $displayTopics = isset($faculty_posts) && is_array($faculty_posts) ? array_slice($faculty_posts, 0, 6) : [];
+            // Show only one-row preview; use View All for the full list
+            $displayTopics = isset($faculty_posts) && is_array($faculty_posts) ? array_slice($faculty_posts, 0, 3) : [];
             
             if (empty($displayTopics)): ?>
               <div class="forum-empty-state">
@@ -98,7 +97,7 @@ require '../app/views/partials/alumni_header.php';
                 $tags_array = preg_split('/[\s,]+/', $tags_string, -1, PREG_SPLIT_NO_EMPTY);
               }
             ?>
-            <div class="topic-card">
+            <div class="topic-card topic-card-clickable" data-post-id="<?= (int)$topic->post_id ?>" onclick="incrementAndViewPost(<?= $topic->post_id ?>, this)" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();incrementAndViewPost(<?= $topic->post_id ?>, this);}">
               <div class="topic-header">
                 <div class="topic-info">
                   <h3 class="topic-title"><?= esc($topic->title) ?></h3>
@@ -108,15 +107,11 @@ require '../app/views/partials/alumni_header.php';
                   <span class="status-badge status-trending">
                     Trending
                   </span>
-                <?php else: ?>
-                  <span class="status-badge status-active">
-                    Active
-                  </span>
                 <?php endif; ?>
               </div>
               
               <div class="topic-description">
-                <p><?= esc(substr($topic->content, 0, 150)) ?><?= strlen($topic->content) > 150 ? '...' : '' ?></p>
+                <p><?= esc($topic->content ?? '') ?></p>
               </div>
               
               <?php if (!empty($tags_array)): ?>
@@ -129,13 +124,9 @@ require '../app/views/partials/alumni_header.php';
               
               <div class="topic-footer">
                 <div class="topic-meta">
-                  <div class="topic-views"><i class="fas fa-eye"></i> <strong><?= $topic->views ?? 0 ?></strong></div>
                   <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $topic->replies ?? 0 ?></strong> replies</div>
                   <div class="topic-activity"><i class="fas fa-clock"></i> <?= $last_activity ?></div>
                 </div>
-                <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $topic->post_id ?>, this)">
-                  <i class="fas fa-eye"></i> View
-                </button>
               </div>
             </div>
             <?php endforeach; 
@@ -144,16 +135,10 @@ require '../app/views/partials/alumni_header.php';
         </section>
 
 <!-- My Published Forums Section -->
-        <section class="dashboard-section my-published-forums-section">
+        <section id="my-forums" class="dashboard-section my-published-forums-section">
           <div class="section-header">
             <div class="section-title-container">
-              <h2 class="section-title">
-                <i class="fas fa-newspaper"></i> My Published Forums
-              </h2>
-              <button class="btn btn-primary" onclick="openNewPostModal()">
-                <i class="fas fa-plus"></i>
-                <span>New Post</span>
-              </button>
+              <h2 class="section-title">My Published Forums</h2>
             </div>
           </div>
           
@@ -204,10 +189,6 @@ require '../app/views/partials/alumni_header.php';
                         <span class="status-badge status-trending">
                           Trending
                         </span>
-                      <?php else: ?>
-                        <span class="status-badge status-active">
-                          Active
-                        </span>
                       <?php endif; ?>
                     </div>
                     
@@ -249,22 +230,31 @@ require '../app/views/partials/alumni_header.php';
         </section>
 
         <!-- My Replies Section -->
-        <section class="dashboard-section my-replies-section">
+        <section id="my-replies" class="dashboard-section my-replies-section">
           <div class="section-header">
             <div class="section-title-container">
-              <h2 class="section-title">
-                <i class="fas fa-reply"></i> My Replies
-              </h2>
+              <h2 class="section-title">My Replies</h2>
             </div>
           </div>
           
           <div class="my-replies-container">
             <?php
-            // Use real database data from controller
             $myReplies = isset($my_replies) && is_array($my_replies) ? $my_replies : [];
+            $repliesByThread = [];
+            foreach ($myReplies as $reply) {
+              $threadId = (int)($reply->forum_id ?? 0);
+              if (!isset($repliesByThread[$threadId])) {
+                $repliesByThread[$threadId] = [
+                  'forum_id' => $threadId,
+                  'forum_title' => (string)($reply->forum_title ?? 'Deleted Post'),
+                  'items' => []
+                ];
+              }
+              $repliesByThread[$threadId]['items'][] = $reply;
+            }
             ?>
-            
-            <?php if (empty($myReplies)): ?>
+
+            <?php if (empty($repliesByThread)): ?>
               <div class="no-replies-message">
                 <i class="fas fa-comments"></i>
                 <p>No Replies Yet</p>
@@ -272,48 +262,41 @@ require '../app/views/partials/alumni_header.php';
               </div>
             <?php else: ?>
               <div class="replies-grid">
-                <?php foreach ($myReplies as $reply): 
-                  // Format repliedtime as "X time ago"
-                  $timestamp = strtotime($reply->repliedtime);
-                  $diff = time() - $timestamp;
-                  if ($diff < 60) $posted_date = $diff . ' seconds ago';
-                  elseif ($diff < 3600) $posted_date = floor($diff / 60) . ' minutes ago';
-                  elseif ($diff < 86400) $posted_date = floor($diff / 3600) . ' hours ago';
-                  else $posted_date = floor($diff / 86400) . ' days ago';
-                ?>
-                  <div class="reply-card">
-                    <div class="reply-card-header">
-                      <div class="forum-link-info">
-                        <span class="forum-label">Replied to:</span>
-                        <a href="javascript:void(0)" class="forum-link" onclick="incrementAndViewPost(<?= $reply->forum_id ?>, this)">
-                          <?= esc($reply->forum_title ?? 'Deleted Post') ?>
-                        </a>
-                      </div>
-                      <span class="reply-date">
-                        <i class="fas fa-clock"></i> <?= esc($posted_date) ?>
-                      </span>
+                <?php foreach ($repliesByThread as $thread): ?>
+                  <article class="reply-thread" data-thread-id="<?= (int)$thread['forum_id'] ?>">
+                    <header class="reply-thread-header">
+                      <a href="javascript:void(0)" class="reply-thread-title" onclick="incrementAndViewPost(<?= (int)$thread['forum_id'] ?>, this)">
+                        <?= esc($thread['forum_title']) ?>
+                      </a>
+                    </header>
+
+                    <div class="reply-thread-list">
+                      <?php foreach ($thread['items'] as $reply):
+                        $timestamp = strtotime((string)$reply->repliedtime);
+                        $diff = time() - $timestamp;
+                        if ($diff < 60) $posted_date = $diff . ' seconds ago';
+                        elseif ($diff < 3600) $posted_date = floor($diff / 60) . ' minutes ago';
+                        elseif ($diff < 86400) $posted_date = floor($diff / 3600) . ' hours ago';
+                        else $posted_date = floor($diff / 86400) . ' days ago';
+                      ?>
+                        <div class="thread-reply-item">
+                          <div class="thread-reply-meta">
+                            <span class="reply-date"><i class="fas fa-clock"></i> <?= esc($posted_date) ?></span>
+                            <span class="reply-likes"><i class="fas fa-thumbs-up"></i> <?= (int)($reply->likes ?? 0) ?> likes</span>
+                          </div>
+                          <p class="reply-text"><?= esc((string)($reply->reply ?? '')) ?></p>
+                          <div class="thread-reply-actions">
+                            <button class="btn-action btn-edit" onclick="openEditReplyModal(<?= (int)$reply->replyid ?>, '<?= htmlspecialchars((string)($reply->reply ?? ''), ENT_QUOTES) ?>')">
+                              <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn-action btn-delete" onclick="confirmDeleteReply(<?= (int)$reply->replyid ?>)">
+                              <i class="fas fa-trash"></i> Delete
+                            </button>
+                          </div>
+                        </div>
+                      <?php endforeach; ?>
                     </div>
-                    
-                    <div class="reply-card-content">
-                      <p class="reply-text"><?= esc($reply->reply) ?></p>
-                    </div>
-                    
-                    <div class="reply-card-footer">
-                      <div class="reply-stats">
-                        <span class="reply-likes">
-                          <i class="fas fa-thumbs-up"></i> <?= $reply->likes ?> likes
-                        </span>
-                      </div>
-                      <div class="reply-actions">
-                        <button class="btn-action btn-edit" onclick="openEditReplyModal(<?= $reply->replyid ?>, '<?= htmlspecialchars($reply->reply, ENT_QUOTES) ?>')">
-                          <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button class="btn-action btn-delete" onclick="confirmDeleteReply(<?= $reply->replyid ?>)">
-                          <i class="fas fa-trash"></i> Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  </article>
                 <?php endforeach; ?>
               </div>
             <?php endif; ?>
@@ -906,9 +889,9 @@ require '../app/views/partials/alumni_header.php';
         overlay = document.createElement('div');
         overlay.className = 'forum-loading-overlay';
         overlay.innerHTML = `
-          <div style="display:flex; flex-direction:column; align-items:center; gap:10px; color:#374151;">
-            <i class="fas fa-spinner fa-spin" style="font-size:28px;"></i>
-            <span style="font-weight:600;">Loading discussion...</span>
+          <div class="forum-loading-content">
+            <i class="fas fa-spinner fa-spin forum-loading-icon"></i>
+            <span class="forum-loading-text">Loading discussion...</span>
           </div>
         `;
         Object.assign(overlay.style, {
@@ -960,6 +943,11 @@ require '../app/views/partials/alumni_header.php';
         showNotification('Please enter a reply', 'warning');
         return;
       }
+
+      if (replyText.length < 10) {
+        showNotification('Reply must be at least 10 characters long', 'warning');
+        return;
+      }
       
       if (!currentPostId) {
         showNotification('Post ID not found', 'error');
@@ -1003,10 +991,9 @@ require '../app/views/partials/alumni_header.php';
     }
 
     function bumpReplyCountForPost(postId) {
-      const buttons = document.querySelectorAll(`button[onclick*="incrementAndViewPost(${postId})"]`);
-      buttons.forEach(button => {
-        const card = button.closest('.topic-card');
-        const replyCountEl = card?.querySelector('.topic-replies strong');
+      const cards = document.querySelectorAll(`.topic-card[data-post-id="${Number(postId)}"]`);
+      cards.forEach(card => {
+        const replyCountEl = card.querySelector('.topic-replies strong');
         if (!replyCountEl) return;
         const current = parseInt(replyCountEl.textContent, 10) || 0;
         replyCountEl.textContent = String(current + 1);
@@ -1040,37 +1027,36 @@ require '../app/views/partials/alumni_header.php';
         return;
       }
 
-      const html = replies.map(reply => {
-        const ts = new Date(reply.repliedtime || Date.now()).getTime();
-        const diff = Math.max(0, Math.floor((Date.now() - ts) / 1000));
-        let postedDate = `${diff} seconds ago`;
-        if (diff >= 86400) postedDate = `${Math.floor(diff / 86400)} days ago`;
-        else if (diff >= 3600) postedDate = `${Math.floor(diff / 3600)} hours ago`;
-        else if (diff >= 60) postedDate = `${Math.floor(diff / 60)} minutes ago`;
+      const grouped = {};
+      replies.forEach(reply => {
+        const threadId = Number(reply.forum_id || 0);
+        if (!grouped[threadId]) {
+          grouped[threadId] = {
+            forumId: threadId,
+            title: reply.forum_title || 'Deleted Post',
+            items: []
+          };
+        }
+        grouped[threadId].items.push(reply);
+      });
 
-        return `
-          <div class="reply-card">
-            <div class="reply-card-header">
-              <div class="forum-link-info">
-                <span class="forum-label">Replied to:</span>
-                <a href="javascript:void(0)" class="forum-link" onclick="incrementAndViewPost(${Number(reply.forum_id || 0)}, this)">
-                  ${escapeHtml(reply.forum_title || 'Deleted Post')}
-                </a>
+      const html = Object.values(grouped).map(thread => {
+        const itemsHtml = thread.items.map(reply => {
+          const ts = new Date(reply.repliedtime || Date.now()).getTime();
+          const diff = Math.max(0, Math.floor((Date.now() - ts) / 1000));
+          let postedDate = `${diff} seconds ago`;
+          if (diff >= 86400) postedDate = `${Math.floor(diff / 86400)} days ago`;
+          else if (diff >= 3600) postedDate = `${Math.floor(diff / 3600)} hours ago`;
+          else if (diff >= 60) postedDate = `${Math.floor(diff / 60)} minutes ago`;
+
+          return `
+            <div class="thread-reply-item">
+              <div class="thread-reply-meta">
+                <span class="reply-date"><i class="fas fa-clock"></i> ${postedDate}</span>
+                <span class="reply-likes"><i class="fas fa-thumbs-up"></i> ${Number(reply.likes || 0)} likes</span>
               </div>
-              <span class="reply-date">
-                <i class="fas fa-clock"></i> ${postedDate}
-              </span>
-            </div>
-            <div class="reply-card-content">
               <p class="reply-text">${escapeHtml(reply.reply || '')}</p>
-            </div>
-            <div class="reply-card-footer">
-              <div class="reply-stats">
-                <span class="reply-likes">
-                  <i class="fas fa-thumbs-up"></i> ${Number(reply.likes || 0)} likes
-                </span>
-              </div>
-              <div class="reply-actions">
+              <div class="thread-reply-actions">
                 <button class="btn-action btn-edit" onclick="openEditReplyModal(${Number(reply.replyid || 0)}, '${String(reply.reply || '').replace(/'/g, "\\'")}')">
                   <i class="fas fa-edit"></i> Edit
                 </button>
@@ -1079,7 +1065,16 @@ require '../app/views/partials/alumni_header.php';
                 </button>
               </div>
             </div>
-          </div>
+          `;
+        }).join('');
+
+        return `
+          <article class="reply-thread" data-thread-id="${thread.forumId}">
+            <header class="reply-thread-header">
+              <a href="javascript:void(0)" class="reply-thread-title" onclick="incrementAndViewPost(${thread.forumId}, this)">${escapeHtml(thread.title)}</a>
+            </header>
+            <div class="reply-thread-list">${itemsHtml}</div>
+          </article>
         `;
       }).join('');
 
@@ -1374,12 +1369,49 @@ require '../app/views/partials/alumni_header.php';
     
     // Form submission
     document.addEventListener('DOMContentLoaded', function() {
-      const mainContent = document.querySelector('.main-content');
-      const myPublishedSection = document.querySelector('.my-published-forums-section');
-      const forumTopicsSection = document.querySelector('.forum-topics-section');
-      if (mainContent && myPublishedSection && forumTopicsSection) {
-        mainContent.insertBefore(myPublishedSection, forumTopicsSection);
-      }
+      const navLinks = Array.from(document.querySelectorAll('.forum-nav-link'));
+      const sectionIds = ['forum-topics', 'my-forums', 'my-replies'];
+
+      const setActiveNav = function (id) {
+        navLinks.forEach((link) => {
+          const href = link.getAttribute('href') || '';
+          link.classList.toggle('is-active', href === '#' + id);
+        });
+      };
+
+      const getNearestVisibleSection = function () {
+        let nearestId = sectionIds[0];
+        let nearestDistance = Number.POSITIVE_INFINITY;
+
+        sectionIds.forEach((id) => {
+          const section = document.getElementById(id);
+          if (!section) return;
+          const rect = section.getBoundingClientRect();
+          const distance = Math.abs(rect.top - 130);
+          if (distance < nearestDistance) {
+            nearestDistance = distance;
+            nearestId = id;
+          }
+        });
+
+        return nearestId;
+      };
+
+      const initialHash = (window.location.hash || '').replace('#', '');
+      setActiveNav(sectionIds.includes(initialHash) ? initialHash : sectionIds[0]);
+
+      navLinks.forEach((link) => {
+        link.addEventListener('click', function () {
+          const targetId = (link.getAttribute('href') || '').replace('#', '');
+          if (targetId) {
+            setActiveNav(targetId);
+          }
+        });
+      });
+
+      window.addEventListener('scroll', function () {
+        setActiveNav(getNearestVisibleSection());
+      }, { passive: true });
 
       // New Post Form
       const newPostForm = document.querySelector('.new-post-form');
@@ -1482,9 +1514,7 @@ require '../app/views/partials/alumni_header.php';
           })
           .catch(error => {
             console.error('Error:', error);
-            showNotification('Post updated successfully!', 'success');
-            closeEditForumModal();
-            location.reload();
+            showNotification('Failed to update post', 'error');
           });
         });
       }
@@ -1748,33 +1778,31 @@ require '../app/views/partials/alumni_header.php';
         return;
       }
 
-      forumTopicsContainer.innerHTML = posts.map(topic => {
+      const limitedPosts = posts.slice(0, 3);
+
+      forumTopicsContainer.innerHTML = limitedPosts.map(topic => {
         const tags = parseTags(topic.tags);
         const lastActivity = getTimeAgo(topic.created_at);
         const isTrending = Number(topic.trending_points || 0) >= <?= (int)$trending_threshold ?>;
 
         return `
-          <div class="topic-card">
+          <div class="topic-card topic-card-clickable" data-post-id="${Number(topic.post_id)}" onclick="incrementAndViewPost(${Number(topic.post_id)}, this)" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();incrementAndViewPost(${Number(topic.post_id)}, this);}">
             <div class="topic-header">
               <div class="topic-info">
                 <h3 class="topic-title">${escapeHtml(topic.title || '')}</h3>
                 <p class="topic-creator">Created by ${escapeHtml(topic.author_name || 'Unknown')}</p>
               </div>
-              <span class="status-badge ${isTrending ? 'status-trending' : 'status-active'}">${isTrending ? 'Trending' : 'Active'}</span>
+              ${isTrending ? '<span class="status-badge status-trending">Trending</span>' : ''}
             </div>
             <div class="topic-description">
-              <p>${escapeHtml((topic.content || '').slice(0, 180))}${(topic.content || '').length > 180 ? '...' : ''}</p>
+              <p>${escapeHtml(topic.content || '')}</p>
             </div>
             ${tags.length ? `<div class="topic-tags">${tags.map(tag => `<span class="topic-tag tag-${toTagClass(tag)}">#${escapeHtml(tag)}</span>`).join('')}</div>` : ''}
             <div class="topic-footer">
               <div class="topic-meta">
-                <div class="topic-views"><i class="fas fa-eye"></i> <strong>${Number(topic.views || 0)}</strong></div>
                 <div class="topic-replies"><i class="fas fa-comment"></i> <strong>${Number(topic.replies || 0)}</strong> replies</div>
                 <div class="topic-activity"><i class="fas fa-clock"></i> ${lastActivity}</div>
               </div>
-              <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(${Number(topic.post_id)}, this)">
-                <i class="fas fa-eye"></i> View
-              </button>
             </div>
           </div>
         `;

@@ -1,0 +1,263 @@
+.faculty-announcements-page .announcement-section .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.faculty-announcements-page .announcement-section .section-title {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.faculty-announcements-page .section-sort {
+  display: flex;
+  align-items: center;
+}
+
+.faculty-announcements-page .filter-select {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.faculty-announcements-page .announcements-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.faculty-announcements-page .announcement-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.faculty-announcements-page .announcement-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.faculty-announcements-page .announcement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.faculty-announcements-page .announcement-title {
+  margin: 0 0 0.25rem 0;
+  color: var(--foreground);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.faculty-announcements-page .announcement-author {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+}
+
+.faculty-announcements-page .announcement-meta {
+  text-align: right;
+}
+
+.faculty-announcements-page .priority-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.faculty-announcements-page .priority-high {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.faculty-announcements-page .priority-medium {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.faculty-announcements-page .priority-low {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.faculty-announcements-page .announcement-content {
+  margin-bottom: 1rem;
+}
+
+.faculty-announcements-page .announcement-content p {
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.faculty-announcements-page .announcement-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.faculty-announcements-page .detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+.faculty-announcements-page .detail-item i {
+  color: var(--primary);
+  width: 16px;
+}
+
+.faculty-announcements-page .announcement-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+#viewAnnouncementModal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+#viewAnnouncementModal .modal-content {
+  background-color: var(--card);
+  margin: 5% auto;
+  padding: 0;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+#viewAnnouncementModal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background-color: #f9fafb;
+  border-radius: 12px 12px 0 0;
+}
+
+#viewAnnouncementModal .modal-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+#viewAnnouncementModal .modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+#viewAnnouncementModal .modal-close:hover {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+#viewAnnouncementModal .announcement-form {
+  padding: 1.5rem;
+}
+
+#viewAnnouncementModal .modal-announcement-details {
+  margin-bottom: 1rem;
+}
+
+.view-loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem 0.5rem;
+  color: #4b5563;
+}
+
+.view-loading-state.is-hidden {
+  display: none;
+}
+
+.loading-spinner {
+  width: 34px;
+  height: 34px;
+  border: 3px solid #e5e7eb;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: facultyAnnouncementSpin 0.8s linear infinite;
+}
+
+@keyframes facultyAnnouncementSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.faculty-announcements-page .empty-announcement-state {
+  background: #f9fafb;
+  border: 1px dashed #d1d5db;
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: #4b5563;
+}
+
+.faculty-announcements-page .empty-announcement-state i {
+  font-size: 1.75rem;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+
+.faculty-announcements-page .empty-announcement-state h4 {
+  margin: 0 0 0.4rem 0;
+  color: var(--foreground);
+  font-size: 1.05rem;
+}
+
+.faculty-announcements-page .empty-announcement-state p {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .faculty-announcements-page .announcement-section .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .faculty-announcements-page .section-sort,
+  .faculty-announcements-page .filter-select {
+    width: 100%;
+  }
+
+  .faculty-announcements-page .announcement-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}

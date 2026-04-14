@@ -3,11 +3,12 @@ $page_title = 'Faculty Announcements';
 $page_subtitle = 'Latest updates for your faculty and university';
 require '../app/views/partials/alumni_header.php';
 ?>
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/faculty-announcements.css">
 
 <div class="dashboard-container">
     <?php require '../app/views/partials/alumni_sidebar.php'; ?>
 
-    <main class="main-content">
+    <main class="main-content faculty-announcements-page">
         <section class="dashboard-section announcement-section">
             <div class="section-header">
                 <h2 class="section-title">Faculty Announcements</h2>
@@ -160,12 +161,12 @@ require '../app/views/partials/alumni_header.php';
         </div>
 
         <div class="announcement-form">
-            <div id="viewAnnouncementLoading" class="view-loading-state" style="display:none;">
+            <div id="viewAnnouncementLoading" class="view-loading-state is-hidden">
                 <div class="loading-spinner"></div>
                 <p>Loading announcement...</p>
             </div>
 
-            <div class="announcement-details" style="margin-bottom:1rem;">
+            <div class="announcement-details modal-announcement-details">
                 <div class="detail-item">
                     <i class="fas fa-user"></i>
                     <span id="viewAnnouncementAuthor">-</span>
@@ -187,272 +188,6 @@ require '../app/views/partials/alumni_header.php';
     </div>
 </div>
 
-<style>
-.announcement-section .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-}
-
-.announcement-section .section-title {
-    margin: 0;
-    line-height: 1.2;
-}
-
-.section-sort {
-    display: flex;
-    align-items: center;
-}
-
-.filter-select {
-    padding: 0.75rem 1rem;
-    border: 2px solid #E5E7EB;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    background-color: white;
-}
-
-.announcements-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.announcement-card {
-    background: white;
-    border: 2px solid #E5E7EB;
-    border-radius: 12px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.announcement-card:hover {
-    border-color: #0E2072;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.announcement-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-}
-
-.announcement-title {
-    margin: 0 0 0.25rem 0;
-    color: #1F2937;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.announcement-author {
-    margin: 0;
-    color: #6B7280;
-    font-size: 0.9rem;
-}
-
-.announcement-meta {
-    text-align: right;
-}
-
-.priority-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.priority-high {
-    background-color: #FEE2E2;
-    color: #DC2626;
-}
-
-.priority-medium {
-    background-color: #FEF3C7;
-    color: #D97706;
-}
-
-.priority-low {
-    background-color: #D1FAE5;
-    color: #065F46;
-}
-
-.announcement-content {
-    margin-bottom: 1rem;
-}
-
-.announcement-content p {
-    margin: 0;
-    color: #4B5563;
-    line-height: 1.5;
-}
-
-.announcement-details {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.75rem;
-}
-
-.detail-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #4B5563;
-    font-size: 0.9rem;
-}
-
-.detail-item i {
-    color: #0E2072;
-    width: 16px;
-}
-
-.announcement-actions {
-    display: flex;
-    gap: 0.75rem;
-    margin-top: 1rem;
-}
-
-.btn-outline {
-    background-color: white;
-    color: #000000;
-    border: 1px solid #000000;
-}
-
-.btn-outline:hover {
-    background-color: #000000;
-    color: white;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-}
-
-.modal-content {
-    background-color: white;
-    margin: 5% auto;
-    padding: 0;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid #E5E7EB;
-    background-color: #F9FAFB;
-    border-radius: 12px 12px 0 0;
-}
-
-.modal-title {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #1F2937;
-}
-
-.modal-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: #6B7280;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 8px;
-}
-
-.modal-close:hover {
-    background-color: #E5E7EB;
-    color: #374151;
-}
-
-.announcement-form {
-    padding: 1.5rem;
-}
-
-.view-loading-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    padding: 2rem 0.5rem;
-    color: #4B5563;
-}
-
-.loading-spinner {
-    width: 34px;
-    height: 34px;
-    border: 3px solid #E5E7EB;
-    border-top-color: #0E2072;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.empty-announcement-state {
-    background: #F9FAFB;
-    border: 2px dashed #D1D5DB;
-    border-radius: 12px;
-    padding: 2rem 1.5rem;
-    text-align: center;
-    color: #4B5563;
-}
-
-.empty-announcement-state i {
-    font-size: 1.75rem;
-    color: #6B7280;
-    margin-bottom: 0.75rem;
-}
-
-.empty-announcement-state h4 {
-    margin: 0 0 0.4rem 0;
-    color: #1F2937;
-    font-size: 1.05rem;
-}
-
-.empty-announcement-state p {
-    margin: 0;
-}
-
-@media (max-width: 768px) {
-    .announcement-section .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .section-sort,
-    .filter-select {
-        width: 100%;
-    }
-
-    .announcement-header {
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-}
-</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
