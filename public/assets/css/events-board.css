@@ -1,5 +1,31 @@
 /* events-board.css - Events Board Page Component Styles */
 
+/* Final layout guard for upcoming cards */
+body.student-dashboard .featured-events-section .featured-events-grid,
+body.alumni-dashboard .featured-events-section .featured-events-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(260px, 1fr)) !important;
+  gap: var(--spacing-lg) !important;
+  align-items: stretch;
+}
+
+body.student-dashboard .featured-events-section .featured-events-grid .featured-event-card,
+body.alumni-dashboard .featured-events-section .featured-events-grid .featured-event-card {
+  width: auto !important;
+  max-width: none !important;
+  min-width: 0;
+}
+
+body.student-dashboard .featured-events-section .featured-event-card .event-title,
+body.student-dashboard .featured-events-section .featured-event-card .event-description,
+body.student-dashboard .featured-events-section .featured-event-card .event-meta span,
+body.alumni-dashboard .featured-events-section .featured-event-card .event-title,
+body.alumni-dashboard .featured-events-section .featured-event-card .event-description,
+body.alumni-dashboard .featured-events-section .featured-event-card .event-meta span {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 /* Events Header Section */
 .events-header-section {
   margin-bottom: var(--spacing-2xl);
@@ -812,6 +838,13 @@
   }
 }
 
+@media (max-width: 1200px) {
+  body.student-dashboard .featured-events-section .featured-events-grid,
+  body.alumni-dashboard .featured-events-section .featured-events-grid {
+    grid-template-columns: repeat(2, minmax(240px, 1fr)) !important;
+  }
+}
+
 @media (max-width: 768px) {
   .featured-events-grid {
     grid-template-columns: 1fr;
@@ -856,6 +889,11 @@
   .form-actions,
   .modal-footer {
     flex-direction: column;
+  }
+
+  body.student-dashboard .featured-events-section .featured-events-grid,
+  body.alumni-dashboard .featured-events-section .featured-events-grid {
+    grid-template-columns: 1fr !important;
   }
 }
 
