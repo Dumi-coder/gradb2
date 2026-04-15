@@ -35,16 +35,41 @@
         <input class="input" type="email" name="email" placeholder="Counselor Email" required />
         
         <input class="input" type="password" name="password" placeholder="Password" required />
+
+        <label class="auth-meta" style="display:flex; align-items:center; gap:0.5rem;">
+          <input type="checkbox" class="js-toggle-password" />
+          Show password
+        </label>
         
         <div class="auth-actions">
           <button type="submit" class="btn btn-primary" style="width:100%; min-width: unset;">Sign In</button>
         </div>
       </form>
+
+      <p class="auth-meta"><a href="<?=ROOT?>/PasswordReset?role=counselor">Forgot password?</a></p>
       
       <p class="auth-meta">Internal Access Only</p>
     </div>
   </div>
 </section>
 
+<script>
+  (function() {
+    const form = document.querySelector('.auth-form');
+    if (!form) {
+      return;
+    }
+    const toggle = form.querySelector('.js-toggle-password');
+    if (!toggle) {
+      return;
+    }
+    const fields = form.querySelectorAll('input[type="password"]');
+    toggle.addEventListener('change', function() {
+      fields.forEach(function(field) {
+        field.type = toggle.checked ? 'text' : 'password';
+      });
+    });
+  })();
+</script>
 </body>
 </html>

@@ -87,7 +87,7 @@ function time_elapsed_string($datetime, $full = false) {
 
 /**
  * Validate password strength according to security requirements
- * Password must be at least 8 characters and contain:
+ * Password must be at least 10 characters and contain:
  * - At least one letter (a-z or A-Z)
  * - At least one number (0-9)
  * - At least one special character (!@#$%^&*()_+-=[]{}|;':",./<>?)
@@ -99,8 +99,8 @@ function validatePasswordStrength($password) {
     $errors = [];
     
     // Check minimum length
-    if (strlen($password) < 8) {
-        $errors[] = "Password must be at least 8 characters long";
+    if (strlen($password) < 10) {
+        $errors[] = "Password must be at least 10 characters long";
     }
     
     // Check for at least one letter
@@ -130,5 +130,5 @@ function validatePasswordStrength($password) {
  * @return string Formatted requirements text
  */
 function getPasswordRequirements() {
-    return "Password must be at least 8 characters and include: at least one letter, one number, and one special character (!@#$%^&*()_+-=[]{}|;':\",./<>?)";
+    return "Password must be at least 10 characters and include: at least one letter, one number, and one special character (!@#$%^&*()_+-=[]{}|;':\",./<>?)";
 }
