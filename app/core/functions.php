@@ -132,3 +132,63 @@ function validatePasswordStrength($password) {
 function getPasswordRequirements() {
     return "Password must be at least 8 characters and include: at least one letter, one number, and one special character (!@#$%^&*()_+-=[]{}|;':\",./<>?)";
 }
+
+/**
+ * Validate a password change request.
+ *
+ * @param string $storedPasswordHash Existing stored password hash or legacy plain-text value.
+ * @param string $currentPassword Current password entered by the user.
+ * @param string $newPassword New password entered by the user.
+ * @param string $confirmPassword Confirmation password entered by the user.
+ * @return array{valid: bool, errors: array, password_hash: ?string}
+ */
+function validatePasswordChange($storedPasswordHash, $currentPassword, $newPassword, $confirmPassword) {
+    $errors = [];
+    $storedPasswordHash = (string) $storedPasswordHash;
+    $currentPassword = (string) $currentPassword;
+    $newPassword = (string) $newPassword;
+    $confirmPassword = (string) $confirmPassword;
+
+    $passwordChangeRequested = ($currentPassword !== '' || $newPassword !== '' || $confirmPassword !== '');
+    if (!$passwordChangeRequested) {
+        return [
+            'valid' => true,
+            'errors' => [],
+            'password_hash' => null,
+        ];
+    }
+
+    if ($currentPassword === '') {
+        $errors[] = 'Current password is required to change password';
+    } else {
+        $isValidCurrentPassword = false;
+
+        if ($storedPasswordHash !== '') {
+            $isValidCurrentPassword = password_verify($currentPassword, $storedPasswordHash)
+                || hash_equals($storedPasswordHash, $currentPassword);
+        }
+
+        if (!$isValidCurrentPassword) {
+            $errors[] = 'Current password is incorrect';
+        }
+    }
+
+    if ($newPassword === '') {
+        $errors[] = 'New password is required';
+    } else {
+        $passwordValidation = validatePasswordStrength($newPassword);
+        if (!$passwordValidation['valid']) {
+            $errors = array_merge($errors, $passwordValidation['errors']);
+        }
+    }
+
+    if ($newPassword !== $confirmPassword) {
+        $errors[] = 'Passwords do not match';
+    }
+
+    return [
+        'valid' => empty($errors),
+        'errors' => $errors,
+        'password_hash' => empty($errors) ? password_hash($newPassword, PASSWORD_DEFAULT) : null,
+    ];
+}

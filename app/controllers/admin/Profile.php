@@ -41,7 +41,7 @@ class Profile extends Controller
         }
 
         // Get admin statistics
-        $stats = $this->getAdminStats();
+        $stats = $this->getAdminStats((int)($profile->faculty_id ?? 0));
 
         $data = [
             'title' => 'Admin Profile - GradBridge',
@@ -107,6 +107,9 @@ class Profile extends Controller
         $github_url = trim($_POST['github_url'] ?? '');
         $twitter_url = trim($_POST['twitter_url'] ?? '');
         $personalweb_url = trim($_POST['personalweb_url'] ?? '');
+        $current_password = $_POST['current_password'] ?? '';
+        $new_password = $_POST['new_password'] ?? '';
+        $confirm_password = $_POST['confirm_password'] ?? '';
         $profile_picture = $_FILES['profile_picture'] ?? null;
 
         // Validation
@@ -141,6 +144,14 @@ class Profile extends Controller
             $errors['personalweb_url'] = "Please enter a valid website URL";
         }
 
+        $user = new User();
+        $user_profile = $user->first(['user_id' => $current_profile->user_id]);
+        $storedPasswordHash = $user_profile ? ($user_profile->password ?? '') : '';
+        $passwordValidation = validatePasswordChange($storedPasswordHash, $current_password, $new_password, $confirm_password);
+        if (!$passwordValidation['valid']) {
+            $errors['password'] = implode(' | ', $passwordValidation['errors']);
+        }
+
         // Validate profile picture
         if ($profile_picture && $profile_picture['error'] != UPLOAD_ERR_NO_FILE) {
             if ($profile_picture['error'] != UPLOAD_ERR_OK) {
@@ -163,10 +174,10 @@ class Profile extends Controller
         if (empty($errors)) {
             try {
                 // Update user table (name and email)
-                $user = new User();
                 $user_data = [];
                 if ($name !== $current_profile->name) $user_data['name'] = $name;
                 if ($email !== $current_profile->email) $user_data['email'] = $email;
+                if (!empty($passwordValidation['password_hash'])) $user_data['password'] = $passwordValidation['password_hash'];
                 if (!empty($user_data)) {
                     $user->update($_SESSION['user_id'], $user_data);
                 }
@@ -282,16 +293,67 @@ class Profile extends Controller
         redirect('admin/profile?action=edit');
     }
 
-    private function getAdminStats()
+    private function getAdminStats($facultyId = 0)
     {
-        // You can expand this to get real statistics from the database
+        $studentModel = new Student();
+        $alumniModel = new Alumni();
+        $requestModel = new Request();
+        $eventModel = new Event();
+
+        $params = [];
+        $facultyFilter = '';
+        if ($facultyId > 0) {
+            $facultyFilter = ' AND s.faculty_id = :faculty_id';
+            $params['faculty_id'] = $facultyId;
+        }
+
+        $studentQuery = "SELECT COUNT(*) AS total
+                         FROM students s
+                         WHERE (s.is_deleted IS NULL OR s.is_deleted = 0)" . ($facultyId > 0 ? " AND s.faculty_id = :faculty_id" : "");
+
+        $alumniQuery = "SELECT COUNT(*) AS total
+                        FROM alumnis a
+                        WHERE (a.is_deleted IS NULL OR a.is_deleted = 0)" . ($facultyId > 0 ? " AND a.faculty_id = :faculty_id" : "");
+
+        $pendingRequestsQuery = "SELECT COUNT(*) AS total
+                                 FROM requests r
+                                 INNER JOIN students s ON s.user_id = r.student_user_id
+                                 WHERE r.status IN ('pending', 'pending_verification', 'pending_review')
+                                   AND (s.is_deleted IS NULL OR s.is_deleted = 0)" . $facultyFilter;
+
+        $eventsQuery = "SELECT COUNT(*) AS total
+                        FROM events e
+                        INNER JOIN alumnis a ON a.user_id = e.host_alumnus_id
+                        WHERE e.status = 'active'
+                          AND (a.is_deleted IS NULL OR a.is_deleted = 0)" . ($facultyId > 0 ? " AND a.faculty_id = :faculty_id" : "");
+
+        $mentorshipConnectionsQuery = "SELECT COUNT(*) AS total
+                                       FROM requests r
+                                       INNER JOIN students s ON s.user_id = r.student_user_id
+                                       WHERE r.request_type = 'mentorship'
+                                         AND r.status IN ('accepted', 'pending_review', 'completed')
+                                         AND (s.is_deleted IS NULL OR s.is_deleted = 0)" . $facultyFilter;
+
+        $resolvedRequestsQuery = "SELECT COUNT(*) AS total
+                                  FROM requests r
+                                  INNER JOIN students s ON s.user_id = r.student_user_id
+                                  WHERE r.status IN ('approved', 'completed')
+                                    AND (s.is_deleted IS NULL OR s.is_deleted = 0)" . $facultyFilter;
+
+        $studentsRow = $studentModel->get_row($studentQuery, $params);
+        $alumniRow = $alumniModel->get_row($alumniQuery, $params);
+        $pendingRequestsRow = $requestModel->get_row($pendingRequestsQuery, $params);
+        $eventsRow = $eventModel->get_row($eventsQuery, $params);
+        $mentorshipConnectionsRow = $requestModel->get_row($mentorshipConnectionsQuery, $params);
+        $resolvedRequestsRow = $requestModel->get_row($resolvedRequestsQuery, $params);
+
         return [
-            'total_students' => 156,
-            'total_alumni' => 89,
-            'pending_requests' => 23,
-            'events_managed' => 12,
-            'mentorship_connections' => 45,
-            'system_uptime' => '99.9%'
+            'total_students' => (int)($studentsRow->total ?? 0),
+            'total_alumni' => (int)($alumniRow->total ?? 0),
+            'pending_requests' => (int)($pendingRequestsRow->total ?? 0),
+            'events_managed' => (int)($eventsRow->total ?? 0),
+            'mentorship_connections' => (int)($mentorshipConnectionsRow->total ?? 0),
+            'resolved_requests' => (int)($resolvedRequestsRow->total ?? 0),
         ];
     }
 }

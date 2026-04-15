@@ -107,6 +107,9 @@ class Profile extends Controller
         $github_url = trim($_POST['github_url'] ?? '');
         $twitter_url = trim($_POST['twitter_url'] ?? '');
         $personalweb_url = trim($_POST['personalweb_url'] ?? '');
+        $current_password = $_POST['current_password'] ?? '';
+        $new_password = $_POST['new_password'] ?? '';
+        $confirm_password = $_POST['confirm_password'] ?? '';
         $profile_picture = $_FILES['profile_picture'] ?? null;
 
         // Validation
@@ -141,6 +144,14 @@ class Profile extends Controller
             $errors['personalweb_url'] = "Please enter a valid website URL";
         }
 
+        $user = new User();
+        $user_profile = $user->first(['user_id' => $current_profile->user_id]);
+        $storedPasswordHash = $user_profile ? ($user_profile->password ?? '') : '';
+        $passwordValidation = validatePasswordChange($storedPasswordHash, $current_password, $new_password, $confirm_password);
+        if (!$passwordValidation['valid']) {
+            $errors['password'] = implode(' | ', $passwordValidation['errors']);
+        }
+
         // Validate profile picture
         if ($profile_picture && $profile_picture['error'] != UPLOAD_ERR_NO_FILE) {
             if ($profile_picture['error'] != UPLOAD_ERR_OK) {
@@ -163,10 +174,10 @@ class Profile extends Controller
         if (empty($errors)) {
             try {
                 // Update user table (name and email)
-                $user = new User();
                 $user_data = [];
                 if ($name !== $current_profile->name) $user_data['name'] = $name;
                 if ($email !== $current_profile->email) $user_data['email'] = $email;
+                if (!empty($passwordValidation['password_hash'])) $user_data['password'] = $passwordValidation['password_hash'];
                 if (!empty($user_data)) {
                     $user->update($_SESSION['user_id'], $user_data);
                 }
@@ -284,15 +295,26 @@ class Profile extends Controller
 
     private function getAdminStats()
     {
-        // You can expand this to get real statistics from the database
+        $studentModel = new Student();
+        $alumniModel = new Alumni();
+        $requestModel = new Request();
+        $eventModel = new Event();
+        $facultyAdminModel = new FacultyAdmin();
+
+        $studentsRow = $studentModel->get_row("SELECT COUNT(*) AS total FROM students WHERE is_deleted IS NULL OR is_deleted = 0");
+        $alumniRow = $alumniModel->get_row("SELECT COUNT(*) AS total FROM alumnis WHERE is_deleted IS NULL OR is_deleted = 0");
+        $pendingRequestsRow = $requestModel->get_row("SELECT COUNT(*) AS total FROM requests WHERE status IN ('pending', 'pending_verification', 'pending_review')");
+        $eventsRow = $eventModel->get_row("SELECT COUNT(*) AS total FROM events WHERE status = 'active'");
+        $mentorshipConnectionsRow = $requestModel->get_row("SELECT COUNT(*) AS total FROM requests WHERE request_type = 'mentorship' AND status IN ('accepted', 'pending_review', 'completed')");
+        $activeFacultyAdminsRow = $facultyAdminModel->get_row("SELECT COUNT(*) AS total FROM faculty_admins WHERE is_deactivated = 0");
+
         return [
-            'total_students' => 450,
-            'total_alumni' => 320,
-            'total_admins' => 24,
-            'pending_requests' => 67,
-            'events_managed' => 28,
-            'mentorship_connections' => 89,
-            'system_uptime' => '99.9%'
+            'total_students' => (int)($studentsRow->total ?? 0),
+            'total_alumni' => (int)($alumniRow->total ?? 0),
+            'pending_requests' => (int)($pendingRequestsRow->total ?? 0),
+            'events_managed' => (int)($eventsRow->total ?? 0),
+            'mentorship_connections' => (int)($mentorshipConnectionsRow->total ?? 0),
+            'active_faculty_admins' => (int)($activeFacultyAdminsRow->total ?? 0),
         ];
     }
 }

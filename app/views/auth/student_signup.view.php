@@ -34,8 +34,9 @@
             </div>
 
             <div id="student-password-container">
-                <input class="input" type="password" id="student-password" name="password" placeholder="Password" required />
-                <input class="input" type="password" id="student-confirm-password" name="confirm_password" placeholder="Confirm password" required />
+              <input class="input" type="password" id="student-password" name="password" placeholder="Password" minlength="8" autocomplete="new-password" required />
+              <input class="input" type="password" id="student-confirm-password" name="confirm_password" placeholder="Confirm password" minlength="8" autocomplete="new-password" required />
+              <small style="display:block; margin-top:8px; color:#6b7280;">Password must be at least 8 characters long and include a letter, a number, and a special character.</small>
             </div>
 
             <div class="auth-actions">

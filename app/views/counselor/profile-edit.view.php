@@ -10,6 +10,8 @@ $user = $user ?? (object)[
 $flashMessage = $flashMessage ?? null;
 ?>
 
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/profile.css">
+
 <style>
   .edit-wrap {
     max-width: 680px;
@@ -162,41 +164,7 @@ $flashMessage = $flashMessage ?? null;
             >
           </div>
 
-          <div style="border-top: 1px dashed var(--border, #e5e7eb); margin: 24px 0; padding-top: 24px;">
-            <h3 style="margin: 0 0 16px 0; font-size: 1rem; font-weight: 600;">Change Password (Optional)</h3>
-
-            <div class="form-group">
-              <label for="password_current">Current Password</label>
-              <input
-                type="password"
-                id="password_current"
-                name="password_current"
-                placeholder="Enter current password to confirm identity"
-              >
-              <small>Required only when changing password</small>
-            </div>
-
-            <div class="form-group">
-              <label for="password_new">New Password</label>
-              <input
-                type="password"
-                id="password_new"
-                name="password_new"
-                placeholder="Leave blank to keep current password"
-              >
-              <small>At least 6 characters</small>
-            </div>
-
-            <div class="form-group">
-              <label for="password_confirm">Confirm Password</label>
-              <input
-                type="password"
-                id="password_confirm"
-                name="password_confirm"
-                placeholder="Confirm new password"
-              >
-            </div>
-          </div>
+          <?php require '../app/views/partials/password_change_modal.view.php'; ?>
 
           <div class="form-actions">
             <button type="submit" class="btn btn-primary">

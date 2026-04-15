@@ -48,5 +48,58 @@ function previewImage(input) {
 document.addEventListener('DOMContentLoaded', function() {
     // Any additional profile initialization can go here
     console.log('Profile page loaded');
+
+    const autoOpenModal = document.querySelector('.password-modal-backdrop[data-open="1"]');
+    if (autoOpenModal) {
+        openPasswordModal(autoOpenModal.id);
+    }
 });
+
+function openPasswordModal(modalId = 'passwordChangeModal') {
+    const modal = document.getElementById(modalId);
+    if (!modal) {
+        return;
+    }
+
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+
+    const firstInput = modal.querySelector('input, textarea, select') || modal.querySelector('button');
+    if (firstInput) {
+        firstInput.focus();
+    }
+}
+
+function closePasswordModal(modalId = 'passwordChangeModal') {
+    const modal = document.getElementById(modalId);
+    if (!modal) {
+        return;
+    }
+
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(event) {
+    if (event.key !== 'Escape') {
+        return;
+    }
+
+    const openModal = document.querySelector('.password-modal-backdrop[style*="display: flex"]');
+    if (openModal) {
+        closePasswordModal(openModal.id);
+    }
+});
+
+document.addEventListener('click', function(event) {
+    const modal = event.target.closest('.password-modal-backdrop');
+    if (modal && event.target === modal) {
+        closePasswordModal(modal.id);
+    }
+});
+
+window.openPasswordModal = openPasswordModal;
+window.closePasswordModal = closePasswordModal;
 

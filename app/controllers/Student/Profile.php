@@ -84,6 +84,9 @@ class Profile extends Controller
     $bio = trim($_POST['bio'] ?? '');
     $linkedin_url = trim($_POST['linkedin_url'] ?? '');
     $github_url = trim($_POST['github_url'] ?? '');
+    $current_password = $_POST['current_password'] ?? '';
+    $new_password = $_POST['new_password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
     $profile_picture = $_FILES['profile_picture'] ?? null;
     
     // Use current profile values for faculty and student_id (not editable)
@@ -107,13 +110,20 @@ class Profile extends Controller
         $errors['bio'] = "Bio must be less than 1000 characters";
     }
 
+    $user = new User();
+    $user_profile = $user->first(['user_id' => $current_profile->user_id]);
+    $storedPasswordHash = $user_profile ? ($user_profile->password ?? '') : '';
+    $passwordValidation = validatePasswordChange($storedPasswordHash, $current_password, $new_password, $confirm_password);
+    if (!$passwordValidation['valid']) {
+        $errors['password'] = implode(' | ', $passwordValidation['errors']);
+    }
+
     // Get faculty record from current profile
     $faculty_model = new Faculty();
     $faculty_record = $faculty_model->first(['faculty_id' => $current_profile->faculty_id]);
 
     // Validate email uniqueness (exclude current student)
     $student = new Student();
-    $user = new User();
 
     if ($email !== $current_profile->email) {
         $existing_user = $user->first(['email' => $email], ['user_id' => $current_profile->user_id]);
@@ -196,6 +206,7 @@ class Profile extends Controller
             $user_data = [];
             if ($name !== $current_profile->name) $user_data['name'] = $name;
             if ($email !== $current_profile->email) $user_data['email'] = $email;
+            if (!empty($passwordValidation['password_hash'])) $user_data['password'] = $passwordValidation['password_hash'];
             if (!empty($user_data) && !$user->logUpdate($current_profile->user_id, $user_data, 'user_id')) {
                 throw new Exception("Failed to update user data for user_id: {$current_profile->user_id}");
             }

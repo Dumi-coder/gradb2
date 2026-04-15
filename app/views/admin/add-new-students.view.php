@@ -167,8 +167,9 @@
                     <div class="form-group">
                         <label for="password">Password *</label>
                         <div id="admin-password-container">
-                            <input type="password" id="admin-password" name="password" placeholder="Enter secure password" required>
-                            <input type="password" id="admin-confirm-password" name="confirm_password" placeholder="Re-enter password" required>
+                            <input type="password" id="admin-password" name="password" placeholder="Enter secure password" minlength="8" autocomplete="new-password" required>
+                            <input type="password" id="admin-confirm-password" name="confirm_password" placeholder="Re-enter password" minlength="8" autocomplete="new-password" required>
+                            <small class="form-help">Password must be at least 8 characters long and include a letter, a number, and a special character.</small>
                         </div>
                     </div>
 

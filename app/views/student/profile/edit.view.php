@@ -165,6 +165,8 @@ require '../app/views/partials/student_header.php';
                             </div>
                         </div>
                     </div>
+
+                    <?php require '../app/views/partials/password_change_modal.view.php'; ?>
                     
                     <input type="hidden" name="form_submitted" value="1">
                     

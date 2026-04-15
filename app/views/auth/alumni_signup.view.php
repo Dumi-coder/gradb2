@@ -139,8 +139,9 @@
               </div>
               
               <div id="alumni-password-container">
-                <input class="input" type="password" id="alumni-password" name="password" placeholder="Password *" required />
-                <input class="input" type="password" id="alumni-confirm-password" name="confirm_password" placeholder="Confirm Password *" required />
+                <input class="input" type="password" id="alumni-password" name="password" placeholder="Password *" minlength="8" autocomplete="new-password" required />
+                <input class="input" type="password" id="alumni-confirm-password" name="confirm_password" placeholder="Confirm Password *" minlength="8" autocomplete="new-password" required />
+                <small style="display:block; margin-top:8px; color:#6b7280;">Password must be at least 8 characters long and include a letter, a number, and a special character.</small>
               </div>
 
               <div class="form-navigation">

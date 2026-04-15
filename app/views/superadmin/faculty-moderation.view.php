@@ -83,13 +83,14 @@
                                 </div>
 
                                 <div class="form-row">
-                                    <label for="password">Password</label>
-                                    <input id="password" name="password" type="password" class="input" required>
+                                    <label for="faculty-admin-password">Password</label>
+                                    <input id="faculty-admin-password" name="password" type="password" class="input" minlength="8" autocomplete="new-password" required>
+                                    <div id="faculty-admin-password-strength" class="password-strength-shell"></div>
                                 </div>
 
                                 <div class="form-row">
-                                    <label for="confirm_password">Confirm Password</label>
-                                    <input id="confirm_password" name="confirm_password" type="password" class="input" required>
+                                    <label for="faculty-admin-confirm-password">Confirm Password</label>
+                                    <input id="faculty-admin-confirm-password" name="confirm_password" type="password" class="input" minlength="8" autocomplete="new-password" required>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary" <?= $hasActiveAdmin ? 'disabled' : '' ?>>Create and Appoint</button>
@@ -116,6 +117,8 @@
         </div>
     </div>
 </div>
+
+<script src="<?= ROOT ?>/assets/js/password-validation.js"></script>
 
 <style>
 .faculty-moderation-grid {
@@ -207,6 +210,27 @@
     gap: 0.35rem;
 }
 
+.password-strength-shell {
+    margin-top: 0.1rem;
+}
+
+.password-strength-shell .password-strength-indicator {
+    margin-top: 0;
+    font-size: 0.78rem;
+}
+
+.password-strength-shell .strength-text {
+    margin-bottom: 6px;
+}
+
+.password-strength-shell .requirements-list {
+    gap: 2px;
+}
+
+.password-strength-shell .requirement {
+    font-size: 0.78rem;
+}
+
 .inline-form {
     margin-top: 0.8rem;
 }
@@ -296,6 +320,18 @@
 </style>
 
 <script>
+(function () {
+    document.addEventListener('DOMContentLoaded', function () {
+        if (window.passwordValidator) {
+            window.passwordValidator.initPasswordValidation(
+                'faculty-admin-password',
+                'faculty-admin-confirm-password',
+                'faculty-admin-password-strength'
+            );
+        }
+    });
+})();
+
 (function () {
     const modal = document.getElementById('demoteConfirmModal');
     const message = document.getElementById('demoteModalMessage');

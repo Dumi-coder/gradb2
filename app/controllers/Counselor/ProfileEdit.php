@@ -58,9 +58,11 @@ class ProfileEdit extends Controller
         
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
-        $passwordCurrent = $_POST['password_current'] ?? '';
-        $passwordNew = $_POST['password_new'] ?? '';
-        $passwordConfirm = $_POST['password_confirm'] ?? '';
+        $passwordCurrent = $_POST['current_password'] ?? '';
+        $passwordNew = $_POST['new_password'] ?? '';
+        $passwordConfirm = $_POST['confirm_password'] ?? '';
+
+        $passwordValidation = validatePasswordChange($counselor->password ?? '', $passwordCurrent, $passwordNew, $passwordConfirm);
 
         if ($name === '') {
             $errors[] = 'Name is required';
@@ -78,21 +80,8 @@ class ProfileEdit extends Controller
             }
         }
 
-        $passwordToUpdate = null;
-        if ($passwordNew !== '' || $passwordConfirm !== '') {
-            if ($passwordCurrent === '') {
-                $errors[] = 'Current password is required to change password';
-            } elseif (!$this->verifyCurrentPassword($passwordCurrent, $counselor)) {
-                $errors[] = 'Current password is incorrect';
-            } elseif ($passwordNew === '') {
-                $errors[] = 'New password is required';
-            } elseif (strlen($passwordNew) < 6) {
-                $errors[] = 'Password must be at least 6 characters';
-            } elseif ($passwordNew !== $passwordConfirm) {
-                $errors[] = 'Passwords do not match';
-            } else {
-                $passwordToUpdate = password_hash($passwordNew, PASSWORD_BCRYPT);
-            }
+        if (!$passwordValidation['valid']) {
+            $errors[] = implode(' | ', $passwordValidation['errors']);
         }
 
         // Handle profile photo upload
@@ -138,6 +127,9 @@ class ProfileEdit extends Controller
             $this->view('counselor/profile-edit', [
                 'title' => 'Edit Profile - GradBridge',
                 'user' => $counselor,
+                'errors' => [
+                    'password' => implode(' | ', $errors),
+                ],
                 'flashMessage' => [
                     'type' => 'error',
                     'text' => implode(' | ', $errors),
@@ -151,8 +143,8 @@ class ProfileEdit extends Controller
             'email' => $email,
         ];
 
-        if ($passwordToUpdate !== null) {
-            $updateData['password'] = $passwordToUpdate;
+        if (!empty($passwordValidation['password_hash'])) {
+            $updateData['password'] = $passwordValidation['password_hash'];
         }
 
         if ($profilePhotoUrl !== null) {
@@ -166,8 +158,8 @@ class ProfileEdit extends Controller
             'name' => $name,
             'email' => $email,
         ];
-        if ($passwordToUpdate !== null) {
-            $userUpdateData['password'] = $passwordToUpdate;
+        if (!empty($passwordValidation['password_hash'])) {
+            $userUpdateData['password'] = $passwordValidation['password_hash'];
         }
 
         $userModel = new User();
@@ -188,6 +180,7 @@ class ProfileEdit extends Controller
             $this->view('counselor/profile-edit', [
                 'title' => 'Edit Profile - GradBridge',
                 'user' => $counselor,
+                'errors' => [],
                 'flashMessage' => [
                     'type' => 'error',
                     'text' => 'Update failed. Please try again.',
@@ -196,18 +189,4 @@ class ProfileEdit extends Controller
         }
     }
 
-    private function verifyCurrentPassword($rawPassword, $counselor)
-    {
-        $storedHash = (string)($counselor->password ?? '');
-        if ($storedHash === '') {
-            return false;
-        }
-
-        if (password_verify($rawPassword, $storedHash)) {
-            return true;
-        }
-
-        // Fallback for legacy plain-text records.
-        return hash_equals($storedHash, $rawPassword);
-    }
 }

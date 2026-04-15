@@ -219,6 +219,8 @@ require '../app/views/partials/alumni_header.php';
                         </div>
                     </div>
 
+                    <?php require '../app/views/partials/password_change_modal.view.php'; ?>
+
                     <!-- Success/Error Messages -->
                     <?php if (isset($errors['success'])): ?>
                         <div class="success-message"><?= esc($errors['success']) ?></div>

@@ -86,6 +86,9 @@ class Profile extends Controller
         $github_url = trim($_POST['github_url'] ?? '');
         $twitter_url = trim($_POST['twitter_url'] ?? '');
         $personal_website = trim($_POST['personal_website'] ?? '');
+        $current_password = $_POST['current_password'] ?? '';
+        $new_password = $_POST['new_password'] ?? '';
+        $confirm_password = $_POST['confirm_password'] ?? '';
         $is_verified_mentor = isset($_POST['is_verified_mentor']) ? 1 : 0;
         $mentor_terms_agree = isset($_POST['mentor_terms_agree']) ? 1 : 0;
         $mentorship_availability_status = strtolower(trim($_POST['mentorship_availability_status'] ?? 'available'));
@@ -115,6 +118,14 @@ class Profile extends Controller
             $errors['bio'] = "Bio must be less than 1000 characters";
         }
 
+        $user = new User();
+        $user_profile = $user->first(['user_id' => $current_profile->user_id]);
+        $storedPasswordHash = $user_profile ? ($user_profile->password ?? '') : '';
+        $passwordValidation = validatePasswordChange($storedPasswordHash, $current_password, $new_password, $confirm_password);
+        if (!$passwordValidation['valid']) {
+            $errors['password'] = implode(' | ', $passwordValidation['errors']);
+        }
+
         $currentMentorFlag = (int)($current_profile->is_verified_mentor ?? 0);
         if ($currentMentorFlag !== 1 && $is_verified_mentor === 1 && $mentor_terms_agree !== 1) {
             $errors['mentor_terms_agree'] = "You must agree to mentor terms and conditions before enabling mentor visibility.";
@@ -142,10 +153,10 @@ class Profile extends Controller
         if (empty($errors)) {
             try {
                 // Update user table (name and email)
-                $user = new User();
                 $user_data = [];
                 if ($name !== $current_profile->name) $user_data['name'] = $name;
                 if ($email !== $current_profile->email) $user_data['email'] = $email;
+                if (!empty($passwordValidation['password_hash'])) $user_data['password'] = $passwordValidation['password_hash'];
                 if (!empty($user_data) && !$user->logUpdate($current_profile->user_id, $user_data, 'user_id')) {
                     throw new Exception("Failed to update user data for user_id: {$current_profile->user_id}");
                 }

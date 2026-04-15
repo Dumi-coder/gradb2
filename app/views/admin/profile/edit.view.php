@@ -131,6 +131,8 @@
                     </div>
                 </div>
 
+                <?php require '../app/views/partials/password_change_modal.view.php'; ?>
+
                 <!-- Form Actions -->
                 <div class="form-actions">
                     <a href="<?= ROOT ?>/admin/profile" class="btn btn-outline">
