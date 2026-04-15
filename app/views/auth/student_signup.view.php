@@ -38,6 +38,11 @@
                 <input class="input" type="password" id="student-confirm-password" name="confirm_password" placeholder="Confirm password" required />
             </div>
 
+            <label class="auth-meta" style="display:flex; align-items:center; gap:0.5rem;">
+              <input type="checkbox" class="js-toggle-password" />
+              Show password
+            </label>
+
             <div class="auth-actions">
               <button type="submit" class="btn btn-primary" style="width:100%; min-width: unset;">Create Account</button>
             </div>
@@ -61,6 +66,24 @@
                 };
             }
         })();
+    </script>
+    <script>
+      (function() {
+        const form = document.querySelector('.auth-form');
+        if (!form) {
+          return;
+        }
+        const toggle = form.querySelector('.js-toggle-password');
+        if (!toggle) {
+          return;
+        }
+        const fields = form.querySelectorAll('input[type="password"]');
+        toggle.addEventListener('change', function() {
+          fields.forEach(function(field) {
+            field.type = toggle.checked ? 'text' : 'password';
+          });
+        });
+      })();
     </script>
     <script src="<?=ROOT?>/assets/js/student-signup.js"></script>
 

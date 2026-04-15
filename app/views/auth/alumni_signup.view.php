@@ -143,6 +143,11 @@
                 <input class="input" type="password" id="alumni-confirm-password" name="confirm_password" placeholder="Confirm Password *" required />
               </div>
 
+              <label class="auth-meta" style="display:flex; align-items:center; gap:0.5rem;">
+                <input type="checkbox" class="js-toggle-password" />
+                Show password
+              </label>
+
               <div class="form-navigation">
                 <button type="button" class="btn btn-back" onclick="prevStep(3)">Back</button>
                 <button type="submit" class="btn btn-primary">Create Account</button>
@@ -225,6 +230,24 @@
             }
         })();
     </script>
+      <script>
+        (function() {
+          const form = document.querySelector('.auth-form');
+          if (!form) {
+            return;
+          }
+          const toggle = form.querySelector('.js-toggle-password');
+          if (!toggle) {
+            return;
+          }
+          const fields = form.querySelectorAll('input[type="password"]');
+          toggle.addEventListener('change', function() {
+            fields.forEach(function(field) {
+              field.type = toggle.checked ? 'text' : 'password';
+            });
+          });
+        })();
+      </script>
     <script src="<?=ROOT?>/assets/js/alumni-signup.js"></script>
 
 <?php require '../app/views/partials/footer.php'; ?><!--footer-->
