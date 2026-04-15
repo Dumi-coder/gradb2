@@ -60,6 +60,9 @@
             color: #ffffff;
             border-color: #000000;
         }
+        .form-step .input {
+          margin-bottom: 12px;
+        }
     </style>
 
     <!-- Alumni Signup Form -->
@@ -141,12 +144,12 @@
               <div id="alumni-password-container">
                 <input class="input" type="password" id="alumni-password" name="password" placeholder="Password *" required />
                 <input class="input" type="password" id="alumni-confirm-password" name="confirm_password" placeholder="Confirm Password *" required />
-              </div>
 
-              <label class="auth-meta" style="display:flex; align-items:center; gap:0.5rem;">
-                <input type="checkbox" class="js-toggle-password" />
-                Show password
-              </label>
+                <label class="auth-meta" style="display:flex; align-items:center; gap:0.5rem; margin-top:-4px;">
+                  <input type="checkbox" class="js-toggle-password" />
+                  Show password
+                </label>
+              </div>
 
               <div class="form-navigation">
                 <button type="button" class="btn btn-back" onclick="prevStep(3)">Back</button>

@@ -1,6 +1,18 @@
 <?php require '../app/views/partials/header.php'; ?>
     <!-- Password Validation Script -->
     <script src="<?=ROOT?>/assets/js/password-validation.js"></script>
+
+  <style>
+    .auth-form .input {
+      margin-bottom: 8px;
+    }
+    #student-password-container .input {
+      margin-bottom: 12px;
+    }
+    .auth-actions {
+      margin-top: 4px;
+    }
+  </style>
     
     <!-- Signup Form -->
     <section class="auth-section gradient-hero">
@@ -36,12 +48,12 @@
             <div id="student-password-container">
                 <input class="input" type="password" id="student-password" name="password" placeholder="Password" required />
                 <input class="input" type="password" id="student-confirm-password" name="confirm_password" placeholder="Confirm password" required />
-            </div>
 
-            <label class="auth-meta" style="display:flex; align-items:center; gap:0.5rem;">
-              <input type="checkbox" class="js-toggle-password" />
-              Show password
-            </label>
+                <label class="auth-meta" style="display:flex; align-items:center; gap:0.5rem; margin-top:-4px;">
+                  <input type="checkbox" class="js-toggle-password" />
+                  Show password
+                </label>
+            </div>
 
             <div class="auth-actions">
               <button type="submit" class="btn btn-primary" style="width:100%; min-width: unset;">Create Account</button>
