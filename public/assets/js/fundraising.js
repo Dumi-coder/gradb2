@@ -1,350 +1,394 @@
-// fundraising.js - Fundraising Page Functionality
-
-// Global variables
 let currentCampaign = null;
-
-// DOM elements
+let otpRequested = false;
 const createCampaignModal = document.getElementById('createCampaignModal');
+const editPendingCampaignModal = document.getElementById('editPendingCampaignModal');
 const donateModal = document.getElementById('donateModal');
-const campaignForm = document.querySelector('.campaign-form');
-const donationForm = document.querySelector('.donation-form');
+const detailsModal = document.getElementById('fundraiserDetailsModal');
+const config = window.FUNDRAISING_CONFIG || {};
+const donateButtons = document.querySelectorAll('.donate-now-btn');
+const detailsButtons = document.querySelectorAll('.view-details-btn');
+const editPendingButtons = document.querySelectorAll('.edit-pending-btn');
+const payButton = document.getElementById('demo-pay-btn');
 
-// Initialize the page
-document.addEventListener('DOMContentLoaded', function() {
-    initializeFundraising();
+document.addEventListener('DOMContentLoaded', () => {
+    bindDonateButtons();
+    bindDetailsButtons();
+    bindEditPendingButtons();
+    bindModalClose();
+    bindPayButton();
 });
 
-function initializeFundraising() {
-    // Add event listeners
-    if (campaignForm) {
-        campaignForm.addEventListener('submit', handleCampaignSubmit);
-    }
-    
-    if (donationForm) {
-        donationForm.addEventListener('submit', handleDonationSubmit);
-    }
-    
-    // Amount button handlers
-    document.querySelectorAll('.amount-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            selectAmount(this);
+function bindEditPendingButtons() {
+    editPendingButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            openEditPendingCampaignModal({
+                fundraiserId: button.dataset.fundraiserId || '',
+                title: button.dataset.title || '',
+                description: button.dataset.description || '',
+                targetAmount: button.dataset.targetAmount || '',
+                currency: button.dataset.currency || 'LKR'
+            });
         });
     });
-    
-    // Close modals when clicking outside
-    window.addEventListener('click', function(event) {
-        if (event.target.classList.contains('modal')) {
-            closeAllModals();
-        }
+}
+
+function bindDetailsButtons() {
+    detailsButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            openDetailsModal({
+                title: button.dataset.title || 'Campaign',
+                status: button.dataset.status || 'UNKNOWN',
+                creator: button.dataset.creator || 'Student',
+                description: button.dataset.description || '',
+                goal: parseFloat(button.dataset.goal || '0'),
+                raised: parseFloat(button.dataset.raised || '0'),
+                donors: parseInt(button.dataset.donors || '0', 10)
+            });
+        });
     });
-    
-    // Close modals with Escape key
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            closeAllModals();
+}
+
+function bindDonateButtons() {
+    donateButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            openDonateModal({
+                fundraiserId: button.dataset.fundraiserId,
+                title: button.dataset.title,
+                goal: parseFloat(button.dataset.goal || '0'),
+                raised: parseFloat(button.dataset.raised || '0'),
+                currency: button.dataset.currency || config.paypalCurrencyDefault || 'LKR'
+            });
+        });
+    });
+}
+
+function bindModalClose() {
+    window.addEventListener('click', (event) => {
+        if (event.target.classList.contains('modal')) {
+            closeDonateModal();
+            closeCreateCampaignModal();
+            closeEditPendingCampaignModal();
+            closeDetailsModal();
         }
     });
 }
 
-// Modal functions
 function openCreateCampaignModal() {
+    if (!createCampaignModal) return;
     createCampaignModal.style.display = 'block';
     document.body.style.overflow = 'hidden';
-    
-    // Focus on title input
-    setTimeout(() => {
-        document.getElementById('campaignTitle').focus();
-    }, 100);
 }
 
 function closeCreateCampaignModal() {
+    if (!createCampaignModal) return;
     createCampaignModal.style.display = 'none';
     document.body.style.overflow = 'auto';
-    
-    // Reset form
-    resetCampaignForm();
 }
 
-function openDonateModal(campaignTitle, goal, raised) {
-    currentCampaign = { title: campaignTitle, goal, raised };
-    
-    // Update modal content
-    document.getElementById('donateCampaignTitle').textContent = campaignTitle;
-    document.getElementById('donateGoal').textContent = `$${goal.toLocaleString()}`;
-    document.getElementById('donateRaised').textContent = `$${raised.toLocaleString()}`;
-    
-    // Update progress bar
-    const progress = (raised / goal) * 100;
+function openEditPendingCampaignModal(campaign) {
+    if (!editPendingCampaignModal) return;
+
+    const idEl = document.getElementById('editFundraiserId');
+    const titleEl = document.getElementById('editCampaignTitle');
+    const descriptionEl = document.getElementById('editCampaignDescription');
+    const goalEl = document.getElementById('editCampaignGoal');
+    const currencyEl = document.getElementById('editCampaignCurrency');
+
+    if (idEl) idEl.value = campaign.fundraiserId;
+    if (titleEl) titleEl.value = campaign.title;
+    if (descriptionEl) descriptionEl.value = campaign.description;
+    if (goalEl) goalEl.value = campaign.targetAmount;
+    if (currencyEl) currencyEl.value = (campaign.currency || 'LKR').toUpperCase();
+
+    editPendingCampaignModal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeEditPendingCampaignModal() {
+    if (!editPendingCampaignModal) return;
+    editPendingCampaignModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function openDetailsModal(details) {
+    if (!detailsModal) return;
+
+    const description = (details.description || '').trim();
+
+    document.getElementById('detailsTitle').textContent = details.title;
+    document.getElementById('detailsStatus').textContent = details.status;
+    document.getElementById('detailsCreator').textContent = details.creator;
+    document.getElementById('detailsDescription').textContent = description || '-';
+    document.getElementById('detailsGoal').textContent = `Rs. ${details.goal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    document.getElementById('detailsRaised').textContent = `Rs. ${details.raised.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    document.getElementById('detailsDonors').textContent = Number.isNaN(details.donors) ? '0' : String(details.donors);
+
+    detailsModal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDetailsModal() {
+    if (!detailsModal) return;
+    detailsModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function openDonateModal(campaign) {
+    if (!donateModal) return;
+    currentCampaign = campaign;
+    resetDemoPaymentFlow();
+    document.getElementById('donateFundraiserId').value = campaign.fundraiserId;
+    document.getElementById('donateCurrency').value = campaign.currency;
+    document.getElementById('donateCampaignTitle').textContent = campaign.title;
+    document.getElementById('donateGoal').textContent = `Rs. ${campaign.goal.toLocaleString()}`;
+    document.getElementById('donateRaised').textContent = `Rs. ${campaign.raised.toLocaleString()}`;
+
+    const progress = campaign.goal > 0 ? (campaign.raised / campaign.goal) * 100 : 0;
     document.getElementById('donateProgressFill').style.width = `${Math.min(progress, 100)}%`;
-    
     donateModal.style.display = 'block';
     document.body.style.overflow = 'hidden';
-    
-    // Focus on amount input
-    setTimeout(() => {
-        document.getElementById('donationAmount').focus();
-    }, 100);
 }
 
 function closeDonateModal() {
+    if (!donateModal) return;
     donateModal.style.display = 'none';
     document.body.style.overflow = 'auto';
-    
-    // Reset form
-    resetDonationForm();
     currentCampaign = null;
+    resetDemoPaymentFlow();
 }
 
-function closeAllModals() {
-    closeCreateCampaignModal();
-    closeDonateModal();
+function resetDemoPaymentFlow() {
+    otpRequested = false;
+
+    const otpStep = document.getElementById('otpStep');
+    const otpInput = document.getElementById('donateOtp');
+    const otpHint = document.getElementById('otpHint');
+
+    if (otpStep) otpStep.style.display = 'none';
+    if (otpInput) otpInput.value = '';
+    if (otpHint) otpHint.textContent = 'OTP sent.';
+
+    if (payButton) {
+        payButton.dataset.originalLabel = '<i class="fas fa-heart"></i> Pay Now';
+        payButton.innerHTML = payButton.dataset.originalLabel;
+    }
 }
 
-// Amount selection
-function selectAmount(button) {
-    // Remove active class from all buttons
-    document.querySelectorAll('.amount-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    // Add active class to clicked button
-    button.classList.add('active');
-    
-    // Set amount in input
-    const amount = button.getAttribute('data-amount');
-    document.getElementById('donationAmount').value = amount;
+function validateDemoCardInputs() {
+    const cardName = (document.getElementById('donateCardName')?.value || '').trim();
+    const cardNumberRaw = (document.getElementById('donateCardNumber')?.value || '').trim();
+    const cardCvv = (document.getElementById('donateCardCvv')?.value || '').trim();
+
+    const cardDigits = cardNumberRaw.replace(/\D+/g, '');
+
+    if (cardName.length < 1) {
+        return 'Please enter the cardholder name.';
+    }
+
+    if (!/^\d{12,19}$/.test(cardDigits)) {
+        return 'Please enter a valid card number.';
+    }
+
+    if (!/^\d{3}$/.test(cardCvv)) {
+        return 'CVV must be exactly 3 digits.';
+    }
+
+    return null;
 }
 
-// Form handling
-function handleCampaignSubmit(event) {
-    event.preventDefault();
-    
-    // Get form data
-    const formData = new FormData(campaignForm);
-    const campaignData = {
-        title: formData.get('campaignTitle'),
-        category: formData.get('campaignCategory'),
-        goal: parseFloat(formData.get('campaignGoal')),
-        description: formData.get('campaignDescription'),
-        deadline: formData.get('campaignDeadline'),
-        timestamp: new Date().toISOString()
-    };
-    
-    // Validate form
-    if (!validateCampaignData(campaignData)) {
+function showOtpStep() {
+    const otpStep = document.getElementById('otpStep');
+    const otpHint = document.getElementById('otpHint');
+    const last3 = (config.otpPhoneLast3 || '000').toString();
+
+    if (otpHint) {
+        otpHint.textContent = `We sent an OTP to your phone ending with ${last3}.`;
+    }
+
+    if (otpStep) {
+        otpStep.style.display = 'block';
+    }
+
+    otpRequested = true;
+    if (payButton) {
+        payButton.innerHTML = '<i class="fas fa-shield-alt"></i> Verify OTP & Complete';
+    }
+}
+
+function validateOtpInput() {
+    const otp = (document.getElementById('donateOtp')?.value || '').trim();
+    if (!/^\d{6}$/.test(otp)) {
+        return 'Please enter a valid 6-digit OTP.';
+    }
+    return null;
+}
+
+function bindPayButton() {
+    if (!payButton) {
         return;
     }
-    
-    // Submit campaign (simulate API call)
-    submitCampaign(campaignData);
+    payButton.addEventListener('click', startDemoCheckout);
 }
 
-function handleDonationSubmit(event) {
-    event.preventDefault();
-    
+async function startDemoCheckout() {
     if (!currentCampaign) {
-        showNotification('No campaign selected', 'error');
+        showSuccessToast('Please select a campaign first.', true);
         return;
     }
-    
-    // Get form data
-    const formData = new FormData(donationForm);
-    const donationData = {
-        campaign: currentCampaign.title,
-        amount: parseFloat(formData.get('donationAmount')),
-        donorName: formData.get('donorName'),
-        donorEmail: formData.get('donorEmail'),
-        message: formData.get('donorMessage'),
-        timestamp: new Date().toISOString()
-    };
-    
-    // Validate form
-    if (!validateDonationData(donationData)) {
+
+    const amount = parseFloat(document.getElementById('donationAmount').value || '0');
+    if (!amount || amount <= 0) {
+        showSuccessToast('Please enter a valid donation amount.', true);
         return;
     }
-    
-    // Submit donation (simulate API call)
-    submitDonation(donationData);
-}
 
-function validateCampaignData(campaignData) {
-    if (!campaignData.title.trim()) {
-        showNotification('Please enter a campaign title', 'error');
-        return false;
-    }
-    
-    if (!campaignData.category) {
-        showNotification('Please select a category', 'error');
-        return false;
-    }
-    
-    if (!campaignData.goal || campaignData.goal < 100) {
-        showNotification('Goal must be at least Rs. 100', 'error');
-        return false;
-    }
-    
-    if (!campaignData.description.trim()) {
-        showNotification('Please enter a description', 'error');
-        return false;
-    }
-    
-    if (campaignData.title.length < 10) {
-        showNotification('Title must be at least 10 characters long', 'error');
-        return false;
-    }
-    
-    if (campaignData.description.length < 50) {
-        showNotification('Description must be at least 50 characters long', 'error');
-        return false;
-    }
-    
-    return true;
-}
+    if (!otpRequested) {
+        const cardError = validateDemoCardInputs();
+        if (cardError) {
+            showSuccessToast(cardError, true);
+            return;
+        }
 
-function validateDonationData(donationData) {
-    if (!donationData.amount || donationData.amount < 1) {
-        showNotification('Please enter a valid donation amount', 'error');
-        return false;
+        showOtpStep();
+        showSuccessToast('OTP sent successfully.', false);
+        return;
     }
-    
-    if (!donationData.donorName.trim()) {
-        showNotification('Please enter your name', 'error');
-        return false;
+
+    const otpError = validateOtpInput();
+    if (otpError) {
+        showSuccessToast(otpError, true);
+        return;
     }
-    
-    if (!donationData.donorEmail.trim()) {
-        showNotification('Please enter your email', 'error');
-        return false;
-    }
-    
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(donationData.donorEmail)) {
-        showNotification('Please enter a valid email address', 'error');
-        return false;
-    }
-    
-    return true;
-}
 
-function submitCampaign(campaignData) {
-    // Show loading state
-    const submitBtn = campaignForm.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
-    submitBtn.disabled = true;
-    
-    // Simulate API call
-    setTimeout(() => {
-        // Success
-        showNotification('Campaign created successfully!', 'success');
-        closeCreateCampaignModal();
-        
-        // Reset button
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        
-        // TODO: Add campaign to campaigns list
-        console.log('Campaign data:', campaignData);
-        
-    }, 2000);
-}
+    try {
+        payButton.disabled = true;
+        payButton.dataset.originalLabel = payButton.dataset.originalLabel || '<i class="fas fa-heart"></i> Pay Now';
+        payButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
-function submitDonation(donationData) {
-    // Show loading state
-    const submitBtn = donationForm.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-    submitBtn.disabled = true;
-    
-    // Simulate API call
-    setTimeout(() => {
-        // Success
-        showNotification(`Thank you for your $${donationData.amount} donation!`, 'success');
-        closeDonateModal();
-        
-        // Reset button
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        
-        // TODO: Update campaign progress
-        console.log('Donation data:', donationData);
-        
-    }, 2000);
-}
+        const form = new FormData();
+        form.append('fundraiser_id', currentCampaign.fundraiserId);
+        form.append('amount', amount.toFixed(2));
+        form.append('currency', currentCampaign.currency || config.currencyDefault || 'LKR');
 
-function resetCampaignForm() {
-    if (campaignForm) {
-        campaignForm.reset();
-    }
-}
-
-function resetDonationForm() {
-    if (donationForm) {
-        donationForm.reset();
-    }
-    
-    // Reset amount buttons
-    document.querySelectorAll('.amount-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-}
-
-// Utility functions
-function viewAllCampaigns() {
-    // TODO: Navigate to full campaigns page or expand list
-    console.log('Viewing all campaigns');
-    showNotification('Loading all campaigns...', 'info');
-}
-
-// Notification system
-function showNotification(message, type = 'info') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-        <div class="notification-content">
-            <i class="fas fa-${getNotificationIcon(type)}"></i>
-            <span>${message}</span>
-        </div>
-        <button class="notification-close" onclick="this.parentElement.remove()">
-            <i class="fas fa-times"></i>
-        </button>
-    `;
-    
-    // Add to page
-    document.body.appendChild(notification);
-    
-    // Show notification
-    setTimeout(() => {
-        notification.classList.add('show');
-    }, 100);
-    
-    // Auto remove after 5 seconds
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.remove();
+        const res = await fetch(config.createPaymentUrl, {
+            method: 'POST',
+            body: form,
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
             }
-        }, 300);
-    }, 5000);
-}
+        });
 
-function getNotificationIcon(type) {
-    switch (type) {
-        case 'success': return 'check-circle';
-        case 'error': return 'exclamation-circle';
-        case 'warning': return 'exclamation-triangle';
-        case 'info': return 'info-circle';
-        default: return 'info-circle';
+        const rawText = await res.text();
+        let data = null;
+        try {
+            data = JSON.parse(rawText);
+        } catch (parseError) {
+            throw new Error('Server returned an invalid response. Please reload and try again.');
+        }
+
+        if (!res.ok || !data.success) {
+            throw new Error(data.message || 'Failed to complete the donation.');
+        }
+
+        showSuccessToast('Donation successful!');
+        closeDonateModal();
+        setTimeout(() => window.location.reload(), 1200);
+    } catch (error) {
+        showSuccessToast(error.message || 'Could not start payment.', true);
+    } finally {
+        if (payButton) {
+            payButton.disabled = false;
+            if (otpRequested) {
+                payButton.innerHTML = '<i class="fas fa-shield-alt"></i> Verify OTP & Complete';
+            } else {
+                payButton.innerHTML = payButton.dataset.originalLabel || '<i class="fas fa-heart"></i> Pay Now';
+            }
+        }
     }
 }
 
-// Export functions for global access
+// Green toast popup
+function showSuccessToast(message, isError = false) {
+    let toast = document.getElementById('success-toast');
+    let messageEl;
+    let closeBtn;
+
+    const hideToast = () => {
+        if (!toast) return;
+        toast.style.opacity = '0';
+    };
+
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'success-toast';
+        toast.style.position = 'fixed';
+        toast.style.top = '32px';
+        toast.style.right = '32px';
+        toast.style.zIndex = '9999';
+        toast.style.display = 'flex';
+        toast.style.alignItems = 'flex-start';
+        toast.style.gap = '12px';
+        toast.style.padding = '14px 16px';
+        toast.style.borderRadius = '8px';
+        toast.style.background = '#27ae60';
+        toast.style.color = '#fff';
+        toast.style.fontWeight = '600';
+        toast.style.maxWidth = '460px';
+        toast.style.width = 'calc(100% - 24px)';
+        toast.style.boxShadow = '0 2px 12px rgba(0,0,0,0.12)';
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s';
+
+        messageEl = document.createElement('span');
+        messageEl.id = 'success-toast-message';
+        messageEl.style.flex = '1';
+        messageEl.style.lineHeight = '1.35';
+        messageEl.style.wordBreak = 'break-word';
+
+        closeBtn = document.createElement('button');
+        closeBtn.id = 'success-toast-close';
+        closeBtn.type = 'button';
+        closeBtn.textContent = 'x';
+        closeBtn.setAttribute('aria-label', 'Close notification');
+        closeBtn.style.background = 'transparent';
+        closeBtn.style.border = 'none';
+        closeBtn.style.color = '#fff';
+        closeBtn.style.fontSize = '18px';
+        closeBtn.style.lineHeight = '1';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.style.padding = '0';
+        closeBtn.style.marginTop = '1px';
+        closeBtn.addEventListener('click', hideToast);
+
+        toast.appendChild(messageEl);
+        toast.appendChild(closeBtn);
+        document.body.appendChild(toast);
+    }
+
+    messageEl = document.getElementById('success-toast-message');
+    closeBtn = document.getElementById('success-toast-close');
+    if (messageEl) {
+        messageEl.textContent = message;
+    } else {
+        toast.textContent = message;
+    }
+
+    toast.style.background = isError ? '#e74c3c' : '#27ae60';
+    toast.style.opacity = '1';
+
+    if (closeBtn) {
+        closeBtn.style.display = 'inline-block';
+    }
+
+    if (!isError) {
+        setTimeout(hideToast, 1800);
+    }
+}
+
 window.openCreateCampaignModal = openCreateCampaignModal;
 window.closeCreateCampaignModal = closeCreateCampaignModal;
-window.openDonateModal = openDonateModal;
+window.closeEditPendingCampaignModal = closeEditPendingCampaignModal;
 window.closeDonateModal = closeDonateModal;
-window.viewAllCampaigns = viewAllCampaigns;
+window.closeDetailsModal = closeDetailsModal;
 

@@ -55,3 +55,6 @@ define('DEBUG',true); // This constant is used to enable or disable error report
 // If set to true, errors will be displayed on the screen. If set to false,
 // errors will be logged to a file instead. This is useful for debugging during development.
 
+// Fundraising payment configuration
+// Use 'demo' for local/test, or 'payhere', 'paypal', etc. for real gateways
+define('FUNDRAISING_PAYMENT_MODE', getenv('FUNDRAISING_PAYMENT_MODE') ?: 'demo');
