@@ -36,6 +36,47 @@ function redirect($path)
     // exit();// Redirect to the specified path and exit the script
 }
 
+function format_money($value, $withThousands = true)
+{
+    $raw = trim((string)$value);
+    if (!preg_match('/^-?\d+(?:\.\d+)?$/', $raw)) {
+        return '0.00';
+    }
+
+    $negative = false;
+    if (strpos($raw, '-') === 0) {
+        $negative = true;
+        $raw = substr($raw, 1);
+    }
+
+    $parts = explode('.', $raw, 2);
+    $whole = ltrim($parts[0], '0');
+    if ($whole === '') {
+        $whole = '0';
+    }
+
+    $fractionRaw = preg_replace('/\D/', '', (string)($parts[1] ?? ''));
+    $fractionRaw = str_pad($fractionRaw, 3, '0');
+    $cents = (int)substr($fractionRaw, 0, 2);
+    $roundDigit = (int)substr($fractionRaw, 2, 1);
+
+    if ($roundDigit >= 5) {
+        $cents += 1;
+        if ($cents >= 100) {
+            $cents = 0;
+            $whole = (string)(((int)$whole) + 1);
+        }
+    }
+
+    if ($withThousands) {
+        $whole = preg_replace('/\B(?=(\d{3})+(?!\d))/', ',', $whole);
+    }
+
+    $fraction = str_pad((string)$cents, 2, '0', STR_PAD_LEFT);
+
+    return ($negative ? '-' : '') . $whole . '.' . $fraction;
+}
+
 function time_elapsed_string($datetime, $full = false) {
     if (!$datetime) {
         return 'unknown';
