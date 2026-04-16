@@ -1,6 +1,18 @@
 <?php require '../app/views/partials/header.php'; ?>
     <!-- Password Validation Script -->
     <script src="<?=ROOT?>/assets/js/password-validation.js"></script>
+
+  <style>
+    .auth-form .input {
+      margin-bottom: 8px;
+    }
+    #student-password-container .input {
+      margin-bottom: 12px;
+    }
+    .auth-actions {
+      margin-top: 4px;
+    }
+  </style>
     
     <!-- Signup Form -->
     <section class="auth-section gradient-hero">
@@ -36,6 +48,11 @@
             <div id="student-password-container">
                 <input class="input" type="password" id="student-password" name="password" placeholder="Password" required />
                 <input class="input" type="password" id="student-confirm-password" name="confirm_password" placeholder="Confirm password" required />
+
+                <label class="auth-meta" style="display:flex; align-items:center; gap:0.5rem; margin-top:-4px;">
+                  <input type="checkbox" class="js-toggle-password" />
+                  Show password
+                </label>
             </div>
 
             <div class="auth-actions">
@@ -61,6 +78,24 @@
                 };
             }
         })();
+    </script>
+    <script>
+      (function() {
+        const form = document.querySelector('.auth-form');
+        if (!form) {
+          return;
+        }
+        const toggle = form.querySelector('.js-toggle-password');
+        if (!toggle) {
+          return;
+        }
+        const fields = form.querySelectorAll('input[type="password"]');
+        toggle.addEventListener('change', function() {
+          fields.forEach(function(field) {
+            field.type = toggle.checked ? 'text' : 'password';
+          });
+        });
+      })();
     </script>
     <script src="<?=ROOT?>/assets/js/student-signup.js"></script>
 

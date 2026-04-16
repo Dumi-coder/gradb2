@@ -60,6 +60,9 @@
             color: #ffffff;
             border-color: #000000;
         }
+        .form-step .input {
+          margin-bottom: 12px;
+        }
     </style>
 
     <!-- Alumni Signup Form -->
@@ -141,6 +144,11 @@
               <div id="alumni-password-container">
                 <input class="input" type="password" id="alumni-password" name="password" placeholder="Password *" required />
                 <input class="input" type="password" id="alumni-confirm-password" name="confirm_password" placeholder="Confirm Password *" required />
+
+                <label class="auth-meta" style="display:flex; align-items:center; gap:0.5rem; margin-top:-4px;">
+                  <input type="checkbox" class="js-toggle-password" />
+                  Show password
+                </label>
               </div>
 
               <div class="form-navigation">
@@ -225,6 +233,24 @@
             }
         })();
     </script>
+      <script>
+        (function() {
+          const form = document.querySelector('.auth-form');
+          if (!form) {
+            return;
+          }
+          const toggle = form.querySelector('.js-toggle-password');
+          if (!toggle) {
+            return;
+          }
+          const fields = form.querySelectorAll('input[type="password"]');
+          toggle.addEventListener('change', function() {
+            fields.forEach(function(field) {
+              field.type = toggle.checked ? 'text' : 'password';
+            });
+          });
+        })();
+      </script>
     <script src="<?=ROOT?>/assets/js/alumni-signup.js"></script>
 
 <?php require '../app/views/partials/footer.php'; ?><!--footer-->

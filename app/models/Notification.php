@@ -241,6 +241,51 @@ class Notification
 		]);
 	}
 
+	public function createFundraiserRejectedNotification($recipientUserId, $actorUserId, $fundraiserTitle, $note)
+	{
+		$fundraiserTitle = trim((string)$fundraiserTitle);
+		$note = trim((string)$note);
+		if ($recipientUserId <= 0 || $fundraiserTitle === '') {
+			return false;
+		}
+
+		$title = 'Fundraiser request rejected';
+		$message = 'Your fundraiser ("' . $fundraiserTitle . '") was rejected.' . ($note !== '' ? ' Admin note: ' . $note : '');
+
+		return $this->insert([
+			'recipient_user_id' => (int)$recipientUserId,
+			'actor_user_id' => ($actorUserId !== null && (int)$actorUserId > 0) ? (int)$actorUserId : null,
+			'title' => $title,
+			'message' => $message,
+			'is_read' => 0,
+			'read_at' => null,
+			'created_at' => date('Y-m-d H:i:s'),
+		]);
+	}
+
+	public function createFundraiserApprovedNotification($recipientUserId, $actorUserId, $fundraiserTitle, $note = '')
+	{
+		$fundraiserTitle = trim((string)$fundraiserTitle);
+		$note = trim((string)$note);
+		if ($recipientUserId <= 0 || $fundraiserTitle === '') {
+			return false;
+		}
+
+		$title = 'Fundraiser request approved';
+		$message = 'Your fundraiser ("' . $fundraiserTitle . '") has been approved and is now visible for donations.'
+			. ($note !== '' ? ' Admin note: ' . $note : '');
+
+		return $this->insert([
+			'recipient_user_id' => (int)$recipientUserId,
+			'actor_user_id' => ($actorUserId !== null && (int)$actorUserId > 0) ? (int)$actorUserId : null,
+			'title' => $title,
+			'message' => $message,
+			'is_read' => 0,
+			'read_at' => null,
+			'created_at' => date('Y-m-d H:i:s'),
+		]);
+	}
+
 	public function markAsRead($notificationId)
 	{
 		if ((int)$notificationId <= 0) {
