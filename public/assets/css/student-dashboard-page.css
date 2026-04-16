@@ -1,7 +1,18 @@
 /* student-dashboard-page.css - Student dashboard view specific styles */
 
-.main-content .dashboard-section {
-  margin: 0 0 18px 0;
+.student-home-dashboard .main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.student-home-dashboard .main-content .dashboard-section {
+  margin: 0;
+  padding: 18px;
+  border: 1px solid #dbe3ee;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
 }
 
 .student-home-dashboard .section-title,
@@ -12,12 +23,12 @@
   margin: 0;
 }
 
-.main-content .dashboard-section:last-child {
-  margin-bottom: 0;
-}
-
 .section-header {
   margin-bottom: 4px;
+}
+
+.student-home-dashboard .main-content .dashboard-section .section-header {
+  margin-bottom: 14px;
 }
 
 .student-identity-panel {
@@ -347,6 +358,15 @@
 }
 
 @media (max-width: 640px) {
+  .student-home-dashboard .main-content {
+    gap: 14px;
+  }
+
+  .student-home-dashboard .main-content .dashboard-section {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
   .student-snapshot {
     grid-template-columns: 1fr;
   }
@@ -517,7 +537,7 @@
 }
 
 .live-snapshot-section {
-  margin-top: 28px;
+  margin-top: 0;
 }
 
 .compact-card-notifications .compact-card-icon {

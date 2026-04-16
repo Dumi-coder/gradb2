@@ -76,7 +76,15 @@ require '../app/views/partials/student_header.php';
                   <?php endif; ?>
                 </div>
                 <div class="mentor-content">
-                  <h3 class="mentor-name"><?= esc($mentor['mentor_name']) ?></h3>
+                  <div class="mentor-heading-row">
+                    <h3 class="mentor-name"><?= esc($mentor['mentor_name']) ?></h3>
+                    <?php if (!empty($mentor['latest_mentor_badge'])): ?>
+                      <span class="mentor-latest-badge <?= esc((string)($mentor['latest_mentor_badge_class'] ?? 'mentor-badge-new')) ?>">
+                        <i class="fas <?= esc((string)($mentor['latest_mentor_badge_icon'] ?? 'fa-user-plus')) ?>" aria-hidden="true"></i>
+                        <?= esc((string)$mentor['latest_mentor_badge']) ?>
+                      </span>
+                    <?php endif; ?>
+                  </div>
                   <p class="mentor-meta mentor-quick-meta">
                     <?= esc($mentor['faculty_name'] ?: 'Faculty N/A') ?>
                     <?php if (!empty($mentor['current_job'])): ?>

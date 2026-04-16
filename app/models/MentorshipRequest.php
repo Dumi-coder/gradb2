@@ -11,6 +11,56 @@ class MentorshipRequest
         'request_type', 'status', 'created_at'
     ];
 
+    private function resolveLatestMentorBadge($sessionsCount)
+    {
+        $sessions = (int)$sessionsCount;
+
+        $badgeSteps = [
+            [
+                'min_sessions' => 20,
+                'key' => 'mentor_master',
+                'label' => 'Mentor Master',
+                'icon' => 'fa-crown',
+                'class' => 'mentor-badge-master',
+            ],
+            [
+                'min_sessions' => 10,
+                'key' => 'mentor_senior',
+                'label' => 'Senior Mentor',
+                'icon' => 'fa-medal',
+                'class' => 'mentor-badge-senior',
+            ],
+            [
+                'min_sessions' => 5,
+                'key' => 'mentor_trusted',
+                'label' => 'Trusted Mentor',
+                'icon' => 'fa-shield-heart',
+                'class' => 'mentor-badge-trusted',
+            ],
+            [
+                'min_sessions' => 1,
+                'key' => 'mentor_rising',
+                'label' => 'Rising Mentor',
+                'icon' => 'fa-seedling',
+                'class' => 'mentor-badge-rising',
+            ],
+        ];
+
+        foreach ($badgeSteps as $step) {
+            if ($sessions >= (int)$step['min_sessions']) {
+                return $step;
+            }
+        }
+
+        return [
+            'min_sessions' => 0,
+            'key' => 'mentor_new',
+            'label' => 'New Mentor',
+            'icon' => 'fa-user-plus',
+            'class' => 'mentor-badge-new',
+        ];
+    }
+
     public function getAvailableMentorsForStudent($studentUserId)
     {
         $pdo = $this->connect();
@@ -66,7 +116,20 @@ class MentorshipRequest
                 $stmt->execute(['student_user_id' => (int)$studentUserId]);
 
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $result ? $result : [];
+        if (!$result) {
+            return [];
+        }
+
+        foreach ($result as &$mentor) {
+            $latestBadge = $this->resolveLatestMentorBadge($mentor['sessions_count'] ?? 0);
+            $mentor['latest_mentor_badge'] = $latestBadge['label'];
+            $mentor['latest_mentor_badge_key'] = $latestBadge['key'];
+            $mentor['latest_mentor_badge_icon'] = $latestBadge['icon'];
+            $mentor['latest_mentor_badge_class'] = $latestBadge['class'];
+        }
+        unset($mentor);
+
+        return $result;
     }
 
     public function hasBlockingRequestWithMentor($studentUserId, $mentorUserId)

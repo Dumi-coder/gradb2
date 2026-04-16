@@ -59,7 +59,7 @@ $isActive = function(string $path) use ($current): string {
           
           <div class="nav-section">
             <h3 class="nav-section-title">Account</h3>
-            <a href="<?=ROOT?>/Alumni/profile/show" class="nav-item<?= $isActive('alumni/profile') ?>">
+            <a href="<?=ROOT?>/Alumni/profile?action=edit" class="nav-item<?= $isActive('alumni/profile') ?>">
               <i class="fas fa-user-circle"></i>
               <span>Profile</span>
             </a>

@@ -98,7 +98,7 @@ $mentorshipStatusLabel = function ($status) {
         <article class="insights-column">
           <div class="student-insights-grid">
             <article class="student-chart-card">
-              <h3 class="student-chart-title">Activity Overview (Last 6 Months)</h3>
+              <h3 class="student-chart-title">Activity Overview (Last 30 Days)</h3>
               <p class="student-chart-subtitle">A timeline of what you contributed and what support you received over time.</p>
               <div class="student-chart-box">
                 <canvas id="studentEngagementChart"></canvas>
@@ -365,6 +365,8 @@ $mentorshipStatusLabel = function ($status) {
                 x: {
                   grid: { display: false },
                   ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 8,
                     maxRotation: 0,
                     minRotation: 0,
                   }
