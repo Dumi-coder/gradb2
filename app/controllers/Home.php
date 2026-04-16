@@ -33,7 +33,9 @@ class Home extends Controller
 
         // Fetch ONLY UNREAD notifications (is_read = 0)
         $notifications = $notificationModel->query(
-            "SELECT notification_id, recipient_user_id, actor_user_id, title, message, is_read, read_at, created_at
+            "SELECT notification_id, recipient_user_id, actor_user_id, title, message,
+                    action_url, action_label, context_type, context_id,
+                    is_read, read_at, created_at
              FROM notifications
              WHERE recipient_user_id = :user_id AND is_read = 0
              ORDER BY created_at DESC
@@ -48,6 +50,10 @@ class Home extends Controller
                     'notification_id' => $notification->notification_id ?? null,
                     'title' => $notification->title ?? '',
                     'message' => $notification->message ?? '',
+                    'action_url' => $notification->action_url ?? null,
+                    'action_label' => $notification->action_label ?? null,
+                    'context_type' => $notification->context_type ?? null,
+                    'context_id' => isset($notification->context_id) ? (int)$notification->context_id : null,
                     'is_read' => (int)($notification->is_read ?? 0),
                     'created_at' => $notification->created_at ?? '',
                 ];

@@ -4,6 +4,15 @@
 <div class="dashboard-container">
     <?php require '../app/views/partials/superadmin_sidebar.php'; ?>
     <main class="main-content fundraiser-moderation-page">
+        <?php if (!empty($flash)): ?>
+            <?php $flashType = strtolower((string)($flash['type'] ?? 'success')) === 'error' ? 'error' : 'success'; ?>
+            <div class="moderation-toast moderation-toast-<?= esc($flashType) ?>" role="status" aria-live="polite">
+                <i class="fas <?= $flashType === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle' ?>"></i>
+                <span><?= esc($flash['text'] ?? '') ?></span>
+                <button type="button" class="moderation-toast-close" aria-label="Close message">&times;</button>
+            </div>
+        <?php endif; ?>
+
         <section class="dashboard-section">
             <div class="section-header">
                 <h2 class="section-title">Fundraiser Moderation</h2>
@@ -22,10 +31,6 @@
                     </div>
                 </div>
             </div>
-
-            <?php if (!empty($flash)): ?>
-                <div class="create-info"><p><?= esc($flash['text'] ?? '') ?></p></div>
-            <?php endif; ?>
 
             <div class="reported-fundraisers-section">
                 <h3 class="subsection-title">Pending Requests</h3>
@@ -82,3 +87,28 @@
         </section>
     </main>
 </div>
+
+<script>
+    (function () {
+        const toast = document.querySelector('.moderation-toast');
+        if (!toast) return;
+
+        const closeBtn = toast.querySelector('.moderation-toast-close');
+
+        const dismissToast = function () {
+            if (toast.classList.contains('is-hiding')) return;
+            toast.classList.add('is-hiding');
+            setTimeout(() => {
+                if (toast && toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 260);
+        };
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', dismissToast);
+        }
+
+        setTimeout(dismissToast, 3200);
+    })();
+</script>

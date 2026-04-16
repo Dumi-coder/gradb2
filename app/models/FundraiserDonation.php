@@ -4,6 +4,16 @@ class FundraiserDonation
 {
     use Model;
 
+    private function toCents($value)
+    {
+        $normalized = $this->normalizeMoneyValue($value);
+        if ($normalized === null) {
+            return 0;
+        }
+
+        return (int)str_replace('.', '', $normalized);
+    }
+
     private function normalizeMoneyValue($value)
     {
         $raw = trim((string)$value);
@@ -103,10 +113,11 @@ class FundraiserDonation
     {
         $con = $this->connect();
         $con->beginTransaction();
+        $goalReachedPayload = null;
 
         try {
             $donation = $this->get_row(
-                "SELECT d.donation_id, d.status
+                "SELECT d.donation_id, d.fundraiser_id, d.status
                  FROM fundraiser_donations d
                  INNER JOIN paypal_orders po ON po.donation_id = d.donation_id
                  WHERE po.paypal_order_id = :paypal_order_id
@@ -147,7 +158,49 @@ class FundraiserDonation
                 'paypal_order_id' => (string)$gatewayOrderId,
             ]);
 
+            $fundraiserTotals = $con->prepare(
+                "SELECT f.fundraiser_id,
+                        f.creator_user_id,
+                        f.title,
+                        f.status,
+                        f.target_amount,
+                        COALESCE(SUM(d.amount), 0) AS raised_amount
+                 FROM fundraisers f
+                 LEFT JOIN fundraiser_donations d
+                   ON d.fundraiser_id = f.fundraiser_id
+                  AND d.status = 'captured'
+                 WHERE f.fundraiser_id = :fundraiser_id
+                 GROUP BY f.fundraiser_id, f.creator_user_id, f.title, f.status, f.target_amount
+                 LIMIT 1"
+            );
+            $fundraiserTotals->execute(['fundraiser_id' => (int)$donation->fundraiser_id]);
+            $totals = $fundraiserTotals->fetch(PDO::FETCH_ASSOC);
+
+            if ($totals) {
+                $raisedCents = $this->toCents($totals['raised_amount'] ?? '0');
+                $targetCents = $this->toCents($totals['target_amount'] ?? '0');
+                $isApproved = strtolower((string)($totals['status'] ?? '')) === 'approved';
+
+                if ($isApproved && $targetCents > 0 && $raisedCents >= $targetCents) {
+                    $goalReachedPayload = [
+                        'recipient_user_id' => (int)$totals['creator_user_id'],
+                        'fundraiser_title' => (string)$totals['title'],
+                        'fundraiser_id' => (int)$totals['fundraiser_id'],
+                    ];
+                }
+            }
+
             $con->commit();
+
+            if ($goalReachedPayload) {
+                $notificationModel = new Notification();
+                $notificationModel->createFundraiserGoalReachedNotification(
+                    $goalReachedPayload['recipient_user_id'],
+                    $goalReachedPayload['fundraiser_title'],
+                    $goalReachedPayload['fundraiser_id']
+                );
+            }
+
             return ['success' => true, 'donation_id' => (int)$donation->donation_id];
         } catch (Throwable $e) {
             if ($con->inTransaction()) {

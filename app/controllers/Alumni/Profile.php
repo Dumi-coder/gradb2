@@ -31,6 +31,8 @@ class Profile extends Controller
             redirect('alumni/auth');
         }
 
+        $_SESSION['profile_picture'] = $profile->profile_photo_url ?? null;
+
         $data = [
             'title' => 'Alumni Profile - GradBridge',
             'profile' => $profile
@@ -55,6 +57,8 @@ class Profile extends Controller
             redirect('alumni/auth');
             exit();
         }
+
+        $_SESSION['profile_picture'] = $profile->profile_photo_url ?? null;
 
         $data = [
             'title' => 'Edit Profile - GradBridge',
@@ -227,6 +231,12 @@ class Profile extends Controller
 
                 // Update session
                 $_SESSION['name'] = $name;
+                $_SESSION['profile_picture'] = $profile_photo_url ?: null;
+
+                $freshProfile = $alumni->getalumniProfile($_SESSION['alumni_id']);
+                if ($freshProfile) {
+                    $_SESSION['profile_picture'] = $freshProfile->profile_photo_url ?? null;
+                }
 
                 $errors['success'] = "Profile updated successfully!";
             } catch (Exception $e) {
@@ -267,6 +277,7 @@ class Profile extends Controller
                 // Update database to remove photo URL
                 $alumni_data = ['profile_photo_url' => null];
                 $alumni->update($_SESSION['alumni_id'], $alumni_data, 'alumni_id');
+                $_SESSION['profile_picture'] = null;
             }
         }
         

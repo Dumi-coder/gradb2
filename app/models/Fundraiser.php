@@ -169,6 +169,47 @@ class Fundraiser
         return is_array($rows) ? $rows : [];
     }
 
+        public function getAllForFacultyAdmin($facultyId = null)
+        {
+                $params = [];
+                $facultyFilter = '';
+
+                if ($facultyId !== null && (int)$facultyId > 0) {
+                        $facultyFilter = " AND s.faculty_id = :faculty_id";
+                        $params['faculty_id'] = (int)$facultyId;
+                }
+
+                $query = "SELECT f.*,
+                                        u.name AS creator_name,
+                                        u.email AS creator_email,
+                                        s.faculty_id AS creator_faculty_id,
+                                        fac.faculty_name AS creator_faculty_name,
+                                        COALESCE(doc.total_docs, 0) AS document_count
+                                    FROM fundraisers f
+                                    INNER JOIN users u ON u.user_id = f.creator_user_id
+                                    LEFT JOIN students s ON s.user_id = f.creator_user_id
+                                    LEFT JOIN faculties fac ON fac.faculty_id = s.faculty_id
+                                    LEFT JOIN (
+                                        SELECT fundraiser_id, COUNT(*) AS total_docs
+                                        FROM fundraiser_documents
+                                        GROUP BY fundraiser_id
+                                    ) doc ON doc.fundraiser_id = f.fundraiser_id
+                                    WHERE 1=1 {$facultyFilter}
+                                    ORDER BY
+                                        CASE f.status
+                                            WHEN 'pending' THEN 1
+                                            WHEN 'approved' THEN 2
+                                            WHEN 'closed' THEN 3
+                                            WHEN 'rejected' THEN 4
+                                            ELSE 5
+                                        END,
+                                        f.updated_at DESC,
+                                        f.created_at DESC";
+
+                $rows = $this->query($query, $params);
+                return is_array($rows) ? $rows : [];
+        }
+
     public function getByIdWithStats($fundraiserId)
     {
         $query = "SELECT f.*,
@@ -362,7 +403,9 @@ class Fundraiser
         $query = "SELECT
                     COUNT(*) AS total_fundraisers,
                     SUM(CASE WHEN f.status = 'pending' THEN 1 ELSE 0 END) AS pending_fundraisers,
-                    SUM(CASE WHEN f.status = 'approved' THEN 1 ELSE 0 END) AS approved_fundraisers
+                                        SUM(CASE WHEN f.status = 'approved' THEN 1 ELSE 0 END) AS approved_fundraisers,
+                                        SUM(CASE WHEN f.status IN ('closed', 'stopped') THEN 1 ELSE 0 END) AS closed_fundraisers,
+                                        SUM(CASE WHEN f.status = 'rejected' THEN 1 ELSE 0 END) AS rejected_fundraisers
                   FROM fundraisers f
                   {$facultyJoin}
                   {$facultyWhere}";
@@ -373,9 +416,41 @@ class Fundraiser
                 'total_fundraisers' => 0,
                 'pending_fundraisers' => 0,
                 'approved_fundraisers' => 0,
+                'closed_fundraisers' => 0,
+                'rejected_fundraisers' => 0,
             ];
         }
         return $row;
+    }
+
+    public function closeApprovedByAdmin($fundraiserId, $adminUserId, $facultyId = null)
+    {
+        $params = [
+            'fundraiser_id' => (int)$fundraiserId,
+            'admin_user_id' => (int)$adminUserId,
+        ];
+
+        $facultyJoin = '';
+        $facultyFilter = '';
+        if ($facultyId !== null && (int)$facultyId > 0) {
+            $facultyJoin = ' LEFT JOIN students s ON s.user_id = f.creator_user_id ';
+            $facultyFilter = ' AND s.faculty_id = :faculty_id ';
+            $params['faculty_id'] = (int)$facultyId;
+        }
+
+        $query = "UPDATE fundraisers f
+                  {$facultyJoin}
+                  SET f.status = 'closed',
+                      f.admin_note = CONCAT(COALESCE(NULLIF(f.admin_note, ''), ''),
+                        CASE WHEN COALESCE(NULLIF(f.admin_note, ''), '') <> '' THEN ' | ' ELSE '' END,
+                        'Closed by admin'),
+                      f.approved_by_user_id = :admin_user_id,
+                      f.updated_at = NOW()
+                  WHERE f.fundraiser_id = :fundraiser_id
+                    AND f.status = 'approved'
+                    {$facultyFilter}";
+
+        return $this->query($query, $params) !== false;
     }
 
     public function stopFundraiser($fundraiserId, $userId)

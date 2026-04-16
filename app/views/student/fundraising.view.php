@@ -81,7 +81,7 @@ require '../app/views/partials/student_header.php';
                           data-currency="<?= esc($item->currency ?: 'LKR') ?>">
                     <i class="fas fa-pen"></i><span>Edit Request</span>
                   </button>
-                  <form method="POST" action="<?=ROOT?>/student/fundraising/delete_pending" style="margin:0;" onsubmit="return confirm('Delete this pending request? This cannot be undone.');">
+                  <form method="POST" action="<?=ROOT?>/student/fundraising/delete_pending" style="margin:0;" data-confirm-message="Delete this pending request? This cannot be undone.">
                     <input type="hidden" name="fundraiser_id" value="<?= (int)$item->fundraiser_id ?>">
                     <button type="submit" class="btn btn-danger btn-sm">Delete Request</button>
                   </form>
@@ -89,7 +89,7 @@ require '../app/views/partials/student_header.php';
                 <?php if (strtolower($item->status) === 'approved'): ?>
                   <form method="POST" action="<?=ROOT?>/student/fundraising/stop" style="margin:0;">
                     <input type="hidden" name="fundraiser_id" value="<?= (int)$item->fundraiser_id ?>">
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('End this fundraiser now? This will close donations for this campaign.');">End Fundraiser</button>
+                    <button type="submit" class="btn btn-danger btn-sm" data-confirm-message="End this fundraiser now? This will close donations for this campaign.">End Fundraiser</button>
                   </form>
                 <?php endif; ?>
               </div>
@@ -224,6 +224,22 @@ require '../app/views/partials/student_header.php';
       </div>
     </section>
   </main>
+</div>
+
+<div id="fundraisingConfirmModal" class="modal">
+  <div class="modal-content" style="max-width:420px;">
+    <div class="modal-header">
+      <h2 class="modal-title">Confirm Action</h2>
+      <button class="modal-close" onclick="closeFundraisingConfirmModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="donation-content">
+      <p id="fundraisingConfirmText" style="margin:0 0 14px 0; color: var(--foreground);">Are you sure?</p>
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline" onclick="closeFundraisingConfirmModal()">Cancel</button>
+        <button type="button" id="fundraisingConfirmOk" class="btn btn-danger">Yes, Continue</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div id="fundraiserDetailsModal" class="modal">

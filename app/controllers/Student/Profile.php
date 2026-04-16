@@ -27,6 +27,9 @@ class Profile extends Controller
             return;
         }
 
+        redirect('student/profile?action=edit');
+        return;
+
         $student = new Student();
         $profile = $student->getStudentProfile($_SESSION['student_id']);
         
@@ -34,6 +37,8 @@ class Profile extends Controller
             redirect('student/auth');
             
         }
+
+        $_SESSION['profile_picture'] = $profile->profile_photo_url ?? null;
 
         $data = [
             'title' => 'Student Profile - GradBridge',
@@ -60,6 +65,8 @@ class Profile extends Controller
             redirect('student/auth');
             exit();
         }
+
+        $_SESSION['profile_picture'] = $profile->profile_photo_url ?? null;
 
         $data = [
             'title' => 'Edit Profile - GradBridge',
@@ -230,6 +237,8 @@ class Profile extends Controller
                 $_SESSION['student_id'] = $student_id;
             }
 
+            $_SESSION['profile_picture'] = $profile_photo_url ?: null;
+
             $errors['success'] = "Profile updated successfully!";
         } catch (Exception $e) {
             error_log("Profile update error: " . $e->getMessage() . ", Data: " . print_r($_POST, true));
@@ -240,6 +249,9 @@ class Profile extends Controller
     // Refresh profile data for display
     $student = new Student();
     $updated_profile = $student->getStudentProfile($_SESSION['student_id']);
+    if ($updated_profile) {
+        $_SESSION['profile_picture'] = $updated_profile->profile_photo_url ?? null;
+    }
 
     // Show form with errors or success
     $data = [
@@ -275,6 +287,7 @@ class Profile extends Controller
                 // Update database to remove photo URL
                 $student_data = ['profile_photo_url' => null];
                 $student->update($_SESSION['student_id'], $student_data, 'student_id');
+                $_SESSION['profile_picture'] = null;
             }
         }
         

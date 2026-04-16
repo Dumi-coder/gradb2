@@ -56,13 +56,258 @@ class Dashboard extends Controller
             redirect('student/auth');
         }
 
-        // Get dashboard statistics (you can expand this)
+        // Get dashboard statistics (legacy fallback)
         $stats = $this->getDashboardStats();
         $flashMessage = $_SESSION['flash_message'] ?? null;
         unset($_SESSION['flash_message']);
+
         $requestModel = new Request();
         $aidRequests = $requestModel->getAidRequestsForStudent($_SESSION['user_id']);
         $recentAidRequests = is_array($aidRequests) ? array_slice($aidRequests, 0, 3) : [];
+
+        $mentorshipModel = new MentorshipRequest();
+        $mentorshipRequests = $mentorshipModel->getStudentMentorshipRequests($_SESSION['user_id']);
+
+        $activeMentorshipCount = 0;
+        $completedMentorshipCount = 0;
+        if (is_array($mentorshipRequests)) {
+            foreach ($mentorshipRequests as $request) {
+                $status = strtolower((string)($request['status'] ?? ''));
+                if ($status === 'accepted') {
+                    $activeMentorshipCount++;
+                }
+                if ($status === 'completed') {
+                    $completedMentorshipCount++;
+                }
+            }
+        }
+
+        $sharedResourceModel = new SharedResource();
+        $forumPostModel = new ForumPost();
+        $forumReplyModel = new ForumReply();
+        $fundraiserDonationModel = new FundraiserDonation();
+
+        $resourceCountRow = $sharedResourceModel->get_row(
+            "SELECT COUNT(*) AS total FROM resources WHERE user_id = :user_id",
+            ['user_id' => (int)$_SESSION['user_id']]
+        );
+        $resourceContributionCount = (int)($resourceCountRow->total ?? 0);
+
+        $forumPostCountRow = $forumPostModel->get_row(
+            "SELECT COUNT(*) AS total FROM forum_posts WHERE user_id = :user_id",
+            ['user_id' => (int)$_SESSION['user_id']]
+        );
+        $forumPostCount = (int)($forumPostCountRow->total ?? 0);
+
+        $forumReplyCountRow = $forumReplyModel->get_row(
+            "SELECT COUNT(*) AS total FROM form_replies WHERE userid = :user_id",
+            ['user_id' => (int)$_SESSION['user_id']]
+        );
+        $forumReplyCount = (int)($forumReplyCountRow->total ?? 0);
+
+        $fundContributionCountRow = $fundraiserDonationModel->get_row(
+            "SELECT COUNT(*) AS total FROM fundraiser_donations WHERE donor_user_id = :user_id AND status = 'captured'",
+            ['user_id' => (int)$_SESSION['user_id']]
+        );
+        $fundContributionCount = (int)($fundContributionCountRow->total ?? 0);
+
+        $totalCommunityContributions = $resourceContributionCount + $forumPostCount + $forumReplyCount + $fundContributionCount;
+
+        $timelineMonthKeys = [];
+        $timelineLabels = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $monthKey = date('Y-m', strtotime('-' . $i . ' months'));
+            $timelineMonthKeys[] = $monthKey;
+            $timelineLabels[] = date("M 'y", strtotime($monthKey . '-01'));
+        }
+
+        $emptyTimelineMap = array_fill_keys($timelineMonthKeys, 0);
+
+        $resourcesTimelineMap = $emptyTimelineMap;
+        $resourceRows = $sharedResourceModel->query(
+            "SELECT created_at FROM resources WHERE user_id = :user_id",
+            ['user_id' => (int)$_SESSION['user_id']]
+        );
+        if (is_array($resourceRows)) {
+            foreach ($resourceRows as $row) {
+                $ts = strtotime((string)($row->created_at ?? ''));
+                if ($ts !== false) {
+                    $key = date('Y-m', $ts);
+                    if (array_key_exists($key, $resourcesTimelineMap)) {
+                        $resourcesTimelineMap[$key]++;
+                    }
+                }
+            }
+        }
+
+        $forumPostsTimelineMap = $emptyTimelineMap;
+        $forumPostRows = $forumPostModel->query(
+            "SELECT created_at FROM forum_posts WHERE user_id = :user_id",
+            ['user_id' => (int)$_SESSION['user_id']]
+        );
+        if (is_array($forumPostRows)) {
+            foreach ($forumPostRows as $row) {
+                $ts = strtotime((string)($row->created_at ?? ''));
+                if ($ts !== false) {
+                    $key = date('Y-m', $ts);
+                    if (array_key_exists($key, $forumPostsTimelineMap)) {
+                        $forumPostsTimelineMap[$key]++;
+                    }
+                }
+            }
+        }
+
+        $forumRepliesTimelineMap = $emptyTimelineMap;
+        $forumReplyRows = $forumReplyModel->query(
+            "SELECT repliedtime AS activity_time FROM form_replies WHERE userid = :user_id",
+            ['user_id' => (int)$_SESSION['user_id']]
+        );
+        if (is_array($forumReplyRows)) {
+            foreach ($forumReplyRows as $row) {
+                $ts = strtotime((string)($row->activity_time ?? ''));
+                if ($ts !== false) {
+                    $key = date('Y-m', $ts);
+                    if (array_key_exists($key, $forumRepliesTimelineMap)) {
+                        $forumRepliesTimelineMap[$key]++;
+                    }
+                }
+            }
+        }
+
+        $mentorshipCompletedTimelineMap = $emptyTimelineMap;
+        $activeMentorshipUnitCount = 0;
+        if (is_array($mentorshipRequests)) {
+            foreach ($mentorshipRequests as $request) {
+                $status = strtolower((string)($request['status'] ?? ''));
+                if ($status === 'accepted') {
+                    $activeMentorshipUnitCount++;
+                }
+                if ($status === 'completed') {
+                    $ts = strtotime((string)($request['updated_at'] ?? $request['created_at'] ?? ''));
+                    if ($ts !== false) {
+                        $key = date('Y-m', $ts);
+                        if (array_key_exists($key, $mentorshipCompletedTimelineMap)) {
+                            $mentorshipCompletedTimelineMap[$key]++;
+                        }
+                    }
+                }
+            }
+        }
+
+        $aidAcceptedTimelineMap = $emptyTimelineMap;
+        $aidAcceptedUnitCount = 0;
+        if (is_array($aidRequests)) {
+            foreach ($aidRequests as $aid) {
+                $status = strtolower((string)($aid->status ?? ''));
+                if (in_array($status, ['open', 'approved', 'accepted'], true)) {
+                    $aidAcceptedUnitCount++;
+                    $ts = strtotime((string)($aid->updated_at ?? $aid->created_at ?? ''));
+                    if ($ts !== false) {
+                        $key = date('Y-m', $ts);
+                        if (array_key_exists($key, $aidAcceptedTimelineMap)) {
+                            $aidAcceptedTimelineMap[$key]++;
+                        }
+                    }
+                }
+            }
+        }
+
+        $fundTimelineMap = $emptyTimelineMap;
+        $fundRows = $fundraiserDonationModel->query(
+            "SELECT COALESCE(captured_at, created_at) AS activity_time
+             FROM fundraiser_donations
+             WHERE donor_user_id = :user_id
+               AND status = 'captured'",
+            ['user_id' => (int)$_SESSION['user_id']]
+        );
+        if (is_array($fundRows)) {
+            foreach ($fundRows as $row) {
+                $ts = strtotime((string)($row->activity_time ?? ''));
+                if ($ts !== false) {
+                    $key = date('Y-m', $ts);
+                    if (array_key_exists($key, $fundTimelineMap)) {
+                        $fundTimelineMap[$key]++;
+                    }
+                }
+            }
+        }
+
+        $monthlyActivityTotals = [];
+        foreach ($timelineMonthKeys as $monthKey) {
+            $monthlyActivityTotals[] =
+                (int)($resourcesTimelineMap[$monthKey] ?? 0) +
+                (int)($forumPostsTimelineMap[$monthKey] ?? 0) +
+                (int)($forumRepliesTimelineMap[$monthKey] ?? 0) +
+                (int)($fundTimelineMap[$monthKey] ?? 0) +
+                (int)($mentorshipCompletedTimelineMap[$monthKey] ?? 0) +
+                (int)($aidAcceptedTimelineMap[$monthKey] ?? 0);
+        }
+
+        $profileSnapshot = [
+            'active_mentorships' => $activeMentorshipCount,
+            'completed_mentorships' => $completedMentorshipCount,
+            'resources_shared' => $resourceContributionCount,
+            'forum_contributions' => $forumPostCount + $forumReplyCount,
+        ];
+
+        $engagementChartData = [
+            'activity_timeline' => [
+                'labels' => $timelineLabels,
+                'values' => $monthlyActivityTotals,
+            ],
+            'units_mix' => [
+                'labels' => ['Mentorships', 'Aids Received', 'Resource Contributions', 'Forum Contributions', 'Fund Contributions'],
+                'values' => [
+                    $activeMentorshipUnitCount + $completedMentorshipCount,
+                    $aidAcceptedUnitCount,
+                    $resourceContributionCount,
+                    $forumPostCount + $forumReplyCount,
+                    $fundContributionCount,
+                ],
+            ],
+            'community_total' => $totalCommunityContributions,
+            'help_total' => $activeMentorshipUnitCount + $completedMentorshipCount + $aidAcceptedUnitCount,
+        ];
+
+        $mentorshipPreview = [];
+        if (is_array($mentorshipRequests)) {
+            foreach (array_slice($mentorshipRequests, 0, 3) as $request) {
+                $mentorshipPreview[] = [
+                    'mentor_name' => (string)($request['mentor_name'] ?? 'Mentor'),
+                    'topic' => (string)($request['topic'] ?? 'Mentorship'),
+                    'status' => strtolower((string)($request['status'] ?? 'pending')),
+                    'created_at' => (string)($request['created_at'] ?? ''),
+                ];
+            }
+        }
+
+        $eventModel = new Event();
+        $events = $eventModel->getAllActiveEvents();
+        $eventPreview = is_array($events) ? array_slice($events, 0, 3) : [];
+
+        $forumModel = new ForumPost();
+        $forumPosts = $forumModel->getPostsByFaculty((int)($profile->faculty_id ?? 0));
+        $forumPreview = is_array($forumPosts) ? array_slice($forumPosts, 0, 3) : [];
+
+        $notificationModel = new Notification();
+        $notificationRows = $notificationModel->query(
+            "SELECT notification_id, title, message, action_url, action_label, created_at
+             FROM notifications
+             WHERE recipient_user_id = :user_id AND is_read = 0
+             ORDER BY created_at DESC
+             LIMIT 5",
+            ['user_id' => (int)$_SESSION['user_id']]
+        );
+        $notificationPreview = is_array($notificationRows) ? $notificationRows : [];
+
+        $quickLinks = [
+            ['title' => 'Mentorship', 'icon' => 'fa-user-graduate', 'url' => ROOT . '/student/mentorship', 'hint' => 'Find mentors and manage requests'],
+            ['title' => 'Aid Requests', 'icon' => 'fa-hand-holding-heart', 'url' => ROOT . '/student/aidrequests', 'hint' => 'Track your aid submissions'],
+            ['title' => 'Discussion Forum', 'icon' => 'fa-comments', 'url' => ROOT . '/student/discussionforum', 'hint' => 'Join conversations'],
+            ['title' => 'Events Board', 'icon' => 'fa-calendar-days', 'url' => ROOT . '/student/eventsboard', 'hint' => 'Register for upcoming events'],
+            ['title' => 'Resources', 'icon' => 'fa-folder-open', 'url' => ROOT . '/student/resources', 'hint' => 'Browse shared materials'],
+            ['title' => 'Fundraising', 'icon' => 'fa-coins', 'url' => ROOT . '/student/fundraising', 'hint' => 'Create and support campaigns'],
+        ];
 
         $data = [
             'title' => 'Student Dashboard - GradBridge',
@@ -71,6 +316,13 @@ class Dashboard extends Controller
             'user' => $_SESSION,  // Session data if needed
             'flashMessage' => $flashMessage,
             'recentAidRequests' => $recentAidRequests,
+            'profileSnapshot' => $profileSnapshot,
+            'engagementChartData' => $engagementChartData,
+            'mentorshipPreview' => $mentorshipPreview,
+            'eventPreview' => $eventPreview,
+            'forumPreview' => $forumPreview,
+            'notificationPreview' => $notificationPreview,
+            'quickLinks' => $quickLinks,
         ];
 
         $this->view('student/dashboard', $data);
