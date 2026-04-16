@@ -549,13 +549,13 @@
   text-align: center;
 }
 
-.profile-avatar {
+.profile-modal-body .profile-avatar {
   margin-bottom: var(--spacing-xl);
   display: flex;
   justify-content: center;
 }
 
-.avatar-circle {
+.profile-modal-body .avatar-circle {
   width: 120px;
   height: 120px;
   border-radius: 50%;
@@ -566,42 +566,42 @@
   box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
 }
 
-.alumni-avatar .avatar-circle {
+.profile-modal-body .alumni-avatar .avatar-circle {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
 }
 
-.avatar-circle i {
+.profile-modal-body .avatar-circle i {
   font-size: var(--font-5xl);
   color: white;
 }
 
-.profile-info-section {
+.profile-modal-body .profile-info-section {
   margin-bottom: var(--spacing-2xl);
 }
 
-.profile-name {
+.profile-modal-body .profile-name {
   font-size: var(--font-3xl);
   font-weight: 800;
   color: var(--foreground);
   margin: 0 0 var(--spacing-xs) 0;
 }
 
-.profile-subtitle {
+.profile-modal-body .profile-subtitle {
   font-size: var(--font-lg);
   color: var(--primary);
   font-weight: 500;
   margin: 0;
 }
 
-.profile-details-grid {
+.profile-modal-body .profile-details-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--spacing-lg);
   text-align: left;
 }
 
-.profile-detail-item {
+.profile-modal-body .profile-detail-item {
   background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
   padding: var(--spacing-md);
   border-radius: var(--radius-md);
@@ -611,11 +611,11 @@
   border: 1px solid var(--border);
 }
 
-.profile-detail-item.full-width {
+.profile-modal-body .profile-detail-item.full-width {
   grid-column: 1 / -1;
 }
 
-.detail-icon {
+.profile-modal-body .detail-icon {
   width: 40px;
   height: 40px;
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
@@ -626,19 +626,19 @@
   flex-shrink: 0;
 }
 
-.detail-icon i {
+.profile-modal-body .detail-icon i {
   color: white;
   font-size: var(--font-lg);
 }
 
-.detail-content {
+.profile-modal-body .detail-content {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
   flex: 1;
 }
 
-.detail-label {
+.profile-modal-body .detail-label {
   font-size: var(--font-sm);
   color: var(--muted-foreground);
   font-weight: 500;
@@ -646,7 +646,7 @@
   letter-spacing: 0.5px;
 }
 
-.detail-value {
+.profile-modal-body .detail-value {
   font-size: var(--font-base);
   color: var(--foreground);
   font-weight: 600;
@@ -663,7 +663,7 @@
 }
 
 @media (max-width: 768px) {
-  .profile-details-grid {
+  .profile-modal-body .profile-details-grid {
     grid-template-columns: 1fr;
   }
   
@@ -1224,16 +1224,16 @@ body.chat-open {
 }
 
 @media (max-width: 768px) {
-  .profile-name {
+  .profile-modal-body .profile-name {
     font-size: var(--font-2xl);
   }
   
-  .avatar-circle {
+  .profile-modal-body .avatar-circle {
     width: 100px;
     height: 100px;
   }
   
-  .avatar-circle i {
+  .profile-modal-body .avatar-circle i {
     font-size: var(--font-4xl);
   }
 
