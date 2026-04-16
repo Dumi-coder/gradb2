@@ -58,3 +58,18 @@ define('DEBUG',true); // This constant is used to enable or disable error report
 // Fundraising payment configuration
 // Use 'demo' for local/test, or 'payhere', 'paypal', etc. for real gateways
 define('FUNDRAISING_PAYMENT_MODE', getenv('FUNDRAISING_PAYMENT_MODE') ?: 'demo');
+
+// Password reset (OTP) settings
+define('OTP_EXP_MINUTES', 10);
+define('OTP_RATE_LIMIT_SECONDS', 60);
+define('OTP_MAX_ATTEMPTS', 5);
+define('MAIL_FROM', 'no-reply@gradbridge.com');
+
+// SMTP settings for PHPMailer (Gmail example)
+define('SMTP_HOST', 'smtp.gmail.com');
+define('SMTP_PORT', 587);
+define('SMTP_SECURE', 'tls');
+define('SMTP_USER', '2023cs058@stu.ucsc.cmb.ac.lk');
+define('SMTP_PASS', 'gkcf gyax jpan ceby');
+define('SMTP_FROM', '2023cs058@stu.ucsc.cmb.ac.lk');
+define('SMTP_FROM_NAME', 'GradBridge');
