@@ -63,15 +63,19 @@ class FundraiserModeration extends Controller
 
         if ($ok && $item) {
             $notification = new Notification();
-            $notification->insert([
-                'recipient_user_id' => (int)$item->creator_user_id,
-                'actor_user_id' => $adminUserId,
-                'title' => 'Fundraiser request approved',
-                'message' => 'Your fundraiser "' . $item->title . '" has been approved and is now live.',
-                'is_read' => 0,
-                'read_at' => null,
-                'created_at' => date('Y-m-d H:i:s'),
-            ]);
+            $notification->createFundraiserApprovedNotification(
+                (int)$item->creator_user_id,
+                $adminUserId,
+                (string)$item->title,
+                $note,
+                (int)$item->fundraiser_id
+            );
+            $notification->createFundraiserLiveBroadcastNotifications(
+                (int)$item->fundraiser_id,
+                (string)$item->title,
+                (int)$item->creator_user_id,
+                $adminUserId
+            );
             $_SESSION['flash_message'] = ['type' => 'success', 'text' => 'Fundraiser approved'];
         } else {
             $_SESSION['flash_message'] = ['type' => 'error', 'text' => 'Unable to approve fundraiser'];
@@ -100,15 +104,13 @@ class FundraiserModeration extends Controller
 
         if ($ok && $item) {
             $notification = new Notification();
-            $notification->insert([
-                'recipient_user_id' => (int)$item->creator_user_id,
-                'actor_user_id' => $adminUserId,
-                'title' => 'Fundraiser request rejected',
-                'message' => 'Your fundraiser "' . $item->title . '" was rejected. Note: ' . $note,
-                'is_read' => 0,
-                'read_at' => null,
-                'created_at' => date('Y-m-d H:i:s'),
-            ]);
+            $notification->createFundraiserRejectedNotification(
+                (int)$item->creator_user_id,
+                $adminUserId,
+                (string)$item->title,
+                $note,
+                (int)$item->fundraiser_id
+            );
             $_SESSION['flash_message'] = ['type' => 'success', 'text' => 'Fundraiser rejected with note'];
         } else {
             $_SESSION['flash_message'] = ['type' => 'error', 'text' => 'Unable to reject fundraiser'];

@@ -61,7 +61,59 @@
             return item.message || item.notification_message || item.title || item.text || '';
         }
 
+        function getNotificationActionControl(notification) {
+            const actionUrl = notification && notification.action_url ? String(notification.action_url).trim() : '';
+            if (!actionUrl) {
+                return '';
+            }
+
+            const actionLabel = notification && notification.action_label ? String(notification.action_label).trim() : 'Open';
+            return '<a href="' + escapeHtml(actionUrl) + '" style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;font-weight:600;color:#0e2072;text-decoration:none;border:1px solid #dbe2ff;border-radius:999px;padding:4px 10px;background:#eef2ff;">' +
+                '<i class="fas fa-arrow-right"></i>' + escapeHtml(actionLabel || 'Open') + '</a>';
+        }
+
+        function setNotificationBellState(unreadCount) {
+            const bellButton = document.querySelector('.notification-btn');
+            if (!bellButton) {
+                return;
+            }
+
+            bellButton.style.position = 'relative';
+
+            let unreadDot = bellButton.querySelector('.notification-unread-dot');
+            if (Number(unreadCount) > 0) {
+                if (!unreadDot) {
+                    unreadDot = document.createElement('span');
+                    unreadDot.className = 'notification-unread-dot';
+                    unreadDot.setAttribute('aria-hidden', 'true');
+                    unreadDot.style.cssText = 'position:absolute;top:8px;right:12px;width:10px;height:10px;border-radius:999px;background:#ef4444;border:2px solid #fff;box-shadow:0 0 0 1px rgba(15,23,42,0.08);';
+                    bellButton.appendChild(unreadDot);
+                }
+                return;
+            }
+
+            if (unreadDot) {
+                unreadDot.remove();
+            }
+        }
+
+        function refreshNotificationBell() {
+            fetch('<?=ROOT?>/home/getNotifications')
+                .then(response => response.json())
+                .then(data => {
+                    const unreadCount = (data && data.success && Array.isArray(data.notifications))
+                        ? data.notifications.length
+                        : 0;
+                    setNotificationBellState(unreadCount);
+                })
+                .catch(() => {
+                    // Ignore fetch errors for bell indicator.
+                });
+        }
+
         function openNotificationWindow() {
+            // Hide red indicator once the notification panel is opened.
+            setNotificationBellState(0);
             let overlay = document.getElementById('notificationWindowOverlay');
 
             if (!overlay) {
@@ -157,6 +209,7 @@
                                 } else {
                                     body.innerHTML = data.notifications.map(function(notification) {
                                         const timestamp = new Date(notification.created_at).toLocaleString();
+                                        const actionControl = getNotificationActionControl(notification);
                                         return '<div style="padding:12px;border-radius:8px;background:#f9fafb;border:1px solid #e5e7eb;width:100%;box-sizing:border-box;display:flex;gap:10px;align-items:flex-start;">' +
                                             '<button type="button" class="notification-mark-btn" data-notification-id="' + (notification.notification_id || '') + '" style="background:#fff;border:1px solid #d1d5db;border-radius:6px;padding:6px 8px;cursor:pointer;min-width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#9ca3af;font-size:16px;flex-shrink:0;transition:all 0.2s;">' +
                                             '<i class="fas fa-check"></i>' +
@@ -165,6 +218,7 @@
                                             '<strong style="display:block;font-size:15px;color:#1f2937;margin-bottom:6px;">' + escapeHtml(notification.title) + '</strong>' +
                                             '<p style="margin:0 0 6px 0;font-size:13px;color:#6b7280;line-height:1.4;">' + escapeHtml(notification.message) + '</p>' +
                                             '<div style="font-size:12px;color:#9ca3af;">' + timestamp + '</div>' +
+                                            actionControl +
                                             '</div>' +
                                             '</div>';
                                     }).join('');
@@ -214,6 +268,10 @@
             style.textContent = '@keyframes notificationSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
             document.head.appendChild(style);
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshNotificationBell();
+        });
 
         function logout() {
             // Create a form to submit logout request

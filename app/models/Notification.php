@@ -17,10 +17,59 @@ class Notification
 		'actor_user_id',
 		'title',
 		'message',
+		'action_url',
+		'action_label',
+		'context_type',
+		'context_id',
 		'is_read',
 		'read_at',
 		'created_at',
 	];
+
+	private function buildFundraiserActionUrlForRole($role, $fundraiserId)
+	{
+		$fundraiserId = (int)$fundraiserId;
+		if ($fundraiserId <= 0) {
+			return null;
+		}
+
+		$normalizedRole = strtolower(trim((string)$role));
+		if ($normalizedRole === 'student') {
+			return ROOT . '/student/fundraising?highlight=' . $fundraiserId;
+		}
+
+		if ($normalizedRole === 'alumni') {
+			return ROOT . '/alumni/fundraising?highlight=' . $fundraiserId;
+		}
+
+		if ($normalizedRole === 'faculty_admin') {
+			return ROOT . '/admin/fundraiser-moderation';
+		}
+
+		if ($normalizedRole === 'super_admin') {
+			return ROOT . '/superadmin/fundraiser-moderation';
+		}
+
+		return null;
+	}
+
+	private function getUserRoleById($userId)
+	{
+		if ((int)$userId <= 0) {
+			return null;
+		}
+
+		$row = $this->get_row(
+			"SELECT role FROM users WHERE user_id = :user_id LIMIT 1",
+			['user_id' => (int)$userId]
+		);
+
+		if (!$row || !isset($row->role)) {
+			return null;
+		}
+
+		return strtolower((string)$row->role);
+	}
 
 	public function createAnnouncementPublishedNotifications($announcementType, $announcementTitle, $actorUserId = null, $facultyId = null)
 	{
@@ -241,13 +290,16 @@ class Notification
 		]);
 	}
 
-	public function createFundraiserRejectedNotification($recipientUserId, $actorUserId, $fundraiserTitle, $note)
+	public function createFundraiserRejectedNotification($recipientUserId, $actorUserId, $fundraiserTitle, $note, $fundraiserId = null)
 	{
 		$fundraiserTitle = trim((string)$fundraiserTitle);
 		$note = trim((string)$note);
 		if ($recipientUserId <= 0 || $fundraiserTitle === '') {
 			return false;
 		}
+
+		$recipientRole = $this->getUserRoleById($recipientUserId);
+		$actionUrl = $this->buildFundraiserActionUrlForRole($recipientRole, $fundraiserId);
 
 		$title = 'Fundraiser request rejected';
 		$message = 'Your fundraiser ("' . $fundraiserTitle . '") was rejected.' . ($note !== '' ? ' Admin note: ' . $note : '');
@@ -257,19 +309,26 @@ class Notification
 			'actor_user_id' => ($actorUserId !== null && (int)$actorUserId > 0) ? (int)$actorUserId : null,
 			'title' => $title,
 			'message' => $message,
+			'action_url' => $actionUrl,
+			'action_label' => $actionUrl ? 'View fundraiser' : null,
+			'context_type' => $fundraiserId ? 'fundraiser' : null,
+			'context_id' => $fundraiserId ? (int)$fundraiserId : null,
 			'is_read' => 0,
 			'read_at' => null,
 			'created_at' => date('Y-m-d H:i:s'),
 		]);
 	}
 
-	public function createFundraiserApprovedNotification($recipientUserId, $actorUserId, $fundraiserTitle, $note = '')
+	public function createFundraiserApprovedNotification($recipientUserId, $actorUserId, $fundraiserTitle, $note = '', $fundraiserId = null)
 	{
 		$fundraiserTitle = trim((string)$fundraiserTitle);
 		$note = trim((string)$note);
 		if ($recipientUserId <= 0 || $fundraiserTitle === '') {
 			return false;
 		}
+
+		$recipientRole = $this->getUserRoleById($recipientUserId);
+		$actionUrl = $this->buildFundraiserActionUrlForRole($recipientRole, $fundraiserId);
 
 		$title = 'Fundraiser request approved';
 		$message = 'Your fundraiser ("' . $fundraiserTitle . '") has been approved and is now visible for donations.'
@@ -280,10 +339,125 @@ class Notification
 			'actor_user_id' => ($actorUserId !== null && (int)$actorUserId > 0) ? (int)$actorUserId : null,
 			'title' => $title,
 			'message' => $message,
+			'action_url' => $actionUrl,
+			'action_label' => $actionUrl ? 'View fundraiser' : null,
+			'context_type' => $fundraiserId ? 'fundraiser' : null,
+			'context_id' => $fundraiserId ? (int)$fundraiserId : null,
 			'is_read' => 0,
 			'read_at' => null,
 			'created_at' => date('Y-m-d H:i:s'),
 		]);
+	}
+
+	public function createFundraiserClosedByAdminNotification($recipientUserId, $actorUserId, $fundraiserTitle, $fundraiserId = null)
+	{
+		$fundraiserTitle = trim((string)$fundraiserTitle);
+		if ((int)$recipientUserId <= 0 || $fundraiserTitle === '') {
+			return false;
+		}
+
+		$recipientRole = $this->getUserRoleById($recipientUserId);
+		$actionUrl = $this->buildFundraiserActionUrlForRole($recipientRole, $fundraiserId);
+
+		return $this->insert([
+			'recipient_user_id' => (int)$recipientUserId,
+			'actor_user_id' => ($actorUserId !== null && (int)$actorUserId > 0) ? (int)$actorUserId : null,
+			'title' => 'Fundraiser ended by admin',
+			'message' => 'Your fundraiser ("' . $fundraiserTitle . '") has been closed by admin.',
+			'action_url' => $actionUrl,
+			'action_label' => $actionUrl ? 'View fundraiser' : null,
+			'context_type' => $fundraiserId ? 'fundraiser' : null,
+			'context_id' => $fundraiserId ? (int)$fundraiserId : null,
+			'is_read' => 0,
+			'read_at' => null,
+			'created_at' => date('Y-m-d H:i:s'),
+		]);
+	}
+
+	public function createFundraiserGoalReachedNotification($recipientUserId, $fundraiserTitle, $fundraiserId)
+	{
+		$fundraiserTitle = trim((string)$fundraiserTitle);
+		$fundraiserId = (int)$fundraiserId;
+		if ((int)$recipientUserId <= 0 || $fundraiserTitle === '' || $fundraiserId <= 0) {
+			return false;
+		}
+
+		$recipientRole = $this->getUserRoleById($recipientUserId);
+		$actionUrl = $this->buildFundraiserActionUrlForRole($recipientRole, $fundraiserId);
+
+		return $this->insert([
+			'recipient_user_id' => (int)$recipientUserId,
+			'actor_user_id' => null,
+			'title' => 'Fundraiser goal achieved',
+			'message' => 'Great news. Your fundraiser ("' . $fundraiserTitle . '") reached its target amount.',
+			'action_url' => $actionUrl,
+			'action_label' => $actionUrl ? 'View fundraiser' : null,
+			'context_type' => 'fundraiser',
+			'context_id' => $fundraiserId,
+			'is_read' => 0,
+			'read_at' => null,
+			'created_at' => date('Y-m-d H:i:s'),
+		]);
+	}
+
+	public function createFundraiserLiveBroadcastNotifications($fundraiserId, $fundraiserTitle, $creatorUserId, $actorUserId = null)
+	{
+		$fundraiserId = (int)$fundraiserId;
+		$creatorUserId = (int)$creatorUserId;
+		$fundraiserTitle = trim((string)$fundraiserTitle);
+		if ($fundraiserId <= 0 || $creatorUserId <= 0 || $fundraiserTitle === '') {
+			return 0;
+		}
+
+		$createdAt = date('Y-m-d H:i:s');
+		$actor = ($actorUserId !== null && (int)$actorUserId > 0) ? (int)$actorUserId : null;
+
+		$query = "INSERT INTO notifications (
+					recipient_user_id,
+					actor_user_id,
+					title,
+					message,
+					action_url,
+					action_label,
+					context_type,
+					context_id,
+					is_read,
+					read_at,
+					created_at
+				)
+				SELECT u.user_id,
+						 :actor_user_id,
+						 :title,
+						 :message,
+						 CASE
+								 WHEN u.role = 'student' THEN :student_url
+								 WHEN u.role = 'alumni' THEN :alumni_url
+								 ELSE NULL
+						 END,
+						 :action_label,
+						 'fundraiser',
+						 :context_id,
+						 0,
+						 NULL,
+						 :created_at
+				FROM users u
+				WHERE u.role IN ('student', 'alumni')
+					AND u.user_id <> :creator_user_id";
+
+		$params = [
+			'actor_user_id' => $actor,
+			'title' => 'New fundraiser is now live',
+			'message' => 'A new fundraiser ("' . $fundraiserTitle . '") is now live for donations.',
+			'student_url' => ROOT . '/student/fundraising?highlight=' . $fundraiserId,
+			'alumni_url' => ROOT . '/alumni/fundraising?highlight=' . $fundraiserId,
+			'action_label' => 'View fundraiser',
+			'context_id' => $fundraiserId,
+			'created_at' => $createdAt,
+			'creator_user_id' => $creatorUserId,
+		];
+
+		$ok = $this->query($query, $params);
+		return $ok ? 1 : 0;
 	}
 
 	public function markAsRead($notificationId)
