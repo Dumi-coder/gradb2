@@ -113,15 +113,15 @@ class Dashboard extends Controller
 
         $totalCommunityContributions = $resourceContributionCount + $forumPostCount + $forumReplyCount + $fundContributionCount;
 
-        $timelineMonthKeys = [];
+        $timelineDayKeys = [];
         $timelineLabels = [];
-        for ($i = 5; $i >= 0; $i--) {
-            $monthKey = date('Y-m', strtotime('-' . $i . ' months'));
-            $timelineMonthKeys[] = $monthKey;
-            $timelineLabels[] = date("M 'y", strtotime($monthKey . '-01'));
+        for ($i = 29; $i >= 0; $i--) {
+            $dayKey = date('Y-m-d', strtotime('-' . $i . ' days'));
+            $timelineDayKeys[] = $dayKey;
+            $timelineLabels[] = date('M j', strtotime($dayKey));
         }
 
-        $emptyTimelineMap = array_fill_keys($timelineMonthKeys, 0);
+        $emptyTimelineMap = array_fill_keys($timelineDayKeys, 0);
 
         $resourcesTimelineMap = $emptyTimelineMap;
         $resourceRows = $sharedResourceModel->query(
@@ -132,7 +132,7 @@ class Dashboard extends Controller
             foreach ($resourceRows as $row) {
                 $ts = strtotime((string)($row->created_at ?? ''));
                 if ($ts !== false) {
-                    $key = date('Y-m', $ts);
+                    $key = date('Y-m-d', $ts);
                     if (array_key_exists($key, $resourcesTimelineMap)) {
                         $resourcesTimelineMap[$key]++;
                     }
@@ -149,7 +149,7 @@ class Dashboard extends Controller
             foreach ($forumPostRows as $row) {
                 $ts = strtotime((string)($row->created_at ?? ''));
                 if ($ts !== false) {
-                    $key = date('Y-m', $ts);
+                    $key = date('Y-m-d', $ts);
                     if (array_key_exists($key, $forumPostsTimelineMap)) {
                         $forumPostsTimelineMap[$key]++;
                     }
@@ -166,7 +166,7 @@ class Dashboard extends Controller
             foreach ($forumReplyRows as $row) {
                 $ts = strtotime((string)($row->activity_time ?? ''));
                 if ($ts !== false) {
-                    $key = date('Y-m', $ts);
+                    $key = date('Y-m-d', $ts);
                     if (array_key_exists($key, $forumRepliesTimelineMap)) {
                         $forumRepliesTimelineMap[$key]++;
                     }
@@ -185,7 +185,7 @@ class Dashboard extends Controller
                 if ($status === 'completed') {
                     $ts = strtotime((string)($request['updated_at'] ?? $request['created_at'] ?? ''));
                     if ($ts !== false) {
-                        $key = date('Y-m', $ts);
+                        $key = date('Y-m-d', $ts);
                         if (array_key_exists($key, $mentorshipCompletedTimelineMap)) {
                             $mentorshipCompletedTimelineMap[$key]++;
                         }
@@ -203,7 +203,7 @@ class Dashboard extends Controller
                     $aidAcceptedUnitCount++;
                     $ts = strtotime((string)($aid->updated_at ?? $aid->created_at ?? ''));
                     if ($ts !== false) {
-                        $key = date('Y-m', $ts);
+                        $key = date('Y-m-d', $ts);
                         if (array_key_exists($key, $aidAcceptedTimelineMap)) {
                             $aidAcceptedTimelineMap[$key]++;
                         }
@@ -224,7 +224,7 @@ class Dashboard extends Controller
             foreach ($fundRows as $row) {
                 $ts = strtotime((string)($row->activity_time ?? ''));
                 if ($ts !== false) {
-                    $key = date('Y-m', $ts);
+                    $key = date('Y-m-d', $ts);
                     if (array_key_exists($key, $fundTimelineMap)) {
                         $fundTimelineMap[$key]++;
                     }
@@ -232,15 +232,15 @@ class Dashboard extends Controller
             }
         }
 
-        $monthlyActivityTotals = [];
-        foreach ($timelineMonthKeys as $monthKey) {
-            $monthlyActivityTotals[] =
-                (int)($resourcesTimelineMap[$monthKey] ?? 0) +
-                (int)($forumPostsTimelineMap[$monthKey] ?? 0) +
-                (int)($forumRepliesTimelineMap[$monthKey] ?? 0) +
-                (int)($fundTimelineMap[$monthKey] ?? 0) +
-                (int)($mentorshipCompletedTimelineMap[$monthKey] ?? 0) +
-                (int)($aidAcceptedTimelineMap[$monthKey] ?? 0);
+        $dailyActivityTotals = [];
+        foreach ($timelineDayKeys as $dayKey) {
+            $dailyActivityTotals[] =
+                (int)($resourcesTimelineMap[$dayKey] ?? 0) +
+                (int)($forumPostsTimelineMap[$dayKey] ?? 0) +
+                (int)($forumRepliesTimelineMap[$dayKey] ?? 0) +
+                (int)($fundTimelineMap[$dayKey] ?? 0) +
+                (int)($mentorshipCompletedTimelineMap[$dayKey] ?? 0) +
+                (int)($aidAcceptedTimelineMap[$dayKey] ?? 0);
         }
 
         $profileSnapshot = [
@@ -253,7 +253,7 @@ class Dashboard extends Controller
         $engagementChartData = [
             'activity_timeline' => [
                 'labels' => $timelineLabels,
-                'values' => $monthlyActivityTotals,
+                'values' => $dailyActivityTotals,
             ],
             'units_mix' => [
                 'labels' => ['Mentorships', 'Aids Received', 'Resource Contributions', 'Forum Contributions', 'Fund Contributions'],

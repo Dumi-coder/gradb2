@@ -24,21 +24,10 @@ class Profile extends Controller
             return;
         }
 
-        $alumni = new Alumni();
-        $profile = $alumni->getalumniProfile($_SESSION['alumni_id']);
-        
-        if (!$profile) {
-            redirect('alumni/auth');
-        }
-
-        $_SESSION['profile_picture'] = $profile->profile_photo_url ?? null;
-
-        $data = [
-            'title' => 'Alumni Profile - GradBridge',
-            'profile' => $profile
-        ];
-
-        $this->view('alumni/profile/show', $data);
+        // Alumni profile show page has been retired.
+        // Keep a stable entry route by redirecting to edit profile.
+        redirect('alumni/profile?action=edit');
+        return;
     }
 
     public function edit()

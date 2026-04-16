@@ -766,6 +766,61 @@
   line-height: 1.25;
 }
 
+.mentor-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mentor-latest-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.mentor-latest-badge i {
+  font-size: 0.72rem;
+}
+
+.mentor-badge-new {
+  background: #e2e8f0;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+
+.mentor-badge-rising {
+  background: #dcfce7;
+  color: #166534;
+  border-color: #86efac;
+}
+
+.mentor-badge-trusted {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-color: #93c5fd;
+}
+
+.mentor-badge-senior {
+  background: #ede9fe;
+  color: #5b21b6;
+  border-color: #c4b5fd;
+}
+
+.mentor-badge-master {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fcd34d;
+}
+
 .mentor-quick-meta {
   font-size: var(--font-sm);
 }

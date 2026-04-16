@@ -340,11 +340,7 @@
                                 <span class="dropdown-role">Alumni Member</span>
                             </div>
                             <div class="dropdown-divider"></div>
-                            <a href="<?=ROOT?>/alumni/profile" class="dropdown-item">
-                                <i class="fas fa-user"></i>
-                                <span>My Profile</span>
-                            </a>
-                            <a href="<?=ROOT?>/alumni/profile/edit" class="dropdown-item">
+                            <a href="<?=ROOT?>/alumni/profile?action=edit" class="dropdown-item">
                                 <i class="fas fa-edit"></i>
                                 <span>Edit Profile</span>
                             </a>

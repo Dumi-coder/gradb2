@@ -229,15 +229,21 @@ require '../app/views/partials/alumni_header.php';
                     <?php endif; ?>
 
                     <!-- Form Actions -->
-                    <div class="form-actions">
-                        <a href="<?= ROOT ?>/alumni/profile" class="btn btn-outline">
-                            <i class="fas fa-arrow-left"></i>
-                            Back
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i>
-                            Save Changes
+                    <div class="form-actions" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+                        <button type="button" onclick="confirmAccountDelete()" class="btn btn-danger">
+                            <i class="fas fa-user-times"></i>
+                            Delete Account
                         </button>
+                        <div style="display:flex;gap:10px;margin-left:auto;">
+                            <a href="<?= ROOT ?>/alumni/profile" class="btn btn-outline">
+                                <i class="fas fa-arrow-left"></i>
+                                Back
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Save Changes
+                            </button>
+                        </div>
                     </div>
                 </form>
             </section>
@@ -262,6 +268,18 @@ require '../app/views/partials/alumni_header.php';
                     <i class="fas fa-trash"></i>
                     <span>Delete</span>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Account Confirmation Modal -->
+    <div id="deleteAccountModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:9999;">
+        <div style="background:#fff; padding:24px; border-radius:8px; max-width:480px; width:90%; text-align:center;">
+            <h3 style="margin-top:0; color:#c0392b;">Delete Account</h3>
+            <p>Are you sure you want to delete your account? This will deactivate your profile and you will no longer be able to log in. Your data will be preserved in the system.</p>
+            <div style="display:flex; gap:10px; justify-content:center; margin-top:18px;">
+                <button type="button" onclick="closeAccountModal()" style="padding:10px 18px; background:#95a5a6; color:#fff; border:none; border-radius:6px;">Cancel</button>
+                <button type="button" onclick="submitDeleteAccount()" style="padding:10px 18px; background:#e74c3c; color:#fff; border:none; border-radius:6px;">Delete Account</button>
             </div>
         </div>
     </div>
@@ -297,10 +315,32 @@ require '../app/views/partials/alumni_header.php';
             form.submit();
         }
 
+        function confirmAccountDelete() {
+            document.getElementById('deleteAccountModal').style.display = 'flex';
+        }
+
+        function closeAccountModal() {
+            document.getElementById('deleteAccountModal').style.display = 'none';
+        }
+
+        function submitDeleteAccount() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?=ROOT?>/alumni/profile?action=delete_account';
+            document.body.appendChild(form);
+            form.submit();
+        }
+
         // Close modal when clicking outside
         document.getElementById('deletePhotoModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeDeleteModal();
+            }
+        });
+
+        document.getElementById('deleteAccountModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAccountModal();
             }
         });
     </script>
