@@ -9,14 +9,74 @@ const donateButtons = document.querySelectorAll('.donate-now-btn');
 const detailsButtons = document.querySelectorAll('.view-details-btn');
 const editPendingButtons = document.querySelectorAll('.edit-pending-btn');
 const payButton = document.getElementById('demo-pay-btn');
+const confirmModal = document.getElementById('fundraisingConfirmModal');
+const confirmText = document.getElementById('fundraisingConfirmText');
+const confirmOkButton = document.getElementById('fundraisingConfirmOk');
+let pendingConfirmForm = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     bindDonateButtons();
     bindDetailsButtons();
     bindEditPendingButtons();
+    bindCustomConfirmActions();
     bindModalClose();
     bindPayButton();
 });
+
+function bindCustomConfirmActions() {
+    const forms = document.querySelectorAll('form[data-confirm-message]');
+    forms.forEach((form) => {
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            openFundraisingConfirmModal(form.dataset.confirmMessage || 'Are you sure?', () => {
+                form.submit();
+            });
+        });
+    });
+
+    const buttons = document.querySelectorAll('button[data-confirm-message]');
+    buttons.forEach((button) => {
+        button.addEventListener('click', (event) => {
+            const parentForm = button.closest('form');
+            if (!parentForm) return;
+
+            event.preventDefault();
+            openFundraisingConfirmModal(button.dataset.confirmMessage || 'Are you sure?', () => {
+                parentForm.submit();
+            });
+        });
+    });
+
+    if (confirmOkButton) {
+        confirmOkButton.addEventListener('click', () => {
+            if (pendingConfirmForm) {
+                const cb = pendingConfirmForm;
+                pendingConfirmForm = null;
+                closeFundraisingConfirmModal();
+                cb();
+            }
+        });
+    }
+}
+
+function openFundraisingConfirmModal(message, onConfirm) {
+    if (!confirmModal) {
+        if (typeof onConfirm === 'function') onConfirm();
+        return;
+    }
+
+    pendingConfirmForm = onConfirm;
+    if (confirmText) {
+        confirmText.textContent = message;
+    }
+    confirmModal.style.display = 'block';
+}
+
+function closeFundraisingConfirmModal() {
+    if (!confirmModal) return;
+    confirmModal.style.display = 'none';
+    pendingConfirmForm = null;
+}
 
 function bindEditPendingButtons() {
     editPendingButtons.forEach((button) => {
@@ -65,6 +125,7 @@ function bindDonateButtons() {
 function bindModalClose() {
     window.addEventListener('click', (event) => {
         if (event.target.classList.contains('modal')) {
+            closeFundraisingConfirmModal();
             closeDonateModal();
             closeCreateCampaignModal();
             closeEditPendingCampaignModal();
@@ -388,6 +449,7 @@ function showSuccessToast(message, isError = false) {
 
 window.openCreateCampaignModal = openCreateCampaignModal;
 window.closeCreateCampaignModal = closeCreateCampaignModal;
+window.closeFundraisingConfirmModal = closeFundraisingConfirmModal;
 window.closeEditPendingCampaignModal = closeEditPendingCampaignModal;
 window.closeDonateModal = closeDonateModal;
 window.closeDetailsModal = closeDetailsModal;

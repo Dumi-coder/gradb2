@@ -1,6 +1,7 @@
 .fundraiser-moderation-page .section-header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: flex-start;
   gap: 1rem;
   margin-bottom: 1.25rem;
@@ -9,6 +10,65 @@
 .fundraiser-moderation-page .section-stats {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.fundraiser-moderation-page .modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 2100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.fundraiser-moderation-page .modal.is-open {
+  display: flex;
+}
+
+.fundraiser-moderation-page .modal[style*="display: block"] {
+  display: flex !important;
+}
+
+.fundraiser-moderation-page .modal-content {
+  width: min(520px, 100%);
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.fundraiser-moderation-page .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.fundraiser-moderation-page .modal-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.fundraiser-moderation-page .modal-close {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--muted-foreground);
+}
+
+.fundraiser-moderation-page .donation-content {
+  padding: 16px;
+}
+
+.fundraiser-moderation-page .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .fundraiser-moderation-page .stat-item {
@@ -44,6 +104,116 @@
   margin-bottom: 1rem;
 }
 
+.fundraiser-moderation-page .moderation-toast {
+  position: fixed;
+  top: 84px;
+  right: 24px;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 280px;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.14);
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+.fundraiser-moderation-page .moderation-toast.is-hiding {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.fundraiser-moderation-page .moderation-toast-success {
+  background: #e9f9ef;
+  border-color: #a7e4bd;
+  color: #0f5132;
+}
+
+.fundraiser-moderation-page .moderation-toast-error {
+  background: #fdecec;
+  border-color: #f5bcbc;
+  color: #8a1f1f;
+}
+
+.fundraiser-moderation-page .moderation-toast i {
+  font-size: 16px;
+}
+
+.fundraiser-moderation-page .moderation-toast span {
+  flex: 1;
+  line-height: 1.35;
+}
+
+.fundraiser-moderation-page .moderation-toast-close {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.moderation-confirm-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 2100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.moderation-confirm-modal.is-open {
+  display: flex;
+}
+
+.moderation-confirm-content {
+  width: min(420px, 100%);
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: 0 14px 38px rgba(15, 23, 42, 0.22);
+}
+
+.moderation-confirm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.moderation-confirm-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.moderation-confirm-close {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--muted-foreground);
+}
+
+.moderation-confirm-body {
+  padding: 16px;
+}
+
+.moderation-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 .fundraiser-moderation-page .subsection-title {
   font-size: 1.15rem;
   font-weight: 700;
@@ -53,14 +223,22 @@
 
 .fundraiser-moderation-page .reported-fundraisers-container {
   display: grid;
-  gap: 1rem;
+  gap: 1.35rem;
 }
 
 .fundraiser-moderation-page .reported-fundraiser-card {
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: #ffffff;
+  border: 1px solid #d2dae8;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 1.1rem 1.1rem 1rem;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.fundraiser-moderation-page .reported-fundraiser-card:hover {
+  transform: translateY(-2px) scale(1.003);
+  border-color: #b8c6de;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.13);
 }
 
 .fundraiser-moderation-page .fundraiser-header {
@@ -113,11 +291,26 @@
   color: #9b6400;
 }
 
+.fundraiser-moderation-page .status-approved {
+  background: #dff6e7;
+  color: #166534;
+}
+
+.fundraiser-moderation-page .status-closed {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.fundraiser-moderation-page .status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
 .fundraiser-moderation-page .fundraiser-content {
-  border: 1px solid var(--border);
+  border: 1px solid #dbe5f3;
   border-radius: 10px;
-  padding: 0.75rem;
-  background: var(--background);
+  padding: 0.85rem;
+  background: #f8fbff;
 }
 
 .fundraiser-moderation-page .fundraiser-content p {
@@ -128,8 +321,8 @@
 .fundraiser-moderation-page .report-details {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 0.75rem;
+  gap: 1rem 1.25rem;
+  margin-top: 0.9rem;
 }
 
 .fundraiser-moderation-page .report-details p {
@@ -180,5 +373,13 @@
 
   .fundraiser-moderation-page .stat-item {
     flex: 1;
+  }
+
+  .fundraiser-moderation-page .moderation-toast {
+    top: 72px;
+    right: 12px;
+    left: 12px;
+    max-width: none;
+    min-width: 0;
   }
 }
