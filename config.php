@@ -1,6 +1,9 @@
 <?php
 // Basic DB config for standalone password reset pages
 
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
+
 define('DB_HOST', 'mysql-gradb2.alwaysdata.net');
 define('DB_NAME', 'gradb2_gradb2');
 define('DB_USER', 'gradb2');
@@ -13,7 +16,15 @@ define('OTP_MAX_ATTEMPTS', 5);
 
 define('MAIL_FROM', 'no-reply@yourdomain.com');
 
+define('SMTP_HOST', 'smtp.gmail.com');
+define('SMTP_PORT', 587);
+define('SMTP_SECURE', 'tls');
+define('SMTP_USER', '2023cs058@stu.ucsc.cmb.ac.lk');
+define('SMTP_PASS', 'gkcf gyax jpan ceby');
+define('SMTP_FROM', MAIL_FROM);
+
 define('APP_NAME', 'GradBridge');
+define('SMTP_FROM_NAME', APP_NAME);
 
 define('DEBUG_MODE', true);
 
@@ -48,13 +59,46 @@ function add_minutes_utc(int $minutes): string
 
 function send_otp_email(string $toEmail, string $otp): bool
 {
-    $subject = 'Your ' . APP_NAME . ' password reset OTP';
-    $message = "Your OTP is: {$otp}\n\nThis code expires in " . OTP_EXP_MINUTES . " minutes.";
+    $autoload = __DIR__ . '/otp_mailer/vendor/autoload.php';
+    if (!is_file($autoload)) {
+        if (DEBUG_MODE) {
+            error_log('PHPMailer autoload not found: ' . $autoload);
+        }
+        return false;
+    }
 
-    $headers = "From: " . MAIL_FROM . "\r\n";
-    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+    require_once $autoload;
 
-    return mail($toEmail, $subject, $message, $headers);
+    if (SMTP_USER === '' || SMTP_PASS === '') {
+        if (DEBUG_MODE) {
+            error_log('SMTP credentials are not configured.');
+        }
+        return false;
+    }
+
+    $mailer = new PHPMailer(true);
+
+    try {
+        $mailer->isSMTP();
+        $mailer->Host = SMTP_HOST;
+        $mailer->SMTPAuth = true;
+        $mailer->Username = SMTP_USER;
+        $mailer->Password = SMTP_PASS;
+        $mailer->SMTPSecure = SMTP_SECURE;
+        $mailer->Port = SMTP_PORT;
+
+        $mailer->setFrom(SMTP_FROM, SMTP_FROM_NAME);
+        $mailer->addAddress($toEmail);
+        $mailer->Subject = 'Your ' . APP_NAME . ' password reset OTP';
+        $mailer->Body = "Your OTP is: {$otp}\n\nThis code expires in " . OTP_EXP_MINUTES . " minutes.";
+
+        return $mailer->send();
+    } catch (Exception $e) {
+        if (DEBUG_MODE) {
+            error_log('[PHPMailer] Send failed: ' . $mailer->ErrorInfo);
+        }
+        return false;
+    }
 }
 
 function hash_otp(string $otp): string
