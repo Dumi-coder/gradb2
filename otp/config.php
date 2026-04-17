@@ -59,7 +59,7 @@ function add_minutes_utc(int $minutes): string
 
 function send_otp_email(string $toEmail, string $otp): bool
 {
-    $autoload = __DIR__ . '/otp_mailer/vendor/autoload.php';
+    $autoload = __DIR__ . '/mailer/vendor/autoload.php';
     if (!is_file($autoload)) {
         if (DEBUG_MODE) {
             error_log('PHPMailer autoload not found: ' . $autoload);

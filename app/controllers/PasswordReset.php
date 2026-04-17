@@ -393,7 +393,7 @@ class PasswordReset extends Controller
         $subject = 'Your ' . APP_NAME . ' password reset OTP';
         $message = "Your OTP is: {$otp}\n\nThis code expires in " . OTP_EXP_MINUTES . " minutes.";
 
-        $autoload = __DIR__ . '/../../otp_mailer/vendor/autoload.php';
+            $autoload = __DIR__ . '/../../otp/mailer/vendor/autoload.php';
         if (!file_exists($autoload)) {
             error_log('[PasswordReset] PHPMailer autoload not found: ' . $autoload);
             return false;
