@@ -61,7 +61,7 @@ $buildFileUrl = static function ($path) {
                 </div>
 
                 <div class="summary-actions">
-                  <span class="chip-completed">Completed</span>
+                  <span class="chip-state chip-completed">Completed</span>
                   <button type="button" class="btn btn-outline btn-sm open-review-modal" data-modal-id="review-modal-<?= (int)$request->request_id ?>">
                     <i class="fas fa-eye"></i>
                     <span>Review</span>

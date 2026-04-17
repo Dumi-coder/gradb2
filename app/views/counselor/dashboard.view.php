@@ -56,13 +56,13 @@ $getStatusMeta = static function ($status) {
     <section class="dashboard-section">
       <div class="dashboard-hero">
         <div>
-          <h2 class="card-title" class="card-title-tight">Aid Request Dashboard</h2>
+          <h2 class="card-title card-title-tight">Aid Request Dashboard</h2>
           <p class="dashboard-kicker">Review, filter, and process requests from one place.</p>
         </div>
       </div>
 
       <?php if (!empty($flashMessage)): ?>
-        <div class="alert alert-info" class="alert-block">
+        <div class="alert alert-info alert-block">
           <?= esc($flashMessage) ?>
         </div>
       <?php endif; ?>
@@ -80,7 +80,7 @@ $getStatusMeta = static function ($status) {
       <p class="search-meta" id="searchMetaText">Search by request ID or student name.</p>
 
       <?php if (empty($allRequests)): ?>
-        <div class="request-card" class="req-card-mt">
+        <div class="request-card req-card-mt">
           <div class="request-details">
             <p class="detail-value">No aid requests available right now.</p>
           </div>
@@ -111,7 +111,7 @@ $getStatusMeta = static function ($status) {
 
                 <div>
                   <span class="summary-label">Request</span>
-                  <p class="summary-value" class="summary-value-sm">#<?= (int)$request->request_id ?></p>
+                  <p class="summary-value summary-value-sm">#<?= (int)$request->request_id ?></p>
                   <p class="summary-meta"><?= esc($request->created_at ?? 'N/A') ?></p>
                 </div>
 

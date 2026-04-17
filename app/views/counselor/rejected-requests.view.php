@@ -54,7 +54,7 @@ $buildFileUrl = static function ($path) {
                 </div>
 
                 <div class="summary-actions">
-                  <span class="chip-no">Rejected</span>
+                  <span class="chip-state chip-no">Rejected</span>
                   <button type="button" class="btn btn-outline btn-sm open-review-modal" data-modal-id="review-modal-<?= (int)$request->request_id ?>">
                     <i class="fas fa-eye"></i>
                     <span>Review</span>
