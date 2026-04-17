@@ -1848,7 +1848,27 @@
 }
 
 .inline-form {
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.inline-form textarea[name="completion_note"] {
+  width: min(520px, 100%);
+  min-height: 64px;
+  margin-bottom: .55rem;
+  border: 1px solid #d1d5db;
+  border-radius: .55rem;
+  padding: .55rem .65rem;
+  resize: vertical;
+  font: inherit;
+}
+
+.inline-form textarea[name="completion_note"]:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, .14);
 }
 
 @media (max-width: 980px) {

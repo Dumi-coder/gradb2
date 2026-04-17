@@ -21,15 +21,19 @@ $buildFileUrl = static function ($path) {
   return ROOT . '/' . ltrim($path, '/');
 };
 
-$getStatusMeta = static function ($status) {
+$getStatusMeta = static function ($status, $alumnusUserId = null) {
   $status = strtolower((string)$status);
 
   if ($status === 'pending_verification') {
     return ['group' => 'pending', 'label' => 'Pending', 'class' => 'chip-pending'];
   }
 
-  if (in_array($status, ['open', 'approved', 'accepted'], true)) {
-    return ['group' => 'approved', 'label' => 'Approved', 'class' => 'chip-approved'];
+  if ($status === 'accepted' || (!empty($alumnusUserId) && in_array($status, ['open', 'approved'], true))) {
+    return ['group' => 'approved', 'label' => 'Accepted by Alumni', 'class' => 'chip-accepted'];
+  }
+
+  if (in_array($status, ['open', 'approved'], true)) {
+    return ['group' => 'approved', 'label' => 'Sent to Alumni', 'class' => 'chip-sent'];
   }
 
   if ($status === 'completed') {
@@ -40,7 +44,7 @@ $getStatusMeta = static function ($status) {
     return ['group' => 'rejected', 'label' => 'Rejected', 'class' => 'chip-rejected'];
   }
 
-  return ['group' => 'other', 'label' => ucfirst($status), 'class' => 'chip-other'];
+  return ['group' => 'other', 'label' => ucfirst($status), 'class' => 'chip-pending'];
 };
 ?>
 
@@ -56,13 +60,13 @@ $getStatusMeta = static function ($status) {
     <section class="dashboard-section">
       <div class="dashboard-hero">
         <div>
-          <h2 class="card-title" class="card-title-tight">Aid Request Dashboard</h2>
+          <h2 class="card-title card-title-tight">Aid Request Dashboard</h2>
           <p class="dashboard-kicker">Review, filter, and process requests from one place.</p>
         </div>
       </div>
 
       <?php if (!empty($flashMessage)): ?>
-        <div class="alert alert-info" class="alert-block">
+        <div class="alert alert-info alert-block">
           <?= esc($flashMessage) ?>
         </div>
       <?php endif; ?>
@@ -80,7 +84,7 @@ $getStatusMeta = static function ($status) {
       <p class="search-meta" id="searchMetaText">Search by student name.</p>
 
       <?php if (empty($allRequests)): ?>
-        <div class="request-card" class="req-card-mt">
+        <div class="request-card req-card-mt">
           <div class="request-details">
             <p class="detail-value">No aid requests available right now.</p>
           </div>
@@ -88,7 +92,7 @@ $getStatusMeta = static function ($status) {
       <?php else: ?>
         <div class="req-grid" id="requestGrid">
           <?php foreach ($allRequests as $request): ?>
-            <?php $statusMeta = $getStatusMeta($request->status ?? ''); ?>
+            <?php $statusMeta = $getStatusMeta($request->status ?? '', $request->alumnus_user_id ?? null); ?>
             <?php $studentName = (string)($request->student_name ?? 'Student'); ?>
             <div
               class="req-card"
@@ -100,7 +104,7 @@ $getStatusMeta = static function ($status) {
                 <div>
                   <span class="summary-label">Student</span>
                   <p class="summary-value"><?= esc($studentName) ?></p>
-                  <p class="summary-meta">Reg: <?= esc($request->student_id ?? 'N/A') ?> · <?= esc($request->faculty_name ?? 'Faculty N/A') ?></p>
+                  <p class="summary-meta">Reg: <?= esc($request->student_id ?? 'N/A') ?> &middot; <?= esc($request->faculty_name ?? 'Faculty N/A') ?></p>
                 </div>
 
                 <div>
@@ -109,8 +113,9 @@ $getStatusMeta = static function ($status) {
                 </div>
 
                 <div>
-                  <span class="summary-label">Submitted</span>
-                  <p class="summary-value summary-value-sm"><?= esc($request->created_at ?? 'N/A') ?></p>
+                  <span class="summary-label">Request</span>
+                  <p class="summary-value summary-value-sm">#<?= (int)$request->request_id ?></p>
+                  <p class="summary-meta"><?= esc($request->created_at ?? 'N/A') ?></p>
                 </div>
 
                 <div class="summary-actions">
@@ -127,7 +132,7 @@ $getStatusMeta = static function ($status) {
               <div class="review-modal-panel" role="dialog" aria-modal="true" aria-labelledby="review-title-<?= (int)$request->request_id ?>">
                 <div class="review-modal-head">
                   <div>
-                    <h3 class="review-modal-title" id="review-title-<?= (int)$request->request_id ?>"><?= esc($studentName) ?> · Aid Details</h3>
+                    <h3 class="review-modal-title" id="review-title-<?= (int)$request->request_id ?>">Request #<?= (int)$request->request_id ?> &middot; <?= esc($studentName) ?></h3>
                     <p class="review-modal-meta">Status: <?= esc($statusMeta['label']) ?></p>
                   </div>
                   <button type="button" class="modal-close-btn" data-close-modal aria-label="Close review modal">&times;</button>
@@ -176,6 +181,10 @@ $getStatusMeta = static function ($status) {
 
                 <?php if ($statusMeta['group'] === 'rejected'): ?>
                   <div class="req-row"><span class="req-label">Rejection Note</span><strong><?= esc($request->rejection_reason ?? 'No note provided') ?></strong></div>
+                <?php endif; ?>
+
+                <?php if ($statusMeta['group'] === 'completed'): ?>
+                  <div class="req-row"><span class="req-label">Completion Note</span><strong><?= esc($request->completion_note ?? 'No completion note provided') ?></strong></div>
                 <?php endif; ?>
 
                 <?php if (!empty($request->alumnus_user_id)): ?>

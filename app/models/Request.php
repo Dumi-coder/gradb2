@@ -31,7 +31,15 @@ class Request
 							   AND rl.notes LIKE '[COUNSELOR REJECTED] %'
 							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
 							 LIMIT 1
-						 ) AS rejection_reason
+						 ) AS rejection_reason,
+						 (
+							 SELECT REPLACE(rl.notes, '[COUNSELOR COMPLETED] ', '')
+							 FROM request_logs rl
+							 WHERE rl.request_id = r.request_id
+							   AND rl.notes LIKE '[COUNSELOR COMPLETED] %'
+							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
+							 LIMIT 1
+						 ) AS completion_note
 				  FROM requests r
 				  JOIN users u ON u.user_id = r.student_user_id
 				  LEFT JOIN users au ON au.user_id = r.alumnus_user_id
@@ -77,7 +85,15 @@ class Request
 							   AND rl.notes LIKE '[COUNSELOR REJECTED] %'
 							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
 							 LIMIT 1
-						 ) AS rejection_reason
+						 ) AS rejection_reason,
+						 (
+							 SELECT REPLACE(rl.notes, '[COUNSELOR COMPLETED] ', '')
+							 FROM request_logs rl
+							 WHERE rl.request_id = r.request_id
+							   AND rl.notes LIKE '[COUNSELOR COMPLETED] %'
+							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
+							 LIMIT 1
+						 ) AS completion_note
 				  FROM requests r
 				  JOIN users u ON u.user_id = r.student_user_id
 				  LEFT JOIN users au ON au.user_id = r.alumnus_user_id
@@ -129,7 +145,15 @@ class Request
 							   AND rl.notes LIKE '[COUNSELOR REJECTED] %'
 							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
 							 LIMIT 1
-						 ) AS rejection_reason
+						 ) AS rejection_reason,
+						 (
+							 SELECT REPLACE(rl.notes, '[COUNSELOR COMPLETED] ', '')
+							 FROM request_logs rl
+							 WHERE rl.request_id = r.request_id
+							   AND rl.notes LIKE '[COUNSELOR COMPLETED] %'
+							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
+							 LIMIT 1
+						 ) AS completion_note
 				  FROM requests r
 				  JOIN users u ON u.user_id = r.student_user_id
 				  LEFT JOIN users au ON au.user_id = r.alumnus_user_id
@@ -253,8 +277,13 @@ class Request
 		return $verified !== false;
 	}
 
-	public function markAidRequestCompletedByCounselor($requestId, $counselorUserId)
+	public function markAidRequestCompletedByCounselor($requestId, $counselorUserId, $completionNote)
 	{
+		$completionNote = trim((string)$completionNote);
+		if ($completionNote === '') {
+			return false;
+		}
+
 		$updateQuery = "UPDATE requests
 						SET status = 'completed'
 						WHERE request_id = :request_id
@@ -279,6 +308,11 @@ class Request
 
 		if ($verified !== false) {
 			try {
+				$logNote = '[COUNSELOR COMPLETED] ' . $completionNote;
+				if (strlen($logNote) > 1000) {
+					$logNote = substr($logNote, 0, 1000);
+				}
+
 				$nextLogIdQuery = "SELECT COALESCE(MAX(log_id), 0) + 1 AS next_id FROM request_logs";
 				$nextLogIdRow = $this->get_row($nextLogIdQuery);
 				$nextLogId = isset($nextLogIdRow->next_id) ? (int)$nextLogIdRow->next_id : 1;
@@ -291,7 +325,7 @@ class Request
 					'request_id' => (int)$requestId,
 					'actor_user_id' => (int)$counselorUserId,
 					'action' => 'COUNSELOR_COMPLETED',
-					'notes' => '[COUNSELOR COMPLETED] Aid request marked completed after alumni acceptance.',
+					'notes' => $logNote,
 				]);
 			} catch (Throwable $e) {
 				error_log('Counselor completion log failed: ' . $e->getMessage());
@@ -299,6 +333,23 @@ class Request
 		}
 
 		return $verified !== false;
+	}
+
+	public function getAidCompletionContextByRequestId($requestId)
+	{
+		$query = "SELECT r.request_id, r.alumnus_user_id,
+						 u.name AS student_name,
+						 ar.aid_type
+				  FROM requests r
+				  JOIN users u ON u.user_id = r.student_user_id
+				  LEFT JOIN aid_requests ar ON ar.request_id = r.request_id
+				  WHERE r.request_id = :request_id
+					AND r.request_type = 'aid'
+				  LIMIT 1";
+
+		return $this->get_row($query, [
+			'request_id' => (int)$requestId,
+		]);
 	}
 
 	public function getAidAnalyticsSummary($days = 30)
