@@ -42,174 +42,7 @@ $approvalRateForProcessed = $processedCount > 0
   ? round((((int)($statusMix['approved'] ?? 0) + (int)($statusMix['completed'] ?? 0)) / $processedCount) * 100, 1)
   : 0;
 ?>
-
-<style>
-  .analytics-shell {
-    display: grid;
-    gap: 16px;
-  }
-
-  .analytics-hero {
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 16px;
-    background:
-      radial-gradient(circle at right top, rgba(30, 58, 138, 0.08), transparent 42%),
-      linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-  }
-
-  .hero-title {
-    margin: 0;
-    font-size: 1.12rem;
-    color: #0f172a;
-  }
-
-  .hero-subtitle {
-    margin: 5px 0 0;
-    color: #475569;
-    font-size: .92rem;
-  }
-
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(180px, 1fr));
-    gap: 12px;
-  }
-
-  .kpi-card {
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    background: #fff;
-    padding: 14px;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
-    animation: fadeUp .45s ease both;
-  }
-
-  .kpi-label {
-    margin: 0;
-    color: #64748b;
-    font-size: .78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-  }
-
-  .kpi-value {
-    margin: 8px 0 0;
-    color: #0f172a;
-    font-size: 1.45rem;
-    font-weight: 800;
-    line-height: 1.1;
-  }
-
-  .kpi-note {
-    margin: 7px 0 0;
-    color: #475569;
-    font-size: .82rem;
-  }
-
-  .chart-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 12px;
-  }
-
-  .chart-card {
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    background: #fff;
-    padding: 14px;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
-    animation: fadeUp .55s ease both;
-  }
-
-  .chart-title {
-    margin: 0;
-    color: #0f172a;
-    font-size: 1rem;
-    font-weight: 700;
-  }
-
-  .chart-subtitle {
-    margin: 4px 0 10px;
-    color: #64748b;
-    font-size: .84rem;
-  }
-
-  .chart-box {
-    position: relative;
-    min-height: 280px;
-  }
-
-  .insight-strip {
-    border: 1px solid #dbeafe;
-    border-radius: 14px;
-    background: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
-    padding: 14px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 8px;
-    align-items: center;
-    animation: fadeUp .65s ease both;
-  }
-
-  .insight-title {
-    margin: 0;
-    font-size: .82rem;
-    color: #334155;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    font-weight: 700;
-  }
-
-  .insight-text {
-    margin: 5px 0 0;
-    color: #1e293b;
-    font-size: .95rem;
-  }
-
-  .insight-pill {
-    border-radius: 999px;
-    border: 1px solid #93c5fd;
-    background: #ffffff;
-    color: #1d4ed8;
-    padding: .34rem .76rem;
-    font-size: .78rem;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-
-  @keyframes fadeUp {
-    from {
-      opacity: 0;
-      transform: translateY(6px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @media (max-width: 1150px) {
-    .kpi-grid {
-      grid-template-columns: repeat(2, minmax(180px, 1fr));
-    }
-
-    .chart-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .kpi-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .insight-strip {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/counselor.css">
 
 <div class="dashboard-container">
   <?php require '../app/views/partials/counselor_sidebar.php'; ?>
@@ -222,25 +55,25 @@ $approvalRateForProcessed = $processedCount > 0
       </div>
 
       <div class="kpi-grid">
-        <article class="kpi-card" style="animation-delay:.03s;">
+        <article class="kpi-card kpi-delay-1">
           <p class="kpi-label">Total Requests</p>
           <p class="kpi-value"><?= (int)($summary['total_requests'] ?? 0) ?></p>
           <p class="kpi-note">Total aid submissions recorded.</p>
         </article>
 
-        <article class="kpi-card" style="animation-delay:.08s;">
+        <article class="kpi-card kpi-delay-2">
           <p class="kpi-label">Approval Rate</p>
           <p class="kpi-value"><?= esc((string)($summary['approval_rate'] ?? 0)) ?>%</p>
           <p class="kpi-note">Share of approved among processed requests.</p>
         </article>
 
-        <article class="kpi-card" style="animation-delay:.13s;">
+        <article class="kpi-card kpi-delay-3">
           <p class="kpi-label">Avg. Processing Days</p>
           <p class="kpi-value"><?= esc((string)($summary['avg_processing_days'] ?? 0)) ?></p>
           <p class="kpi-note">Average days from submission to decision.</p>
         </article>
 
-        <article class="kpi-card" style="animation-delay:.18s;">
+        <article class="kpi-card kpi-delay-4">
           <p class="kpi-label">Total Money Disbursed</p>
           <p class="kpi-value">LKR <?= number_format((float)($summary['total_disbursed'] ?? 0), 0) ?></p>
           <p class="kpi-note">Approved and completed disbursement total.</p>
@@ -265,11 +98,11 @@ $approvalRateForProcessed = $processedCount > 0
         </article>
       </div>
 
-      <div class="chart-grid" style="grid-template-columns:1fr;">
-        <article class="chart-card" style="animation-delay:.2s;">
+      <div class="chart-grid chart-grid-single">
+        <article class="chart-card chart-delay-2">
           <h3 class="chart-title">Daily Disbursement Trend</h3>
           <p class="chart-subtitle">Amount committed across approved/completed requests over time.</p>
-          <div class="chart-box" style="min-height:250px;">
+          <div class="chart-box chart-box-compact">
             <canvas id="disbursementTrendChart"></canvas>
           </div>
         </article>

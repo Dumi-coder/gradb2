@@ -44,301 +44,10 @@ $getStatusMeta = static function ($status) {
 };
 ?>
 
-<style>
-  .dashboard-hero {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 14px;
-    margin-bottom: 8px;
-  }
 
-  .dashboard-kicker {
-    margin: 0;
-    color: #64748b;
-    font-size: .9rem;
-  }
 
-  .dashboard-tools {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-    margin: 8px 0 14px;
-  }
 
-  .search-wrap {
-    border: none;
-    border-radius: 12px;
-    background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-    padding: 10px;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-    align-content: start;
-  }
-
-  .search-title {
-    margin: 0;
-    color: #334155;
-    font-size: .8rem;
-    font-weight: 700;
-    letter-spacing: .03em;
-    text-transform: uppercase;
-  }
-
-  .search-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .search-wrap input {
-    border: 1px solid #d7dde6;
-    border-radius: 10px;
-    padding: 9px 11px;
-    width: 100%;
-    font: inherit;
-    color: #0f172a;
-    background: #f8fafc;
-  }
-
-  .search-meta {
-    margin: 2px 0 12px;
-    color: #64748b;
-    font-size: .86rem;
-  }
-
-  .empty-filter-state {
-    border: 1px dashed #cbd5e1;
-    border-radius: 12px;
-    background: #f8fafc;
-    color: #475569;
-    text-align: center;
-    padding: 18px;
-    display: none;
-  }
-
-  .req-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .req-card {
-    border: 1px solid #e6eaf0;
-    border-radius: 14px;
-    padding: 12px 14px;
-    background: #ffffff;
-    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
-    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-  }
-
-  .req-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
-    border-color: #d6deea;
-  }
-
-  .req-summary {
-    display: grid;
-    grid-template-columns: minmax(260px, 1.3fr) minmax(130px, .55fr) minmax(190px, .7fr) auto;
-    gap: 12px;
-    align-items: center;
-  }
-
-  .summary-label {
-    display: block;
-    font-size: .75rem;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    color: #64748b;
-    margin-bottom: 3px;
-    font-weight: 600;
-  }
-
-  .summary-value {
-    margin: 0;
-    color: #0f172a;
-    font-size: .98rem;
-    font-weight: 700;
-  }
-
-  .summary-meta {
-    margin: 3px 0 0;
-    color: #64748b;
-    font-size: .82rem;
-  }
-
-  .summary-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .chip {
-    border-radius: 999px;
-    padding: .24rem .62rem;
-    font-size: .74rem;
-    font-weight: 700;
-    letter-spacing: .01em;
-    border: 1px solid transparent;
-  }
-
-  .chip-pending { background:#f59e0b; color:#fff; }
-  .chip-approved { background:#dcfce7; color:#166534; border-color:#86efac; }
-  .chip-completed { background:#ede9fe; color:#5b21b6; border-color:#c4b5fd; }
-  .chip-rejected { background:#fee2e2; color:#b91c1c; border-color:#fecaca; }
-  .chip-other { background:#e2e8f0; color:#334155; border-color:#cbd5e1; }
-
-  .review-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.52);
-    backdrop-filter: blur(3px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 12000;
-    padding: 16px;
-  }
-
-  .review-modal-panel {
-    width: min(920px, 100%);
-    max-height: 90vh;
-    overflow: auto;
-    background: #ffffff;
-    border: 1px solid #dbe3ee;
-    border-radius: 16px;
-    padding: 14px;
-    box-shadow: 0 20px 48px rgba(2, 6, 23, 0.26);
-  }
-
-  .review-modal-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-
-  .review-modal-title {
-    margin: 0;
-    font-size: 1.1rem;
-    color: #0f172a;
-  }
-
-  .review-modal-meta {
-    margin: 2px 0 0;
-    color: #64748b;
-    font-size: .83rem;
-  }
-
-  .modal-close-btn {
-    border: 1px solid #d1dae6;
-    background: #fff;
-    color: #334155;
-    width: 34px;
-    height: 34px;
-    border-radius: 999px;
-    cursor: pointer;
-    font-size: 1rem;
-  }
-
-  .req-row {
-    display: grid;
-    grid-template-columns: 150px 1fr;
-    gap: 10px;
-    align-items: start;
-    background: #f8fafc;
-    border-radius: 10px;
-    border: 1px solid #e8eef5;
-    padding: 9px 10px;
-    margin-top: 8px;
-  }
-
-  .req-label { color: #6b7280; font-size: .86rem; }
-  .req-row strong { font-size: .9rem; text-align: left; word-break: break-word; line-height: 1.45; }
-
-  .action-wrap {
-    margin-top: 12px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
-    padding-top: 8px;
-    border-top: 1px dashed #e2e8f0;
-  }
-
-  .reject-panel {
-    margin-top: 10px;
-    padding: 10px;
-    border: 1px solid #fecaca;
-    border-radius: 12px;
-    background: #fff7f7;
-  }
-
-  .reject-panel.hidden {
-    display: none;
-  }
-
-  .reject-form {
-    width: 100%;
-  }
-
-  .reject-form textarea {
-    width: 100%;
-    border: 1px solid #d7dde6;
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 8px;
-    resize: vertical;
-    min-height: 70px;
-  }
-
-  .reject-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-  }
-
-  @media (max-width: 980px) {
-    .dashboard-hero {
-      align-items: flex-start;
-      flex-direction: column;
-    }
-
-    .dashboard-tools {
-      grid-template-columns: 1fr;
-    }
-
-    .req-summary {
-      grid-template-columns: 1fr 1fr;
-      align-items: start;
-    }
-
-    .summary-actions {
-      justify-content: flex-start;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .search-wrap {
-      grid-template-columns: 1fr;
-    }
-
-    .req-summary {
-      grid-template-columns: 1fr;
-      gap: 8px;
-    }
-
-    .req-row {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/counselor.css">
 
 <div class="dashboard-container">
   <?php require '../app/views/partials/counselor_sidebar.php'; ?>
@@ -347,13 +56,13 @@ $getStatusMeta = static function ($status) {
     <section class="dashboard-section">
       <div class="dashboard-hero">
         <div>
-          <h2 class="card-title" style="margin-bottom:4px;">Aid Request Dashboard</h2>
+          <h2 class="card-title" class="card-title-tight">Aid Request Dashboard</h2>
           <p class="dashboard-kicker">Review, filter, and process requests from one place.</p>
         </div>
       </div>
 
       <?php if (!empty($flashMessage)): ?>
-        <div class="alert alert-info" style="margin: 1rem 0;">
+        <div class="alert alert-info" class="alert-block">
           <?= esc($flashMessage) ?>
         </div>
       <?php endif; ?>
@@ -371,7 +80,7 @@ $getStatusMeta = static function ($status) {
       <p class="search-meta" id="searchMetaText">Search by request ID or student name.</p>
 
       <?php if (empty($allRequests)): ?>
-        <div class="request-card" style="margin-top:1rem;">
+        <div class="request-card" class="req-card-mt">
           <div class="request-details">
             <p class="detail-value">No aid requests available right now.</p>
           </div>
@@ -402,7 +111,7 @@ $getStatusMeta = static function ($status) {
 
                 <div>
                   <span class="summary-label">Request</span>
-                  <p class="summary-value" style="font-size:.9rem;">#<?= (int)$request->request_id ?></p>
+                  <p class="summary-value" class="summary-value-sm">#<?= (int)$request->request_id ?></p>
                   <p class="summary-meta"><?= esc($request->created_at ?? 'N/A') ?></p>
                 </div>
 
@@ -478,7 +187,7 @@ $getStatusMeta = static function ($status) {
 
                 <?php if ($statusMeta['group'] === 'pending'): ?>
                   <div class="action-wrap">
-                    <form method="POST" style="display:inline-block;">
+                    <form method="POST" class="toolbar-inline">
                       <input type="hidden" name="action" value="approve">
                       <input type="hidden" name="request_id" value="<?= (int)$request->request_id ?>">
                       <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check"></i> <span>Approve</span></button>
