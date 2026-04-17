@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../otp/config.php';
 
 $identifier = isset($_POST['identifier']) ? trim($_POST['identifier']) : '';
 $action = isset($_POST['action']) ? trim($_POST['action']) : '';
