@@ -1,7 +1,5 @@
 <?php
 session_start();
-
-// Clear previous reset session state
 unset($_SESSION['reset_user_id'], $_SESSION['reset_email'], $_SESSION['otp_verified']);
 ?>
 <!DOCTYPE html>
@@ -13,7 +11,7 @@ unset($_SESSION['reset_user_id'], $_SESSION['reset_email'], $_SESSION['otp_verif
 <body>
     <h2>Forgot Password</h2>
     <form action="send_otp.php" method="post">
-        <label for="identifier">Student ID / Alumni ID:</label><br>
+        <label for="identifier">User ID:</label><br>
         <input type="text" id="identifier" name="identifier" required><br><br>
         <button type="submit">Send OTP</button>
     </form>
