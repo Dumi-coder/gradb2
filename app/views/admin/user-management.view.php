@@ -73,28 +73,28 @@
                 </div>
                 <?php endforeach; ?>
                 <?php else: ?>
-                <div class="empty-state" id="no-suspended-users" style="text-align: center; padding: 2.25rem; opacity: 0.8;">
-                    <i class="fas fa-user-check" style="font-size: 42px; color: #10b981; margin-bottom: 0.75rem;"></i>
-                    <h4 style="margin: 0 0 0.4rem;">No Suspended Users</h4>
-                    <p style="margin: 0; color: #6b7280;">The suspended users list is empty for your faculty.</p>
+                <div class="empty-state fae-69" id="no-suspended-users">
+                    <i class="fas fa-user-check fae-70"></i>
+                    <h4 class="fae-71">No Suspended Users</h4>
+                    <p class="fae-72">The suspended users list is empty for your faculty.</p>
                 </div>
                 <?php endif; ?>
 
-                <div class="empty-state" id="no-search-results" style="display:none; text-align: center; padding: 2rem; opacity: 0.8;">
-                    <i class="fas fa-search" style="font-size: 36px; color: #6b7280; margin-bottom: 0.75rem;"></i>
-                    <h4 style="margin: 0 0 0.4rem;">No Matching Users</h4>
-                    <p style="margin: 0; color: #6b7280;">Try a different name, email, or ID.</p>
+                <div class="empty-state fae-73" id="no-search-results">
+                    <i class="fas fa-search fae-74"></i>
+                    <h4 class="fae-71">No Matching Users</h4>
+                    <p class="fae-72">Try a different name, email, or ID.</p>
                 </div>
             </div>
 
-            <div id="reactivateConfirmModal" class="modal" style="display:none;">
-                <div class="modal-content" style="max-width:460px; padding: 25px;">
-                    <div class="modal-header" style="border-bottom:none; padding-bottom:0;">
+            <div id="reactivateConfirmModal" class="modal fae-27">
+                <div class="modal-content fae-75">
+                    <div class="modal-header fae-76">
                         <h2 class="modal-title">Reactivate User</h2>
                         <button class="modal-close" onclick="closeReactivateModal()"><i class="fas fa-times"></i></button>
                     </div>
-                    <div class="modal-body" style="padding-top: 0.5rem;">
-                        <p id="reactivateConfirmText" style="margin:0; color:#4b5563;"></p>
+                    <div class="modal-body fae-67">
+                        <p id="reactivateConfirmText" class="fae-77"></p>
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn btn-outline" onclick="closeReactivateModal()">Cancel</button>
@@ -104,7 +104,7 @@
             </div>
         </section>
 
-        <section class="dashboard-section" style="margin-top: 1.5rem;">
+        <section class="dashboard-section fae-78">
             <div class="section-header">
                 <h2 class="section-title">Users You Can Suspend</h2>
             </div>
@@ -154,28 +154,28 @@
                 </div>
                 <?php endforeach; ?>
                 <?php else: ?>
-                <div class="empty-state" id="no-available-users" style="text-align: center; padding: 2.25rem; opacity: 0.8;">
-                    <i class="fas fa-check-circle" style="font-size: 42px; color: #10b981; margin-bottom: 0.75rem;"></i>
-                    <h4 style="margin: 0 0 0.4rem;">No Users To Suspend</h4>
-                    <p style="margin: 0; color: #6b7280;">All eligible users in your faculty are currently suspended or unavailable.</p>
+                <div class="empty-state fae-69" id="no-available-users">
+                    <i class="fas fa-check-circle fae-70"></i>
+                    <h4 class="fae-71">No Users To Suspend</h4>
+                    <p class="fae-72">All eligible users in your faculty are currently suspended or unavailable.</p>
                 </div>
                 <?php endif; ?>
 
-                <div class="empty-state" id="no-active-search-results" style="display:none; text-align: center; padding: 2rem; opacity: 0.8;">
-                    <i class="fas fa-search" style="font-size: 36px; color: #6b7280; margin-bottom: 0.75rem;"></i>
-                    <h4 style="margin: 0 0 0.4rem;">No Matching Users</h4>
-                    <p style="margin: 0; color: #6b7280;">Try a different name, email, or ID.</p>
+                <div class="empty-state fae-73" id="no-active-search-results">
+                    <i class="fas fa-search fae-74"></i>
+                    <h4 class="fae-71">No Matching Users</h4>
+                    <p class="fae-72">Try a different name, email, or ID.</p>
                 </div>
             </div>
 
-            <div id="suspendConfirmModal" class="modal" style="display:none;">
-                <div class="modal-content" style="max-width:460px; padding: 25px;">
-                    <div class="modal-header" style="border-bottom:none; padding-bottom:0;">
+            <div id="suspendConfirmModal" class="modal fae-27">
+                <div class="modal-content fae-75">
+                    <div class="modal-header fae-76">
                         <h2 class="modal-title">Suspend User</h2>
                         <button class="modal-close" onclick="closeSuspendModal()"><i class="fas fa-times"></i></button>
                     </div>
-                    <div class="modal-body" style="padding-top: 0.5rem;">
-                        <p id="suspendConfirmText" style="margin:0; color:#4b5563;"></p>
+                    <div class="modal-body fae-67">
+                        <p id="suspendConfirmText" class="fae-77"></p>
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn btn-outline" onclick="closeSuspendModal()">Cancel</button>
@@ -187,318 +187,7 @@
     </main>
 </div>
 
-<style>
-.user-filters {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    align-items: center;
-    flex-wrap: wrap;
-}
 
-.search-box {
-    position: relative;
-    flex: 1;
-    min-width: 300px;
-}
-
-.search-input {
-    width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.5rem;
-    border: 2px solid #E5E7EB;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-.search-input:focus {
-    outline: none;
-    border-color: #0E2072;
-    box-shadow: 0 0 0 3px rgba(14, 32, 114, 0.1);
-}
-
-.search-icon {
-    position: absolute;
-    left: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6B7280;
-}
-
-.filter-options {
-    display: flex;
-    gap: 0.75rem;
-}
-
-.filter-select {
-    padding: 0.75rem 1rem;
-    border: 2px solid #E5E7EB;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    background-color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.filter-select:focus {
-    outline: none;
-    border-color: #0E2072;
-}
-
-.users-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.user-card {
-    background: white;
-    border: 2px solid #E5E7EB;
-    border-radius: 12px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.user-card:hover {
-    border-color: #0E2072;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.user-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-}
-
-.user-name {
-    margin: 0 0 0.25rem 0;
-    color: #1F2937;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.user-email {
-    margin: 0 0 0.25rem 0;
-    color: #6B7280;
-    font-size: 0.9rem;
-}
-
-.user-role {
-    margin: 0;
-    color: #0E2072;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.user-meta {
-    text-align: right;
-}
-
-.status-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-}
-
-.status-active {
-    background-color: #D1FAE5;
-    color: #065F46;
-}
-
-.status-suspended {
-    background-color: #FEE2E2;
-    color: #DC2626;
-}
-
-.violations-badge {
-    display: block;
-    background-color: #FEF3C7;
-    color: #D97706;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.faculty-badge {
-    display: inline-block;
-    background-color: #e0e7ff;
-    color: #3730a3;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.user-details {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-}
-
-.detail-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #4B5563;
-    font-size: 0.9rem;
-}
-
-.detail-item i {
-    color: #0E2072;
-    width: 16px;
-}
-
-.user-actions {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-}
-
-/* Button styles are now in buttons.css - removed to prevent override */
-
-.btn-success {
-    background-color: #10B981;
-    color: white;
-}
-
-.btn-success:hover {
-    background-color: #059669;
-}
-
-.btn-warning {
-    background-color: #F59E0B;
-    color: white;
-}
-
-.btn-warning:hover {
-    background-color: #D97706;
-}
-
-.btn-outline {
-    background-color: white;
-    color: #000000;
-    border: 1px solid #000000;
-}
-
-.btn-outline:hover {
-    background-color: #000000;
-    color: white;
-}
-
-.section-stats {
-    display: flex;
-    gap: 2rem;
-}
-
-.stat-item {
-    text-align: center;
-}
-
-.stat-number {
-    display: block;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #0E2072;
-}
-
-.stat-label {
-    font-size: 0.875rem;
-    color: #6B7280;
-    font-weight: 500;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-}
-
-.modal.show {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-}
-
-.modal-content {
-    background-color: white;
-    border-radius: 12px;
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid #E5E7EB;
-    background-color: #F9FAFB;
-    border-radius: 12px 12px 0 0;
-}
-
-.modal-title {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #1F2937;
-}
-
-.modal-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: #6B7280;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 8px;
-}
-
-.modal-close:hover {
-    background-color: #E5E7EB;
-    color: #374151;
-}
-
-.form-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-    margin-top: 1rem;
-    padding: 1rem 1.5rem 0;
-    border-top: 1px solid #E5E7EB;
-}
-
-.action-message {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 1200;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-}
-
-.action-message.error {
-    background: #fee2e2;
-    color: #b91c1c;
-    border: 1px solid #fecaca;
-}
-</style>
 
 <script>
 let selectedReactivateUser = null;

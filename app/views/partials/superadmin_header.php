@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/sidebar.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/dashboard-header.css">
     <link rel="stylesheet" href="<?=ROOT?>/assets/css/admin-dashboard.css">
+    <link rel="stylesheet" href="<?=ROOT?>/assets/css/superadmin-extracted.css">
     
     <!-- JavaScript Files -->
     <script src="<?=ROOT?>/assets/js/sidebar-toggle.js"></script>

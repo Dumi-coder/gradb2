@@ -14,7 +14,7 @@ require '../app/views/partials/superadmin_header.php';
       <main class="main-content">
         <!-- Header Section -->
         <section class="dashboard-section">
-          <div class="section-header" style="margin-bottom: 20px;">
+          <div class="section-header sae-1">
             <h2 class="card-title">
               <?php 
                 if (!empty($category)) {
@@ -27,7 +27,7 @@ require '../app/views/partials/superadmin_header.php';
           </div>
 
           <!-- Category Navigation -->
-          <div class="categories-nav" style="margin-bottom: 25px; display: flex; gap: 10px; flex-wrap: wrap;">
+          <div class="categories-nav sae-2">
             <a href="<?=ROOT?>/superadmin/resourcemoderation/browse<?= !empty($search) ? '?search=' . urlencode($search) : '' ?>" 
                class="btn <?= empty($category) ? 'btn-primary' : 'btn-outline' ?> btn-sm">
               <i class="fas fa-th"></i>
@@ -56,21 +56,20 @@ require '../app/views/partials/superadmin_header.php';
           </div>
 
           <!-- Search Bar -->
-          <div class="search-bar-container" style="margin-bottom: 30px;">
-            <form method="GET" action="<?=ROOT?>/superadmin/resourcemoderation/browse" style="display: flex; gap: 10px; max-width: 100%;">
+          <div class="search-bar-container sae-3">
+            <form method="GET" action="<?=ROOT?>/superadmin/resourcemoderation/browse" class="sae-search-form">
               <?php if (!empty($category)): ?>
                 <input type="hidden" name="category" value="<?= htmlspecialchars($category) ?>">
               <?php endif; ?>
-              <div style="flex: 1; position: relative; max-width: 600px;">
+              <div class="sae-4">
                 <input 
                   type="text" 
                   name="search" 
-                  class="input" 
+                  class="input sae-search-input" 
                   placeholder="Search resources by title or description..." 
                   value="<?= htmlspecialchars($search ?? '') ?>"
-                  style="width: 100%; padding-left: 40px;"
                 >
-                <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+                <i class="fas fa-search sae-5"></i>
               </div>
               <button type="submit" class="btn btn-primary">
                 <i class="fas fa-search"></i>
@@ -86,8 +85,8 @@ require '../app/views/partials/superadmin_header.php';
 
         <!-- Resources List -->
         <section class="dashboard-section">
-          <div class="section-header" style="margin-bottom: 20px;">
-            <h3 class="card-title" style="font-size: 1.1rem;">
+          <div class="section-header sae-1">
+            <h3 class="card-title sae-6">
               <?= count($resources ?? []) ?> Resource<?= count($resources ?? []) !== 1 ? 's' : '' ?> Found
             </h3>
           </div>
@@ -151,7 +150,7 @@ require '../app/views/partials/superadmin_header.php';
                       <i class="fas <?= $browseActionIcon ?>"></i>
                       <span><?= $browseActionLabel ?></span>
                     </a>
-                    <button class="btn btn-outline btn-sm" onclick="openReportModal(<?= $resource->resource_id ?? 0 ?>, '<?= htmlspecialchars(addslashes($resource->title ?? ''), ENT_QUOTES) ?>')" style="color: #dc2626; border-color: #dc2626;" onmouseover="this.style.background='#dc2626'; this.style.color='white';" onmouseout="this.style.background='transparent'; this.style.color='#dc2626';">
+                    <button class="btn btn-outline btn-sm sae-report-btn" onclick="openReportModal(<?= $resource->resource_id ?? 0 ?>, '<?= htmlspecialchars(addslashes($resource->title ?? ''), ENT_QUOTES) ?>')">
                       <i class="fas fa-flag"></i>
                       <span>Report</span>
                     </button>
@@ -159,9 +158,9 @@ require '../app/views/partials/superadmin_header.php';
                 </div>
               <?php endforeach; ?>
             <?php else: ?>
-              <div class="resource-item" style="opacity:.7; text-align: center;">
-                <div class="resource-content" style="width: 100%;">
-                  <i class="fas fa-folder-open" style="font-size: 3rem; color: #d1d5db; margin-bottom: 15px;"></i>
+              <div class="resource-item sae-7">
+                <div class="resource-content sae-8">
+                  <i class="fas fa-folder-open sae-9"></i>
                   <h3 class="resource-title">No resources found</h3>
                   <p class="resource-description">
                     <?php if (!empty($search)): ?>
@@ -179,11 +178,11 @@ require '../app/views/partials/superadmin_header.php';
     </div>
 
     <!-- Report Modal -->
-    <div id="reportModal" class="modal" style="display: none;">
-      <div class="modal-content" style="padding: 25px;">
+    <div id="reportModal" class="modal sae-10">
+      <div class="modal-content sae-11">
         <div class="modal-header">
           <h2 class="modal-title">
-            <i class="fas fa-flag" style="color: #dc2626;"></i>
+            <i class="fas fa-flag sae-12"></i>
             Report Resource
           </h2>
           <button class="modal-close" onclick="closeReportModal()">
@@ -196,7 +195,7 @@ require '../app/views/partials/superadmin_header.php';
           
           <div class="form-group">
             <label>Resource</label>
-            <p id="reportResourceTitle" style="color: #6b7280; margin-top: 5px;"></p>
+            <p id="reportResourceTitle" class="sae-13"></p>
           </div>
 
           <div class="form-group">
@@ -208,7 +207,7 @@ require '../app/views/partials/superadmin_header.php';
             <button type="button" class="btn btn-outline" onclick="closeReportModal()">
               <span>Cancel</span>
             </button>
-            <button type="submit" class="btn" style="background: #dc2626; color: white;">
+            <button type="submit" class="btn sae-14">
               <i class="fas fa-flag"></i>
               <span>Submit Report</span>
             </button>
@@ -218,18 +217,18 @@ require '../app/views/partials/superadmin_header.php';
     </div>
 
     <!-- Success/Error Modal -->
-    <div id="messageModal" class="modal" style="display: none;">
-      <div class="modal-content" style="max-width: 400px; padding: 25px;">
-        <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
+    <div id="messageModal" class="modal sae-10">
+      <div class="modal-content sae-15">
+        <div class="modal-header sae-16">
           <button class="modal-close" onclick="closeMessageModal()">
             <i class="fas fa-times"></i>
           </button>
         </div>
-        <div style="text-align: center; padding: 20px;">
-          <div id="messageIcon" style="font-size: 48px; margin-bottom: 20px;"></div>
-          <h3 id="messageTitle" style="margin-bottom: 10px; font-size: 20px;"></h3>
-          <p id="messageText" style="color: #6b7280; margin-bottom: 25px;"></p>
-          <button class="btn btn-primary" onclick="closeMessageModal()" style="min-width: 120px;">
+        <div class="sae-17">
+          <div id="messageIcon" class="sae-18"></div>
+          <h3 id="messageTitle" class="sae-19"></h3>
+          <p id="messageText" class="sae-20"></p>
+          <button class="btn btn-primary sae-21" onclick="closeMessageModal()">
             <span>OK</span>
           </button>
         </div>
@@ -260,9 +259,9 @@ require '../app/views/partials/superadmin_header.php';
           const textEl = document.getElementById('messageText');
           
           if (type === 'success') {
-              icon.innerHTML = '<i class="fas fa-check-circle" style="color: #10b981;"></i>';
+              icon.innerHTML = '<i class="fas fa-check-circle sae-22"></i>';
           } else {
-              icon.innerHTML = '<i class="fas fa-times-circle" style="color: #ef4444;"></i>';
+              icon.innerHTML = '<i class="fas fa-times-circle sae-23"></i>';
           }
           
           titleEl.textContent = title;
