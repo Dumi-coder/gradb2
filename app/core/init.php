@@ -28,6 +28,7 @@ require 'Config.php';        // Load configuration settings
 require 'functions.php';     // Load utility functions
 require 'Database.php';      // Load the Database trait for database operations
 require 'Model.php';         // Load the Model trait for database interaction
+require 'DashboardMetrics.php'; // Shared dashboard statistics helpers
 require 'Controller.php';    // Load the Controller class for handling views and requests
 require 'App.php';          // Load the App class for routing and controller management
 

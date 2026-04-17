@@ -130,7 +130,7 @@
             <button class="moderation-confirm-close" type="button" id="moderationConfirmClose"><i class="fas fa-times"></i></button>
         </div>
         <div class="moderation-confirm-body">
-            <p id="moderationConfirmText" style="margin:0 0 14px 0;">Are you sure?</p>
+            <p id="moderationConfirmText" class="moderation-confirm-text">Are you sure?</p>
             <div class="moderation-confirm-actions">
                 <button type="button" class="btn btn-outline" id="moderationConfirmCancel">Cancel</button>
                 <button type="button" class="btn btn-danger" id="moderationConfirmOk">Yes, Continue</button>

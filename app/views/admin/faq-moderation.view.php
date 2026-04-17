@@ -58,6 +58,9 @@
             
             <!-- FAQs List -->
             <div class="faqs-container">
+                <div id="faq-empty-state" class="faq-empty-state" style="<?= empty($faqData['faq_items']) ? '' : 'display: none;' ?>">
+                    There is nothing to show.
+                </div>
                 <?php foreach ($faqData['faq_items'] as $faq): ?>
                 <div class="faq-card" 
                      data-category="<?= esc($faq['category']) ?>" 
@@ -437,6 +440,16 @@
     gap: 1rem;
 }
 
+.faq-empty-state {
+    background: #F9FAFB;
+    border: 2px dashed #D1D5DB;
+    border-radius: 12px;
+    padding: 1.25rem;
+    color: #6B7280;
+    text-align: center;
+    font-weight: 500;
+}
+
 .faq-card {
     background: white;
     border: 2px solid #E5E7EB;
@@ -754,11 +767,6 @@
     padding-top: 1.5rem;
     border-top: 1px solid #E5E7EB;
 }
-
-. {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-}
 </style>
 
 <script>
@@ -855,6 +863,44 @@ function sendAjaxRequest(action, faqId, formData = null) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    function updateFaqEmptyState() {
+        const emptyState = document.getElementById('faq-empty-state');
+        const faqCards = document.querySelectorAll('.faq-card');
+        let visibleCount = 0;
+
+        faqCards.forEach(card => {
+            if (card.style.display !== 'none') {
+                visibleCount++;
+            }
+        });
+
+        if (emptyState) {
+            emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+    }
+
+    function applyFaqFilters() {
+        const searchTerm = document.getElementById('faq-search').value.toLowerCase();
+        const selectedCategory = document.getElementById('category-filter').value;
+        const selectedStatus = document.getElementById('status-filter').value;
+        const faqCards = document.querySelectorAll('.faq-card');
+
+        faqCards.forEach(card => {
+            const question = card.querySelector('.faq-question').textContent.toLowerCase();
+            const answer = card.querySelector('.faq-content p').textContent.toLowerCase();
+            const cardCategory = card.getAttribute('data-category');
+            const cardStatus = card.getAttribute('data-status');
+
+            const matchesSearch = searchTerm === '' || question.includes(searchTerm) || answer.includes(searchTerm);
+            const matchesCategory = selectedCategory === '' || cardCategory === selectedCategory;
+            const matchesStatus = selectedStatus === '' || cardStatus === selectedStatus;
+
+            card.style.display = (matchesSearch && matchesCategory && matchesStatus) ? 'block' : 'none';
+        });
+
+        updateFaqEmptyState();
+    }
+
     // Handle publish button clicks
     document.querySelectorAll('.publish-btn').forEach(btn => {
         btn.addEventListener('click', async function() {
@@ -925,6 +971,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     .then(async () => {
                         await showAlert('FAQ deleted successfully!', 'success');
                         faqCard.remove();
+                        applyFaqFilters();
                     })
                     .catch(async (error) => {
                         await showAlert('Error: ' + error.message, 'error');
@@ -935,48 +982,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle search functionality
     document.getElementById('faq-search').addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        const faqCards = document.querySelectorAll('.faq-card');
-        
-        faqCards.forEach(card => {
-            const question = card.querySelector('.faq-question').textContent.toLowerCase();
-            const answer = card.querySelector('.faq-content p').textContent.toLowerCase();
-            
-            if (question.includes(searchTerm) || answer.includes(searchTerm)) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-        });
+        applyFaqFilters();
     });
 
     // Handle category filter
     document.getElementById('category-filter').addEventListener('change', function() {
-        const selectedCategory = this.value;
-        const faqCards = document.querySelectorAll('.faq-card');
-        
-        faqCards.forEach(card => {
-            if (selectedCategory === '' || card.getAttribute('data-category') === selectedCategory) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-        });
+        applyFaqFilters();
     });
 
     // Handle status filter
     document.getElementById('status-filter').addEventListener('change', function() {
-        const selectedStatus = this.value;
-        const faqCards = document.querySelectorAll('.faq-card');
-        
-        faqCards.forEach(card => {
-            if (selectedStatus === '' || card.getAttribute('data-status') === selectedStatus) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-        });
+        applyFaqFilters();
     });
+
+    applyFaqFilters();
 });
 
 // Modal Functions

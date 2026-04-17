@@ -1181,8 +1181,14 @@
 }
 
 .forum-empty-state {
+  width: 100%;
+  min-height: clamp(280px, 38vh, 420px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 40px;
+  padding: 48px 24px;
   color: #666;
 }
 

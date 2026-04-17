@@ -31,7 +31,7 @@ $profileStatus = (!isset($profile->is_deactivated) || (int)$profile->is_deactiva
                                      alt="Profile Picture" 
                                      id="profileImage"
                                      onerror="this.style.display='none'; document.getElementById('avatarInitials').style.display='inline-block';">
-                                <span id="avatarInitials" class="avatar-initials" style="display:none;"><?= strtoupper(substr($profileName, 0, 2)) ?></span>
+                                <span id="avatarInitials" class="avatar-initials avatar-initials-hidden"><?= strtoupper(substr($profileName, 0, 2)) ?></span>
                             <?php else: ?>
                                 <span id="avatarInitials" class="avatar-initials"><?= strtoupper(substr($profileName, 0, 2)) ?></span>
                             <?php endif; ?>
@@ -66,7 +66,7 @@ $profileStatus = (!isset($profile->is_deactivated) || (int)$profile->is_deactiva
                             <i class="fas fa-graduation-cap"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-number"><?= $stats['registered_students'] ?? 156 ?></div>
+                            <div class="stat-number"><?= $stats['registered_students'] ?? 0 ?></div>
                             <div class="stat-label">No of Registered Students</div>
                         </div>
                     </div>
@@ -76,7 +76,7 @@ $profileStatus = (!isset($profile->is_deactivated) || (int)$profile->is_deactiva
                             <i class="fas fa-graduation-cap"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-number"><?= $stats['students_online'] ?? 23 ?></div>
+                            <div class="stat-number"><?= $stats['students_online'] ?? 0 ?></div>
                             <div class="stat-label">No of Students Online</div>
                         </div>
                     </div>
@@ -86,7 +86,7 @@ $profileStatus = (!isset($profile->is_deactivated) || (int)$profile->is_deactiva
                             <i class="fas fa-hand-holding-usd"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-number"><?= $stats['pending_aid_requests'] ?? 8 ?></div>
+                            <div class="stat-number"><?= $stats['pending_aid_requests'] ?? 0 ?></div>
                             <div class="stat-label">Pending Aid Requests</div>
                         </div>
                     </div>
@@ -96,7 +96,7 @@ $profileStatus = (!isset($profile->is_deactivated) || (int)$profile->is_deactiva
                             <i class="fas fa-calendar-check"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-number"><?= $stats['events_waiting_approval'] ?? 5 ?></div>
+                            <div class="stat-number"><?= $stats['events_waiting_approval'] ?? 0 ?></div>
                             <div class="stat-label">Events Waiting Approval</div>
                         </div>
                     </div>
@@ -106,7 +106,7 @@ $profileStatus = (!isset($profile->is_deactivated) || (int)$profile->is_deactiva
                             <i class="fas fa-key"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-number"><?= $stats['password_verification_requests'] ?? 7 ?></div>
+                            <div class="stat-number"><?= $stats['password_verification_requests'] ?? 0 ?></div>
                             <div class="stat-label">No of Password Verification Requests</div>
         </div>
     </div>
@@ -119,7 +119,7 @@ $profileStatus = (!isset($profile->is_deactivated) || (int)$profile->is_deactiva
                             <i class="fas fa-user"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-number"><?= $stats['registered_alumni'] ?? 89 ?></div>
+                            <div class="stat-number"><?= $stats['registered_alumni'] ?? 0 ?></div>
                             <div class="stat-label">No of Registered Alumni</div>
                         </div>
                     </div>
@@ -129,7 +129,7 @@ $profileStatus = (!isset($profile->is_deactivated) || (int)$profile->is_deactiva
                             <i class="fas fa-user"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-number"><?= $stats['alumni_online'] ?? 12 ?></div>
+                            <div class="stat-number"><?= $stats['alumni_online'] ?? 0 ?></div>
                             <div class="stat-label">No of Alumni Online</div>
                         </div>
                     </div>
@@ -139,7 +139,7 @@ $profileStatus = (!isset($profile->is_deactivated) || (int)$profile->is_deactiva
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-number"><?= $stats['pending_mentorship_requests'] ?? 15 ?></div>
+                            <div class="stat-number"><?= $stats['pending_mentorship_requests'] ?? 0 ?></div>
                             <div class="stat-label">Pending Mentorship Requests</div>
                         </div>
                     </div>
@@ -149,7 +149,7 @@ $profileStatus = (!isset($profile->is_deactivated) || (int)$profile->is_deactiva
                             <i class="fas fa-exclamation-triangle"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-number"><?= $stats['pending_complaints'] ?? 3 ?></div>
+                            <div class="stat-number"><?= $stats['pending_complaints'] ?? 0 ?></div>
                             <div class="stat-label">No of Pending User Complaints</div>
                         </div>
                     </div>
@@ -159,7 +159,7 @@ $profileStatus = (!isset($profile->is_deactivated) || (int)$profile->is_deactiva
                             <i class="fas fa-calendar"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-number"><?= $stats['upcoming_events'] ?? 12 ?></div>
+                            <div class="stat-number"><?= $stats['upcoming_events'] ?? 0 ?></div>
                             <div class="stat-label">Upcoming Events</div>
                         </div>
                     </div>

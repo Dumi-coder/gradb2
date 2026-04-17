@@ -214,6 +214,10 @@
   gap: 10px;
 }
 
+.moderation-confirm-text {
+  margin: 0 0 14px 0;
+}
+
 .fundraiser-moderation-page .subsection-title {
   font-size: 1.15rem;
   font-weight: 700;

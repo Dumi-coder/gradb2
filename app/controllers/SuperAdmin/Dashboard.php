@@ -2,6 +2,8 @@
 
 class Dashboard extends Controller
 {
+    use DashboardMetrics;
+
     public function index()
     {
         // Start session if not started
@@ -14,19 +16,7 @@ class Dashboard extends Controller
             redirect('superadmin');
         }
 
-        // TODO: Fetch real statistics from database
-        $stats = [
-            'registered_students' => 156,
-            'students_online' => 23,
-            'pending_aid_requests' => 8,
-            'events_waiting_approval' => 5,
-            'password_verification_requests' => 7,
-            'registered_alumni' => 89,
-            'alumni_online' => 12,
-            'pending_mentorship_requests' => 15,
-            'pending_complaints' => 3,
-            'upcoming_events' => 12
-        ];
+        $stats = $this->getDashboardStats();
 
         $data = [
             'title' => 'Super Admin Dashboard - GradBridge',

@@ -182,10 +182,10 @@ require '../app/views/partials/admin_header.php';
             $displayTopics = isset($faculty_posts) && is_array($faculty_posts) ? array_slice($faculty_posts, 0, 5) : [];
             
             if (empty($displayTopics)): ?>
-              <div style="text-align: center; padding: 40px; color: #666;">
-                <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
-                <p style="font-size: 16px; margin: 0;">No forum topics available for your faculty yet.</p>
-                <p style="font-size: 14px; margin-top: 8px; opacity: 0.8;">Be the first to start a discussion!</p>
+              <div class="forum-empty-state">
+                <i class="fas fa-comments forum-empty-state-icon"></i>
+                <p class="forum-empty-state-title">No forum topics available for your faculty yet.</p>
+                <p class="forum-empty-state-subtitle">Be the first to start a discussion!</p>
               </div>
             <?php else:
             foreach ($displayTopics as $topic): 
