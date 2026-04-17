@@ -2,6 +2,8 @@
 $page_title = "Edit Profile";
 $page_subtitle = "Update your information";
 require '../app/views/partials/student_header.php'; 
+
+$hasPasswordErrors = isset($errors['password_current']) || isset($errors['password_new']) || isset($errors['password_confirm']);
 ?>
 
 <!-- Unified Profile Styles -->
@@ -14,7 +16,7 @@ require '../app/views/partials/student_header.php';
             <section class="edit-form-section">
                 <h2 class="section-title">Edit Profile Information</h2>
                 
-                <form method="POST" class="profile-edit-form" enctype="multipart/form-data">
+                <form method="POST" class="profile-edit-form" enctype="multipart/form-data" data-password-modal="true">
                     
                     <?php if (!empty($errors)): ?>
                         <div class="alert <?= isset($errors['success']) ? 'alert-success' : 'alert-danger' ?>">
@@ -167,12 +169,19 @@ require '../app/views/partials/student_header.php';
                     </div>
                     
                     <input type="hidden" name="form_submitted" value="1">
+                    <input type="hidden" name="change_password" value="0">
                     
                     <div class="form-actions" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
-                        <button type="button" onclick="confirmAccountDelete()" class="btn btn-danger">
-                            <i class="fas fa-user-times"></i>
-                            Delete Account
-                        </button>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                            <button type="button" onclick="confirmAccountDelete()" class="btn btn-danger">
+                                <i class="fas fa-user-times"></i>
+                                Delete Account
+                            </button>
+                            <button type="button" class="btn btn-outline js-open-password-modal" aria-expanded="false">
+                                <i class="fas fa-key"></i>
+                                Change Password
+                            </button>
+                        </div>
                         <div style="display:flex;gap:10px;margin-left:auto;">
                             <a href="<?= ROOT ?>/student/dashboard" class="btn btn-outline">
                                 <i class="fas fa-times"></i>
@@ -182,6 +191,42 @@ require '../app/views/partials/student_header.php';
                                 <i class="fas fa-save"></i>
                                 Save Changes
                             </button>
+                        </div>
+                    </div>
+
+                    <div class="change-password-modal" aria-hidden="true" data-has-password-errors="<?= $hasPasswordErrors ? '1' : '0' ?>">
+                        <div class="change-password-modal-content" role="dialog" aria-modal="true" aria-labelledby="studentChangePasswordTitle">
+                            <div class="change-password-modal-header">
+                                <h3 class="change-password-modal-title" id="studentChangePasswordTitle">Change Password</h3>
+                                <button type="button" class="btn btn-outline js-close-password-modal">Close</button>
+                            </div>
+                            <div class="change-password-modal-body">
+                                <div class="form-group">
+                                    <label for="student_password_current" class="form-label">Current Password</label>
+                                    <input type="password" id="student_password_current" name="password_current" class="form-input" autocomplete="current-password">
+                                    <?php if (isset($errors['password_current'])): ?>
+                                        <span class="error-message"><?= esc($errors['password_current']) ?></span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="form-group" id="student-password-strength-container">
+                                    <label for="student_password_new" class="form-label">New Password</label>
+                                    <input type="password" id="student_password_new" name="password_new" class="form-input" autocomplete="new-password">
+                                    <?php if (isset($errors['password_new'])): ?>
+                                        <span class="error-message"><?= esc($errors['password_new']) ?></span>
+                                    <?php endif; ?>
+                                    <div class="js-password-strength-container" id="student-password-strength-widget"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="student_password_confirm" class="form-label">Confirm New Password</label>
+                                    <input type="password" id="student_password_confirm" name="password_confirm" class="form-input" autocomplete="new-password">
+                                    <?php if (isset($errors['password_confirm'])): ?>
+                                        <span class="error-message"><?= esc($errors['password_confirm']) ?></span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="change-password-modal-footer">
+                                    <button type="button" class="btn btn-outline js-done-password-modal">Done</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -224,6 +269,8 @@ require '../app/views/partials/student_header.php';
 
     <!-- Unified Profile JavaScript -->
     <script src="<?=ROOT?>/assets/js/profile.js"></script>
+    <script src="<?=ROOT?>/assets/js/password-validation.js"></script>
+    <script src="<?=ROOT?>/assets/js/profile-password-modal.js"></script>
     <script>
         function deleteProfilePicture() {
             // Show the custom modal

@@ -521,6 +521,28 @@ select.form-input:focus {
     color: var(--muted-foreground);
 }
 
+.profile-picture-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.profile-photo-trigger {
+    cursor: pointer;
+}
+
+.profile-file-input-hidden {
+    display: none;
+}
+
+.profile-delete-form-hidden {
+    display: none;
+}
+
+.avatar-initials-hidden {
+    display: none;
+}
+
 /* Profile picture upload button now uses standard .btn .btn-primary classes */
 
 /* ============================================
@@ -534,6 +556,63 @@ select.form-input:focus {
     margin-top: 32px;
     padding-top: 24px;
     border-top: 2px solid #E5E7EB;
+}
+
+/* ============================================
+   CHANGE PASSWORD MODAL
+   ============================================ */
+
+.change-password-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.change-password-modal.is-open {
+    display: flex;
+}
+
+.change-password-modal-content {
+    width: 100%;
+    max-width: 560px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+    max-height: 90vh;
+    overflow: auto;
+}
+
+.change-password-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.change-password-modal-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.change-password-modal-body {
+    padding: 18px 20px 20px;
+}
+
+.change-password-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 12px;
 }
 
 /* ============================================

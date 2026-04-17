@@ -77,10 +77,10 @@ require '../app/views/partials/superadmin_header.php';
             $displayTopics = isset($all_posts) && is_array($all_posts) ? $all_posts : [];
             
             if (empty($displayTopics)): ?>
-              <div style="text-align: center; padding: 40px; color: #666;">
-                <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
-                <p style="font-size: 16px; margin: 0;">No forum topics available yet.</p>
-                <p style="font-size: 14px; margin-top: 8px; opacity: 0.8;">No discussions have been started yet.</p>
+              <div class="forum-empty-state">
+                <i class="fas fa-comments forum-empty-state-icon"></i>
+                <p class="forum-empty-state-title">No forum topics available yet.</p>
+                <p class="forum-empty-state-subtitle">No discussions have been started yet.</p>
               </div>
             <?php else:
             foreach ($displayTopics as $topic): 

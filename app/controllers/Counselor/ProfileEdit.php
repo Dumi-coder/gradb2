@@ -80,14 +80,15 @@ class ProfileEdit extends Controller
 
         $passwordToUpdate = null;
         if ($passwordNew !== '' || $passwordConfirm !== '') {
+            $strengthValidation = $passwordNew !== '' ? validatePasswordStrength($passwordNew) : ['valid' => true, 'errors' => []];
             if ($passwordCurrent === '') {
                 $errors[] = 'Current password is required to change password';
             } elseif (!$this->verifyCurrentPassword($passwordCurrent, $counselor)) {
                 $errors[] = 'Current password is incorrect';
             } elseif ($passwordNew === '') {
                 $errors[] = 'New password is required';
-            } elseif (strlen($passwordNew) < 6) {
-                $errors[] = 'Password must be at least 6 characters';
+            } elseif (!$strengthValidation['valid']) {
+                $errors[] = implode(' ', $strengthValidation['errors']);
             } elseif ($passwordNew !== $passwordConfirm) {
                 $errors[] = 'Passwords do not match';
             } else {

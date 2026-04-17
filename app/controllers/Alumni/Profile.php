@@ -83,6 +83,10 @@ class Profile extends Controller
         $mentor_terms_agree = isset($_POST['mentor_terms_agree']) ? 1 : 0;
         $mentorship_availability_status = strtolower(trim($_POST['mentorship_availability_status'] ?? 'available'));
         $profile_picture = $_FILES['profile_picture'] ?? null;
+        $password_current = (string)($_POST['password_current'] ?? '');
+        $password_new = (string)($_POST['password_new'] ?? '');
+        $password_confirm = (string)($_POST['password_confirm'] ?? '');
+        $password_to_update = null;
 
         if ($mentorship_availability_status !== 'available' && $mentorship_availability_status !== 'unavailable') {
             $mentorship_availability_status = 'available';
@@ -106,6 +110,51 @@ class Profile extends Controller
         }
         if (strlen($bio) > 1000) {
             $errors['bio'] = "Bio must be less than 1000 characters";
+        }
+
+        $wants_password_change = ((string)($_POST['change_password'] ?? '0') === '1') || $password_current !== '' || $password_new !== '' || $password_confirm !== '';
+        if ($wants_password_change) {
+            if ($password_current === '') {
+                $errors['password_current'] = "Current password is required";
+            }
+
+            if ($password_new === '') {
+                $errors['password_new'] = "New password is required";
+            }
+
+            if ($password_confirm === '') {
+                $errors['password_confirm'] = "Please confirm your new password";
+            }
+
+            if ($password_new !== '' && $password_confirm !== '' && $password_new !== $password_confirm) {
+                $errors['password_confirm'] = "Passwords do not match";
+            }
+
+            if (!isset($errors['password_current'])) {
+                $user_for_password = new User();
+                $user_auth_row = $user_for_password->first(['user_id' => (int)$current_profile->user_id]);
+                $stored_password_hash = (string)($user_auth_row->password ?? '');
+
+                $is_current_password_valid = false;
+                if ($stored_password_hash !== '') {
+                    $is_current_password_valid = password_verify($password_current, $stored_password_hash) || hash_equals($stored_password_hash, $password_current);
+                }
+
+                if (!$is_current_password_valid) {
+                    $errors['password_current'] = "Current password is incorrect";
+                }
+            }
+
+            if (!isset($errors['password_new']) && $password_new !== '') {
+                $strength = validatePasswordStrength($password_new);
+                if (!$strength['valid']) {
+                    $errors['password_new'] = implode(' ', $strength['errors']);
+                }
+            }
+
+            if (!isset($errors['password_current']) && !isset($errors['password_new']) && !isset($errors['password_confirm'])) {
+                $password_to_update = password_hash($password_new, PASSWORD_BCRYPT);
+            }
         }
 
         $currentMentorFlag = (int)($current_profile->is_verified_mentor ?? 0);
@@ -139,6 +188,7 @@ class Profile extends Controller
                 $user_data = [];
                 if ($name !== $current_profile->name) $user_data['name'] = $name;
                 if ($email !== $current_profile->email) $user_data['email'] = $email;
+                if ($password_to_update !== null) $user_data['password'] = $password_to_update;
                 if (!empty($user_data) && !$user->logUpdate($current_profile->user_id, $user_data, 'user_id')) {
                     throw new Exception("Failed to update user data for user_id: {$current_profile->user_id}");
                 }

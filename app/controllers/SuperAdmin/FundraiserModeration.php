@@ -22,9 +22,9 @@ class FundraiserModeration extends Controller
         $this->requireSuperAdmin();
         $fundraiserModel = new Fundraiser();
         $stats = $fundraiserModel->getAdminStats(null);
-        $pendingFundraisers = $fundraiserModel->getPendingForFacultyAdmin(null);
+        $allFundraisers = $fundraiserModel->getAllForFacultyAdmin(null);
 
-        foreach ($pendingFundraisers as $fundraiser) {
+        foreach ($allFundraisers as $fundraiser) {
             $fundraiser->documents = $fundraiserModel->getDocuments((int)$fundraiser->fundraiser_id);
         }
 
@@ -34,11 +34,13 @@ class FundraiserModeration extends Controller
             'page_subtitle' => 'Review pending fundraiser requests and decide approvals.',
             'user' => $_SESSION,
             'fundraiserData' => [
-                'pending_fundraisers' => $pendingFundraisers,
+                'all_fundraisers' => $allFundraisers,
                 'stats' => [
                     'total_fundraisers' => (int)($stats->total_fundraisers ?? 0),
                     'pending_fundraisers' => (int)($stats->pending_fundraisers ?? 0),
                     'approved_fundraisers' => (int)($stats->approved_fundraisers ?? 0),
+                    'closed_fundraisers' => (int)($stats->closed_fundraisers ?? 0),
+                    'rejected_fundraisers' => (int)($stats->rejected_fundraisers ?? 0),
                 ],
             ],
             'flash' => $_SESSION['flash_message'] ?? null,
@@ -114,6 +116,34 @@ class FundraiserModeration extends Controller
             $_SESSION['flash_message'] = ['type' => 'success', 'text' => 'Fundraiser rejected with note'];
         } else {
             $_SESSION['flash_message'] = ['type' => 'error', 'text' => 'Unable to reject fundraiser'];
+        }
+
+        redirect('superadmin/fundraiser-moderation');
+    }
+
+    public function end($fundraiserId = null)
+    {
+        $adminUserId = $this->requireSuperAdmin();
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !$fundraiserId || !is_numeric($fundraiserId)) {
+            $_SESSION['flash_message'] = ['type' => 'error', 'text' => 'Invalid end request'];
+            redirect('superadmin/fundraiser-moderation');
+        }
+
+        $fundraiserModel = new Fundraiser();
+        $item = $fundraiserModel->getByIdWithStats((int)$fundraiserId);
+        $ok = $fundraiserModel->closeApprovedByAdmin((int)$fundraiserId, $adminUserId, null);
+
+        if ($ok && $item) {
+            $notification = new Notification();
+            $notification->createFundraiserClosedByAdminNotification(
+                (int)$item->creator_user_id,
+                $adminUserId,
+                (string)$item->title,
+                (int)$item->fundraiser_id
+            );
+            $_SESSION['flash_message'] = ['type' => 'success', 'text' => 'Fundraiser closed'];
+        } else {
+            $_SESSION['flash_message'] = ['type' => 'error', 'text' => 'Unable to close fundraiser'];
         }
 
         redirect('superadmin/fundraiser-moderation');

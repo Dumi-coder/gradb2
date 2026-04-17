@@ -1,5 +1,7 @@
 <?php require '../app/views/partials/superadmin_header.php'; ?>
 
+<?php $hasPasswordErrors = isset($errors['password_current']) || isset($errors['password_new']) || isset($errors['password_confirm']); ?>
+
 <!-- Unified Profile Styles -->
 <link rel="stylesheet" href="<?=ROOT?>/assets/css/profile.css">
 
@@ -22,7 +24,7 @@
                 <div class="alert alert-danger"><?= esc($errors['general']) ?></div>
             <?php endif; ?>
             
-            <form method="POST" enctype="multipart/form-data">
+            <form method="POST" enctype="multipart/form-data" data-password-modal="true">
                 <!-- Profile Picture Section -->
                 <div class="profile-picture-section">
                     <div class="profile-picture-preview">
@@ -32,11 +34,11 @@
                             <span id="profileInitials"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
                         <?php endif; ?>
                     </div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <label for="profile_picture" class="btn btn-primary" style="cursor: pointer;">
+                    <div class="profile-picture-actions">
+                        <label for="profile_picture" class="btn btn-primary profile-photo-trigger">
                             <i class="fas fa-camera"></i>
                             <span>Change Photo</span>
-                            <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)" style="display: none;">
+                            <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)" class="profile-file-input-hidden">
                         </label>
                         <?php if (!empty($profile->picture_path)): ?>
                             <button type="button" onclick="deleteProfilePicture()" class="btn btn-danger">
@@ -131,8 +133,14 @@
                     </div>
                 </div>
 
+                <input type="hidden" name="change_password" value="0">
+
                 <!-- Form Actions -->
                 <div class="form-actions">
+                    <button type="button" class="btn btn-outline js-open-password-modal" aria-expanded="false">
+                        <i class="fas fa-key"></i>
+                        Change Password
+                    </button>
                     <a href="<?= ROOT ?>/superadmin/profile" class="btn btn-outline">
                         <i class="fas fa-arrow-left"></i>
                         Cancel
@@ -142,18 +150,56 @@
                         Save Changes
                     </button>
                 </div>
+
+                <div class="change-password-modal" aria-hidden="true" data-has-password-errors="<?= $hasPasswordErrors ? '1' : '0' ?>">
+                    <div class="change-password-modal-content" role="dialog" aria-modal="true" aria-labelledby="superadminChangePasswordTitle">
+                        <div class="change-password-modal-header">
+                            <h3 class="change-password-modal-title" id="superadminChangePasswordTitle">Change Password</h3>
+                            <button type="button" class="btn btn-outline js-close-password-modal">Close</button>
+                        </div>
+                        <div class="change-password-modal-body">
+                            <div class="form-group">
+                                <label for="superadmin_password_current" class="form-label">Current Password</label>
+                                <input type="password" id="superadmin_password_current" name="password_current" class="form-input" autocomplete="current-password">
+                                <?php if (isset($errors['password_current'])): ?>
+                                    <div class="error-message"><?= esc($errors['password_current']) ?></div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="form-group">
+                                <label for="superadmin_password_new" class="form-label">New Password</label>
+                                <input type="password" id="superadmin_password_new" name="password_new" class="form-input" autocomplete="new-password">
+                                <?php if (isset($errors['password_new'])): ?>
+                                    <div class="error-message"><?= esc($errors['password_new']) ?></div>
+                                <?php endif; ?>
+                                <div class="js-password-strength-container" id="superadmin-password-strength-widget"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="superadmin_password_confirm" class="form-label">Confirm New Password</label>
+                                <input type="password" id="superadmin_password_confirm" name="password_confirm" class="form-input" autocomplete="new-password">
+                                <?php if (isset($errors['password_confirm'])): ?>
+                                    <div class="error-message"><?= esc($errors['password_confirm']) ?></div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="change-password-modal-footer">
+                                <button type="button" class="btn btn-outline js-done-password-modal">Done</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </form>
         </section>
     </main>
 </div>
 
 <!-- Delete Photo Form (Hidden) -->
-<form id="deletePhotoForm" action="<?= ROOT ?>/superadmin/profile?action=delete_photo" method="POST" style="display: none;">
+<form id="deletePhotoForm" action="<?= ROOT ?>/superadmin/profile?action=delete_photo" method="POST" class="profile-delete-form-hidden">
     <input type="hidden" name="delete_photo" value="1">
 </form>
 
 <!-- Unified Profile JavaScript -->
 <script src="<?=ROOT?>/assets/js/profile.js"></script>
+<script src="<?=ROOT?>/assets/js/password-validation.js"></script>
+<script src="<?=ROOT?>/assets/js/profile-password-modal.js"></script>
 <script>
 function deleteProfilePicture() {
     if (confirm('Are you sure you want to delete your profile picture?')) {

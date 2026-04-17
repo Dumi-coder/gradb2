@@ -8,7 +8,10 @@ $user = $user ?? (object)[
     'email' => 'N/A',
 ];
 $flashMessage = $flashMessage ?? null;
+$hasPasswordErrors = is_array($flashMessage) && !empty($flashMessage['text']) && stripos((string)$flashMessage['text'], 'password') !== false;
 ?>
+
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/profile.css">
 
 <style>
   .edit-wrap {
@@ -125,7 +128,7 @@ $flashMessage = $flashMessage ?? null;
           </div>
         <?php endif; ?>
 
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" data-password-modal="true">
           <div class="form-group">
             <label for="profile_photo">Profile Photo</label>
             <input
@@ -162,43 +165,13 @@ $flashMessage = $flashMessage ?? null;
             >
           </div>
 
-          <div style="border-top: 1px dashed var(--border, #e5e7eb); margin: 24px 0; padding-top: 24px;">
-            <h3 style="margin: 0 0 16px 0; font-size: 1rem; font-weight: 600;">Change Password (Optional)</h3>
-
-            <div class="form-group">
-              <label for="password_current">Current Password</label>
-              <input
-                type="password"
-                id="password_current"
-                name="password_current"
-                placeholder="Enter current password to confirm identity"
-              >
-              <small>Required only when changing password</small>
-            </div>
-
-            <div class="form-group">
-              <label for="password_new">New Password</label>
-              <input
-                type="password"
-                id="password_new"
-                name="password_new"
-                placeholder="Leave blank to keep current password"
-              >
-              <small>At least 6 characters</small>
-            </div>
-
-            <div class="form-group">
-              <label for="password_confirm">Confirm Password</label>
-              <input
-                type="password"
-                id="password_confirm"
-                name="password_confirm"
-                placeholder="Confirm new password"
-              >
-            </div>
-          </div>
+          <input type="hidden" name="change_password" value="0">
 
           <div class="form-actions">
+            <button type="button" class="btn btn-outline js-open-password-modal" aria-expanded="false">
+              <i class="fas fa-key"></i>
+              <span>Change Password</span>
+            </button>
             <button type="submit" class="btn btn-primary">
               <i class="fas fa-save"></i>
               <span>Save Changes</span>
@@ -208,12 +181,63 @@ $flashMessage = $flashMessage ?? null;
               <span>Cancel</span>
             </a>
           </div>
+
+          <div class="change-password-modal" aria-hidden="true" data-has-password-errors="<?= $hasPasswordErrors ? '1' : '0' ?>">
+            <div class="change-password-modal-content" role="dialog" aria-modal="true" aria-labelledby="counselorChangePasswordTitle">
+              <div class="change-password-modal-header">
+                <h3 class="change-password-modal-title" id="counselorChangePasswordTitle">Change Password</h3>
+                <button type="button" class="btn btn-outline js-close-password-modal">Close</button>
+              </div>
+              <div class="change-password-modal-body">
+                <div class="form-group">
+                  <label for="counselor_password_current">Current Password</label>
+                  <input
+                    type="password"
+                    id="counselor_password_current"
+                    name="password_current"
+                    placeholder="Enter current password"
+                    autocomplete="current-password"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="counselor_password_new">New Password</label>
+                  <input
+                    type="password"
+                    id="counselor_password_new"
+                    name="password_new"
+                    placeholder="Enter new password"
+                    autocomplete="new-password"
+                  >
+                  <div class="js-password-strength-container" id="counselor-password-strength-widget"></div>
+                </div>
+
+                <div class="form-group">
+                  <label for="counselor_password_confirm">Confirm New Password</label>
+                  <input
+                    type="password"
+                    id="counselor_password_confirm"
+                    name="password_confirm"
+                    placeholder="Confirm new password"
+                    autocomplete="new-password"
+                  >
+                </div>
+
+                <div class="change-password-modal-footer">
+                  <button type="button" class="btn btn-outline js-done-password-modal">Done</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </form>
       </div>
     </section>
   </main>
 </div>
 
+<script src="<?=ROOT?>/assets/js/password-validation.js"></script>
+<script src="<?=ROOT?>/assets/js/profile-password-modal.js"></script>
+<script src="<?=ROOT?>/assets/js/profile.js"></script>
 <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
 </body>
 </html>
