@@ -77,7 +77,7 @@ $getStatusMeta = static function ($status) {
         </div>
       </div>
 
-      <p class="search-meta" id="searchMetaText">Search by request ID or student name.</p>
+      <p class="search-meta" id="searchMetaText">Search by student name.</p>
 
       <?php if (empty($allRequests)): ?>
         <div class="request-card" class="req-card-mt">
@@ -93,7 +93,6 @@ $getStatusMeta = static function ($status) {
             <div
               class="req-card"
               data-request-id="<?= (int)$request->request_id ?>"
-              data-request-no="<?= (int)$request->request_id ?>"
               data-student-name="<?= esc(strtolower($studentName)) ?>"
               data-status-group="<?= esc($statusMeta['group']) ?>"
             >
@@ -110,13 +109,12 @@ $getStatusMeta = static function ($status) {
                 </div>
 
                 <div>
-                  <span class="summary-label">Request</span>
-                  <p class="summary-value" class="summary-value-sm">#<?= (int)$request->request_id ?></p>
-                  <p class="summary-meta"><?= esc($request->created_at ?? 'N/A') ?></p>
+                  <span class="summary-label">Submitted</span>
+                  <p class="summary-value summary-value-sm"><?= esc($request->created_at ?? 'N/A') ?></p>
                 </div>
 
                 <div class="summary-actions">
-                  <span class="chip <?= esc($statusMeta['class']) ?>"><?= esc($statusMeta['label']) ?></span>
+                  <span class="chip-state <?= esc($statusMeta['class']) ?>"><?= esc($statusMeta['label']) ?></span>
                   <button type="button" class="btn btn-outline btn-sm open-review-modal" data-modal-id="review-modal-<?= (int)$request->request_id ?>">
                     <i class="fas fa-eye"></i>
                     <span>Review</span>
@@ -129,7 +127,7 @@ $getStatusMeta = static function ($status) {
               <div class="review-modal-panel" role="dialog" aria-modal="true" aria-labelledby="review-title-<?= (int)$request->request_id ?>">
                 <div class="review-modal-head">
                   <div>
-                    <h3 class="review-modal-title" id="review-title-<?= (int)$request->request_id ?>">Request #<?= (int)$request->request_id ?> · <?= esc($studentName) ?></h3>
+                    <h3 class="review-modal-title" id="review-title-<?= (int)$request->request_id ?>"><?= esc($studentName) ?> · Aid Details</h3>
                     <p class="review-modal-meta">Status: <?= esc($statusMeta['label']) ?></p>
                   </div>
                   <button type="button" class="modal-close-btn" data-close-modal aria-label="Close review modal">&times;</button>
@@ -300,7 +298,7 @@ $getStatusMeta = static function ($status) {
     const clearSearchButton = document.getElementById('clearRequestSearch');
     const searchMetaText = document.getElementById('searchMetaText');
     const emptyFilterState = document.getElementById('emptyFilterState');
-    const requestCards = Array.from(document.querySelectorAll('.req-card[data-request-no]'));
+    const requestCards = Array.from(document.querySelectorAll('.req-card'));
 
     const applyFilters = function () {
       const rawTerm = searchInput ? (searchInput.value || '').trim() : '';
@@ -308,9 +306,8 @@ $getStatusMeta = static function ($status) {
       let visibleCount = 0;
 
       requestCards.forEach((card) => {
-        const requestNo = (card.getAttribute('data-request-no') || '').toLowerCase();
         const studentName = (card.getAttribute('data-student-name') || '').toLowerCase();
-        const matchesSearch = normalizedTerm === '' || requestNo.includes(normalizedTerm) || studentName.includes(normalizedTerm);
+        const matchesSearch = normalizedTerm === '' || studentName.includes(normalizedTerm);
         const isVisible = matchesSearch;
 
         card.style.display = isVisible ? '' : 'none';
@@ -319,7 +316,7 @@ $getStatusMeta = static function ($status) {
 
       if (searchMetaText) {
         searchMetaText.textContent = normalizedTerm === ''
-          ? 'Search by request ID or student name.'
+          ? 'Search by student name.'
           : ('Showing ' + visibleCount + ' request(s) for "' + rawTerm + '".');
       }
 
