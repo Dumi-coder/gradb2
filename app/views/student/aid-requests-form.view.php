@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "Aid Request Form";
 $page_subtitle = "Submit an aid request";
 require '../app/views/partials/student_header.php';
@@ -205,6 +205,5 @@ require '../app/views/partials/student_header.php';
     })();
 </script>
 
-<script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "Analytics & Reports";
 $page_subtitle = "Clean insight into aid request performance";
 require '../app/views/partials/counselor_header.php';
@@ -347,6 +347,5 @@ $approvalRateForProcessed = $processedCount > 0
   })();
 </script>
 
-<script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
 </body>
 </html>

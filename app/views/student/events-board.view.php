@@ -603,7 +603,6 @@ require '../app/views/partials/student_header.php';
       </div>
     </div> -->
 
-    <script src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/events-board.js"></script>
     <script>
       let currentRegisterEventId = null;

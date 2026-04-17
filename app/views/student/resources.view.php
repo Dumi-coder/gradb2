@@ -380,7 +380,6 @@ require '../app/views/partials/student_header.php';
     }
   });
 </script>
-<script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
 <script src="<?=ROOT?>/assets/js/student-resources.js?v=9"></script>
 </body>
 </html>

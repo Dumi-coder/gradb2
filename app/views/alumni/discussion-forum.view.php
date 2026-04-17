@@ -666,7 +666,6 @@ require '../app/views/partials/alumni_header.php';
       </div>
     </div>
 
-    <script src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/discussion-forum.js"></script>
     
     <script>

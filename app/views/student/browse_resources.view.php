@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 $page_title = "Browse Resources";
 $page_subtitle = "Discover study materials and resources";
 require '../app/views/partials/student_header.php'; 
@@ -293,6 +293,5 @@ require '../app/views/partials/student_header.php';
         }
       });
     </script>
-    <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
   </body>
 </html>

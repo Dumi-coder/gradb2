@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 $page_title = "All Forums";
 $page_subtitle = "Browse all discussion topics";
 require '../app/views/partials/alumni_header.php'; 
@@ -112,7 +112,6 @@ require '../app/views/partials/alumni_header.php';
   </main>
 </div>
 
-<script src="<?=ROOT?>/assets/js/main.js"></script>
 <script src="<?=ROOT?>/assets/js/discussion-forum.js"></script>
 
 <script>

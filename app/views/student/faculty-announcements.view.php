@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = 'Faculty Announcements';
 $page_subtitle = 'Latest updates for your faculty and university';
 require '../app/views/partials/student_header.php';
@@ -326,6 +326,5 @@ window.onclick = function(event) {
 };
 </script>
 
-<script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
 </body>
 </html>

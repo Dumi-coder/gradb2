@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 $page_title = "Completed Requests";
 $page_subtitle = "Aid requests marked as completed";
 require '../app/views/partials/counselor_header.php'; 
@@ -47,7 +47,7 @@ $buildFileUrl = static function ($path) {
                 <div>
                   <span class="summary-label">Student</span>
                   <p class="summary-value"><?= esc($request->student_name ?? 'Student') ?></p>
-                  <p class="summary-meta">ID: <?= esc($request->student_id ?? 'N/A') ?> · <?= esc($request->faculty_name ?? 'Faculty N/A') ?></p>
+                  <p class="summary-meta">ID: <?= esc($request->student_id ?? 'N/A') ?> Â· <?= esc($request->faculty_name ?? 'Faculty N/A') ?></p>
                 </div>
 
                 <div>
@@ -74,8 +74,8 @@ $buildFileUrl = static function ($path) {
               <div class="review-modal-panel" role="dialog" aria-modal="true" aria-labelledby="review-title-<?= (int)$request->request_id ?>">
                 <div class="review-modal-head">
                   <div>
-                    <h3 class="review-modal-title" id="review-title-<?= (int)$request->request_id ?>"><?= esc($request->student_name ?? 'Student') ?> · Aid Details</h3>
-                    <p class="review-modal-meta">Request #<?= (int)$request->request_id ?> · Status: Completed</p>
+                    <h3 class="review-modal-title" id="review-title-<?= (int)$request->request_id ?>"><?= esc($request->student_name ?? 'Student') ?> Â· Aid Details</h3>
+                    <p class="review-modal-meta">Request #<?= (int)$request->request_id ?> Â· Status: Completed</p>
                   </div>
                   <button type="button" class="modal-close-btn" data-close-modal aria-label="Close review modal">&times;</button>
                 </div>
@@ -187,6 +187,5 @@ $buildFileUrl = static function ($path) {
   })();
 </script>
 
-<script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
 </body>
 </html>

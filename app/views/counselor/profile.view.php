@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "My Profile";
 $page_subtitle = "Counselor account details";
 require '../app/views/partials/counselor_header.php';
@@ -95,7 +95,6 @@ $profile = $profile ?? (object)[
   </main>
 </div>
 
-<script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
 <script>
   (function () {
     const editBtn = document.getElementById('editProfileBtn');

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "Aid Requests";
 $page_subtitle = "Review and respond to student aid requests";
 require '../app/views/partials/alumni_header.php';
@@ -50,7 +50,7 @@ $isMonetaryType = static function ($type) {
                 <div>
                   <span class="summary-label">Student</span>
                   <p class="summary-value"><?= esc($request['student_name'] ?? 'Student') ?></p>
-                  <p class="summary-meta">Request #<?= esc($request['id'] ?? 'N/A') ?> · <?= esc($request['request_type'] ?? 'Aid Request') ?></p>
+                  <p class="summary-meta">Request #<?= esc($request['id'] ?? 'N/A') ?> Â· <?= esc($request['request_type'] ?? 'Aid Request') ?></p>
                 </div>
 
                 <div>
@@ -77,8 +77,8 @@ $isMonetaryType = static function ($type) {
               <div class="review-modal-panel" role="dialog" aria-modal="true" aria-labelledby="title-<?= esc($pendingModalId) ?>">
                 <div class="review-modal-head">
                   <div>
-                    <h3 class="review-modal-title" id="title-<?= esc($pendingModalId) ?>"><?= esc($request['student_name'] ?? 'Student') ?> · Aid Review</h3>
-                    <p class="review-modal-meta">Request #<?= esc($request['id'] ?? 'N/A') ?> · Status: Pending</p>
+                    <h3 class="review-modal-title" id="title-<?= esc($pendingModalId) ?>"><?= esc($request['student_name'] ?? 'Student') ?> Â· Aid Review</h3>
+                    <p class="review-modal-meta">Request #<?= esc($request['id'] ?? 'N/A') ?> Â· Status: Pending</p>
                   </div>
                   <button type="button" class="modal-close-btn" data-close-modal aria-label="Close review modal">&times;</button>
                 </div>
@@ -130,7 +130,7 @@ $isMonetaryType = static function ($type) {
                 <div>
                   <span class="summary-label">Student</span>
                   <p class="summary-value"><?= esc($request['student_name'] ?? 'Student') ?></p>
-                  <p class="summary-meta">Request #<?= esc($request['id'] ?? 'N/A') ?> · <?= esc($request['request_type'] ?? 'Aid Request') ?></p>
+                  <p class="summary-meta">Request #<?= esc($request['id'] ?? 'N/A') ?> Â· <?= esc($request['request_type'] ?? 'Aid Request') ?></p>
                 </div>
 
                 <div>
@@ -157,8 +157,8 @@ $isMonetaryType = static function ($type) {
               <div class="review-modal-panel" role="dialog" aria-modal="true" aria-labelledby="title-<?= esc($approvedModalId) ?>">
                 <div class="review-modal-head">
                   <div>
-                    <h3 class="review-modal-title" id="title-<?= esc($approvedModalId) ?>"><?= esc($request['student_name'] ?? 'Student') ?> · Aid Details</h3>
-                    <p class="review-modal-meta">Request #<?= esc($request['id'] ?? 'N/A') ?> · Status: Approved</p>
+                    <h3 class="review-modal-title" id="title-<?= esc($approvedModalId) ?>"><?= esc($request['student_name'] ?? 'Student') ?> Â· Aid Details</h3>
+                    <p class="review-modal-meta">Request #<?= esc($request['id'] ?? 'N/A') ?> Â· Status: Approved</p>
                   </div>
                   <button type="button" class="modal-close-btn" data-close-modal aria-label="Close review modal">&times;</button>
                 </div>
@@ -195,7 +195,7 @@ $isMonetaryType = static function ($type) {
                 <div>
                   <span class="summary-label">Student</span>
                   <p class="summary-value"><?= esc($request['student_name'] ?? 'Student') ?></p>
-                  <p class="summary-meta">Request #<?= esc($request['id'] ?? 'N/A') ?> · <?= esc($request['request_type'] ?? 'Aid Request') ?></p>
+                  <p class="summary-meta">Request #<?= esc($request['id'] ?? 'N/A') ?> Â· <?= esc($request['request_type'] ?? 'Aid Request') ?></p>
                 </div>
 
                 <div>
@@ -222,8 +222,8 @@ $isMonetaryType = static function ($type) {
               <div class="review-modal-panel" role="dialog" aria-modal="true" aria-labelledby="title-<?= esc($completedModalId) ?>">
                 <div class="review-modal-head">
                   <div>
-                    <h3 class="review-modal-title" id="title-<?= esc($completedModalId) ?>"><?= esc($request['student_name'] ?? 'Student') ?> · Aid Details</h3>
-                    <p class="review-modal-meta">Request #<?= esc($request['id'] ?? 'N/A') ?> · Status: Completed</p>
+                    <h3 class="review-modal-title" id="title-<?= esc($completedModalId) ?>"><?= esc($request['student_name'] ?? 'Student') ?> Â· Aid Details</h3>
+                    <p class="review-modal-meta">Request #<?= esc($request['id'] ?? 'N/A') ?> Â· Status: Completed</p>
                   </div>
                   <button type="button" class="modal-close-btn" data-close-modal aria-label="Close review modal">&times;</button>
                 </div>
@@ -393,7 +393,6 @@ $isMonetaryType = static function ($type) {
   </div>
 </div>
 
-<script src="<?=ROOT?>/assets/js/main.js"></script>
 <script>
   (function () {
     const openButtons = document.querySelectorAll('.open-review-modal');

@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 $page_title = "Events Board";
 $page_subtitle = "Discover & Join Campus Activities";
 require '../app/views/partials/alumni_header.php'; 
@@ -529,7 +529,6 @@ require '../app/views/partials/alumni_header.php';
       </div>
     </div>
 
-    <script src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/events-board.js"></script>
     <script>
     // Event CRUD Operations

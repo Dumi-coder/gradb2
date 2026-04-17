@@ -344,6 +344,5 @@ $getStatusMeta = static function ($status) {
   })();
 </script>
 
-<script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
 </body>
 </html>

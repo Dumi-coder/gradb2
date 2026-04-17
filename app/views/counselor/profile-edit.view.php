@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "Edit Profile";
 $page_subtitle = "Update your account details";
 require '../app/views/partials/counselor_header.php';
@@ -155,7 +155,6 @@ $hasPasswordErrors = is_array($flashMessage) && !empty($flashMessage['text']) &&
 <script src="<?=ROOT?>/assets/js/password-validation.js"></script>
 <script src="<?=ROOT?>/assets/js/profile-password-modal.js"></script>
 <script src="<?=ROOT?>/assets/js/profile.js"></script>
-<script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
 <script>
   function previewImage(input) {
     const file = input.files && input.files[0];

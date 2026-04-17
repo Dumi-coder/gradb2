@@ -334,6 +334,5 @@ require '../app/views/partials/admin_header.php';
           });
       });
     </script>
-    <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
   </body>
 </html>

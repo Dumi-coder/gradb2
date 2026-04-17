@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 $page_title = "Aid Requests";
 $page_subtitle = "Track your aid request submissions";
 require '../app/views/partials/student_header.php'; 
@@ -352,7 +352,6 @@ foreach ($requests as $request) {
   </main>
 </div>
 
-<script src="<?=ROOT?>/assets/js/main.js"></script>
 <script>
   (function () {
     const toast = document.querySelector('.toast-notice');

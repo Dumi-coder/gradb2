@@ -334,7 +334,6 @@ require '../app/views/partials/superadmin_header.php';
           });
       });
     </script>
-    <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
   </body>
 </html>
 

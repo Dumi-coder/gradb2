@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 $page_title = "Mentorship";
 $page_subtitle = "Connect with alumni mentors";
 $page_stylesheets = [ROOT . '/assets/css/mentorship.css?v=' . time()];
@@ -88,12 +88,12 @@ require '../app/views/partials/student_header.php';
                   <p class="mentor-meta mentor-quick-meta">
                     <?= esc($mentor['faculty_name'] ?: 'Faculty N/A') ?>
                     <?php if (!empty($mentor['current_job'])): ?>
-                      • <?= esc($mentor['current_job']) ?>
+                      â€¢ <?= esc($mentor['current_job']) ?>
                     <?php endif; ?>
                     <?php if (!empty($mentor['expertise_area'])): ?>
-                      • <?= esc($mentor['expertise_area']) ?>
+                      â€¢ <?= esc($mentor['expertise_area']) ?>
                     <?php endif; ?>
-                    • <?= (int)$mentor['sessions_count'] ?> sessions completed
+                    â€¢ <?= (int)$mentor['sessions_count'] ?> sessions completed
                   </p>
                   <p class="mentor-description"><?= esc($mentor['mentor_bio'] ?: 'Experienced alumnus available for student mentorship.') ?></p>
                 </div>
@@ -271,7 +271,6 @@ require '../app/views/partials/student_header.php';
   </div>
 </div>
 
-<script src="<?=ROOT?>/assets/js/main.js"></script>
 <script>
   (function() {
     const toggleBtn = document.getElementById('mentors-toggle');

@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 $page_title = "Mentorship";
 $page_subtitle = "Connect with students seeking guidance";
 $page_stylesheets = [ROOT . '/assets/css/mentorship.css?v=' . time()];
@@ -36,7 +36,7 @@ require '../app/views/partials/alumni_header.php';
     <section class="dashboard-section mentor-reputation-section">
       <div class="reputation-card">
         <h2 class="section-title">Your Mentor Feedback</h2>
-        <p class="mentor-rating">⭐ <?= number_format((float)($mentorshipData['reputation']['avg_rating'] ?? 0), 1) ?> Feedback Score</p>
+        <p class="mentor-rating">â­ <?= number_format((float)($mentorshipData['reputation']['avg_rating'] ?? 0), 1) ?> Feedback Score</p>
         <p class="mentor-sessions">Completed Sessions: <?= (int)($mentorshipData['reputation']['total_completed_sessions'] ?? 0) ?></p>
       </div>
     </section>
@@ -166,7 +166,7 @@ require '../app/views/partials/alumni_header.php';
               </div>
               <p class="request-description"><?= esc($completed['request_reason']) ?></p>
               <p class="mentor-meta">Student: <?= esc($completed['student_name']) ?></p>
-              <p class="mentor-meta">Feedback Score: ⭐ <?= (int)($completed['rating'] ?? 0) ?></p>
+              <p class="mentor-meta">Feedback Score: â­ <?= (int)($completed['rating'] ?? 0) ?></p>
               <?php if (!empty($completed['review_comment'])): ?>
                 <p class="review-note"><strong>Feedback Note:</strong> "<?= esc($completed['review_comment']) ?>"</p>
               <?php endif; ?>
@@ -212,7 +212,6 @@ require '../app/views/partials/alumni_header.php';
   </div>
 </div>
 
-<script src="<?=ROOT?>/assets/js/main.js"></script>
 <script>
   (function () {
     const toast = document.querySelector('.mentorship-toast');

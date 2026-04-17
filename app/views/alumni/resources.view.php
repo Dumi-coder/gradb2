@@ -472,7 +472,6 @@ require '../app/views/partials/alumni_header.php';
         });
       });
     </script>
-    <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/resources.js?v=7"></script>
   </body>
 </html>

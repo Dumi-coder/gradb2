@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 $page_title = "FAQ";
 $page_subtitle = "Frequently Asked Questions";
 require '../app/views/partials/student_header.php'; 
@@ -110,7 +110,6 @@ require '../app/views/partials/student_header.php';
     </div>
 
     <!-- JS -->
-    <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/faq.js"></script>
   </body>
 </html>
