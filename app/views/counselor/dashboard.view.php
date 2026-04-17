@@ -21,15 +21,19 @@ $buildFileUrl = static function ($path) {
   return ROOT . '/' . ltrim($path, '/');
 };
 
-$getStatusMeta = static function ($status) {
+$getStatusMeta = static function ($status, $alumnusUserId = null) {
   $status = strtolower((string)$status);
 
   if ($status === 'pending_verification') {
     return ['group' => 'pending', 'label' => 'Pending', 'class' => 'chip-pending'];
   }
 
-  if (in_array($status, ['open', 'approved', 'accepted'], true)) {
-    return ['group' => 'approved', 'label' => 'Approved', 'class' => 'chip-approved'];
+  if ($status === 'accepted' || (!empty($alumnusUserId) && in_array($status, ['open', 'approved'], true))) {
+    return ['group' => 'approved', 'label' => 'Accepted by Alumni', 'class' => 'chip-accepted'];
+  }
+
+  if (in_array($status, ['open', 'approved'], true)) {
+    return ['group' => 'approved', 'label' => 'Sent to Alumni', 'class' => 'chip-sent'];
   }
 
   if ($status === 'completed') {
@@ -40,7 +44,7 @@ $getStatusMeta = static function ($status) {
     return ['group' => 'rejected', 'label' => 'Rejected', 'class' => 'chip-rejected'];
   }
 
-  return ['group' => 'other', 'label' => ucfirst($status), 'class' => 'chip-other'];
+  return ['group' => 'other', 'label' => ucfirst($status), 'class' => 'chip-pending'];
 };
 ?>
 
@@ -88,7 +92,7 @@ $getStatusMeta = static function ($status) {
       <?php else: ?>
         <div class="req-grid" id="requestGrid">
           <?php foreach ($allRequests as $request): ?>
-            <?php $statusMeta = $getStatusMeta($request->status ?? ''); ?>
+            <?php $statusMeta = $getStatusMeta($request->status ?? '', $request->alumnus_user_id ?? null); ?>
             <?php $studentName = (string)($request->student_name ?? 'Student'); ?>
             <div
               class="req-card"
@@ -101,7 +105,7 @@ $getStatusMeta = static function ($status) {
                 <div>
                   <span class="summary-label">Student</span>
                   <p class="summary-value"><?= esc($studentName) ?></p>
-                  <p class="summary-meta">Reg: <?= esc($request->student_id ?? 'N/A') ?> · <?= esc($request->faculty_name ?? 'Faculty N/A') ?></p>
+                  <p class="summary-meta">Reg: <?= esc($request->student_id ?? 'N/A') ?> &middot; <?= esc($request->faculty_name ?? 'Faculty N/A') ?></p>
                 </div>
 
                 <div>
@@ -116,7 +120,7 @@ $getStatusMeta = static function ($status) {
                 </div>
 
                 <div class="summary-actions">
-                  <span class="chip <?= esc($statusMeta['class']) ?>"><?= esc($statusMeta['label']) ?></span>
+                  <span class="chip-state <?= esc($statusMeta['class']) ?>"><?= esc($statusMeta['label']) ?></span>
                   <button type="button" class="btn btn-outline btn-sm open-review-modal" data-modal-id="review-modal-<?= (int)$request->request_id ?>">
                     <i class="fas fa-eye"></i>
                     <span>Review</span>
@@ -129,7 +133,7 @@ $getStatusMeta = static function ($status) {
               <div class="review-modal-panel" role="dialog" aria-modal="true" aria-labelledby="review-title-<?= (int)$request->request_id ?>">
                 <div class="review-modal-head">
                   <div>
-                    <h3 class="review-modal-title" id="review-title-<?= (int)$request->request_id ?>">Request #<?= (int)$request->request_id ?> · <?= esc($studentName) ?></h3>
+                    <h3 class="review-modal-title" id="review-title-<?= (int)$request->request_id ?>">Request #<?= (int)$request->request_id ?> &middot; <?= esc($studentName) ?></h3>
                     <p class="review-modal-meta">Status: <?= esc($statusMeta['label']) ?></p>
                   </div>
                   <button type="button" class="modal-close-btn" data-close-modal aria-label="Close review modal">&times;</button>
@@ -178,6 +182,10 @@ $getStatusMeta = static function ($status) {
 
                 <?php if ($statusMeta['group'] === 'rejected'): ?>
                   <div class="req-row"><span class="req-label">Rejection Note</span><strong><?= esc($request->rejection_reason ?? 'No note provided') ?></strong></div>
+                <?php endif; ?>
+
+                <?php if ($statusMeta['group'] === 'completed'): ?>
+                  <div class="req-row"><span class="req-label">Completion Note</span><strong><?= esc($request->completion_note ?? 'No completion note provided') ?></strong></div>
                 <?php endif; ?>
 
                 <?php if (!empty($request->alumnus_user_id)): ?>

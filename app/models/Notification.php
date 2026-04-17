@@ -290,6 +290,40 @@ class Notification
 		]);
 	}
 
+	public function createAidCompletionNotificationForAlumnus($recipientUserId, $actorUserId, $requestId, $studentName, $aidType, $completionNote)
+	{
+		$recipientUserId = (int)$recipientUserId;
+		$requestId = (int)$requestId;
+		$studentName = trim((string)$studentName);
+		$aidType = trim((string)$aidType);
+		$completionNote = trim((string)$completionNote);
+
+		if ($recipientUserId <= 0 || $requestId <= 0 || $completionNote === '') {
+			return false;
+		}
+
+		$actorId = ($actorUserId !== null && (int)$actorUserId > 0) ? (int)$actorUserId : null;
+		$studentLabel = $studentName !== '' ? $studentName : 'the student';
+		$aidLabel = $aidType !== '' ? ucfirst($aidType) : 'Aid';
+		$title = 'Aid marked as completed by counselor';
+		$message = $aidLabel . ' request #' . $requestId . ' for ' . $studentLabel . ' was marked completed by counselor. Note: ' . $completionNote;
+		$actionUrl = ROOT . '/alumni/aidrequests';
+
+		return $this->insert([
+			'recipient_user_id' => $recipientUserId,
+			'actor_user_id' => $actorId,
+			'title' => $title,
+			'message' => $message,
+			'action_url' => $actionUrl,
+			'action_label' => 'View aid requests',
+			'context_type' => 'aid_request',
+			'context_id' => $requestId,
+			'is_read' => 0,
+			'read_at' => null,
+			'created_at' => date('Y-m-d H:i:s'),
+		]);
+	}
+
 	public function createFundraiserRejectedNotification($recipientUserId, $actorUserId, $fundraiserTitle, $note, $fundraiserId = null)
 	{
 		$fundraiserTitle = trim((string)$fundraiserTitle);

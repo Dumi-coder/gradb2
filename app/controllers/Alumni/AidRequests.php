@@ -114,6 +114,7 @@ class AidRequests extends Controller
                 'provided_value' => $formatAmount($row->amount ?? null),
                 'aid_type' => ucfirst((string)($row->aid_type ?? 'Aid')),
                 'completed_date' => $row->created_at ?? null,
+                'completion_note' => $row->completion_note ?? null,
                 'status' => 'completed',
             ];
         }, is_array($completedRows) ? $completedRows : []);

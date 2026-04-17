@@ -47,7 +47,7 @@ $buildFileUrl = static function ($path) {
                 <div>
                   <span class="summary-label">Student</span>
                   <p class="summary-value"><?= esc($request->student_name ?? 'Student') ?></p>
-                  <p class="summary-meta">ID: <?= esc($request->student_id ?? 'N/A') ?> Â· <?= esc($request->faculty_name ?? 'Faculty N/A') ?></p>
+                  <p class="summary-meta">ID: <?= esc($request->student_id ?? 'N/A') ?> &middot; <?= esc($request->faculty_name ?? 'Faculty N/A') ?></p>
                 </div>
 
                 <div>
@@ -74,8 +74,8 @@ $buildFileUrl = static function ($path) {
               <div class="review-modal-panel" role="dialog" aria-modal="true" aria-labelledby="review-title-<?= (int)$request->request_id ?>">
                 <div class="review-modal-head">
                   <div>
-                    <h3 class="review-modal-title" id="review-title-<?= (int)$request->request_id ?>"><?= esc($request->student_name ?? 'Student') ?> Â· Aid Details</h3>
-                    <p class="review-modal-meta">Request #<?= (int)$request->request_id ?> Â· Status: Completed</p>
+                    <h3 class="review-modal-title" id="review-title-<?= (int)$request->request_id ?>"><?= esc($request->student_name ?? 'Student') ?> &middot; Aid Details</h3>
+                    <p class="review-modal-meta">Request #<?= (int)$request->request_id ?> &middot; Status: Completed</p>
                   </div>
                   <button type="button" class="modal-close-btn" data-close-modal aria-label="Close review modal">&times;</button>
                 </div>
@@ -120,6 +120,7 @@ $buildFileUrl = static function ($path) {
                   </strong>
                 </div>
                 <div class="req-row"><span class="req-label">Submitted</span><strong><?= esc($request->created_at ?? 'N/A') ?></strong></div>
+                <div class="req-row"><span class="req-label">Completion Note</span><strong><?= esc($request->completion_note ?? 'No completion note provided') ?></strong></div>
 
                 <?php if (!empty($request->alumnus_user_id)): ?>
                   <div class="req-row"><span class="req-label">Accepted By</span><strong><?= esc($request->alumnus_name ?? ('Alumni User #' . (int)$request->alumnus_user_id)) ?></strong></div>
