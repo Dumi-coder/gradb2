@@ -78,7 +78,7 @@ $buildFileUrl = static function ($path) {
                 <div class="review-modal-head">
                   <div>
                     <h3 class="review-modal-title" id="review-title-<?= (int)$request->request_id ?>"><?= esc($request->student_name ?? 'Student') ?> Â· Aid Details</h3>
-                    <p class="review-modal-meta">Request #<?= (int)$request->request_id ?> Â· Status: <?= esc($statusText) ?></p>
+                    <p class="review-modal-meta">Status: <?= esc($statusText) ?></p>
                   </div>
                   <button type="button" class="modal-close-btn" data-close-modal aria-label="Close review modal">&times;</button>
                 </div>

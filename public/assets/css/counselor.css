@@ -1473,6 +1473,96 @@
   display: none;
 }
 
+.counselor-edit-page .change-password-modal-content {
+  max-width: 620px;
+  border-radius: 14px;
+}
+
+.counselor-password-modal-subtitle {
+  margin: 0 0 14px;
+  color: var(--muted-foreground, #64748b);
+  font-size: .9rem;
+  line-height: 1.45;
+}
+
+.counselor-password-group {
+  margin-bottom: 14px;
+}
+
+.counselor-password-input-wrap {
+  position: relative;
+}
+
+.counselor-password-input-wrap .counselor-password-input {
+  padding-right: 44px;
+}
+
+.counselor-password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--muted-foreground, #64748b);
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.counselor-password-toggle:hover {
+  color: var(--foreground, #0f172a);
+  background: #f3f4f6;
+}
+
+.counselor-password-toggle:focus-visible {
+  outline: 2px solid #1e3a8a;
+  outline-offset: 1px;
+}
+
+.counselor-password-tips {
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.counselor-password-tips-title {
+  margin: 0 0 6px;
+  font-weight: 700;
+  color: var(--foreground, #0f172a);
+  font-size: .86rem;
+}
+
+.counselor-password-tips ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted-foreground, #64748b);
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+.counselor-password-match {
+  min-height: 18px;
+}
+
+.counselor-password-match.is-match {
+  color: #15803d;
+}
+
+.counselor-password-match.is-mismatch {
+  color: #b91c1c;
+}
+
+.counselor-edit-page .change-password-modal-footer {
+  margin-top: 16px;
+}
+
 @media (max-width: 768px) {
   .counselor-edit-page .edit-form-section {
     padding: 18px;
@@ -1483,6 +1573,19 @@
   }
 
   .counselor-picture-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .counselor-edit-page .change-password-modal-header {
+    flex-wrap: wrap;
+  }
+
+  .counselor-edit-page .change-password-modal-footer {
+    flex-direction: column;
+  }
+
+  .counselor-edit-page .change-password-modal-footer .btn {
     width: 100%;
     justify-content: center;
   }
@@ -1593,6 +1696,12 @@
   border-color: #93c5fd;
 }
 
+.chip-approved {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-color: #93c5fd;
+}
+
 .chip-accepted {
   background: #dcfce7;
   color: #166534;
@@ -1609,6 +1718,12 @@
 .chip-no {
   background: #ef4444;
   color: #fff;
+}
+
+.chip-other {
+  background: #e2e8f0;
+  color: #334155;
+  border-color: #cbd5e1;
 }
 
 .review-modal {

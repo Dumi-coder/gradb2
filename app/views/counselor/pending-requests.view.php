@@ -64,7 +64,7 @@ $buildFileUrl = static function ($path) {
                 </div>
 
                 <div class="summary-actions">
-                  <span class="chip-pending">Pending</span>
+                  <span class="chip-state chip-pending">Pending</span>
                   <button type="button" class="btn btn-outline btn-sm open-review-modal" data-modal-id="review-modal-<?= (int)$request->request_id ?>">
                     <i class="fas fa-eye"></i>
                     <span>Review</span>
@@ -78,7 +78,7 @@ $buildFileUrl = static function ($path) {
                 <div class="review-modal-head">
                   <div>
                     <h3 class="review-modal-title" id="review-title-<?= (int)$request->request_id ?>"><?= esc($request->student_name ?? 'Student') ?> Â· Aid Review</h3>
-                    <p class="review-modal-meta">Request #<?= (int)$request->request_id ?> Â· Status: Pending</p>
+                    <p class="review-modal-meta">Status: Pending</p>
                   </div>
                   <button type="button" class="modal-close-btn" data-close-modal aria-label="Close review modal">&times;</button>
                 </div>
