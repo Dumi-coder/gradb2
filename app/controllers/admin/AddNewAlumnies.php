@@ -25,6 +25,12 @@ class AddNewAlumnies extends Controller
             $email = trim($_POST['email'] ?? '');
             $alumni_id = trim($_POST['alumni_id'] ?? '');
             $faculty = trim($_POST['faculty'] ?? '');
+            $mobile = trim($_POST['mobile'] ?? '');
+            $graduated_year = trim($_POST['graduated_year'] ?? '');
+            $degrees = trim($_POST['degrees'] ?? '');
+            $current_workplace = trim($_POST['current_workplace'] ?? '');
+            $expertise_area = trim($_POST['expertise_area'] ?? '');
+            $is_mentor = isset($_POST['is_mentor']) ? $_POST['is_mentor'] : '';
             $password = $_POST['password'] ?? '';
             $confirm_password = $_POST['confirm_password'] ?? '';
 
@@ -45,6 +51,34 @@ class AddNewAlumnies extends Controller
 
             if (empty($faculty)) {
                 $errors[] = "Faculty is required";
+            }
+
+            if (empty($mobile)) {
+                $errors[] = "Mobile phone number is required";
+            } elseif (!preg_match('/^[0-9]{9,15}$/', $mobile)) {
+                $errors[] = "Mobile number must be 9-15 digits";
+            }
+
+            if (empty($graduated_year)) {
+                $errors[] = "Graduation year is required";
+            } elseif (!is_numeric($graduated_year) || $graduated_year < 1900 || $graduated_year > date('Y')) {
+                $errors[] = "Graduation year must be between 1900 and " . date('Y');
+            }
+
+            if (empty($degrees)) {
+                $errors[] = "Degree is required";
+            }
+
+            if (empty($current_workplace)) {
+                $errors[] = "Current workplace is required";
+            }
+
+            if (empty($expertise_area)) {
+                $errors[] = "Area of expertise is required";
+            }
+
+            if ($is_mentor === '') {
+                $errors[] = "Please indicate if the alumni is willing to be a mentor";
             }
 
             if (empty($password)) {
@@ -99,7 +133,13 @@ class AddNewAlumnies extends Controller
                         $alumni_data = [
                             'alumni_id' => $alumni_id,
                             'user_id' => $created_user->user_id,
-                            'faculty_id' => $faculty_record->faculty_id
+                            'faculty_id' => $faculty_record->faculty_id,
+                            'mobile' => $mobile,
+                            'graduated_year' => $graduated_year,
+                            'degrees' => $degrees,
+                            'current_workplace' => $current_workplace,
+                            'expertise_area' => $expertise_area,
+                            'is_verified_mentor' => $is_mentor == '1' ? 1 : 0
                         ];
 
                         $alumni = new Alumni();

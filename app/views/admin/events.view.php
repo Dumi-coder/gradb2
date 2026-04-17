@@ -138,7 +138,7 @@ if (!function_exists('renderAdminEventCard')) {
     </main>
 </div>
 
-<div id="eventDetailsModal" class="event-modal" style="display:none;">
+<div id="eventDetailsModal" class="event-modal fae-27">
     <div class="event-modal-panel">
         <div class="event-modal-head">
             <h3 id="eventDetailsTitle">Event Details</h3>
@@ -148,7 +148,7 @@ if (!function_exists('renderAdminEventCard')) {
     </div>
 </div>
 
-<div id="createEventModal" class="event-modal" style="display:none;">
+<div id="createEventModal" class="event-modal fae-27">
   <div class="event-modal-panel">
     <div class="event-modal-head">
       <h3>Create New Event</h3>
@@ -173,7 +173,7 @@ if (!function_exists('renderAdminEventCard')) {
         <input type="file" name="event_image" accept=".jpg,.jpeg,.png,.gif,.webp">
       </div>
       <textarea name="eventDescription" rows="4" placeholder="Event description" required></textarea>
-      <div class="event-actions" style="margin-top:.8rem;">
+      <div class="event-actions fae-28">
         <button type="button" class="btn btn-outline btn-sm" onclick="closeCreateEventModal()">Cancel</button>
         <button type="submit" class="btn btn-primary btn-sm">Create Event</button>
       </div>
@@ -181,37 +181,7 @@ if (!function_exists('renderAdminEventCard')) {
   </div>
 </div>
 
-<style>
-.events-container { display: flex; flex-direction: column; gap: 1rem; }
-.main-content { display: flex; flex-direction: column; }
-.hosting-section { order: 1; }
-.moderation-section { order: 2; }
-.attending-section { order: 3; }
-.event-card { background: #fff; border: 2px solid #E5E7EB; border-radius: 12px; padding: 1.2rem; transition: all .3s ease; }
-.event-card:hover { border-color: #0E2072; box-shadow: 0 4px 12px rgba(0,0,0,.1); }
-.event-header { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: .8rem; }
-.event-info h3 { margin: 0 0 .25rem 0; color: #1F2937; font-size: 1.2rem; }
-.event-organizer { margin: 0 0 .2rem 0; color: #6B7280; font-size: .92rem; }
-.event-type { margin: 0; color: #0E2072; font-size: .88rem; font-weight: 600; }
-.event-meta { text-align: right; }
-.status-badge { display: inline-block; padding: .25rem .7rem; border-radius: 20px; font-size: .72rem; font-weight: 700; margin-bottom: .4rem; }
-.status-open { background: #DCFCE7; color: #166534; }
-.status-closed { background: #FEE2E2; color: #991B1B; }
-.event-date { margin: 0; color: #6B7280; font-size: .8rem; }
-.event-details p { margin: 0 0 .8rem 0; color: #4B5563; line-height: 1.5; }
-.event-schedule { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .6rem; }
-.schedule-item { color: #4B5563; font-size: .9rem; }
-.event-actions { margin-top: 1rem; display: flex; gap: .55rem; flex-wrap: wrap; }
-.empty-state { border: 2px dashed #D1D5DB; border-radius: 12px; padding: 1.2rem; text-align: center; color: #4B5563; background: #F9FAFB; }
-.event-modal { position: fixed; inset: 0; background: rgba(15,23,42,.55); display: flex; align-items: center; justify-content: center; z-index: 12000; padding: 1rem; }
-.event-modal-panel { width: min(720px, 100%); max-height: 90vh; overflow: auto; background: #fff; border: 1px solid #D1DAE6; border-radius: 14px; padding: 1rem; }
-.event-modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: .8rem; }
-.modal-close-btn { border: 1px solid #D1DAE6; background: #fff; width: 34px; height: 34px; border-radius: 999px; cursor: pointer; }
-.detail-row { margin: 0 0 .55rem 0; color: #374151; }
-.event-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .6rem; margin-bottom: .6rem; }
-.event-form-grid input, .event-form-grid select, #createEventForm textarea { border: 1px solid #D1DAE6; border-radius: 8px; padding: .55rem .7rem; width: 100%; }
-@media (max-width: 800px) { .event-form-grid { grid-template-columns: 1fr; } }
-</style>
+
 
 <script>
 (function() {

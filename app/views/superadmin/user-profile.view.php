@@ -104,22 +104,4 @@
     </main>
 </div>
 
-<style>
-.readonly-status {
-    display: inline-block;
-    padding: 0.2rem 0.6rem;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: 0.75rem;
-}
 
-.readonly-status-suspended {
-    background: #fee2e2;
-    color: #b91c1c;
-}
-
-.readonly-status-active {
-    background: #d1fae5;
-    color: #065f46;
-}
-</style>

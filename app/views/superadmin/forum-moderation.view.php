@@ -107,7 +107,7 @@ require '../app/views/partials/superadmin_header.php';
                         <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $forum->replies ?? 0 ?></strong> replies</div>
                         <div class="topic-activity"><i class="fas fa-clock"></i> <?= $last_activity ?></div>
                       </div>
-                      <div class="topic-actions" style="display: flex; gap: 0.5rem;">
+                      <div class="topic-actions sae-32">
                         <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $forum->post_id ?>, this)">
                           <i class="fas fa-eye"></i> View
                         </button>
@@ -130,7 +130,7 @@ require '../app/views/partials/superadmin_header.php';
         <section class="dashboard-section forum-topics-section">
           <div class="section-header">
             <div class="section-title-container">
-              <h2 class="section-title" style="font-size: 1.5rem;">
+              <h2 class="section-title sae-33">
                 <i class="fas fa-comments"></i> Forum Topics
               </h2>
               <div class="filter-controls">
@@ -158,7 +158,7 @@ require '../app/views/partials/superadmin_header.php';
                 placeholder="Search by hashtag (e.g., career, mentorship, AI)"
                 autocomplete="off"
               >
-              <button class="clear-search-btn" id="clearSearchBtn" style="display: none;">
+              <button class="clear-search-btn sae-10" id="clearSearchBtn">
                 <i class="fas fa-times"></i>
               </button>
             </div>
@@ -240,7 +240,7 @@ require '../app/views/partials/superadmin_header.php';
                   <div class="topic-replies"><i class="fas fa-comment"></i> <strong><?= $topic->replies ?? 0 ?></strong> replies</div>
                   <div class="topic-activity"><i class="fas fa-clock"></i> <?= $last_activity ?></div>
                 </div>
-                <div class="topic-actions" style="display: flex; gap: 0.5rem;">
+                <div class="topic-actions sae-32">
                   <button class="btn btn-primary btn-sm" onclick="incrementAndViewPost(<?= $topic->post_id ?>, this)">
                     <i class="fas fa-eye"></i> View
                   </button>
@@ -330,7 +330,7 @@ require '../app/views/partials/superadmin_header.php';
     </div>
 
     <!-- New Post Modal -->
-    <div id="newPostModal" class="modal" style="display: none;">
+    <div id="newPostModal" class="modal sae-10">
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title">Create New Post</h2>
@@ -349,7 +349,7 @@ require '../app/views/partials/superadmin_header.php';
           </div>
           <div class="form-group">
             <label for="visibleFaculties">Visible Faculties *</label>
-            <select id="visibleFaculties" name="faculty_id" class="form-control" required style="padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; background-color: #fff; font-size: 14px;">
+            <select id="visibleFaculties" name="faculty_id" class="form-control sae-34" required>
               <option value="">-- Select Faculty --</option>
               <option value="999">All Faculties</option>
               <?php if (!empty($faculties)): ?>
@@ -362,7 +362,7 @@ require '../app/views/partials/superadmin_header.php';
           </div>
           <div class="form-group">
             <label for="postTags">Tags</label>
-            <textarea id="postTags" name="tags" placeholder="Click 'Quick Tags' button below to select tags" rows="2" readonly style="cursor: pointer; background-color: var(--muted);"></textarea>
+            <textarea id="postTags" name="tags" placeholder="Click 'Quick Tags' button below to select tags" rows="2" readonly class="sae-35"></textarea>
             <small>Click the "Quick Tags" button to select tags from the list</small>
           </div>
           <div class="form-actions">
@@ -383,7 +383,7 @@ require '../app/views/partials/superadmin_header.php';
     </div>
 
     <!-- Edit Forum Modal -->
-    <div id="editForumModal" class="modal" style="display: none;">
+    <div id="editForumModal" class="modal sae-10">
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title">Edit Forum Post</h2>
@@ -404,7 +404,7 @@ require '../app/views/partials/superadmin_header.php';
           </div>
           <div class="form-group">
             <label for="editVisibleFaculties">Visible Faculties *</label>
-            <select id="editVisibleFaculties" name="faculty_id" class="form-control" required style="padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; background-color: #fff; font-size: 14px;">
+            <select id="editVisibleFaculties" name="faculty_id" class="form-control sae-34" required>
               <option value="">-- Select Faculty --</option>
               <option value="999">All Faculties</option>
               <?php if (!empty($faculties)): ?>
@@ -435,29 +435,29 @@ require '../app/views/partials/superadmin_header.php';
 
     <!-- Delete Confirmation Modal -->
     <div id="deleteConfirmModal" class="modal">
-      <div class="modal-content" style="max-width: 500px;">
-        <div class="modal-header" style="border-bottom: 1px solid #e5e7eb;">
-          <h2 class="modal-title" style="color: #dc2626; display: flex; align-items: center; gap: 10px;">
+      <div class="modal-content sae-36">
+        <div class="modal-header sae-37">
+          <h2 class="modal-title sae-38">
             <i class="fas fa-exclamation-triangle"></i> Confirm Delete
           </h2>
           <button class="modal-close" onclick="closeDeleteModal()"><i class="fas fa-times"></i></button>
         </div>
-        <div style="padding: 24px;">
-          <p style="color: #1f2937; font-size: 15px; line-height: 1.6; margin-bottom: 16px;">
+        <div class="sae-39">
+          <p class="sae-40">
             Are you sure you want to delete this forum post?
           </p>
-          <div style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 12px 16px; border-radius: 4px;">
-            <p style="color: #991b1b; font-size: 14px; margin: 0; line-height: 1.5;">
+          <div class="sae-41">
+            <p class="sae-42">
               <i class="fas fa-info-circle"></i> <strong>Warning:</strong> This action cannot be undone. All replies to this post will also be deleted.
             </p>
           </div>
         </div>
-        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px; background: #f9fafb; border-top: 1px solid #e5e7eb;">
-          <button class="btn btn-outline" onclick="closeDeleteModal()" style="min-width: 100px;">
+        <div class="modal-footer sae-43">
+          <button class="btn btn-outline sae-44" onclick="closeDeleteModal()">
             <i class="fas fa-times"></i>
             <span>Cancel</span>
           </button>
-          <button class="btn" onclick="executeDelete()" style="background: #dc2626; color: white; min-width: 100px;">
+          <button class="btn sae-45" onclick="executeDelete()">
             <i class="fas fa-trash"></i>
             <span>Delete</span>
           </button>
@@ -500,29 +500,29 @@ require '../app/views/partials/superadmin_header.php';
 
     <!-- Delete Reply Confirmation Modal -->
     <div id="deleteReplyConfirmModal" class="modal">
-      <div class="modal-content" style="max-width: 500px;">
-        <div class="modal-header" style="border-bottom: 1px solid #e5e7eb;">
-          <h2 class="modal-title" style="color: #dc2626; display: flex; align-items: center; gap: 10px;">
+      <div class="modal-content sae-36">
+        <div class="modal-header sae-37">
+          <h2 class="modal-title sae-38">
             <i class="fas fa-exclamation-triangle"></i> Confirm Delete
           </h2>
           <button class="modal-close" onclick="closeDeleteReplyConfirmModal()"><i class="fas fa-times"></i></button>
         </div>
-        <div style="padding: 24px;">
-          <p style="color: #1f2937; font-size: 15px; line-height: 1.6; margin-bottom: 16px;">
+        <div class="sae-39">
+          <p class="sae-40">
             Are you sure you want to delete this reply?
           </p>
-          <div style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 12px 16px; border-radius: 4px;">
-            <p style="color: #991b1b; font-size: 14px; margin: 0; line-height: 1.5;">
+          <div class="sae-41">
+            <p class="sae-42">
               <i class="fas fa-info-circle"></i> <strong>Warning:</strong> This action cannot be undone.
             </p>
           </div>
         </div>
-        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px; background: #f9fafb; border-top: 1px solid #e5e7eb;">
-          <button class="btn btn-outline" onclick="closeDeleteReplyConfirmModal()" style="min-width: 100px;">
+        <div class="modal-footer sae-43">
+          <button class="btn btn-outline sae-44" onclick="closeDeleteReplyConfirmModal()">
             <i class="fas fa-times"></i>
             <span>Cancel</span>
           </button>
-          <button class="btn" onclick="executeDeleteReply()" style="background: #dc2626; color: white; min-width: 100px;">
+          <button class="btn sae-45" onclick="executeDeleteReply()">
             <i class="fas fa-trash"></i>
             <span>Delete</span>
           </button>
@@ -596,10 +596,10 @@ require '../app/views/partials/superadmin_header.php';
               </button>
             </div>
             <small class="custom-tag-help">Create your own tag and select it below</small>
-            <div id="customTagsDisplay" class="quick-tags-grid" style="margin-top: 1rem;"></div>
+            <div id="customTagsDisplay" class="quick-tags-grid sae-46"></div>
           </div>
         </div>
-        <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="modal-footer sae-47">
           <button class="btn btn-outline" onclick="closeQuickTagsModal()">
             <span>Cancel</span>
           </button>
@@ -612,7 +612,7 @@ require '../app/views/partials/superadmin_header.php';
     </div>
 
     <!-- Forum Detail Modal -->
-    <div id="forumDetailModal" class="modal" style="display: none;">
+    <div id="forumDetailModal" class="modal sae-10">
       <div class="modal-content modal-large">
         <div class="modal-header">
           <h2 class="modal-title" id="forumDetailTitle">Forum Topic Title</h2>
@@ -1112,7 +1112,7 @@ require '../app/views/partials/superadmin_header.php';
       repliesList.innerHTML = '';
       
       if (!replies || replies.length === 0) {
-        repliesList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No replies yet. Be the first to reply!</p>';
+        repliesList.innerHTML = '<p class="sae-48">No replies yet. Be the first to reply!</p>';
       } else {
         replies.forEach((reply, index) => {
           const replyItem = document.createElement('div');
@@ -1219,9 +1219,9 @@ require '../app/views/partials/superadmin_header.php';
         overlay = document.createElement('div');
         overlay.className = 'forum-loading-overlay';
         overlay.innerHTML = `
-          <div style="display:flex; flex-direction:column; align-items:center; gap:10px; color:#374151;">
-            <i class="fas fa-spinner fa-spin" style="font-size:28px;"></i>
-            <span style="font-weight:600;">Loading discussion...</span>
+          <div class="sae-49">
+            <i class="fas fa-spinner fa-spin sae-50"></i>
+            <span class="sae-51">Loading discussion...</span>
           </div>
         `;
         Object.assign(overlay.style, {
@@ -1782,1219 +1782,4 @@ require '../app/views/partials/superadmin_header.php';
     }
     </script>
 
-    <style>
-    /* Section Header Styles */
-    .section-title-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-    }
-
-    .section-title {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin: 0;
-    }
-
-    /* Filter Controls Styles */
-    .filter-controls {
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-    }
-
-    .filter-select {
-      padding: 0.625rem 2.5rem 0.625rem 1rem;
-      border: 2px solid var(--border);
-      border-radius: 8px;
-      background: var(--card);
-      color: var(--foreground);
-      font-size: 0.875rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 0.75rem center;
-      background-size: 12px;
-    }
-
-    .filter-select:hover {
-      border-color: var(--primary);
-      background-color: var(--background);
-    }
-
-    .filter-select:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-    }
-
-    /* Topic Card Styles */
-    .topics-container {
-      margin-top: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .forum-topics-section .topics-container {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1.5rem;
-    }
-
-    .topic-card {
-      background-color: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      transition: all 0.2s ease;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    .topic-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .topic-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1rem;
-    }
-
-    .topic-info {
-      flex: 1;
-    }
-
-    .topic-title {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--foreground);
-      margin: 0 0 0.5rem 0;
-      line-height: 1.3;
-    }
-
-    .topic-creator {
-      font-size: 0.875rem;
-      color: var(--muted-foreground);
-      margin: 0;
-      font-weight: 400;
-    }
-
-    .topic-description {
-      margin-bottom: 1rem;
-    }
-
-    .topic-description p {
-      font-size: 1rem;
-      color: var(--foreground);
-      line-height: 1.6;
-      margin: 0;
-    }
-
-    .topic-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .topic-tag {
-      padding: 0.375rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .tag-career {
-      background-color: #E3F2FD;
-      color: #1976D2;
-    }
-
-    .tag-mentorship {
-      background-color: #E8F5E8;
-      color: #2E7D32;
-    }
-
-    .tag-general {
-      background-color: #F5F5F5;
-      color: #616161;
-    }
-
-    .tag-networking {
-      background-color: #FFF3E0;
-      color: #F57C00;
-    }
-
-    .tag-leadership {
-      background-color: #F3E5F5;
-      color: #7B1FA2;
-    }
-
-    .tag-entrepreneurship {
-      background-color: #FCE4EC;
-      color: #C2185B;
-    }
-
-    .tag-tech {
-      background-color: #E1F5FE;
-      color: #0277BD;
-    }
-
-    .tag-ai {
-      background-color: #FFF9C4;
-      color: #F57F17;
-    }
-
-    .tag-experience {
-      background-color: #E0F2F1;
-      color: #00695C;
-    }
-
-    .tag-advice {
-      background-color: #FFF3E0;
-      color: #EF6C00;
-    }
-
-    .tag-trending {
-      background-color: #FFF8E1;
-      color: #F57C00;
-    }
-
-    .tag-remote {
-      background-color: #E8EAF6;
-      color: #3F51B5;
-    }
-
-    .tag-management {
-      background-color: #FCE4EC;
-      color: #AD1457;
-    }
-
-    .tag-software {
-      background-color: #E0F7FA;
-      color: #00838F;
-    }
-
-    .tag-productivity {
-      background-color: #F1F8E9;
-      color: #558B2F;
-    }
-
-    .topic-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 1rem;
-    }
-
-    .topic-meta {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      align-items: center;
-      flex-direction: row;
-    }
-
-    .topic-views,
-    .topic-replies,
-    .topic-activity {
-      font-size: 0.875rem;
-      color: var(--muted-foreground);
-      font-weight: 400;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.375rem;
-      white-space: nowrap;
-    }
-
-    .topic-views strong,
-    .topic-replies strong {
-      color: var(--foreground);
-      font-weight: 600;
-    }
-
-    .topic-views i,
-    .topic-replies i,
-    .topic-activity i {
-      color: var(--primary);
-    }
-
-    .topic-actions {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    /* Hashtag Search Styles */
-    .hashtag-search-section {
-      background: var(--card);
-      padding: 1.5rem;
-      border-radius: 12px;
-      margin-bottom: 1.5rem;
-      border: 1px solid var(--border);
-    }
     
-    .search-input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    
-    .search-input-wrapper > .fa-hashtag {
-      position: absolute;
-      left: 1rem;
-      color: var(--muted-foreground);
-      font-size: 1.1rem;
-    }
-    
-    .hashtag-search-input {
-      width: 100%;
-      padding: 0.875rem 3rem 0.875rem 3rem;
-      border: 2px solid var(--border);
-      border-radius: 8px;
-      font-size: 0.95rem;
-      background: var(--background);
-      color: var(--foreground);
-      transition: all 0.3s ease;
-    }
-    
-    .hashtag-search-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-    }
-    
-    .clear-search-btn {
-      position: absolute;
-      right: 0.75rem;
-      background: var(--muted);
-      border: none;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: var(--muted-foreground);
-      transition: all 0.2s ease;
-    }
-    
-    .clear-search-btn:hover {
-      background: var(--accent);
-      color: var(--accent-foreground);
-    }
-    
-    .trending-hashtags {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-    
-    .trending-label {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--muted-foreground);
-      white-space: nowrap;
-    }
-    
-    .hashtag-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    
-    .hashtag-pill {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.4rem 0.875rem;
-      background: var(--muted);
-      color: var(--foreground);
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border: 2px solid transparent;
-    }
-    
-    .hashtag-pill:hover {
-      background: var(--primary);
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2);
-    }
-    
-    .hashtag-pill.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-    }
-    
-    .no-results-message {
-      text-align: center;
-      padding: 3rem 2rem;
-      color: var(--muted-foreground);
-    }
-    
-    .no-results-message i {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      opacity: 0.5;
-    }
-    
-    .no-results-message p {
-      font-size: 1.1rem;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-      color: var(--foreground);
-    }
-    
-    .no-results-message small {
-      font-size: 0.875rem;
-      color: var(--muted-foreground);
-    }
-    
-    /* My Forums empty state */
-    .my-forums-list {
-      margin-top: 1.5rem;
-    }
-    
-    .no-forums-message {
-      text-align: center;
-      padding: 3rem 2rem;
-      background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(79, 70, 229, 0.02) 100%);
-      border-radius: 16px;
-      border: 2px dashed rgba(79, 70, 229, 0.3);
-      color: var(--muted-foreground);
-      transition: all 0.3s ease;
-    }
-    
-    .no-forums-message:hover {
-      border-color: rgba(79, 70, 229, 0.5);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
-    }
-    
-    .no-forums-message i {
-      font-size: 3.5rem;
-      margin-bottom: 1rem;
-      color: var(--primary);
-      opacity: 0.7;
-      animation: pulse 2s ease-in-out infinite;
-    }
-    
-    @keyframes pulse {
-      0%, 100% { opacity: 0.7; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.05); }
-    }
-    
-    .no-forums-message p {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-      color: var(--foreground);
-    }
-    
-    .no-forums-message small {
-      font-size: 0.95rem;
-      color: var(--muted-foreground);
-      line-height: 1.6;
-      display: block;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    /* My Replies Section Styles */
-    .my-replies-section {
-      margin-bottom: 2rem;
-    }
-
-    .my-replies-section .section-title {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .my-replies-section .section-title i {
-      color: var(--primary);
-    }
-
-    .my-replies-container {
-      margin-top: 1.5rem;
-    }
-
-    .replies-grid {
-      display: grid;
-      gap: 1.25rem;
-    }
-
-    .reply-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      transition: all 0.3s ease;
-    }
-
-    .reply-card:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      transform: translateY(-2px);
-    }
-
-    .reply-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1rem;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .forum-link-info {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .forum-label {
-      font-size: 0.8rem;
-      color: var(--muted-foreground);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 500;
-    }
-
-    .forum-link {
-      color: var(--primary);
-      font-weight: 600;
-      text-decoration: none;
-      font-size: 0.95rem;
-      transition: color 0.2s ease;
-    }
-
-    .forum-link:hover {
-      color: #5850c7;
-      text-decoration: underline;
-    }
-
-    .reply-date {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      color: var(--muted-foreground);
-      font-size: 0.85rem;
-    }
-
-    .reply-card-content {
-      margin-bottom: 1rem;
-    }
-
-    .reply-text {
-      color: var(--foreground);
-      line-height: 1.6;
-      font-size: 0.95rem;
-    }
-
-    .reply-card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 1rem;
-      border-top: 1px solid var(--border);
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .reply-stats {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-
-    .reply-likes {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      color: var(--muted-foreground);
-      font-size: 0.9rem;
-    }
-
-    .reply-likes i {
-      color: var(--primary);
-    }
-
-    .reply-actions {
-      display: flex;
-      gap: 0.75rem;
-    }
-
-    .btn-action {
-      padding: 0.5rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--background);
-      color: var(--foreground);
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-
-    .btn-action:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-edit:hover {
-      background: #1a1a1a;
-      color: white;
-      border-color: #1a1a1a;
-    }
-
-    .btn-delete:hover {
-      background: #dc2626;
-      color: white;
-      border-color: #dc2626;
-    }
-
-    .no-replies-message {
-      text-align: center;
-      padding: 3rem 1.5rem;
-      background: var(--card);
-      border-radius: 12px;
-      border: 2px dashed var(--border);
-    }
-
-    .no-replies-message i {
-      font-size: 3rem;
-      color: var(--muted-foreground);
-      margin-bottom: 1rem;
-      opacity: 0.5;
-    }
-
-    .no-replies-message p {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--foreground);
-    }
-
-    .no-replies-message small {
-      font-size: 0.9rem;
-      color: var(--muted-foreground);
-      line-height: 1.6;
-      display: block;
-      max-width: 400px;
-      margin: 0 auto;
-    }
-
-    /* My Published Forums Section Styles */
-    .my-published-forums-section {
-      margin-bottom: 2rem;
-    }
-
-    .my-published-forums-section .section-title {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .my-published-forums-section .section-title i {
-      color: var(--primary);
-    }
-
-    .my-published-container {
-      margin-top: 1.5rem;
-    }
-
-    .published-forums-grid {
-      display: grid;
-      gap: 1.5rem;
-    }
-
-    .published-forum-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      transition: all 0.3s ease;
-    }
-
-    .published-forum-card:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      transform: translateY(-2px);
-      border-color: var(--primary);
-    }
-
-    .published-forum-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1rem;
-      gap: 1rem;
-      flex-wrap: wrap;
-      padding-bottom: 1rem;
-      border-bottom: 2px solid var(--border);
-    }
-
-    .forum-title-section {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      flex: 1;
-      flex-wrap: wrap;
-    }
-
-    .forum-title-text {
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: var(--foreground);
-      margin: 0;
-      line-height: 1.4;
-    }
-
-    .forum-posted-date {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--muted-foreground);
-      font-size: 0.85rem;
-      font-weight: 500;
-      white-space: nowrap;
-    }
-
-    .forum-posted-date i {
-      color: var(--primary);
-    }
-
-    .published-forum-description {
-      margin-bottom: 1rem;
-    }
-
-    .published-forum-description p {
-      color: var(--muted-foreground);
-      line-height: 1.6;
-      font-size: 0.95rem;
-      margin: 0;
-    }
-
-    .published-forum-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .published-forum-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 1rem;
-      border-top: 1px solid var(--border);
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .forum-stats-section {
-      display: flex;
-      gap: 1.25rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .stat-item {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      color: var(--muted-foreground);
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-
-    .stat-item i {
-      color: var(--primary);
-    }
-
-    .forum-actions-section {
-      display: flex;
-      gap: 0.65rem;
-      flex-wrap: wrap;
-    }
-
-    .btn-view:hover {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-
-    /* Status Badge */
-    .status-badge {
-      padding: 0.25rem 0.625rem;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .status-trending {
-      background: #ef4444;
-      color: white;
-    }
-
-    .status-active {
-      background: #10b981;
-      color: white;
-    }
-
-    .status-pending {
-      background: #f59e0b;
-      color: white;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .reply-card-header,
-      .reply-card-footer,
-      .published-forum-header,
-      .published-forum-footer {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .reply-actions,
-      .forum-actions-section {
-        width: 100%;
-      }
-
-      .btn-action {
-        flex: 1;
-      }
-
-      .filter-controls {
-        flex-direction: column;
-        width: 100%;
-      }
-
-      .filter-select {
-        width: 100%;
-      }
-
-      .hashtag-search-section {
-        padding: 1rem;
-      }
-      
-      .trending-hashtags {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      
-      .hashtag-pills {
-        width: 100%;
-      }
-
-      .forum-topics-section .topics-container {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Quick Tags Modal - Remove double scrollbar */
-    #quickTagsModal .modal-content {
-      overflow-y: visible;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    #quickTagsModal .quick-tags-content {
-      flex: 1;
-      overflow-y: auto;
-      max-height: calc(90vh - 180px);
-    }
-
-    #quickTagsModal .modal-footer {
-      flex-shrink: 0;
-      border-top: 1px solid var(--border);
-    }
-
-    /* Notification System */
-    .notification-container {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 10000;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .notification {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px 20px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      min-width: 300px;
-      max-width: 400px;
-      transform: translateX(400px);
-      opacity: 0;
-      transition: all 0.3s ease;
-    }
-
-    .notification.show {
-      transform: translateX(0);
-      opacity: 1;
-    }
-
-    .notification-icon {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 16px;
-      flex-shrink: 0;
-    }
-
-    .notification-success {
-      border-left: 4px solid #10b981;
-    }
-
-    .notification-success .notification-icon {
-      background: #d1fae5;
-      color: #059669;
-    }
-
-    .notification-error {
-      border-left: 4px solid #ef4444;
-    }
-
-    .notification-error .notification-icon {
-      background: #fee2e2;
-      color: #dc2626;
-    }
-
-    .notification-info {
-      border-left: 4px solid #3b82f6;
-    }
-
-    .notification-info .notification-icon {
-      background: #dbeafe;
-      color: #2563eb;
-    }
-
-    .notification-message {
-      flex: 1;
-      color: #374151;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    /* Forum Detail Modal Styling */
-    .modal-large {
-      max-width: 900px;
-      width: 90%;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .forum-detail-content {
-      padding: 1.5rem;
-    }
-
-    .forum-detail-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 1.5rem;
-    }
-
-    .creator-info {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--muted-foreground);
-    }
-
-    .creator-info i {
-      font-size: 1.25rem;
-      color: var(--primary);
-    }
-
-    .forum-stats {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      flex-wrap: wrap;
-      font-size: 0.9rem;
-      color: var(--muted-foreground);
-    }
-
-    .forum-stats span {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-
-    .forum-detail-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .forum-detail-description {
-      margin-bottom: 2rem;
-    }
-
-    .forum-detail-description h3 {
-      color: var(--foreground);
-      font-size: 1.1rem;
-      margin-bottom: 0.75rem;
-      font-weight: 600;
-    }
-
-    .forum-detail-description p {
-      color: var(--muted-foreground);
-      line-height: 1.6;
-    }
-
-    .replies-section {
-      border-top: 2px solid var(--border);
-      padding-top: 2rem;
-    }
-
-    .replies-heading {
-      color: var(--foreground);
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .replies-heading i {
-      color: var(--primary);
-    }
-
-    .replies-list {
-      margin-bottom: 2rem;
-    }
-
-    /* Hidden Replies */
-    .hidden-reply {
-      display: none;
-    }
-
-    /* View All Replies Button */
-    .view-all-replies-container {
-      text-align: center;
-      margin: 1.5rem 0;
-      padding-top: 1rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .btn-view-all-replies {
-      padding: 0.75rem 2rem;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn-view-all-replies:hover {
-      background: #5850c7;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-    }
-
-    .btn-view-all-replies i {
-      font-size: 1rem;
-    }
-
-    .reply-item {
-      background: var(--card);
-      padding: 1.25rem;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      border: 1px solid var(--border);
-      transition: all 0.2s ease;
-    }
-
-    .reply-item:hover {
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    .reply-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.75rem;
-    }
-
-    .reply-author {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--foreground);
-      font-weight: 600;
-    }
-
-    .reply-author i {
-      font-size: 1.5rem;
-      color: var(--primary);
-    }
-
-    .reply-time {
-      color: var(--muted-foreground);
-      font-size: 0.85rem;
-    }
-
-    .reply-content {
-      margin-bottom: 0.75rem;
-      color: var(--muted-foreground);
-      line-height: 1.6;
-    }
-
-    .reply-footer {
-      display: flex;
-      gap: 1.5rem;
-    }
-
-    .btn-link {
-      background: none;
-      border: none;
-      color: var(--muted-foreground);
-      cursor: pointer;
-      font-size: 0.9rem;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      transition: color 0.2s ease;
-    }
-
-    .btn-link:hover {
-      color: var(--primary);
-    }
-
-    .btn-link.liked {
-      color: var(--primary);
-      font-weight: 600;
-    }
-
-    .btn-link.liked i {
-      color: var(--primary);
-    }
-
-    .reply-form-container {
-      background: var(--card);
-      padding: 1.5rem;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-
-    .reply-form-container h4 {
-      color: var(--foreground);
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .reply-form-container h4 i {
-      color: var(--primary);
-    }
-
-    .reply-textarea {
-      width: 100%;
-      padding: 1rem;
-      border: 2px solid var(--border);
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 0.95rem;
-      color: var(--foreground);
-      background: var(--background);
-      resize: vertical;
-      min-height: 100px;
-      transition: border-color 0.3s ease;
-    }
-
-    .reply-textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-    }
-
-    .reply-form-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.75rem;
-      margin-top: 1rem;
-    }
-
-    @media (max-width: 768px) {
-      .modal-large {
-        width: 95%;
-        max-height: 95vh;
-      }
-
-      .forum-detail-meta {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .forum-stats {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-      }
-
-      .reply-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-      }
-
-      .reply-form-actions {
-        flex-direction: column-reverse;
-      }
-
-      .reply-form-actions button {
-        width: 100%;
-      }
-    }
-    </style>
