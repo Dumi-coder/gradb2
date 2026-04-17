@@ -106,42 +106,74 @@ $hasPasswordErrors = is_array($flashMessage) && !empty($flashMessage['text']) &&
                 <button type="button" class="btn btn-outline js-close-password-modal">Close</button>
               </div>
               <div class="change-password-modal-body">
-                <div class="form-group">
-                  <label for="counselor_password_current">Current Password</label>
-                  <input
-                    type="password"
-                    id="counselor_password_current"
-                    name="password_current"
-                    placeholder="Enter current password"
-                    autocomplete="current-password"
-                  >
+                <p class="counselor-password-modal-subtitle">Use a strong password to keep your counselor account secure.</p>
+
+                <div class="form-group counselor-password-group">
+                  <label class="form-label" for="counselor_password_current">Current Password</label>
+                  <div class="counselor-password-input-wrap">
+                    <input
+                      type="password"
+                      id="counselor_password_current"
+                      name="password_current"
+                      class="form-input counselor-password-input"
+                      placeholder="Enter current password"
+                      autocomplete="current-password"
+                    >
+                    <button type="button" class="counselor-password-toggle" data-password-toggle data-target="counselor_password_current" aria-label="Show current password">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                  <small class="form-help">Enter your existing password to authorize this change.</small>
                 </div>
 
-                <div class="form-group">
-                  <label for="counselor_password_new">New Password</label>
-                  <input
-                    type="password"
-                    id="counselor_password_new"
-                    name="password_new"
-                    placeholder="Enter new password"
-                    autocomplete="new-password"
-                  >
+                <div class="form-group counselor-password-group">
+                  <label class="form-label" for="counselor_password_new">New Password</label>
+                  <div class="counselor-password-input-wrap">
+                    <input
+                      type="password"
+                      id="counselor_password_new"
+                      name="password_new"
+                      class="form-input counselor-password-input"
+                      placeholder="Enter new password"
+                      autocomplete="new-password"
+                    >
+                    <button type="button" class="counselor-password-toggle" data-password-toggle data-target="counselor_password_new" aria-label="Show new password">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
                   <div class="js-password-strength-container" id="counselor-password-strength-widget"></div>
                 </div>
 
-                <div class="form-group">
-                  <label for="counselor_password_confirm">Confirm New Password</label>
-                  <input
-                    type="password"
-                    id="counselor_password_confirm"
-                    name="password_confirm"
-                    placeholder="Confirm new password"
-                    autocomplete="new-password"
-                  >
+                <div class="form-group counselor-password-group">
+                  <label class="form-label" for="counselor_password_confirm">Confirm New Password</label>
+                  <div class="counselor-password-input-wrap">
+                    <input
+                      type="password"
+                      id="counselor_password_confirm"
+                      name="password_confirm"
+                      class="form-input counselor-password-input"
+                      placeholder="Re-enter new password"
+                      autocomplete="new-password"
+                    >
+                    <button type="button" class="counselor-password-toggle" data-password-toggle data-target="counselor_password_confirm" aria-label="Show confirm password">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                  <small class="form-help counselor-password-match" id="counselorPasswordMatchHint" aria-live="polite"></small>
+                </div>
+
+                <div class="counselor-password-tips" aria-hidden="true">
+                  <p class="counselor-password-tips-title">Password tips</p>
+                  <ul>
+                    <li>Use at least 10 characters.</li>
+                    <li>Include letters, numbers, and symbols.</li>
+                    <li>Avoid using your name or email.</li>
+                  </ul>
                 </div>
 
                 <div class="change-password-modal-footer">
-                  <button type="button" class="btn btn-outline js-done-password-modal">Done</button>
+                  <button type="button" class="btn btn-outline js-close-password-modal">Cancel</button>
+                  <button type="button" class="btn btn-primary js-done-password-modal">Apply Password Changes</button>
                 </div>
               </div>
             </div>
@@ -189,6 +221,62 @@ $hasPasswordErrors = is_array($flashMessage) && !empty($flashMessage['text']) &&
     };
     reader.readAsDataURL(file);
   }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form[data-password-modal="true"]');
+    if (!form) return;
+
+    const toggles = form.querySelectorAll('[data-password-toggle]');
+    toggles.forEach(function (toggleBtn) {
+      toggleBtn.addEventListener('click', function () {
+        const targetId = toggleBtn.getAttribute('data-target');
+        const input = targetId ? document.getElementById(targetId) : null;
+        if (!input) return;
+
+        const reveal = input.type === 'password';
+        input.type = reveal ? 'text' : 'password';
+
+        const icon = toggleBtn.querySelector('i');
+        if (icon) {
+          icon.classList.toggle('fa-eye', !reveal);
+          icon.classList.toggle('fa-eye-slash', reveal);
+        }
+
+        toggleBtn.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
+      });
+    });
+
+    const newPasswordField = document.getElementById('counselor_password_new');
+    const confirmPasswordField = document.getElementById('counselor_password_confirm');
+    const matchHint = document.getElementById('counselorPasswordMatchHint');
+
+    function updateMatchHint() {
+      if (!newPasswordField || !confirmPasswordField || !matchHint) return;
+
+      const newPassword = newPasswordField.value;
+      const confirmPassword = confirmPasswordField.value;
+
+      matchHint.classList.remove('is-match', 'is-mismatch');
+
+      if (confirmPassword.length === 0) {
+        matchHint.textContent = '';
+        return;
+      }
+
+      if (newPassword === confirmPassword) {
+        matchHint.textContent = 'Passwords match.';
+        matchHint.classList.add('is-match');
+      } else {
+        matchHint.textContent = 'Passwords do not match yet.';
+        matchHint.classList.add('is-mismatch');
+      }
+    }
+
+    if (newPasswordField && confirmPasswordField && matchHint) {
+      newPasswordField.addEventListener('input', updateMatchHint);
+      confirmPasswordField.addEventListener('input', updateMatchHint);
+    }
+  });
 </script>
 </body>
 </html>

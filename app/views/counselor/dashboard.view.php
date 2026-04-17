@@ -81,7 +81,7 @@ $getStatusMeta = static function ($status, $alumnusUserId = null) {
         </div>
       </div>
 
-      <p class="search-meta" id="searchMetaText">Search by request ID or student name.</p>
+      <p class="search-meta" id="searchMetaText">Search by student name.</p>
 
       <?php if (empty($allRequests)): ?>
         <div class="request-card req-card-mt">
@@ -97,7 +97,6 @@ $getStatusMeta = static function ($status, $alumnusUserId = null) {
             <div
               class="req-card"
               data-request-id="<?= (int)$request->request_id ?>"
-              data-request-no="<?= (int)$request->request_id ?>"
               data-student-name="<?= esc(strtolower($studentName)) ?>"
               data-status-group="<?= esc($statusMeta['group']) ?>"
             >
@@ -308,7 +307,7 @@ $getStatusMeta = static function ($status, $alumnusUserId = null) {
     const clearSearchButton = document.getElementById('clearRequestSearch');
     const searchMetaText = document.getElementById('searchMetaText');
     const emptyFilterState = document.getElementById('emptyFilterState');
-    const requestCards = Array.from(document.querySelectorAll('.req-card[data-request-no]'));
+    const requestCards = Array.from(document.querySelectorAll('.req-card'));
 
     const applyFilters = function () {
       const rawTerm = searchInput ? (searchInput.value || '').trim() : '';
@@ -316,9 +315,8 @@ $getStatusMeta = static function ($status, $alumnusUserId = null) {
       let visibleCount = 0;
 
       requestCards.forEach((card) => {
-        const requestNo = (card.getAttribute('data-request-no') || '').toLowerCase();
         const studentName = (card.getAttribute('data-student-name') || '').toLowerCase();
-        const matchesSearch = normalizedTerm === '' || requestNo.includes(normalizedTerm) || studentName.includes(normalizedTerm);
+        const matchesSearch = normalizedTerm === '' || studentName.includes(normalizedTerm);
         const isVisible = matchesSearch;
 
         card.style.display = isVisible ? '' : 'none';
@@ -327,7 +325,7 @@ $getStatusMeta = static function ($status, $alumnusUserId = null) {
 
       if (searchMetaText) {
         searchMetaText.textContent = normalizedTerm === ''
-          ? 'Search by request ID or student name.'
+          ? 'Search by student name.'
           : ('Showing ' + visibleCount + ' request(s) for "' + rawTerm + '".');
       }
 
