@@ -14,185 +14,9 @@ $buildFileUrl = static function ($path) {
 };
 ?>
 
-<style>
-  .req-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-  .req-card {
-    border: 1px solid #e6eaf0;
-    border-radius: 14px;
-    padding: 12px 14px;
-    background: #ffffff;
-    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
-    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-  }
-  .req-card:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08); border-color: #d6deea; }
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/counselor.css">
 
-  .req-summary {
-    display: grid;
-    grid-template-columns: minmax(260px, 1.3fr) minmax(130px, .55fr) minmax(170px, .7fr) auto;
-    gap: 12px;
-    align-items: center;
-  }
 
-  .summary-label {
-    display: block;
-    font-size: .75rem;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    color: #64748b;
-    margin-bottom: 3px;
-    font-weight: 600;
-  }
-
-  .summary-value {
-    margin: 0;
-    color: #0f172a;
-    font-size: .98rem;
-    font-weight: 700;
-  }
-
-  .summary-meta {
-    margin: 3px 0 0;
-    color: #64748b;
-    font-size: .82rem;
-  }
-
-  .summary-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .req-row {
-    display: grid;
-    grid-template-columns: 150px 1fr;
-    gap: 10px;
-    align-items: start;
-    background: #f8fafc;
-    border-radius: 10px;
-    border: 1px solid #e8eef5;
-    padding: 9px 10px;
-    margin-top: 8px;
-  }
-  .req-label { color: var(--muted-foreground,#6b7280); font-size: .86rem; }
-  .req-row strong { font-size: .9rem; text-align: left; word-break: break-word; line-height: 1.45; }
-
-  .chip-state {
-    border-radius: 999px;
-    padding: .24rem .62rem;
-    font-size: .74rem;
-    font-weight: 700;
-    letter-spacing: .01em;
-    border: 1px solid transparent;
-  }
-  .chip-sent {
-    background: #dbeafe;
-    color: #1d4ed8;
-    border-color: #93c5fd;
-  }
-  .chip-accepted {
-    background: #dcfce7;
-    color: #166534;
-    border-color: #86efac;
-  }
-  .chip-completed {
-    background: #ede9fe;
-    color: #5b21b6;
-    border-color: #c4b5fd;
-  }
-
-  .review-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.52);
-    backdrop-filter: blur(3px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 12000;
-    padding: 16px;
-  }
-
-  .review-modal-panel {
-    width: min(920px, 100%);
-    max-height: 90vh;
-    overflow: auto;
-    background: #ffffff;
-    border: 1px solid #dbe3ee;
-    border-radius: 16px;
-    padding: 14px;
-    box-shadow: 0 20px 48px rgba(2, 6, 23, 0.26);
-  }
-
-  .review-modal-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-
-  .review-modal-title {
-    margin: 0;
-    font-size: 1.1rem;
-    color: #0f172a;
-  }
-
-  .review-modal-meta {
-    margin: 2px 0 0;
-    color: #64748b;
-    font-size: .83rem;
-  }
-
-  .modal-close-btn {
-    border: 1px solid #d1dae6;
-    background: #fff;
-    color: #334155;
-    width: 34px;
-    height: 34px;
-    border-radius: 999px;
-    cursor: pointer;
-    font-size: 1rem;
-  }
-
-  .action-wrap {
-    margin-top: 12px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
-    padding-top: 8px;
-    border-top: 1px dashed #e2e8f0;
-  }
-
-  @media (max-width: 980px) {
-    .req-summary {
-      grid-template-columns: 1fr 1fr;
-      align-items: start;
-    }
-
-    .summary-actions {
-      justify-content: flex-start;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .req-summary {
-      grid-template-columns: 1fr;
-      gap: 8px;
-    }
-
-    .req-row {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
 
 <div class="dashboard-container">
   <?php require '../app/views/partials/counselor_sidebar.php'; ?>
@@ -204,13 +28,13 @@ $buildFileUrl = static function ($path) {
       </div>
 
       <?php if (!empty($flashMessage)): ?>
-        <div class="alert alert-info" style="margin: 1rem 0;">
+        <div class="alert alert-info alert-block">
           <?= esc($flashMessage) ?>
         </div>
       <?php endif; ?>
 
       <?php if (empty($approvedRequests)): ?>
-        <div class="request-card" style="margin-top: 1rem;">
+        <div class="request-card card-top-gap">
           <div class="request-details">
             <p class="detail-value">No approved submissions yet.</p>
           </div>
@@ -236,7 +60,7 @@ $buildFileUrl = static function ($path) {
 
                 <div>
                   <span class="summary-label">Submitted</span>
-                  <p class="summary-value" style="font-size:.9rem;"><?= esc($request->created_at ?? 'N/A') ?></p>
+                  <p class="summary-value summary-value-sm"><?= esc($request->created_at ?? 'N/A') ?></p>
                 </div>
 
                 <div class="summary-actions">
@@ -307,8 +131,8 @@ $buildFileUrl = static function ($path) {
                 <?php endif; ?>
 
                 <?php if (!empty($request->alumnus_user_id) && in_array($requestStatus, ['approved', 'accepted'], true)): ?>
-                  <div class="action-wrap">
-                    <form method="POST" style="display:inline-block;">
+                  <div class="action-wrap action-wrap-end">
+                    <form method="POST" class="inline-form">
                       <input type="hidden" name="action" value="complete">
                       <input type="hidden" name="request_id" value="<?= (int)($request->request_id ?? 0) ?>">
                       <button type="submit" class="btn btn-primary btn-sm">Mark as Completed</button>
