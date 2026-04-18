@@ -11,7 +11,7 @@ require '../app/views/partials/student_header.php';
     <main class="main-content faculty-announcements-page">
         <section class="dashboard-section announcement-section">
             <div class="section-header">
-                <h2 class="section-title">Faculty Announcements</h2>
+                <h2 class="section-title announcements-section-title">Faculty Announcements</h2>
                 <div class="section-sort">
                     <select id="faculty-sort" class="filter-select">
                         <option value="time">Time (Newest First)</option>
@@ -81,7 +81,7 @@ require '../app/views/partials/student_header.php';
 
         <section class="dashboard-section announcement-section">
             <div class="section-header">
-                <h2 class="section-title">University Announcements</h2>
+                <h2 class="section-title announcements-section-title">University Announcements</h2>
                 <div class="section-sort">
                     <select id="university-sort" class="filter-select">
                         <option value="time">Time (Newest First)</option>

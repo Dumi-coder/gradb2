@@ -73,6 +73,7 @@ $statusClass = function ($status) {
 $pendingCount = 0;
 $acceptedCount = 0;
 $rejectedCount = 0;
+$completedCount = 0;
 
 foreach ($requests as $request) {
     $currentStatus = strtolower((string)($request->status ?? ''));
@@ -80,6 +81,8 @@ foreach ($requests as $request) {
         $pendingCount++;
     } elseif (in_array($currentStatus, ['open', 'approved', 'accepted'], true)) {
         $acceptedCount++;
+    } elseif ($currentStatus === 'completed') {
+      $completedCount++;
     } elseif ($currentStatus === 'rejected') {
         $rejectedCount++;
     }
@@ -339,6 +342,12 @@ foreach ($requests as $request) {
           <div class="stat-content">
             <h3 class="stat-number"><?= (int)$acceptedCount ?></h3>
             <p class="stat-label">Accepted</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-content">
+            <h3 class="stat-number"><?= (int)$completedCount ?></h3>
+            <p class="stat-label">Completed</p>
           </div>
         </div>
         <div class="stat-card">

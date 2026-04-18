@@ -58,13 +58,6 @@
   margin-bottom: var(--spacing-lg);
 }
 
-.section-title {
-  font-size: var(--font-2xl);
-  font-weight: 600;
-  color: var(--foreground);
-  margin: 0;
-}
-
 /* Profile Section */
 .profile-section {
   margin-top: 0;

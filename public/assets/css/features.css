@@ -26,7 +26,7 @@
   font-size: var(--font-md);
 }
 
-.section-title {
+.features .section-title {
   font-size: var(--font-3xl);
   font-weight: 700;
   color: var(--foreground);
@@ -94,7 +94,7 @@
     grid-template-columns: repeat(2, 1fr);
   }
   
-  .section-title {
+  .features .section-title {
     font-size: var(--font-4xl);
   }
 }

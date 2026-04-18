@@ -745,19 +745,18 @@
   color: #3b82f6;
 }
 
-/* Migrated from discussion forum view files */
+.forum-heading {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0;
+}
+
 .section-title-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-}
-
-.section-title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 0;
 }
 
 .filter-controls {
@@ -929,7 +928,7 @@
   background: var(--card);
   padding: 1.5rem;
   border-radius: 12px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .search-input-wrapper {
@@ -1076,8 +1075,7 @@
 .no-results-message small { font-size: 0.875rem; color: var(--muted-foreground); }
 
 .my-replies-section { margin-bottom: 2rem; }
-.my-replies-section .section-title { display: flex; align-items: center; gap: 0.5rem; }
-.my-replies-section .section-title i { color: var(--primary); }
+.my-replies-section .forum-heading i { color: var(--primary); }
 .my-replies-container { margin-top: 1.5rem; }
 .replies-grid { display: grid; gap: 1rem; }
 
@@ -1172,23 +1170,13 @@
   gap: 0.5rem;
 }
 
-.forum-topics-title {
-  font-size: 1.5rem;
-}
-
 .clear-search-btn {
   display: none;
 }
 
 .forum-empty-state {
-  width: 100%;
-  min-height: clamp(280px, 38vh, 420px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   text-align: center;
-  padding: 48px 24px;
+  padding: 40px;
   color: #666;
 }
 
@@ -1744,16 +1732,18 @@
   padding-bottom: 0.55rem;
 }
 
+
 .all-forums-page .hashtag-search-section {
   background: transparent;
   border: 0;
   border-radius: 0;
   padding: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
 }
 
+
 .all-forums-page .search-input-wrapper {
-  margin-bottom: 0.875rem;
+  margin-bottom: 0;
   border: none !important;
   box-shadow: none !important;
 }
@@ -1781,11 +1771,12 @@
   border-width: 1px;
 }
 
+
 .all-forums-page .topics-container {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.875rem;
-  margin-top: 0.75rem;
+  margin-top: 0.25rem;
 }
 
 .all-forums-page .topic-card {
@@ -1908,30 +1899,21 @@
 }
 
 .discussion-main-page .section-header {
-  margin-bottom: 0.75rem;
-}
-
-.discussion-main-page .forum-topics-section {
-  margin-bottom: 0;
+  margin-bottom: 1rem;
 }
 
 .discussion-main-page #my-forums {
-  margin-top: 20px;
-  background: var(--card);
-  border: none;
-  box-shadow: none;
-}
-
-.discussion-main-page #my-replies {
   margin-top: 36px;
   background: var(--card);
   border: none;
   box-shadow: none;
 }
 
-.discussion-main-page .my-published-container,
-.discussion-main-page .my-replies-container {
-  margin-top: 0.75rem;
+.discussion-main-page #my-replies {
+  margin-top: 52px;
+  background: var(--card);
+  border: none;
+  box-shadow: none;
 }
 
 .discussion-main-page .hashtag-search-section {
@@ -1946,7 +1928,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.85rem;
 }
 
 .discussion-main-page .search-input-wrapper {
@@ -1990,7 +1972,6 @@
   cursor: pointer;
   border-radius: 12px;
   border: 1px solid var(--border);
-  margin-bottom: 0;
 }
 
 .discussion-main-page .forum-topics-section .topic-card:hover {
@@ -2034,19 +2015,15 @@
   color: var(--muted-foreground);
 }
 
+.discussion-main-page .my-published-forums-section .topics-container,
 .discussion-main-page .my-replies-section .replies-grid {
   gap: 0.4rem;
-}
-
-.discussion-main-page .my-published-forums-section .topics-container {
-  gap: 0.9rem;
 }
 
 .discussion-main-page .my-published-forums-section .topic-card {
   border-radius: 12px;
   padding: 1rem;
   border: 1px solid var(--border);
-  margin-bottom: 0;
 }
 
 .discussion-main-page .my-published-forums-section .topic-actions .btn.btn-primary {
@@ -2148,7 +2125,7 @@
 
   .discussion-main-page #my-forums,
   .discussion-main-page #my-replies {
-    margin-top: 32px;
+    margin-top: 48px;
   }
 
   .discussion-main-page .forum-search-row {
@@ -2172,3 +2149,4 @@
     pointer-events: auto;
   }
 }
+

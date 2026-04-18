@@ -53,7 +53,7 @@ require '../app/views/partials/alumni_header.php';
         <section id="forum-topics" class="dashboard-section forum-topics-section">
           <div class="section-header">
             <div class="section-title-container">
-              <h2 class="section-title forum-topics-title">Forum Topics</h2>
+              <h2 class="forum-heading">Forum Topics</h2>
               <div class="filter-controls">
                 <select class="filter-select">
                   <option>Most Recent</option>
@@ -138,7 +138,7 @@ require '../app/views/partials/alumni_header.php';
         <section id="my-forums" class="dashboard-section my-published-forums-section">
           <div class="section-header">
             <div class="section-title-container">
-              <h2 class="section-title">My Published Forums</h2>
+              <h2 class="forum-heading">My Published Forums</h2>
             </div>
           </div>
           
@@ -233,7 +233,7 @@ require '../app/views/partials/alumni_header.php';
         <section id="my-replies" class="dashboard-section my-replies-section">
           <div class="section-header">
             <div class="section-title-container">
-              <h2 class="section-title">My Replies</h2>
+              <h2 class="forum-heading">My Replies</h2>
             </div>
           </div>
           

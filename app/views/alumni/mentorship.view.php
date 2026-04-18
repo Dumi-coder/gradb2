@@ -36,7 +36,7 @@ require '../app/views/partials/alumni_header.php';
     <section class="dashboard-section mentor-reputation-section">
       <div class="reputation-card">
         <h2 class="section-title">Your Mentor Feedback</h2>
-        <p class="mentor-rating">â­ <?= number_format((float)($mentorshipData['reputation']['avg_rating'] ?? 0), 1) ?> Feedback Score</p>
+        <p class="mentor-rating">&#9733; <?= number_format((float)($mentorshipData['reputation']['avg_rating'] ?? 0), 1) ?> Feedback Score</p>
         <p class="mentor-sessions">Completed Sessions: <?= (int)($mentorshipData['reputation']['total_completed_sessions'] ?? 0) ?></p>
       </div>
     </section>
@@ -79,8 +79,8 @@ require '../app/views/partials/alumni_header.php';
               </p>
               <p class="mentor-meta">Student Email: <?= esc($request['student_email']) ?></p>
               <div class="request-actions mentor-request-actions">
-                <form method="POST" action="<?= ROOT ?>/Alumni/Mentorship/accept/<?= (int)$request['request_id'] ?>">
-                  <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Accept this request?');">
+                <form method="POST" action="<?= ROOT ?>/Alumni/Mentorship/accept/<?= (int)$request['request_id'] ?>" class="js-accept-request-form">
+                  <button type="submit" class="btn btn-success btn-sm">
                     <i class="fas fa-check"></i> Accept
                   </button>
                 </form>
@@ -166,7 +166,7 @@ require '../app/views/partials/alumni_header.php';
               </div>
               <p class="request-description"><?= esc($completed['request_reason']) ?></p>
               <p class="mentor-meta">Student: <?= esc($completed['student_name']) ?></p>
-              <p class="mentor-meta">Feedback Score: â­ <?= (int)($completed['rating'] ?? 0) ?></p>
+              <p class="mentor-meta">Feedback Score: &#9733; <?= (int)($completed['rating'] ?? 0) ?></p>
               <?php if (!empty($completed['review_comment'])): ?>
                 <p class="review-note"><strong>Feedback Note:</strong> "<?= esc($completed['review_comment']) ?>"</p>
               <?php endif; ?>
@@ -180,6 +180,17 @@ require '../app/views/partials/alumni_header.php';
       <?php endif; ?>
     </section>
   </main>
+</div>
+
+<div class="action-confirm-modal" id="acceptRequestConfirmModal" aria-hidden="true">
+  <div class="action-confirm-panel" role="dialog" aria-modal="true" aria-labelledby="acceptRequestConfirmTitle">
+    <h3 id="acceptRequestConfirmTitle" class="action-confirm-title">Accept this request?</h3>
+    <p class="action-confirm-text">This student request will move to your accepted mentorships list.</p>
+    <div class="action-confirm-actions">
+      <button type="button" class="btn btn-outline btn-sm" data-confirm-cancel>Cancel</button>
+      <button type="button" class="btn btn-primary btn-sm" data-confirm-accept>Yes, Accept</button>
+    </div>
+  </div>
 </div>
 
 <div class="mentorship-chat-modal" id="mentorshipChatModal" aria-hidden="true">
@@ -215,24 +226,100 @@ require '../app/views/partials/alumni_header.php';
 <script>
   (function () {
     const toast = document.querySelector('.mentorship-toast');
-    if (!toast) return;
+    if (toast) {
+      const closeBtn = toast.querySelector('.mentorship-toast-close');
 
-    const closeBtn = toast.querySelector('.mentorship-toast-close');
+      const dismissToast = function () {
+        toast.classList.add('is-hiding');
+        setTimeout(() => {
+          if (toast && toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+          }
+        }, 260);
+      };
 
-    const dismissToast = function () {
-      toast.classList.add('is-hiding');
-      setTimeout(() => {
-        if (toast && toast.parentNode) {
-          toast.parentNode.removeChild(toast);
-        }
-      }, 260);
-    };
+      if (closeBtn) {
+        closeBtn.addEventListener('click', dismissToast);
+      }
 
-    if (closeBtn) {
-      closeBtn.addEventListener('click', dismissToast);
+      setTimeout(dismissToast, 3200);
     }
 
-    setTimeout(dismissToast, 3200);
+    const acceptForms = Array.from(document.querySelectorAll('.js-accept-request-form'));
+    const confirmModal = document.getElementById('acceptRequestConfirmModal');
+    const confirmAcceptBtn = confirmModal ? confirmModal.querySelector('[data-confirm-accept]') : null;
+    const confirmCancelBtn = confirmModal ? confirmModal.querySelector('[data-confirm-cancel]') : null;
+    let pendingAcceptForm = null;
+
+    const closeConfirmModal = function () {
+      if (!confirmModal) return;
+      confirmModal.classList.remove('is-open');
+      confirmModal.style.display = '';
+      confirmModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      pendingAcceptForm = null;
+    };
+
+    const openConfirmModal = function (form) {
+      if (!confirmModal || !confirmAcceptBtn || !confirmCancelBtn) {
+        if (window.confirm('Accept this request?')) {
+          form.submit();
+        }
+        return;
+      }
+
+      pendingAcceptForm = form;
+      confirmModal.classList.add('is-open');
+      confirmModal.style.display = 'flex';
+      confirmModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+
+      const modalIsVisible = window.getComputedStyle(confirmModal).display !== 'none';
+      if (!modalIsVisible) {
+        confirmModal.classList.remove('is-open');
+        confirmModal.style.display = '';
+        confirmModal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        pendingAcceptForm = null;
+        if (window.confirm('Accept this request?')) {
+          form.submit();
+        }
+      }
+    };
+
+    acceptForms.forEach((form) => {
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        openConfirmModal(form);
+      });
+    });
+
+    if (confirmAcceptBtn) {
+      confirmAcceptBtn.addEventListener('click', function () {
+        if (!pendingAcceptForm) return;
+        const formToSubmit = pendingAcceptForm;
+        closeConfirmModal();
+        formToSubmit.submit();
+      });
+    }
+
+    if (confirmCancelBtn) {
+      confirmCancelBtn.addEventListener('click', closeConfirmModal);
+    }
+
+    if (confirmModal) {
+      confirmModal.addEventListener('click', function (event) {
+        if (event.target === confirmModal) {
+          closeConfirmModal();
+        }
+      });
+    }
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && confirmModal && confirmModal.classList.contains('is-open')) {
+        closeConfirmModal();
+      }
+    });
   })();
 </script>
 <script>

@@ -5,27 +5,29 @@ $page_stylesheets = [ROOT . '/assets/css/mentorship.css?v=' . time()];
 require '../app/views/partials/student_header.php'; 
 ?>
 
+<?php if (isset($_SESSION['success'])): ?>
+  <div class="mentorship-toast mentorship-toast-success" data-mentorship-toast role="status" aria-live="polite">
+    <i class="fas fa-check-circle" aria-hidden="true"></i>
+    <span><?= esc($_SESSION['success']) ?></span>
+    <button type="button" class="mentorship-toast-close" data-toast-close aria-label="Close notification">&times;</button>
+  </div>
+  <?php unset($_SESSION['success']); ?>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['error'])): ?>
+  <div class="mentorship-toast mentorship-toast-error" data-mentorship-toast role="alert" aria-live="assertive">
+    <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+    <span><?= esc($_SESSION['error']) ?></span>
+    <button type="button" class="mentorship-toast-close" data-toast-close aria-label="Close notification">&times;</button>
+  </div>
+  <?php unset($_SESSION['error']); ?>
+<?php endif; ?>
+
 <div class="dashboard-container">
   <?php require '../app/views/partials/student_sidebar.php'; ?>
 
   <main class="main-content">
     <div class="content-container">
-      <?php if (isset($_SESSION['success'])): ?>
-        <div class="alert alert-success">
-          <i class="fas fa-check-circle"></i>
-          <?= esc($_SESSION['success']) ?>
-        </div>
-        <?php unset($_SESSION['success']); ?>
-      <?php endif; ?>
-
-      <?php if (isset($_SESSION['error'])): ?>
-        <div class="alert alert-danger">
-          <i class="fas fa-exclamation-circle"></i>
-          <?= esc($_SESSION['error']) ?>
-        </div>
-        <?php unset($_SESSION['error']); ?>
-      <?php endif; ?>
-
       <section class="dashboard-section faq-first-section">
         <div class="faq-first-strip" role="note" aria-label="FAQ first guidance">
           <div class="faq-first-copy">
@@ -88,12 +90,12 @@ require '../app/views/partials/student_header.php';
                   <p class="mentor-meta mentor-quick-meta">
                     <?= esc($mentor['faculty_name'] ?: 'Faculty N/A') ?>
                     <?php if (!empty($mentor['current_job'])): ?>
-                      â€¢ <?= esc($mentor['current_job']) ?>
+                      <span class="meta-sep" aria-hidden="true">&middot;</span> <?= esc($mentor['current_job']) ?>
                     <?php endif; ?>
                     <?php if (!empty($mentor['expertise_area'])): ?>
-                      â€¢ <?= esc($mentor['expertise_area']) ?>
+                      <span class="meta-sep" aria-hidden="true">&middot;</span> <?= esc($mentor['expertise_area']) ?>
                     <?php endif; ?>
-                    â€¢ <?= (int)$mentor['sessions_count'] ?> sessions completed
+                    <span class="meta-sep" aria-hidden="true">&middot;</span> <?= (int)$mentor['sessions_count'] ?> sessions completed
                   </p>
                   <p class="mentor-description"><?= esc($mentor['mentor_bio'] ?: 'Experienced alumnus available for student mentorship.') ?></p>
                 </div>
@@ -273,6 +275,30 @@ require '../app/views/partials/student_header.php';
 
 <script>
   (function() {
+    const toasts = Array.from(document.querySelectorAll('[data-mentorship-toast]'));
+    const closeToast = function (toast) {
+      if (!toast) return;
+      toast.classList.add('is-hiding');
+      window.setTimeout(function () {
+        if (toast && toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 260);
+    };
+
+    toasts.forEach(function (toast) {
+      const closeBtn = toast.querySelector('[data-toast-close]');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function () {
+          closeToast(toast);
+        });
+      }
+
+      window.setTimeout(function () {
+        closeToast(toast);
+      }, 5000);
+    });
+
     const toggleBtn = document.getElementById('mentors-toggle');
     const cards = Array.from(document.querySelectorAll('.mentors-section .mentor-card'));
     const previewCount = 3;

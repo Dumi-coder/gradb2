@@ -76,17 +76,21 @@ require '../app/views/partials/student_header.php';
                   <div class="event-content">
                     <div class="event-category <?= esc($event['category']) ?>"><?= ucfirst(esc($event['category'])) ?></div>
                     <h3 class="event-title"><?= esc($event['title']) ?></h3>
+                    <p class="event-caption-line">
+                      <span><?= date('M d, Y', strtotime($event['event_date'])) ?></span>
+                      <span class="caption-dot">&middot;</span>
+                      <span><?= date('g:i A', strtotime($event['start_time'])) ?> - <?= date('g:i A', strtotime($event['end_time'])) ?></span>
+                      <?php if (!empty($event['venue'])): ?>
+                        <span class="caption-dot">&middot;</span>
+                        <span><?= esc($event['venue']) ?></span>
+                      <?php endif; ?>
+                    </p>
                     <p class="event-description"><?= esc($event['description']) ?></p>
-                    <div class="event-meta">
-                      <?php $modeLabel = ucfirst($event['mode'] ?? 'offline'); ?>
-                      <?php if (strtolower((string)$modeLabel) === 'offline') { $modeLabel = 'Physical'; } ?>
-                      <span class="event-time"><i class="fas fa-calendar"></i> <?= date('M d, Y', strtotime($event['event_date'])) ?></span>
-                      <span class="event-time"><i class="fas fa-clock"></i> <?= date('g:i A', strtotime($event['start_time'])) ?> - <?= date('g:i A', strtotime($event['end_time'])) ?></span>
-                      <span class="event-location"><i class="fas fa-map-marker-alt"></i> <?= esc($event['venue']) ?></span>
-                      <span class="event-mode-badge mode-<?= strtolower(esc($event['mode'] ?? 'offline')) ?>">
-                        <i class="fas fa-video"></i> <?= esc($modeLabel) ?>
-                      </span>
-                    </div>
+                    <?php $modeLabel = ucfirst($event['mode'] ?? 'offline'); ?>
+                    <?php if (strtolower((string)$modeLabel) === 'offline') { $modeLabel = 'Physical'; } ?>
+                    <span class="event-mode-badge mode-<?= strtolower(esc($event['mode'] ?? 'offline')) ?>">
+                      <i class="fas fa-video"></i> <?= esc($modeLabel) ?>
+                    </span>
                     <?php if (!empty($event['tags'])): ?>
                       <div class="event-tags-row">
                         <?php foreach (array_filter(array_map('trim', explode(',', (string)$event['tags']))) as $tag): ?>
@@ -129,10 +133,6 @@ require '../app/views/partials/student_header.php';
                           <span>Register Now</span>
                         </button>
                       <?php endif; ?>
-                      <button class="btn btn-outline btn-sm">
-                        <i class="fas fa-heart"></i>
-                        <span>Save</span>
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -151,6 +151,7 @@ require '../app/views/partials/student_header.php';
             <h2 class="section-title">This Week's Events</h2>
             <div class="section-actions">
               <button class="btn btn-outline btn-sm" onclick="viewCalendar()">
+                                    <span>Unregister</span>
                 <i class="fas fa-calendar-alt"></i>
                 <span>Calendar View</span>
               </button>
@@ -283,9 +284,31 @@ require '../app/views/partials/student_header.php';
             <?php if (!empty($registeredEvents)): ?>
               <?php foreach ($registeredEvents as $index => $event): ?>
                 <div class="my-event-card js-card-student-my-events" <?= $index >= 2 ? 'style="display:none;"' : '' ?>>
-                  <div class="event-status registered">Registered</div>
+                  <div class="my-event-image" style="background-color: #E0EBF9;">
+                    <?php if (!empty($event['image_path'])): ?>
+                      <img src="<?=ROOT?><?= esc($event['image_path']) ?>" alt="<?= esc($event['title']) ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                    <?php endif; ?>
+                  </div>
                   <div class="event-content">
+                    <div class="my-event-topline">
+                      <div class="event-status registered">Registered</div>
+                    </div>
                     <h3 class="event-title"><?= esc($event['title']) ?></h3>
+                    <p class="my-event-caption-line">
+                      <span><?= date('M d, Y', strtotime($event['event_date'])) ?></span>
+                      <span class="caption-dot">&middot;</span>
+                      <span><?= date('g:i A', strtotime($event['start_time'])) ?></span>
+                      <?php if (!empty($event['venue'])): ?>
+                        <span class="caption-dot">&middot;</span>
+                        <span><?= esc($event['venue']) ?></span>
+                      <?php endif; ?>
+                    </p>
+
+                    <?php $myEventModeLabel = ucfirst($event['mode'] ?? 'offline'); ?>
+                    <?php if (strtolower((string)$myEventModeLabel) === 'offline') { $myEventModeLabel = 'Physical'; } ?>
+                    <span class="event-mode-badge mode-<?= strtolower(esc($event['mode'] ?? 'offline')) ?>">
+                      <i class="fas fa-video"></i> <?= esc($myEventModeLabel) ?>
+                    </span>
                     
                     <?php if (!empty($event['notifications'])): ?>
                       <div class="event-notifications" style="background-color: #FFF3CD; border-left: 4px solid #FFC107; padding: var(--spacing-sm); margin-bottom: var(--spacing-md); border-radius: var(--radius-sm);">
@@ -314,10 +337,6 @@ require '../app/views/partials/student_header.php';
                       </div>
                     <?php endif; ?>
                     
-                    <div class="event-meta">
-                      <span class="event-time"><i class="fas fa-clock"></i> <?= date('M d, Y', strtotime($event['event_date'])) ?>, <?= date('g:i A', strtotime($event['start_time'])) ?></span>
-                      <span class="event-location"><i class="fas fa-map-marker-alt"></i> <?= esc($event['venue']) ?></span>
-                    </div>
                     <div class="event-actions">
                       <?php if (!empty($event['registration_link'])): ?>
                         <a class="btn btn-outline btn-sm" href="<?= esc($event['registration_link']) ?>" target="_blank" rel="noopener noreferrer">
@@ -325,9 +344,9 @@ require '../app/views/partials/student_header.php';
                           <span>View Details</span>
                         </a>
                       <?php endif; ?>
-                      <button class="btn btn-outline btn-sm" onclick="unregisterEvent(<?= $event['event_id'] ?>)">
+                      <button class="btn btn-outline btn-sm btn-unregister" onclick="unregisterEvent(<?= $event['event_id'] ?>)">
                         <i class="fas fa-times"></i>
-                        <span>Cancel</span>
+                        <span>Unregister</span>
                       </button>
                     </div>
                   </div>
