@@ -728,6 +728,21 @@ body.alumni-dashboard .featured-events-section .featured-event-card .event-meta 
   animation: modalSlideIn 0.3s ease-out;
 }
 
+.confirm-action-modal .modal-content {
+  max-width: 420px;
+  margin: 12% auto;
+}
+
+.confirm-action-body {
+  padding: var(--spacing-lg);
+}
+
+.confirm-action-body p {
+  margin: 0;
+  color: var(--foreground);
+  line-height: var(--leading-normal);
+}
+
 @keyframes modalSlideIn {
   from {
     opacity: 0;

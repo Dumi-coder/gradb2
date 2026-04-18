@@ -536,6 +536,29 @@ require '../app/views/partials/student_header.php';
       </div>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div id="confirmActionModal" class="modal confirm-action-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Confirm Action</h2>
+          <button class="modal-close" id="confirmActionClose" type="button">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="confirm-action-body">
+          <p id="confirmActionMessage">Are you sure?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" id="confirmActionCancel" type="button">
+            <span>Cancel</span>
+          </button>
+          <button class="btn btn-danger" id="confirmActionOk" type="button">
+            <span>Confirm</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     
     <!-- Filter Events Modal
     <div id="filterModal" class="modal">
@@ -625,6 +648,7 @@ require '../app/views/partials/student_header.php';
     <script src="<?=ROOT?>/assets/js/events-board.js"></script>
     <script>
       let currentRegisterEventId = null;
+      let confirmActionResolver = null;
 
       function toggleEventCards(sectionKey, button) {
         const cards = document.querySelectorAll('.js-card-' + sectionKey);
@@ -689,8 +713,40 @@ require '../app/views/partials/student_header.php';
         }
       }
 
+      function openConfirmActionModal(message) {
+        const modal = document.getElementById('confirmActionModal');
+        const messageEl = document.getElementById('confirmActionMessage');
+
+        if (messageEl) {
+          messageEl.textContent = message || 'Are you sure?';
+        }
+
+        if (modal) {
+          modal.style.display = 'block';
+          document.body.style.overflow = 'hidden';
+        }
+
+        return new Promise((resolve) => {
+          confirmActionResolver = resolve;
+        });
+      }
+
+      function closeConfirmActionModal(confirmed) {
+        const modal = document.getElementById('confirmActionModal');
+        if (modal) {
+          modal.style.display = 'none';
+          document.body.style.overflow = 'auto';
+        }
+
+        if (confirmActionResolver) {
+          confirmActionResolver(Boolean(confirmed));
+          confirmActionResolver = null;
+        }
+      }
+
       async function unregisterEvent(eventId) {
-        if (!confirm('Cancel your registration for this event?')) {
+        const confirmed = await openConfirmActionModal('Cancel your registration for this event?');
+        if (!confirmed) {
           return;
         }
 
@@ -750,6 +806,23 @@ require '../app/views/partials/student_header.php';
       window.closeRegisterModal = closeRegisterModal;
       window.unregisterEvent = unregisterEvent;
       window.toggleEventCards = toggleEventCards;
+
+      document.getElementById('confirmActionOk')?.addEventListener('click', function() {
+        closeConfirmActionModal(true);
+      });
+      document.getElementById('confirmActionCancel')?.addEventListener('click', function() {
+        closeConfirmActionModal(false);
+      });
+      document.getElementById('confirmActionClose')?.addEventListener('click', function() {
+        closeConfirmActionModal(false);
+      });
+
+      window.addEventListener('click', function(event) {
+        const modal = document.getElementById('confirmActionModal');
+        if (event.target === modal) {
+          closeConfirmActionModal(false);
+        }
+      });
 
       const studentUpcomingToggleBtn = document.querySelector('.events-header-section .btn.btn-outline.btn-sm');
       if (studentUpcomingToggleBtn) {

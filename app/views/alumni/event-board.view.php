@@ -156,19 +156,19 @@ require '../app/views/partials/alumni_header.php';
                         <i class="fas fa-external-link-alt"></i> View Details
                       </a>
                     <?php endif; ?>
-                    <button class="btn btn-outline btn-sm" onclick="openEditEventModal(<?= $event['event_id'] ?>)">
+                    <button class="btn btn-outline btn-sm js-host-edit" data-event-id="<?= (int)$event['event_id'] ?>" type="button">
                       <i class="fas fa-edit"></i> Edit Details
                     </button>
                     <?php if ($event['registration_status'] === 'open'): ?>
-                      <button class="btn btn-danger btn-sm" onclick="toggleRegistrationStatus(<?= $event['event_id'] ?>)">
+                      <button class="btn btn-danger btn-sm js-host-toggle" data-event-id="<?= (int)$event['event_id'] ?>" type="button">
                         <i class="fas fa-lock"></i> Close Registrations
                       </button>
                     <?php else: ?>
-                      <button class="btn btn-success btn-sm" onclick="toggleRegistrationStatus(<?= $event['event_id'] ?>)">
+                      <button class="btn btn-success btn-sm js-host-toggle" data-event-id="<?= (int)$event['event_id'] ?>" type="button">
                         <i class="fas fa-unlock"></i> Reopen Registrations
                       </button>
                     <?php endif; ?>
-                    <button class="btn btn-danger btn-sm" onclick="confirmDeleteEvent(<?= $event['event_id'] ?>)">
+                    <button class="btn btn-danger btn-sm js-host-delete" data-event-id="<?= (int)$event['event_id'] ?>" type="button">
                       <i class="fas fa-trash"></i> Delete
                     </button>
                   </div>
@@ -551,11 +551,35 @@ require '../app/views/partials/alumni_header.php';
       </div>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div id="confirmActionModal" class="modal confirm-action-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Confirm Action</h2>
+          <button class="modal-close" id="confirmActionClose" type="button">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="confirm-action-body">
+          <p id="confirmActionMessage">Are you sure?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" id="confirmActionCancel" type="button">
+            <span>Cancel</span>
+          </button>
+          <button class="btn btn-danger" id="confirmActionOk" type="button">
+            <span>Confirm</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="<?=ROOT?>/assets/js/events-board.js"></script>
     <script>
     // Event CRUD Operations
     let currentEditingEventId = null;
     let currentRegisterEventId = null;
+    let confirmActionResolver = null;
 
     function toggleCreateSessionLinkField() {
       const modeSelect = document.getElementById('eventMode');
@@ -664,8 +688,40 @@ require '../app/views/partials/alumni_header.php';
       }
     }
 
+    function openConfirmActionModal(message) {
+      const modal = document.getElementById('confirmActionModal');
+      const messageEl = document.getElementById('confirmActionMessage');
+
+      if (messageEl) {
+        messageEl.textContent = message || 'Are you sure?';
+      }
+
+      if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+
+      return new Promise((resolve) => {
+        confirmActionResolver = resolve;
+      });
+    }
+
+    function closeConfirmActionModal(confirmed) {
+      const modal = document.getElementById('confirmActionModal');
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+
+      if (confirmActionResolver) {
+        confirmActionResolver(Boolean(confirmed));
+        confirmActionResolver = null;
+      }
+    }
+
     async function unregisterEvent(eventId) {
-      if (!confirm('Cancel your registration for this event?')) {
+      const confirmed = await openConfirmActionModal('Cancel your registration for this event?');
+      if (!confirmed) {
         return;
       }
 
@@ -842,7 +898,8 @@ require '../app/views/partials/alumni_header.php';
 
     // Delete Event
     async function confirmDeleteEvent(eventId) {
-        if (!confirm('Are you sure you want to delete this event? All registered students will be notified.')) {
+      const confirmed = await openConfirmActionModal('Are you sure you want to delete this event? All registered students will be notified.');
+      if (!confirmed) {
             return;
         }
         
@@ -904,18 +961,62 @@ require '../app/views/partials/alumni_header.php';
         }
     }
 
+    function bindHostingActionButtons() {
+      const editButtons = document.querySelectorAll('.js-host-edit[data-event-id]');
+      const toggleButtons = document.querySelectorAll('.js-host-toggle[data-event-id]');
+      const deleteButtons = document.querySelectorAll('.js-host-delete[data-event-id]');
+
+      editButtons.forEach((button) => {
+        if (button.dataset.bound === '1') return;
+        button.dataset.bound = '1';
+        button.addEventListener('click', () => {
+          const eventId = parseInt(button.dataset.eventId || '0', 10);
+          if (eventId > 0) openEditEventModal(eventId);
+        });
+      });
+
+      toggleButtons.forEach((button) => {
+        if (button.dataset.bound === '1') return;
+        button.dataset.bound = '1';
+        button.addEventListener('click', () => {
+          const eventId = parseInt(button.dataset.eventId || '0', 10);
+          if (eventId > 0) toggleRegistrationStatus(eventId);
+        });
+      });
+
+      deleteButtons.forEach((button) => {
+        if (button.dataset.bound === '1') return;
+        button.dataset.bound = '1';
+        button.addEventListener('click', () => {
+          const eventId = parseInt(button.dataset.eventId || '0', 10);
+          if (eventId > 0) confirmDeleteEvent(eventId);
+        });
+      });
+    }
+
     // Close modals when clicking outside
     window.onclick = function(event) {
-        const modals = ['newEventModal', 'editEventModal', 'registerModal'];
+        const modals = ['newEventModal', 'editEventModal', 'registerModal', 'confirmActionModal'];
         modals.forEach(modalId => {
             const modal = document.getElementById(modalId);
             if (event.target === modal) {
                 if (modalId === 'newEventModal') closeNewEventModal();
                 if (modalId === 'editEventModal') closeEditEventModal();
                 if (modalId === 'registerModal') closeRegisterModal();
+                if (modalId === 'confirmActionModal') closeConfirmActionModal(false);
             }
         });
     }
+
+        document.getElementById('confirmActionOk')?.addEventListener('click', function() {
+          closeConfirmActionModal(true);
+        });
+        document.getElementById('confirmActionCancel')?.addEventListener('click', function() {
+          closeConfirmActionModal(false);
+        });
+        document.getElementById('confirmActionClose')?.addEventListener('click', function() {
+          closeConfirmActionModal(false);
+        });
 
         const alumniUpcomingToggleBtn = document.querySelector('.events-header-section .btn.btn-outline.btn-sm');
         if (alumniUpcomingToggleBtn) {
@@ -936,6 +1037,8 @@ require '../app/views/partials/alumni_header.php';
         window.openEditEventModal = openEditEventModal;
         window.toggleRegistrationStatus = toggleRegistrationStatus;
         window.confirmDeleteEvent = confirmDeleteEvent;
+
+        bindHostingActionButtons();
 
           const createModeSelect = document.getElementById('eventMode');
           if (createModeSelect) {
