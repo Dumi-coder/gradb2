@@ -26,7 +26,7 @@ $statusLabel = function ($status) {
     }
 
   if ($status === 'open') {
-    return 'Accepted (Counselor)';
+    return 'Accepted (Counsellor)';
   }
 
   if (in_array($status, ['approved', 'accepted'], true)) {
@@ -103,7 +103,7 @@ foreach ($requests as $request) {
       <div class="request-form-card">
         <div class="form-intro">
           <h3 class="form-title">Need Assistance?</h3>
-          <p class="form-description">Your aid request will undergo an initial counselor review for eligibility and completeness. Upon approval, it will be forwarded to alumni for support consideration.</p>
+          <p class="form-description">Your aid request will undergo an initial counsellor review for eligibility and completeness. Upon approval, it will be forwarded to alumni for support consideration.</p>
         </div>
         <div class="form-actions">
           <a href="<?=ROOT?>/Student/AidReqForm">
@@ -141,7 +141,7 @@ foreach ($requests as $request) {
                 <?php $detailId = 'request-details-' . (int)($request->request_id ?? 0); ?>
                 <?php
                   $requestStatus = strtolower((string)($request->status ?? ''));
-                  $isPendingCounselorReview = $requestStatus === 'pending_verification';
+                  $isPendingCounsellorReview = $requestStatus === 'pending_verification';
 
                   $rawReason = trim((string)($request->reason ?? ''));
                   $displayReason = $rawReason;
@@ -196,7 +196,7 @@ foreach ($requests as $request) {
                         <i class="fas fa-eye"></i>
                         <span>View Details</span>
                       </button>
-                      <?php if ($isPendingCounselorReview): ?>
+                      <?php if ($isPendingCounsellorReview): ?>
                         <form method="POST" action="<?= ROOT ?>/Student/AidRequests/delete/<?= (int)($request->request_id ?? 0) ?>" onsubmit="return confirm('Delete this pending request?');">
                           <button type="submit" class="btn btn-danger btn-sm">
                             <i class="fas fa-trash"></i>
@@ -209,7 +209,7 @@ foreach ($requests as $request) {
                 </tr>
                 <tr id="<?= esc($detailId) ?>" class="request-details-row" style="display:none;">
                   <td colspan="6">
-                    <?php if ($isPendingCounselorReview): ?>
+                    <?php if ($isPendingCounsellorReview): ?>
                       <div class="request-details-actions">
                         <button type="button" class="btn btn-outline btn-sm edit-details-toggle" data-target="edit-<?= esc($detailId) ?>">
                           <i class="fas fa-edit"></i>
@@ -259,7 +259,7 @@ foreach ($requests as $request) {
                       <div class="request-detail-item"><span class="request-detail-label">Submitted</span><strong><?= esc($request->created_at ?? 'N/A') ?></strong></div>
                     </div>
 
-                    <?php if ($isPendingCounselorReview): ?>
+                    <?php if ($isPendingCounsellorReview): ?>
                       <form id="edit-<?= esc($detailId) ?>" class="request-edit-form" method="POST" action="<?= ROOT ?>/Student/AidRequests/update/<?= (int)($request->request_id ?? 0) ?>" enctype="multipart/form-data" style="display:none;">
                         <h4>Edit Pending Request</h4>
                         <div class="request-edit-grid">

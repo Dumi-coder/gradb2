@@ -49,7 +49,7 @@ class App// This is the main application class that handles routing and loading 
             // Map directory names to default controllers
             $defaultControllers = [
                 'admin' => 'admin/Auth',
-                'counselor' => 'counselor/Auth', 
+                'counsellor' => 'counsellor/Auth', 
                 'superadmin' => 'superadmin/Auth',
                 'public' => 'Home'
             ];
@@ -71,10 +71,10 @@ class App// This is the main application class that handles routing and loading 
         $URL=$this->splitURL();// Get the URL segments
 
         // Map top-level role routes to their default auth controllers.
-        // Example: /public/counselor -> Counselor/Auth
+        // Example: /public/counsellor -> Counsellor/Auth
         if (!empty($URL[0]) && !isset($URL[1])) {
             $topLevelDefaults = [
-                'counselor' => 'Auth',
+                'counsellor' => 'Auth',
                 'admin' => 'Auth',
                 'superadmin' => 'Auth',
             ];

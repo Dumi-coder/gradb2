@@ -232,7 +232,7 @@ $isMonetaryType = static function ($type) {
                 <div class="req-row"><span class="req-label">Support</span><strong><?= esc($completedSupportText) ?></strong></div>
                 <div class="req-row"><span class="req-label">Description</span><strong><?= esc($request['description'] ?? 'No description provided') ?></strong></div>
                 <div class="req-row"><span class="req-label">Completed On</span><strong><?= esc($request['completed_date'] ?? 'N/A') ?></strong></div>
-                <div class="req-row"><span class="req-label">Counselor Completion Note</span><strong><?= esc($request['completion_note'] ?? 'No completion note provided') ?></strong></div>
+                <div class="req-row"><span class="req-label">Counsellor Completion Note</span><strong><?= esc($request['completion_note'] ?? 'No completion note provided') ?></strong></div>
               </div>
             </div>
           <?php endforeach; ?>

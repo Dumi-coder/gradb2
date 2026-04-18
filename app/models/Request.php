@@ -14,7 +14,7 @@ class Request
 		'created_at',
 	];
 
-	public function getPendingAidRequestsForCounselor()
+	public function getPendingAidRequestsForCounsellor()
 	{
 		$query = "SELECT r.request_id, r.student_user_id, r.alumnus_user_id, r.status, r.created_at,
 						 u.name AS student_name, u.email AS student_email,
@@ -25,18 +25,18 @@ class Request
 						 ar.mobile_number, ar.aid_type, ar.amount, ar.reason,
 						 ar.student_id_pdf_path, ar.income_statement_path, ar.gramaseva_cert_path,
 						 (
-							 SELECT REPLACE(rl.notes, '[COUNSELOR REJECTED] ', '')
+							 SELECT REPLACE(rl.notes, '[COUNSELLOR REJECTED] ', '')
 							 FROM request_logs rl
 							 WHERE rl.request_id = r.request_id
-							   AND rl.notes LIKE '[COUNSELOR REJECTED] %'
+							   AND rl.notes LIKE '[COUNSELLOR REJECTED] %'
 							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
 							 LIMIT 1
 						 ) AS rejection_reason,
 						 (
-							 SELECT REPLACE(rl.notes, '[COUNSELOR COMPLETED] ', '')
+							 SELECT REPLACE(rl.notes, '[COUNSELLOR COMPLETED] ', '')
 							 FROM request_logs rl
 							 WHERE rl.request_id = r.request_id
-							   AND rl.notes LIKE '[COUNSELOR COMPLETED] %'
+							   AND rl.notes LIKE '[COUNSELLOR COMPLETED] %'
 							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
 							 LIMIT 1
 						 ) AS completion_note
@@ -56,7 +56,7 @@ class Request
 		return is_array($result) ? $result : [];
 	}
 
-	public function getAidRequestsForCounselorByStatuses($statuses = [])
+	public function getAidRequestsForCounsellorByStatuses($statuses = [])
 	{
 		if (!is_array($statuses) || empty($statuses)) {
 			return [];
@@ -79,18 +79,18 @@ class Request
 						 ar.mobile_number, ar.aid_type, ar.amount, ar.reason,
 						 ar.student_id_pdf_path, ar.income_statement_path, ar.gramaseva_cert_path,
 						 (
-							 SELECT REPLACE(rl.notes, '[COUNSELOR REJECTED] ', '')
+							 SELECT REPLACE(rl.notes, '[COUNSELLOR REJECTED] ', '')
 							 FROM request_logs rl
 							 WHERE rl.request_id = r.request_id
-							   AND rl.notes LIKE '[COUNSELOR REJECTED] %'
+							   AND rl.notes LIKE '[COUNSELLOR REJECTED] %'
 							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
 							 LIMIT 1
 						 ) AS rejection_reason,
 						 (
-							 SELECT REPLACE(rl.notes, '[COUNSELOR COMPLETED] ', '')
+							 SELECT REPLACE(rl.notes, '[COUNSELLOR COMPLETED] ', '')
 							 FROM request_logs rl
 							 WHERE rl.request_id = r.request_id
-							   AND rl.notes LIKE '[COUNSELOR COMPLETED] %'
+							   AND rl.notes LIKE '[COUNSELLOR COMPLETED] %'
 							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
 							 LIMIT 1
 						 ) AS completion_note
@@ -139,18 +139,18 @@ class Request
 						 ar.mobile_number, ar.aid_type, ar.amount, ar.reason,
 						 ar.student_id_pdf_path, ar.income_statement_path, ar.gramaseva_cert_path,
 						 (
-							 SELECT REPLACE(rl.notes, '[COUNSELOR REJECTED] ', '')
+							 SELECT REPLACE(rl.notes, '[COUNSELLOR REJECTED] ', '')
 							 FROM request_logs rl
 							 WHERE rl.request_id = r.request_id
-							   AND rl.notes LIKE '[COUNSELOR REJECTED] %'
+							   AND rl.notes LIKE '[COUNSELLOR REJECTED] %'
 							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
 							 LIMIT 1
 						 ) AS rejection_reason,
 						 (
-							 SELECT REPLACE(rl.notes, '[COUNSELOR COMPLETED] ', '')
+							 SELECT REPLACE(rl.notes, '[COUNSELLOR COMPLETED] ', '')
 							 FROM request_logs rl
 							 WHERE rl.request_id = r.request_id
-							   AND rl.notes LIKE '[COUNSELOR COMPLETED] %'
+							   AND rl.notes LIKE '[COUNSELLOR COMPLETED] %'
 							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
 							 LIMIT 1
 						 ) AS completion_note
@@ -178,10 +178,10 @@ class Request
 						 ar.mobile_number,
 						 ar.student_id_pdf_path, ar.income_statement_path, ar.gramaseva_cert_path,
 						 (
-							 SELECT REPLACE(rl.notes, '[COUNSELOR REJECTED] ', '')
+							 SELECT REPLACE(rl.notes, '[COUNSELLOR REJECTED] ', '')
 							 FROM request_logs rl
 							 WHERE rl.request_id = r.request_id
-							   AND rl.notes LIKE '[COUNSELOR REJECTED] %'
+							   AND rl.notes LIKE '[COUNSELLOR REJECTED] %'
 							 ORDER BY rl.log_timestamp DESC, rl.log_id DESC
 							 LIMIT 1
 						 ) AS rejection_reason
@@ -195,7 +195,7 @@ class Request
 		return is_array($result) ? $result : [];
 	}
 
-	public function approveAidRequestByCounselor($requestId)
+	public function approveAidRequestByCounsellor($requestId)
 	{
 		$query = "UPDATE requests
 				  SET status = 'open'
@@ -206,7 +206,7 @@ class Request
 		return $this->query($query, ['request_id' => $requestId]) !== false;
 	}
 
-	public function rejectAidRequestByCounselor($requestId, $note)
+	public function rejectAidRequestByCounsellor($requestId, $note)
 	{
 		$note = trim((string)$note);
 		if ($note === '') {
@@ -237,12 +237,12 @@ class Request
 				'request_id' => $requestId,
 				'actor_user_id' => $_SESSION['user_id'] ?? 0,
 				'action' => 'ALUMNUS_ACCEPTED',
-				'notes' => '[COUNSELOR REJECTED] ' . $note,
+				'notes' => '[COUNSELLOR REJECTED] ' . $note,
 			];
 
 			$this->query($logQuery, $logData);
 		} catch (Throwable $e) {
-			error_log('Counselor rejection note log failed: ' . $e->getMessage());
+			error_log('Counsellor rejection note log failed: ' . $e->getMessage());
 		}
 
 		return true;
@@ -277,7 +277,7 @@ class Request
 		return $verified !== false;
 	}
 
-	public function markAidRequestCompletedByCounselor($requestId, $counselorUserId, $completionNote)
+	public function markAidRequestCompletedByCounsellor($requestId, $counsellorUserId, $completionNote)
 	{
 		$completionNote = trim((string)$completionNote);
 		if ($completionNote === '') {
@@ -308,7 +308,7 @@ class Request
 
 		if ($verified !== false) {
 			try {
-				$logNote = '[COUNSELOR COMPLETED] ' . $completionNote;
+				$logNote = '[COUNSELLOR COMPLETED] ' . $completionNote;
 				if (strlen($logNote) > 1000) {
 					$logNote = substr($logNote, 0, 1000);
 				}
@@ -323,12 +323,12 @@ class Request
 				$this->query($logQuery, [
 					'log_id' => $nextLogId,
 					'request_id' => (int)$requestId,
-					'actor_user_id' => (int)$counselorUserId,
-					'action' => 'COUNSELOR_COMPLETED',
+					'actor_user_id' => (int)$counsellorUserId,
+					'action' => 'COUNSELLOR_COMPLETED',
 					'notes' => $logNote,
 				]);
 			} catch (Throwable $e) {
-				error_log('Counselor completion log failed: ' . $e->getMessage());
+				error_log('Counsellor completion log failed: ' . $e->getMessage());
 			}
 		}
 
