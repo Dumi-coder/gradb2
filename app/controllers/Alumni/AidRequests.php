@@ -69,9 +69,9 @@ class AidRequests extends Controller
     {
         $requestModel = new Request();
 
-        $pendingRows = $requestModel->getAidRequestsForCounselorByStatuses(['open']);
-        $approvedRows = $requestModel->getAidRequestsForCounselorByStatuses(['approved', 'accepted']);
-        $completedRows = $requestModel->getAidRequestsForCounselorByStatuses(['completed']);
+        $pendingRows = $requestModel->getAidRequestsForCounsellorByStatuses(['open']);
+        $approvedRows = $requestModel->getAidRequestsForCounsellorByStatuses(['approved', 'accepted']);
+        $completedRows = $requestModel->getAidRequestsForCounsellorByStatuses(['completed']);
 
         $formatAmount = static function ($amount) {
             if ($amount === null || $amount === '') {

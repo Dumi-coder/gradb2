@@ -9,9 +9,9 @@ if (!function_exists('renderAidSupervisionCardSuperadmin')) {
         $alumnusUserId = (int)($card->alumnus_user_id ?? 0);
         $status = strtolower((string)($card->status ?? 'pending_verification'));
 
-        $statusLabel = 'Pending for Counselor';
+        $statusLabel = 'Pending for Counsellor';
         if ($status === 'open') {
-            $statusLabel = 'Approved by Counselor';
+            $statusLabel = 'Approved by Counsellor';
         } elseif (in_array($status, ['approved', 'accepted'], true)) {
             $statusLabel = 'Accepted by Alumni';
         } elseif ($status === 'completed') {
@@ -121,44 +121,44 @@ if (!function_exists('renderAidSupervisionCardSuperadmin')) {
     <main class="main-content">
         <section class="dashboard-section">
             <div class="section-header">
-                <h2 class="section-title">Pending for Counselor</h2>
+                <h2 class="section-title">Pending for Counsellor</h2>
                 <div class="section-stats">
                     <div class="stat-item">
-                        <span class="stat-number"><?= (int)($aidRequestsData['stats']['pending_for_counselor'] ?? 0) ?></span>
+                        <span class="stat-number"><?= (int)($aidRequestsData['stats']['pending_for_counsellor'] ?? 0) ?></span>
                         <span class="stat-label">Awaiting Verification</span>
                     </div>
                 </div>
             </div>
 
             <div class="cards-wrap">
-                <?php if (!empty($aidRequestsData['pending_for_counselor'])): ?>
-                    <?php foreach ($aidRequestsData['pending_for_counselor'] as $card): ?>
+                <?php if (!empty($aidRequestsData['pending_for_counsellor'])): ?>
+                    <?php foreach ($aidRequestsData['pending_for_counsellor'] as $card): ?>
                         <?php renderAidSupervisionCardSuperadmin($card); ?>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <div class="empty-state">No requests are currently waiting for counselor verification.</div>
+                    <div class="empty-state">No requests are currently waiting for counsellor verification.</div>
                 <?php endif; ?>
             </div>
         </section>
 
         <section class="dashboard-section">
             <div class="section-header">
-                <h2 class="section-title">Approved by Counselor</h2>
+                <h2 class="section-title">Approved by Counsellor</h2>
                 <div class="section-stats">
                     <div class="stat-item">
-                        <span class="stat-number"><?= (int)($aidRequestsData['stats']['approved_by_counselor'] ?? 0) ?></span>
+                        <span class="stat-number"><?= (int)($aidRequestsData['stats']['approved_by_counsellor'] ?? 0) ?></span>
                         <span class="stat-label">Waiting for Alumni</span>
                     </div>
                 </div>
             </div>
 
             <div class="cards-wrap">
-                <?php if (!empty($aidRequestsData['approved_by_counselor'])): ?>
-                    <?php foreach ($aidRequestsData['approved_by_counselor'] as $card): ?>
+                <?php if (!empty($aidRequestsData['approved_by_counsellor'])): ?>
+                    <?php foreach ($aidRequestsData['approved_by_counsellor'] as $card): ?>
                         <?php renderAidSupervisionCardSuperadmin($card); ?>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <div class="empty-state">No counselor-approved requests are waiting for alumni yet.</div>
+                    <div class="empty-state">No counsellor-approved requests are waiting for alumni yet.</div>
                 <?php endif; ?>
             </div>
         </section>

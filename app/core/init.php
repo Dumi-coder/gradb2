@@ -93,57 +93,57 @@ function initializeDatabaseTables()
         $con = new PDO($string, DBUSER, DBPASS);
         $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
-        // Create counselor table if it doesn't exist
-        $createCounselorTable = "
-        CREATE TABLE IF NOT EXISTS `counselor` (
-            `user_id` int NOT NULL PRIMARY KEY,
-            `name` varchar(255) DEFAULT NULL,
-            `email` varchar(255) DEFAULT NULL,
-            `password` varchar(255) DEFAULT NULL,
-            `profile_photo_url` varchar(500) DEFAULT NULL,
-            `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
-            `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            KEY `email` (`email`)
-        )
+        // Counsellor table already exists; do not create tables here.
+        
+        // Keep counsellor relationship attached only to users.user_id = 1
+        $cleanupCounsellors = "DELETE FROM counsellor WHERE user_id <> 1";
+        $con->exec($cleanupCounsellors);
+
+                // Normalize role values for the default counsellor account.
+        $normalizeRole = "
+        UPDATE users
+                SET role = 'counsellor'
+                WHERE user_id = 1
+                    AND (
+                            role IS NULL
+                            OR TRIM(role) = ''
+                            OR LOWER(TRIM(role)) = 'counsellor'
+                    )
         ";
-        
-        $con->exec($createCounselorTable);
-        
-        // Sync counselor data from users table if not already synced
-        $syncCounselors = "
-        INSERT INTO counselor (user_id, name, email, password)
-        SELECT user_id, name, email, password FROM users 
-        WHERE role = 'counselor' AND user_id NOT IN (SELECT user_id FROM counselor)
+        $con->exec($normalizeRole);
+
+        // Sync only user_id = 1 from users table into counsellor table
+        // and ensure core account updates are reflected in both tables.
+        // Keep profile_photo_url owned by counsellor table.
+        $syncCounsellors = "
+        INSERT INTO counsellor (user_id, name, email, password)
+        SELECT user_id, name, email, password
+        FROM users
+        WHERE user_id = 1 AND role = 'counsellor'
+        ON DUPLICATE KEY UPDATE
+            name = VALUES(name),
+            email = VALUES(email),
+            password = VALUES(password)
         ";
         
         try {
-            $con->exec($syncCounselors);
+            $con->exec($syncCounsellors);
         } catch (Exception $e) {
             // Sync might fail if there's a constraint, that's ok
         }
+
+                $cleanupInvalidPrimary = "
+                DELETE FROM counsellor
+                WHERE user_id = 1
+                    AND NOT EXISTS (
+                            SELECT 1 FROM users
+                            WHERE users.user_id = 1
+                                AND users.role = 'counsellor'
+                    )
+                ";
+                $con->exec($cleanupInvalidPrimary);
         
-        // Ensure default counselor "lakshani" exists
-        $checkLakshani = "SELECT user_id FROM counselor WHERE name = 'lakshani' LIMIT 1";
-        $result = $con->query($checkLakshani);
-        
-        if (!$result || $result->rowCount() == 0) {
-            // Find the next available user_id or use a default
-            $getMaxId = "SELECT COALESCE(MAX(user_id), 0) + 1 as next_id FROM counselor";
-            $idResult = $con->query($getMaxId)->fetch(PDO::FETCH_ASSOC);
-            $nextId = $idResult['next_id'] ?: 9366;
-            
-            // Create password hash for "lakshani" (password: lakshani123)
-            $hashedPassword = password_hash('lakshani123', PASSWORD_BCRYPT);
-            
-            // Insert lakshani counselor
-            $insertLakshani = "
-            INSERT INTO counselor (user_id, name, email, password) 
-            VALUES (?, ?, ?, ?)
-            ";
-            
-            $stmt = $con->prepare($insertLakshani);
-            $stmt->execute([$nextId, 'lakshani', 'lakshani@gradb.com', $hashedPassword]);
-        }
+        // No auto relationship creation for any other users.
         
     } catch (Exception $e) {
         // Database initialization error - log but don't break the app

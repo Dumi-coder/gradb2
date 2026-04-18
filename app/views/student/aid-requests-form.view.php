@@ -15,7 +15,7 @@ require '../app/views/partials/student_header.php';
                     <div class="aid-form-head">
                         <div>
                             <h2 class="aid-form-title">Student Aid Request</h2>
-                            <p class="aid-form-subtitle">Fill in your details and upload the required documents. Counselor will review your request first.</p>
+                            <p class="aid-form-subtitle">Fill in your details and upload the required documents. Counsellor will review your request first.</p>
                         </div>
                     </div>
                     <div class="student-info-box">

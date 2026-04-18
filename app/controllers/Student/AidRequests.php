@@ -112,7 +112,7 @@ class AidRequests extends Controller
         if (!$request || !$this->ensurePendingBeforeStudentChange($request)) {
             $_SESSION['flash_message'] = [
                 'type' => 'error',
-                'text' => 'Only counselor-pending requests can be edited.',
+                'text' => 'Only counsellor-pending requests can be edited.',
             ];
             redirect('student/aidrequests');
         }
@@ -226,7 +226,7 @@ class AidRequests extends Controller
             redirect('student/aidrequests');
         }
 
-        // Keep the request in counselor pending queue and bump recency so edits are visible.
+        // Keep the request in counsellor pending queue and bump recency so edits are visible.
         $requestModel->query(
             "UPDATE requests
              SET created_at = NOW()
@@ -252,7 +252,7 @@ class AidRequests extends Controller
                     'request_id' => (int)$requestId,
                     'actor_user_id' => (int)$studentUserId,
                     'action' => 'STUDENT_EDITED',
-                    'notes' => '[STUDENT EDITED] Aid request details were updated by student before counselor approval.',
+                    'notes' => '[STUDENT EDITED] Aid request details were updated by student before counsellor approval.',
                 ]
             );
         } catch (Throwable $e) {
@@ -261,7 +261,7 @@ class AidRequests extends Controller
 
         $_SESSION['flash_message'] = [
             'type' => 'success',
-            'text' => 'Aid request updated and re-submitted for counselor review.',
+            'text' => 'Aid request updated and re-submitted for counsellor review.',
         ];
         redirect('student/aidrequests');
     }
@@ -282,7 +282,7 @@ class AidRequests extends Controller
         if (!$request || !$this->ensurePendingBeforeStudentChange($request)) {
             $_SESSION['flash_message'] = [
                 'type' => 'error',
-                'text' => 'Only counselor-pending requests can be deleted.',
+                'text' => 'Only counsellor-pending requests can be deleted.',
             ];
             redirect('student/aidrequests');
         }

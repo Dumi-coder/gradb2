@@ -4,7 +4,7 @@
 $loginLinks = [
   'student' => ROOT . '/student/Auth?action=login',
   'alumni' => ROOT . '/alumni/Auth?action=login',
-  'counselor' => ROOT . '/counselor',
+  'counsellor' => ROOT . '/counsellor',
   'faculty_admin' => ROOT . '/admin',
   'super_admin' => ROOT . '/superadmin',
 ];

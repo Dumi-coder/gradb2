@@ -193,7 +193,7 @@ class AidReqForm extends Controller
 
         $_SESSION['flash_message'] = [
             'type' => 'success',
-            'text' => 'Aid request submitted successfully. Counselor verification is pending.',
+            'text' => 'Aid request submitted successfully. Counsellor verification is pending.',
         ];
 
         redirect('student/aidrequests');
