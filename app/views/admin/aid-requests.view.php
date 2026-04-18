@@ -9,9 +9,9 @@ if (!function_exists('renderAidSupervisionCardAdmin')) {
         $alumnusUserId = (int)($card->alumnus_user_id ?? 0);
         $status = strtolower((string)($card->status ?? 'pending_verification'));
 
-        $statusLabel = 'Pending for Counselor';
+        $statusLabel = 'Pending for Counsellor';
         if ($status === 'open') {
-            $statusLabel = 'Approved by Counselor';
+            $statusLabel = 'Approved by Counsellor';
         } elseif (in_array($status, ['approved', 'accepted'], true)) {
             $statusLabel = 'Accepted by Alumni';
         } elseif ($status === 'completed') {
@@ -121,44 +121,44 @@ if (!function_exists('renderAidSupervisionCardAdmin')) {
     <main class="main-content">
         <section class="dashboard-section">
             <div class="section-header">
-                <h2 class="section-title">Pending for Counselor</h2>
+                <h2 class="section-title">Pending for Counsellor</h2>
                 <div class="section-stats">
                     <div class="stat-item">
-                        <span class="stat-number"><?= (int)($aidRequestsData['stats']['pending_for_counselor'] ?? 0) ?></span>
+                        <span class="stat-number"><?= (int)($aidRequestsData['stats']['pending_for_counsellor'] ?? 0) ?></span>
                         <span class="stat-label">Awaiting Verification</span>
                     </div>
                 </div>
             </div>
 
             <div class="cards-wrap">
-                <?php if (!empty($aidRequestsData['pending_for_counselor'])): ?>
-                    <?php foreach ($aidRequestsData['pending_for_counselor'] as $card): ?>
+                <?php if (!empty($aidRequestsData['pending_for_counsellor'])): ?>
+                    <?php foreach ($aidRequestsData['pending_for_counsellor'] as $card): ?>
                         <?php renderAidSupervisionCardAdmin($card); ?>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <div class="empty-state">No requests are currently waiting for counselor verification in your faculty.</div>
+                    <div class="empty-state">No requests are currently waiting for counsellor verification in your faculty.</div>
                 <?php endif; ?>
             </div>
         </section>
 
         <section class="dashboard-section">
             <div class="section-header">
-                <h2 class="section-title">Approved by Counselor</h2>
+                <h2 class="section-title">Approved by Counsellor</h2>
                 <div class="section-stats">
                     <div class="stat-item">
-                        <span class="stat-number"><?= (int)($aidRequestsData['stats']['approved_by_counselor'] ?? 0) ?></span>
+                        <span class="stat-number"><?= (int)($aidRequestsData['stats']['approved_by_counsellor'] ?? 0) ?></span>
                         <span class="stat-label">Waiting for Alumni</span>
                     </div>
                 </div>
             </div>
 
             <div class="cards-wrap">
-                <?php if (!empty($aidRequestsData['approved_by_counselor'])): ?>
-                    <?php foreach ($aidRequestsData['approved_by_counselor'] as $card): ?>
+                <?php if (!empty($aidRequestsData['approved_by_counsellor'])): ?>
+                    <?php foreach ($aidRequestsData['approved_by_counsellor'] as $card): ?>
                         <?php renderAidSupervisionCardAdmin($card); ?>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <div class="empty-state">No counselor-approved requests are waiting for alumni in your faculty.</div>
+                    <div class="empty-state">No counsellor-approved requests are waiting for alumni in your faculty.</div>
                 <?php endif; ?>
             </div>
         </section>
@@ -209,201 +209,4 @@ if (!function_exists('renderAidSupervisionCardAdmin')) {
     </main>
 </div>
 
-<style>
-.main-content {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
 
-.cards-wrap {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    align-items: stretch;
-}
-
-.aid-card {
-    background: white;
-    border: 2px solid #E5E7EB;
-    border-radius: 12px;
-    padding: 1.3rem;
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-}
-
-.aid-card:hover {
-    border-color: #0E2072;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.card-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-}
-
-.student-name {
-    margin: 0 0 0.2rem 0;
-    color: #1F2937;
-    font-size: 1.15rem;
-    font-weight: 600;
-}
-
-.student-meta,
-.request-date {
-    margin: 0.15rem 0;
-    color: #6B7280;
-    font-size: 0.9rem;
-}
-
-.right-meta {
-    text-align: right;
-}
-
-.status-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.status-pending-verification {
-    background-color: #FEF3C7;
-    color: #92400E;
-}
-
-.status-open {
-    background-color: #E0E7FF;
-    color: #3730A3;
-}
-
-.status-approved,
-.status-accepted {
-    background-color: #DCFCE7;
-    color: #166534;
-}
-
-.status-completed {
-    background-color: #DBEAFE;
-    color: #1E3A8A;
-}
-
-.card-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.7rem;
-}
-
-.card-grid h4,
-.reason-block h4,
-.docs-block h4,
-.alumni-block h4 {
-    margin: 0 0 0.35rem 0;
-    color: #374151;
-    font-size: 0.82rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.card-grid p,
-.reason-block p,
-.alumni-block p {
-    margin: 0;
-    color: #4B5563;
-    line-height: 1.45;
-}
-
-.reason-block,
-.docs-block,
-.alumni-block {
-    background: #F9FAFB;
-    border: 1px solid #E5E7EB;
-    border-radius: 12px;
-    padding: 0.9rem;
-}
-
-.docs-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-}
-
-.docs-list li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.6rem;
-    font-size: 0.92rem;
-    color: #374151;
-}
-
-.docs-list a {
-    color: #0E2072;
-    font-weight: 600;
-    text-decoration: none;
-}
-
-.docs-list a:hover {
-    text-decoration: underline;
-}
-
-.doc-missing {
-    color: #9CA3AF;
-}
-
-.card-actions {
-    display: flex;
-    gap: 0.65rem;
-    flex-wrap: wrap;
-    margin-top: auto;
-}
-
-.card-actions .btn {
-    min-width: 165px;
-    justify-content: center;
-}
-
-.empty-state {
-    grid-column: 1 / -1;
-    border: 2px dashed #D1D5DB;
-    border-radius: 12px;
-    padding: 1.35rem 1rem;
-    color: #4B5563;
-    background: #F9FAFB;
-    text-align: center;
-}
-
-@media (max-width: 1080px) {
-    .cards-wrap {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 720px) {
-    .card-head {
-        flex-direction: column;
-    }
-
-    .right-meta {
-        text-align: left;
-    }
-
-    .card-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .docs-list li {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-}
-</style>

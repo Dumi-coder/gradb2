@@ -305,8 +305,8 @@ class Notification
 		$actorId = ($actorUserId !== null && (int)$actorUserId > 0) ? (int)$actorUserId : null;
 		$studentLabel = $studentName !== '' ? $studentName : 'the student';
 		$aidLabel = $aidType !== '' ? ucfirst($aidType) : 'Aid';
-		$title = 'Aid marked as completed by counselor';
-		$message = $aidLabel . ' request #' . $requestId . ' for ' . $studentLabel . ' was marked completed by counselor. Note: ' . $completionNote;
+		$title = 'Aid marked as completed by counsellor';
+		$message = $aidLabel . ' request #' . $requestId . ' for ' . $studentLabel . ' was marked completed by counsellor. Note: ' . $completionNote;
 		$actionUrl = ROOT . '/alumni/aidrequests';
 
 		return $this->insert([

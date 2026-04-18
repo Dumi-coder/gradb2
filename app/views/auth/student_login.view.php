@@ -12,8 +12,18 @@
 
 
             <?php if(!empty($errors)):?>
-            <div class="alert alert-danger">       
-                <?= implode("<br>",$errors)?> 
+            <div class="auth-alert" role="alert" aria-live="polite">
+              <div class="auth-alert-header">
+                <i class="fa-solid fa-circle-exclamation auth-alert-icon" aria-hidden="true"></i>
+                <span>Unable to sign in</span>
+              </div>
+              <ul class="auth-error-list">
+                <?php foreach($errors as $error): ?>
+                  <?php if(!empty($error)): ?>
+                    <li><?= htmlspecialchars((string)$error, ENT_QUOTES, 'UTF-8') ?></li>
+                  <?php endif; ?>
+                <?php endforeach; ?>
+              </ul>
             </div>
             <?php endif;?>
 

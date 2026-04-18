@@ -14,19 +14,19 @@ class AidRequests extends Controller
 
         $requestModel = new Request();
 
-        $pendingForCounselor = $requestModel->getAidRequestsForStatuses(['pending_verification']);
-        $approvedByCounselor = $requestModel->getAidRequestsForStatuses(['open']);
+        $pendingForCounsellor = $requestModel->getAidRequestsForStatuses(['pending_verification']);
+        $approvedByCounsellor = $requestModel->getAidRequestsForStatuses(['open']);
         $acceptedByAlumni = $requestModel->getAidRequestsForStatuses(['approved', 'accepted']);
         $completed = $requestModel->getAidRequestsForStatuses(['completed']);
 
         $aidRequestsData = [
-            'pending_for_counselor' => $pendingForCounselor,
-            'approved_by_counselor' => $approvedByCounselor,
+            'pending_for_counsellor' => $pendingForCounsellor,
+            'approved_by_counsellor' => $approvedByCounsellor,
             'accepted_by_alumni' => $acceptedByAlumni,
             'completed' => $completed,
             'stats' => [
-                'pending_for_counselor' => count($pendingForCounselor),
-                'approved_by_counselor' => count($approvedByCounselor),
+                'pending_for_counsellor' => count($pendingForCounsellor),
+                'approved_by_counsellor' => count($approvedByCounsellor),
                 'accepted_by_alumni' => count($acceptedByAlumni),
                 'completed' => count($completed),
             ],

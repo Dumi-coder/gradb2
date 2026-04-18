@@ -3,7 +3,7 @@ public/assets/js/aid-request-form.js
 public/assets/js/alumni-dashboard.js
 public/assets/js/alumni-signup.js
 public/assets/js/buttons.js
-public/assets/js/counselor-dashboard.js
+public/assets/js/counsellor-dashboard.js
 public/assets/js/css-animations.js
 public/assets/js/dashboard.js
 public/assets/js/discussion-forum.js

@@ -104,8 +104,16 @@ class AidReqForm extends Controller
 
         $basePath = dirname(__DIR__, 3);
         $uploadDir = $basePath . '/public/uploads/aid-requests';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+        if (!$this->prepareUploadDirectory($uploadDir)) {
+            $this->view('student/aid-requests-form', [
+                'studentInfo' => $studentInfo,
+                'formData' => $formData,
+                'flashMessage' => [
+                    'type' => 'error',
+                    'text' => 'File upload folder is not writable. Please contact support.',
+                ],
+            ]);
+            return;
         }
 
         $studentIdPdf = $this->saveFile($_FILES['student_id_pdf'], $uploadDir, ['pdf', 'jpg', 'jpeg', 'png']);
@@ -193,7 +201,7 @@ class AidReqForm extends Controller
 
         $_SESSION['flash_message'] = [
             'type' => 'success',
-            'text' => 'Aid request submitted successfully. Counselor verification is pending.',
+            'text' => 'Aid request submitted successfully. Counsellor verification is pending.',
         ];
 
         redirect('student/aidrequests');
@@ -220,6 +228,14 @@ class AidReqForm extends Controller
             return false;
         }
 
+        if (!is_dir($uploadDir) || !is_writable($uploadDir)) {
+            return false;
+        }
+
+        if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
+            return false;
+        }
+
         $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if (!in_array($extension, $allowedExtensions, true)) {
             return false;
@@ -228,10 +244,23 @@ class AidReqForm extends Controller
         $uniqueName = uniqid('aid_', true) . '.' . $extension;
         $destination = $uploadDir . '/' . $uniqueName;
 
-        if (!move_uploaded_file($file['tmp_name'], $destination)) {
+        if (!@move_uploaded_file($file['tmp_name'], $destination)) {
             return false;
         }
 
         return 'uploads/aid-requests/' . $uniqueName;
+    }
+
+    private function prepareUploadDirectory($uploadDir)
+    {
+        if (!is_dir($uploadDir) && !@mkdir($uploadDir, 0755, true)) {
+            return false;
+        }
+
+        if (!is_writable($uploadDir)) {
+            @chmod($uploadDir, 0775);
+        }
+
+        return is_dir($uploadDir) && is_writable($uploadDir);
     }
 }

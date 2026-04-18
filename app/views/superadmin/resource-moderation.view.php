@@ -12,7 +12,7 @@
         <!-- Resource Moderation Section -->
         <section class="dashboard-section">
             <div class="section-header">
-                <h2 class="section-title" style="font-size: 2rem; font-weight: 700;">Resource Moderation</h2>
+                <h2 class="section-title sae-56">Resource Moderation</h2>
                 <div class="section-stats">
                     <div class="stat-item">
                         <span class="stat-number"><?= $resourceData['stats']['total_resources'] ?></span>
@@ -97,10 +97,10 @@
                         </div>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <div class="empty-state" style="text-align: center; padding: 40px; opacity: 0.7;">
-                            <i class="fas fa-check-circle" style="font-size: 48px; color: #10b981; margin-bottom: 15px;"></i>
-                            <h4 style="margin-bottom: 10px;">No Reported Resources</h4>
-                            <p style="color: #6b7280;">All resources are in good standing.</p>
+                        <div class="empty-state sae-57">
+                            <i class="fas fa-check-circle sae-58"></i>
+                            <h4 class="sae-59">No Reported Resources</h4>
+                            <p class="sae-60">All resources are in good standing.</p>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -143,8 +143,8 @@
                   $myActionLabel = $myIsLink ? 'Open' : 'Download';
                   $myActionIcon = $myIsLink ? 'fa-external-link-alt' : 'fa-download';
                 ?>
-                <div class="my-resource-card" 
-                     style="position: relative;"
+                <div class="my-resource-card sae-61" 
+                    
                      data-id="<?= $res->resource_id ?? '' ?>"
                      data-title="<?= htmlspecialchars($res->title ?? '', ENT_QUOTES) ?>"
                      data-description="<?= htmlspecialchars($res->description ?? '', ENT_QUOTES) ?>"
@@ -153,9 +153,9 @@
                      data-file-size="<?= (int)($res->file_size ?? 0) ?>"
                      data-created-at="<?= htmlspecialchars($res->created_at ?? '', ENT_QUOTES) ?>">
                   <?php if ($myIsPermanentlyReported): ?>
-                    <span class="resource-status" style="position: absolute; top: 10px; right: 10px; background: #dc2626; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; z-index: 1;">Reported</span>
+                    <span class="resource-status sae-62">Reported</span>
                   <?php elseif ($myReportCount > 0): ?>
-                    <span class="resource-status" style="position: absolute; top: 10px; right: 10px; background: #dc2626; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; z-index: 1;">Reports : <?= $myReportCount ?></span>
+                    <span class="resource-status sae-62">Reports : <?= $myReportCount ?></span>
                   <?php endif; ?>
                   <h3 class="resource-title"><?= htmlspecialchars($res->title ?? '') ?></h3>
                   <div class="resource-meta">
@@ -187,7 +187,7 @@
                 </div>
               <?php endforeach; ?>
             <?php else: ?>
-              <div id="my-resources-empty" class="my-resource-card" style="opacity:.8">
+              <div id="my-resources-empty" class="my-resource-card sae-63">
                 <h3 class="resource-title">No resources yet</h3>
                 <p class="resource-description">Upload your first resource to see it here.</p>
               </div>
@@ -327,7 +327,7 @@
                       <i class="fas <?= $recentActionIcon ?>"></i>
                       <span><?= $recentActionLabel ?></span>
                     </a>
-                    <button class="btn btn-outline btn-sm" onclick="openReportModal(<?= $resource->resource_id ?? 0 ?>, '<?= htmlspecialchars(addslashes($resource->title ?? ''), ENT_QUOTES) ?>')" style="color: #dc2626; border-color: #dc2626;" onmouseover="this.style.background='#dc2626'; this.style.color='white';" onmouseout="this.style.background='transparent'; this.style.color='#dc2626';">
+                    <button class="btn btn-outline btn-sm sae-report-btn" onclick="openReportModal(<?= $resource->resource_id ?? 0 ?>, '<?= htmlspecialchars(addslashes($resource->title ?? ''), ENT_QUOTES) ?>')">
                       <i class="fas fa-flag"></i>
                       <span>Report</span>
                     </button>
@@ -335,8 +335,8 @@
                 </div>
               <?php endforeach; ?>
             <?php else: ?>
-              <div class="resource-item" style="opacity:.7">
-                <div class="resource-content" style="text-align: center; width: 100%;">
+              <div class="resource-item sae-64">
+                <div class="resource-content sae-65">
                   <h3 class="resource-title">No recent resources available</h3>
                   <p class="resource-description">Resources shared by users will appear here.</p>
                 </div>
@@ -350,7 +350,7 @@
 <!-- Add Resource Modal -->
     <!-- Upload Modal -->
     <div id="uploadModal" class="modal">
-      <div class="modal-content" style="padding: 25px;">
+      <div class="modal-content sae-11">
         <div class="modal-header">
           <h2 class="modal-title">Upload Resource</h2>
           <button class="modal-close" onclick="closeUploadModal()">
@@ -401,7 +401,7 @@
           <div class="form-group">
             <label for="resourceFile">File *</label>
             <div class="file-upload-area" onclick="document.getElementById('resourceFile').click()">
-              <input type="file" id="resourceFile" name="resourceFile" accept=".pdf,.doc,.docx,.txt,.zip,.rar,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.gif,image/*" style="display: none;" required>
+              <input type="file" id="resourceFile" name="resourceFile" accept=".pdf,.doc,.docx,.txt,.zip,.rar,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.gif,image/*" class="sae-10" required>
               <div class="upload-placeholder">
                 <i class="fas fa-cloud-upload-alt"></i>
                 <p>Click to select file or drag and drop</p>
@@ -425,7 +425,7 @@
 
     <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="modal">
-      <div class="modal-content modal-small" style="padding: 25px;">
+      <div class="modal-content modal-small sae-11">
         <div class="modal-header">
           <h2 class="modal-title">
             <i class="fas fa-exclamation-circle"></i>
@@ -467,11 +467,11 @@
     </div>
 
     <!-- Report Modal -->
-    <div id="reportModal" class="modal" style="display: none;">
-      <div class="modal-content" style="padding: 25px;">
+    <div id="reportModal" class="modal sae-10">
+      <div class="modal-content sae-11">
         <div class="modal-header">
           <h2 class="modal-title">
-            <i class="fas fa-flag" style="color: #dc2626;"></i>
+            <i class="fas fa-flag sae-12"></i>
             Report Resource
           </h2>
           <button class="modal-close" onclick="closeReportModal()">
@@ -484,7 +484,7 @@
           
           <div class="form-group">
             <label>Resource</label>
-            <p id="reportResourceTitle" style="color: #6b7280; margin-top: 5px;"></p>
+            <p id="reportResourceTitle" class="sae-13"></p>
           </div>
 
           <div class="form-group">
@@ -496,7 +496,7 @@
             <button type="button" class="btn btn-outline" onclick="closeReportModal()">
               <span>Cancel</span>
             </button>
-            <button type="submit" class="btn" style="background: #dc2626; color: white;">
+            <button type="submit" class="btn sae-14">
               <i class="fas fa-flag"></i>
               <span>Submit Report</span>
             </button>
@@ -506,18 +506,18 @@
     </div>
 
     <!-- Success/Error Modal -->
-    <div id="messageModal" class="modal" style="display: none;">
-      <div class="modal-content" style="max-width: 400px; padding: 25px;">
-        <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
+    <div id="messageModal" class="modal sae-10">
+      <div class="modal-content sae-15">
+        <div class="modal-header sae-16">
           <button class="modal-close" onclick="closeMessageModal()">
             <i class="fas fa-times"></i>
           </button>
         </div>
-        <div style="text-align: center; padding: 20px;">
-          <div id="messageIcon" style="font-size: 48px; margin-bottom: 20px;"></div>
-          <h3 id="messageTitle" style="margin-bottom: 10px; font-size: 20px;"></h3>
-          <p id="messageText" style="color: #6b7280; margin-bottom: 25px;"></p>
-          <button class="btn btn-primary" onclick="closeMessageModal()" style="min-width: 120px;">
+        <div class="sae-17">
+          <div id="messageIcon" class="sae-18"></div>
+          <h3 id="messageTitle" class="sae-19"></h3>
+          <p id="messageText" class="sae-20"></p>
+          <button class="btn btn-primary sae-21" onclick="closeMessageModal()">
             <span>OK</span>
           </button>
         </div>
@@ -525,16 +525,16 @@
     </div>
 
     <!-- Action Confirmation Modal (Reported Resources) -->
-    <div id="actionConfirmModal" class="modal" style="display: none;">
-      <div class="modal-content" style="max-width: 460px; padding: 25px;">
-        <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
+    <div id="actionConfirmModal" class="modal sae-10">
+      <div class="modal-content sae-66">
+        <div class="modal-header sae-16">
           <h2 class="modal-title" id="actionConfirmTitle">Confirm Action</h2>
           <button class="modal-close" onclick="closeActionConfirmModal()">
             <i class="fas fa-times"></i>
           </button>
         </div>
-        <div class="modal-body" style="padding-top: 0.5rem;">
-          <p id="actionConfirmText" style="margin: 0; color: #4b5563;"></p>
+        <div class="modal-body sae-67">
+          <p id="actionConfirmText" class="sae-68"></p>
         </div>
         <div class="form-actions">
           <button type="button" class="btn btn-outline" onclick="closeActionConfirmModal()">
@@ -547,386 +547,7 @@
       </div>
     </div>
 
-<style>
-.reported-resources-section, .recent-resources-section {
-    margin-bottom: 2rem;
-}
 
-.subsection-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #1F2937;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-}
-
-.reported-resources-container, .recent-resources-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.reported-resource-card, .recent-resource-card {
-    background: white;
-    border: 2px solid #E5E7EB;
-    border-radius: 12px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.reported-resource-card:hover, .recent-resource-card:hover {
-    border-color: #0E2072;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.resource-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-}
-
-.resource-title {
-    margin: 0 0 0.25rem 0;
-    color: #1F2937;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.resource-author {
-    margin: 0 0 0.25rem 0;
-    color: #6B7280;
-    font-size: 0.9rem;
-}
-
-.resource-type {
-    margin: 0;
-    color: #0E2072;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.resource-meta {
-    text-align: right;
-}
-
-.report-reason {
-    display: inline-block;
-    background-color: #DC2626;
-    color: white;
-    padding: 0.35rem 0.85rem;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.status-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    background-color: #FEF3C7;
-    color: #D97706;
-}
-
-.resource-content {
-    margin-bottom: 1rem;
-}
-
-.resource-content p {
-    margin: 0 0 0.5rem 0;
-    color: #4B5563;
-    line-height: 1.5;
-}
-
-.resource-stats {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.stat {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    color: #6B7280;
-    font-size: 0.875rem;
-}
-
-.stat i {
-    color: #0E2072;
-}
-
-.report-details {
-    background-color: #F9FAFB;
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-}
-
-.report-details p {
-    margin: 0 0 0.25rem 0;
-    color: #374151;
-    font-size: 0.9rem;
-}
-
-.resource-actions {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-}
-
-/* Button styles are now in buttons.css - removed to prevent override */
-
-.btn-success {
-    background-color: #10B981;
-    color: white;
-}
-
-.btn-success:hover {
-    background-color: #059669;
-}
-
-.btn-warning {
-    background-color: #F59E0B;
-    color: white;
-}
-
-.btn-warning:hover {
-    background-color: #D97706;
-}
-
-.btn-danger {
-    background-color: #EF4444;
-    color: white;
-}
-
-.btn-danger:hover {
-    background-color: #DC2626;
-}
-
-.btn-outline {
-    background-color: white;
-    color: #000000;
-    border: 1px solid #000000;
-}
-
-.btn-outline:hover {
-    background-color: #000000;
-    color: white;
-}
-
-.section-stats {
-    display: flex;
-    gap: 2rem;
-}
-
-.stat-item {
-    text-align: center;
-}
-
-.stat-number {
-    display: block;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #0E2072;
-}
-
-.stat-label {
-    font-size: 0.875rem;
-    color: #6B7280;
-    font-weight: 500;
-}
-
-/* Section Header with Button */
-.section-header-with-button {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.add-resource-btn {
-    background-color: #000000;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.add-resource-btn:hover {
-    background-color: #333333;
-    transform: translateY(-1px);
-}
-
-/* Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-}
-
-.modal-content {
-    background-color: white;
-    margin: 5% auto;
-    padding: 0;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: modalSlideIn 0.3s ease-out;
-}
-
-@keyframes modalSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid #E5E7EB;
-    background-color: #F9FAFB;
-    border-radius: 12px 12px 0 0;
-}
-
-.modal-title {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #1F2937;
-}
-
-.modal-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: #6B7280;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.modal-close:hover {
-    background-color: #E5E7EB;
-    color: #374151;
-}
-
-.resource-form {
-    padding: 1.5rem;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: #374151;
-    font-size: 0.9rem;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 2px solid #E5E7EB;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: #0E2072;
-    box-shadow: 0 0 0 3px rgba(14, 32, 114, 0.1);
-}
-
-.form-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #E5E7EB;
-}
-
-.form-actions .btn {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-}
-
-.suspended-user-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.48rem 0.85rem;
-  border-radius: 999px;
-  border: 1px solid #059669;
-  background: #ecfdf5;
-  color: #065f46;
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-}
-
-#actionConfirmModal.show {
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-}
-
-#actionConfirmModal .modal-content {
-  width: min(520px, 92vw);
-  max-width: 520px;
-  max-height: none;
-  height: auto;
-  margin: 0;
-  overflow: visible;
-}
-
-#actionConfirmModal .modal-body {
-  padding: 0.75rem 1.5rem 0.5rem;
-}
-
-#actionConfirmModal .form-actions {
-  margin-top: 1rem;
-  padding-top: 1rem;
-}
-</style>
 
 <script>
 let actionConfirmHandler = null;
@@ -1361,9 +982,9 @@ function showMessageModal(type, title, message) {
     const textEl = document.getElementById('messageText');
     
     if (type === 'success') {
-        icon.innerHTML = '<i class="fas fa-check-circle" style="color: #10b981;"></i>';
+        icon.innerHTML = '<i class="fas fa-check-circle sae-22"></i>';
     } else {
-        icon.innerHTML = '<i class="fas fa-times-circle" style="color: #ef4444;"></i>';
+        icon.innerHTML = '<i class="fas fa-times-circle sae-23"></i>';
     }
     
     titleEl.textContent = title;

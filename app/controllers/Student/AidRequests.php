@@ -56,6 +56,14 @@ class AidRequests extends Controller
             return false;
         }
 
+        if (!is_dir($uploadDir) || !is_writable($uploadDir)) {
+            return false;
+        }
+
+        if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
+            return false;
+        }
+
         $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if (!in_array($extension, $allowedExtensions, true)) {
             return false;
@@ -64,11 +72,24 @@ class AidRequests extends Controller
         $uniqueName = uniqid('aid_', true) . '.' . $extension;
         $destination = $uploadDir . '/' . $uniqueName;
 
-        if (!move_uploaded_file($file['tmp_name'], $destination)) {
+        if (!@move_uploaded_file($file['tmp_name'], $destination)) {
             return false;
         }
 
         return 'uploads/aid-requests/' . $uniqueName;
+    }
+
+    private function prepareUploadDirectory($uploadDir)
+    {
+        if (!is_dir($uploadDir) && !@mkdir($uploadDir, 0755, true)) {
+            return false;
+        }
+
+        if (!is_writable($uploadDir)) {
+            @chmod($uploadDir, 0775);
+        }
+
+        return is_dir($uploadDir) && is_writable($uploadDir);
     }
 
     private function removeUploadedFileIfLocal($relativePath)
@@ -112,7 +133,7 @@ class AidRequests extends Controller
         if (!$request || !$this->ensurePendingBeforeStudentChange($request)) {
             $_SESSION['flash_message'] = [
                 'type' => 'error',
-                'text' => 'Only counselor-pending requests can be edited.',
+                'text' => 'Only counsellor-pending requests can be edited.',
             ];
             redirect('student/aidrequests');
         }
@@ -151,8 +172,8 @@ class AidRequests extends Controller
 
         $basePath = dirname(__DIR__, 3);
         $uploadDir = $basePath . '/public/uploads/aid-requests';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+        if (!$this->prepareUploadDirectory($uploadDir)) {
+            $errors[] = 'File upload folder is not writable. Please contact support.';
         }
 
         $studentIdPdfPath = (string)($request->student_id_pdf_path ?? '');
@@ -226,7 +247,7 @@ class AidRequests extends Controller
             redirect('student/aidrequests');
         }
 
-        // Keep the request in counselor pending queue and bump recency so edits are visible.
+        // Keep the request in counsellor pending queue and bump recency so edits are visible.
         $requestModel->query(
             "UPDATE requests
              SET created_at = NOW()
@@ -252,7 +273,7 @@ class AidRequests extends Controller
                     'request_id' => (int)$requestId,
                     'actor_user_id' => (int)$studentUserId,
                     'action' => 'STUDENT_EDITED',
-                    'notes' => '[STUDENT EDITED] Aid request details were updated by student before counselor approval.',
+                    'notes' => '[STUDENT EDITED] Aid request details were updated by student before counsellor approval.',
                 ]
             );
         } catch (Throwable $e) {
@@ -261,7 +282,7 @@ class AidRequests extends Controller
 
         $_SESSION['flash_message'] = [
             'type' => 'success',
-            'text' => 'Aid request updated and re-submitted for counselor review.',
+            'text' => 'Aid request updated and re-submitted for counsellor review.',
         ];
         redirect('student/aidrequests');
     }
@@ -282,7 +303,7 @@ class AidRequests extends Controller
         if (!$request || !$this->ensurePendingBeforeStudentChange($request)) {
             $_SESSION['flash_message'] = [
                 'type' => 'error',
-                'text' => 'Only counselor-pending requests can be deleted.',
+                'text' => 'Only counsellor-pending requests can be deleted.',
             ];
             redirect('student/aidrequests');
         }

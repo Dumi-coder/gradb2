@@ -276,11 +276,12 @@ class PasswordValidator {
         if (form) {
             form.addEventListener('submit', (e) => {
                 const password = passwordField.value;
-                const confirmField = confirmFieldId ? document.getElementById(confirmFieldId) : null;
-                const confirmValue = confirmField ? confirmField.value : '';
+                const changePasswordFlag = form.querySelector('input[name="change_password"]');
+                const shouldValidatePassword = changePasswordFlag
+                    ? (changePasswordFlag.value === '1' || password.length > 0)
+                    : true;
 
-                // Profile edit forms can leave password fields empty when not changing password.
-                if (allowEmpty && password.trim() === '' && String(confirmValue || '').trim() === '') {
+                if (!shouldValidatePassword) {
                     return true;
                 }
 

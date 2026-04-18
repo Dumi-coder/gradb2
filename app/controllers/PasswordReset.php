@@ -13,8 +13,8 @@ class PasswordReset extends Controller
             'id_field' => 'alumni_id',
             'id_label' => 'Alumni ID',
         ],
-        'counselor' => [
-            'label' => 'Counselor',
+        'counsellor' => [
+            'label' => 'Counsellor',
             'id_field' => null,
             'id_label' => null,
         ],
@@ -240,11 +240,22 @@ class PasswordReset extends Controller
 
             $user = new User();
             $hash = password_hash($password, PASSWORD_DEFAULT);
-            $updated = $user->update($userId, ['password' => $hash], 'user_id');
-            if (!$updated) {
-                $data['errors'] = ['Failed to reset password. Please try again.'];
-                $data['step'] = 'reset';
-                return;
+            if ((string)$resetRole === 'counsellor' && (int)$userId === Counsellor::PRIMARY_USER_ID) {
+                $counsellor = new Counsellor();
+                $synced = $counsellor->updatePrimaryAcrossTables(['password' => $hash]);
+
+                if (!$synced) {
+                    $data['errors'] = ['Password reset could not sync to counsellor account. Please try again.'];
+                    $data['step'] = 'reset';
+                    return;
+                }
+            } else {
+                $updated = $user->update($userId, ['password' => $hash], 'user_id');
+                if (!$updated) {
+                    $data['errors'] = ['Failed to reset password. Please try again.'];
+                    $data['step'] = 'reset';
+                    return;
+                }
             }
 
             $reset = new Passwordresetotp();
@@ -311,6 +322,36 @@ class PasswordReset extends Controller
             $errors[] = 'Please enter a valid email address.';
             return null;
         }
+
+        if ($role === 'counsellor') {
+            $normalizedInputEmail = strtolower($email);
+
+            $account = $user->first(['user_id' => Counsellor::PRIMARY_USER_ID, 'role' => 'counsellor']);
+
+            $counsellorModel = new Counsellor();
+            $counsellorModel->ensurePrimaryExists();
+            $counsellorRecord = $counsellorModel->getPrimaryCounsellor();
+
+            $candidateEmails = [];
+            if (!empty($account->email)) {
+                $candidateEmails[] = strtolower((string)$account->email);
+            }
+            if (!empty($counsellorRecord->email)) {
+                $candidateEmails[] = strtolower((string)$counsellorRecord->email);
+            }
+            $candidateEmails = array_values(array_unique($candidateEmails));
+
+            if (empty($candidateEmails) || !in_array($normalizedInputEmail, $candidateEmails, true)) {
+                $errors[] = 'Account not found for the provided details.';
+                return null;
+            }
+
+            return [
+                'user_id' => Counsellor::PRIMARY_USER_ID,
+                'email' => (string)($account->email ?? $counsellorRecord->email ?? $email),
+            ];
+        }
+
         $account = $user->first(['email' => $email, 'role' => $role]);
         if (!$account) {
             $errors[] = 'Account not found for the provided details.';
@@ -326,8 +367,8 @@ class PasswordReset extends Controller
             }
         }
 
-        if ($role === 'counselor' && (int)$account->user_id !== 1) {
-            $errors[] = 'Access denied for this counselor account.';
+        if ($role === 'counsellor' && (int)$account->user_id !== 1) {
+            $errors[] = 'Access denied for this counsellor account.';
             return null;
         }
 
@@ -447,7 +488,7 @@ class PasswordReset extends Controller
         $map = [
             'student' => 'student/Auth?action=login',
             'alumni' => 'alumni/Auth?action=login',
-            'counselor' => 'counselor',
+            'counsellor' => 'counsellor',
             'faculty_admin' => 'admin',
             'super_admin' => 'superadmin',
         ];
