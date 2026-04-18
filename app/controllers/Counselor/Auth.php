@@ -25,7 +25,7 @@ class Auth extends Controller
         }
 
         // Check if user is already logged in as counselor
-        if (isset($_SESSION['user_id']) && $_SESSION['role'] == 'counselor' && (int)$_SESSION['user_id'] === 1) {
+        if (isset($_SESSION['user_id']) && $_SESSION['role'] == 'counselor') {
             redirect('counselor/dashboard');
             exit();
         }
@@ -70,18 +70,15 @@ class Auth extends Controller
             if ($counselor) {
                 // Verify password
                 if (password_verify($password, $counselor->password)) {
-                    if ((int)$counselor->user_id !== 1) {
-                        $errors[] = "Access denied. Only counselor user_id 1 can access this dashboard";
-                        $data['errors'] = $errors;
-                        $this->view('auth/counselor-login', $data);
-                        return;
-                    }
-
                     // Login successful
                     $_SESSION['user_id'] = (int)$counselor->user_id;
                     $_SESSION['role'] = 'counselor';
                     $_SESSION['name'] = $counselor->name ?? 'Counselor';
-                    $_SESSION['profile_picture'] = $counselor->profile_photo_url ?? null;
+
+                    $counselorModel = new Counselor();
+                    $counselorProfile = $counselorModel->first(['user_id' => (int)$counselor->user_id]);
+                    $_SESSION['profile_picture'] = $counselorProfile->profile_photo_url ?? null;
+                    $_SESSION['profile_photo_url'] = $counselorProfile->profile_photo_url ?? null;
                     
                     // Redirect to counselor dashboard
                     redirect('counselor/dashboard');

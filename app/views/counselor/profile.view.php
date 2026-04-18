@@ -11,7 +11,7 @@ if (isset($_SESSION['flash_message'])) {
 }
 
 $profile = $profile ?? (object)[
-    'name' => 'Counselor',
+    'name' => 'Counsellor',
     'email' => 'N/A',
     'password_display' => 'Not set',
     'role' => 'counselor',
@@ -49,7 +49,7 @@ $profile = $profile ?? (object)[
 
             <div>
               <h3 class="counselor-profile-name"><?= esc($profile->name ?? 'Counselor') ?></h3>
-              <p class="counselor-profile-sub">Counselor account</p>
+              <p class="counselor-profile-sub">Counsellor account</p>
               <span class="counselor-role-chip">
                 <i class="fas fa-user-shield"></i>
                 <?= esc(ucfirst((string)($profile->role ?? 'counselor'))) ?>
