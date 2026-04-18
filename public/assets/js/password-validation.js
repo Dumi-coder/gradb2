@@ -274,6 +274,15 @@ class PasswordValidator {
         if (form) {
             form.addEventListener('submit', (e) => {
                 const password = passwordField.value;
+                const changePasswordFlag = form.querySelector('input[name="change_password"]');
+                const shouldValidatePassword = changePasswordFlag
+                    ? (changePasswordFlag.value === '1' || password.length > 0)
+                    : true;
+
+                if (!shouldValidatePassword) {
+                    return true;
+                }
+
                 const validation = this.validatePassword(password);
                 
                 if (!validation.valid) {

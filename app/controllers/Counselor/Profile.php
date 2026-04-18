@@ -8,11 +8,15 @@ class Profile extends Controller
             session_start();
         }
 
-        if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'counselor' || (int)$_SESSION['user_id'] !== 1) {
+        if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'counselor') {
             redirect('counselor');
         }
 
-        $activeUserId = 1;
+        $activeUserId = (int)($_SESSION['user_id'] ?? 0);
+        if ($activeUserId <= 0) {
+            redirect('counselor');
+            return;
+        }
 
         $counselorModel = new Counselor();
         $userModel = new User();
@@ -34,7 +38,7 @@ class Profile extends Controller
         if (!$counselor && !$user) {
             $_SESSION['flash_message'] = [
                 'type' => 'error',
-                'text' => 'No profile data found for user_id 1 in counselor/users tables.',
+                'text' => 'No profile data found for your counselor account.',
             ];
             redirect('counselor/dashboard');
             return;

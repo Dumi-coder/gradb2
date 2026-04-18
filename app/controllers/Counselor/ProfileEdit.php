@@ -8,11 +8,15 @@ class ProfileEdit extends Controller
             session_start();
         }
 
-        if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'counselor' || (int)$_SESSION['user_id'] !== 1) {
+        if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'counselor') {
             redirect('counselor');
         }
 
-        $activeUserId = 1;
+        $activeUserId = (int)($_SESSION['user_id'] ?? 0);
+        if ($activeUserId <= 0) {
+            redirect('counselor');
+            return;
+        }
 
         $counselorModel = new Counselor();
         $userModel = new User();
@@ -34,14 +38,14 @@ class ProfileEdit extends Controller
         if (!$counselor) {
             $_SESSION['flash_message'] = [
                 'type' => 'error',
-                'text' => 'Profile not found for user_id 1 in counselor/users tables.',
+                'text' => 'Profile not found for your counselor account.',
             ];
             redirect('counselor/profile');
             return;
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->handleUpdate($counselor);
+            $this->handleUpdate($counselor, $activeUserId);
             return;
         }
 
@@ -52,7 +56,7 @@ class ProfileEdit extends Controller
         ]);
     }
 
-    private function handleUpdate($counselor)
+    private function handleUpdate($counselor, int $activeUserId)
     {
         $errors = [];
         
@@ -61,6 +65,11 @@ class ProfileEdit extends Controller
         $passwordCurrent = $_POST['password_current'] ?? '';
         $passwordNew = $_POST['password_new'] ?? '';
         $passwordConfirm = $_POST['password_confirm'] ?? '';
+        $changePasswordFlag = (string)($_POST['change_password'] ?? '0');
+        $wantsPasswordChange = $changePasswordFlag === '1'
+            || trim($passwordCurrent) !== ''
+            || trim($passwordNew) !== ''
+            || trim($passwordConfirm) !== '';
 
         if ($name === '') {
             $errors[] = 'Name is required';
@@ -72,14 +81,20 @@ class ProfileEdit extends Controller
             $errors[] = 'Email format is invalid';
         } else {
             $counselorModel = new Counselor();
-            $existing = $counselorModel->first(['email' => $email]);
-            if ($existing && $existing->user_id != 1) {
+            $existing = $counselorModel->first(['email' => $email], ['user_id' => $activeUserId]);
+            if ($existing) {
+                $errors[] = 'Email is already in use';
+            }
+
+            $userModel = new User();
+            $existingUser = $userModel->first(['email' => $email], ['user_id' => $activeUserId]);
+            if ($existingUser) {
                 $errors[] = 'Email is already in use';
             }
         }
 
         $passwordToUpdate = null;
-        if ($passwordNew !== '' || $passwordConfirm !== '') {
+        if ($wantsPasswordChange) {
             $strengthValidation = $passwordNew !== '' ? validatePasswordStrength($passwordNew) : ['valid' => true, 'errors' => []];
             if ($passwordCurrent === '') {
                 $errors[] = 'Current password is required to change password';
@@ -121,7 +136,7 @@ class ProfileEdit extends Controller
                 $errors[] = 'Profile photo must be less than 5MB';
             } else {
                 // Generate unique filename
-                $newFileName = 'counselor_1_' . time() . '.' . $fileExt;
+                $newFileName = 'counselor_' . $activeUserId . '_' . time() . '.' . $fileExt;
                 $uploadPath = $uploadDir . $newFileName;
                 
                 if (move_uploaded_file($fileTmp, $uploadPath)) {
@@ -161,7 +176,18 @@ class ProfileEdit extends Controller
         }
 
         $counselorModel = new Counselor();
-        $updated = $counselorModel->update(1, $updateData, 'user_id');
+        $currentCounselor = $counselorModel->first(['user_id' => $activeUserId]);
+        if (!$currentCounselor) {
+            $counselorModel->insert([
+                'user_id' => $activeUserId,
+                'name' => $name,
+                'email' => $email,
+                'password' => $passwordToUpdate ?? ($counselor->password ?? ''),
+                'profile_photo_url' => $profilePhotoUrl,
+            ]);
+        }
+
+        $updated = $counselorModel->update($activeUserId, $updateData, 'user_id');
 
         $userUpdateData = [
             'name' => $name,
@@ -172,9 +198,9 @@ class ProfileEdit extends Controller
         }
 
         $userModel = new User();
-        $userModel->update(1, $userUpdateData, 'user_id');
+        $userUpdated = $userModel->update($activeUserId, $userUpdateData, 'user_id');
 
-        if ($updated) {
+        if ($updated && $userUpdated) {
             $_SESSION['name'] = $name;
             if ($profilePhotoUrl !== null) {
                 $_SESSION['profile_photo_url'] = $profilePhotoUrl;

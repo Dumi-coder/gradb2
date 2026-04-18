@@ -22,7 +22,7 @@ $hasPasswordErrors = is_array($flashMessage) && !empty($flashMessage['text']) &&
       <div class="edit-form-section">
         <div class="counselor-edit-top">
           <h2 class="section-title">Edit Profile Information</h2>
-          <p class="counselor-edit-subtitle">Update your basic details and password securely.</p>
+          
         </div>
 
         <?php if (!empty($flashMessage) && is_array($flashMessage)): ?>
