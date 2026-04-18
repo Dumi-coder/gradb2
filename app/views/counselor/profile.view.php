@@ -1,6 +1,6 @@
 ﻿<?php
 $page_title = "My Profile";
-$page_subtitle = "Counselor account details";
+$page_subtitle = "Counsellor account details";
 require '../app/views/partials/counselor_header.php';
 
 // Get flash message from session if available

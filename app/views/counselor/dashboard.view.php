@@ -1,5 +1,5 @@
 <?php
-$page_title = "Counselor Dashboard";
+$page_title = "Counsellor Dashboard";
 $page_subtitle = "Aid request overview and verification";
 require '../app/views/partials/counselor_header.php';
 

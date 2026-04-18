@@ -1,6 +1,6 @@
 ﻿<?php 
 $page_title = "Rejected Requests";
-$page_subtitle = "Counselor rejected submissions";
+$page_subtitle = "Counsellor rejected submissions";
 require '../app/views/partials/counselor_header.php'; 
 
 $rejectedRequests = $rejectedRequests ?? [];

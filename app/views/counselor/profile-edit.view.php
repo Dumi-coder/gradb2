@@ -4,7 +4,7 @@ $page_subtitle = "Update your account details";
 require '../app/views/partials/counselor_header.php';
 
 $user = $user ?? (object)[
-    'name' => 'Counselor',
+    'name' => 'Counsellor',
     'email' => 'N/A',
 ];
 $flashMessage = $flashMessage ?? null;

@@ -1,6 +1,6 @@
 ﻿<?php 
 $page_title = "Approved Requests";
-$page_subtitle = "Counselor approved submissions";
+$page_subtitle = "Counsellor approved submissions";
 require '../app/views/partials/counselor_header.php'; 
 
 $approvedRequests = $approvedRequests ?? [];
