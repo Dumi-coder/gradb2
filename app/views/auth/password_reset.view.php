@@ -1,9 +1,10 @@
 <?php require '../app/views/partials/header.php'; ?>
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/auth.css?v=<?=time()?>">
 
 <?php
 $loginLinks = [
-  'student' => ROOT . '/student/Auth?action=login',
-  'alumni' => ROOT . '/alumni/Auth?action=login',
+  'student' => ROOT . '/login',
+  'alumni' => ROOT . '/login',
   'counselor' => ROOT . '/counselor',
   'faculty_admin' => ROOT . '/admin',
   'super_admin' => ROOT . '/superadmin',

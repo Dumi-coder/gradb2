@@ -1,4 +1,5 @@
 <?php require '../app/views/partials/header.php'; ?>
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/auth.css?v=<?=time()?>">
 
 
     <!-- Login Form -->
