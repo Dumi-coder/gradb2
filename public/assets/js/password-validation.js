@@ -227,9 +227,11 @@ class PasswordValidator {
      * @param {string} confirmFieldId - ID of confirm password field (optional)
      * @param {string} containerId - ID of container for strength indicator
      */
-    initPasswordValidation(passwordFieldId, confirmFieldId = null, containerId = null) {
+    initPasswordValidation(passwordFieldId, confirmFieldId = null, containerId = null, options = {}) {
         const passwordField = document.getElementById(passwordFieldId);
         if (!passwordField) return;
+
+        const allowEmpty = Boolean(options && options.allowEmpty);
 
         // Create strength indicator if container provided
         if (containerId) {
@@ -274,6 +276,14 @@ class PasswordValidator {
         if (form) {
             form.addEventListener('submit', (e) => {
                 const password = passwordField.value;
+                const confirmField = confirmFieldId ? document.getElementById(confirmFieldId) : null;
+                const confirmValue = confirmField ? confirmField.value : '';
+
+                // Profile edit forms can leave password fields empty when not changing password.
+                if (allowEmpty && password.trim() === '' && String(confirmValue || '').trim() === '') {
+                    return true;
+                }
+
                 const validation = this.validatePassword(password);
                 
                 if (!validation.valid) {
@@ -284,7 +294,6 @@ class PasswordValidator {
                 
                 // Check confirm password if exists
                 if (confirmFieldId) {
-                    const confirmField = document.getElementById(confirmFieldId);
                     if (confirmField && password !== confirmField.value) {
                         e.preventDefault();
                         this.showValidationErrors(['Passwords do not match']);
