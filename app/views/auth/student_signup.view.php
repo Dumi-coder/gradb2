@@ -1,4 +1,5 @@
 <?php require '../app/views/partials/header.php'; ?>
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/auth.css?v=<?=time()?>">
     <!-- Password Validation Script -->
     <script src="<?=ROOT?>/assets/js/password-validation.js"></script>
 
@@ -61,7 +62,7 @@
 
           </form>
 
-          <p class="auth-meta">Already have an account? <a href="<?=ROOT?>/student/Auth?action=login">Sign In</a></p>
+          <p class="auth-meta">Already have an account? <a href="<?=ROOT?>/login">Sign In</a></p>
 
         </div>
       </div>

@@ -100,6 +100,20 @@
   text-decoration: none; 
 }
 
+.alert {
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-sm);
+  line-height: 1.45;
+}
+
+.alert-danger {
+  color: #dc2626;
+}
+
+.alert-success {
+  color: #16a34a;
+}
+
 @media (min-width: 768px) {
   .auth-title { font-size: var(--font-3xl); }
 }

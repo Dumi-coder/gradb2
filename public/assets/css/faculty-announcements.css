@@ -5,7 +5,10 @@
   gap: 1rem;
 }
 
-.faculty-announcements-page .announcement-section .section-title {
+.faculty-announcements-page .announcement-section .announcements-section-title {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--foreground);
   margin: 0;
   line-height: 1.2;
 }

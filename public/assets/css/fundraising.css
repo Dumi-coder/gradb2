@@ -366,6 +366,24 @@
   margin-bottom: 0;
 }
 
+#fundraiserDetailsModal .detail-item {
+  display: block;
+  text-align: left;
+}
+
+#fundraiserDetailsModal .detail-label {
+  margin-bottom: 8px;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+}
+
+#fundraiserDetailsModal .detail-text {
+  color: #0f172a;
+  font-size: 0.98rem;
+  line-height: 1.72;
+  text-wrap: pretty;
+}
+
 .campaign-meta {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -488,6 +506,14 @@
   font-weight: 600;
   color: var(--foreground);
   margin: 0 0 var(--spacing-xs) 0;
+}
+
+/* Empty-state donation text should match campaign empty-state typography */
+.donation-item > .donation-content:only-child .donation-campaign {
+  color: var(--muted-foreground);
+  font-weight: 400;
+  line-height: var(--leading-normal);
+  margin: 0 0 var(--spacing-lg) 0;
 }
 
 .donation-amount {

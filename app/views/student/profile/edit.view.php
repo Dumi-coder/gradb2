@@ -13,18 +13,26 @@ $hasPasswordErrors = isset($errors['password_current']) || isset($errors['passwo
         <?php require '../app/views/partials/student_sidebar.php'; ?>
         
         <main class="main-content">
+            <?php if (isset($errors['success'])): ?>
+                <div class="mentorship-toast mentorship-toast-success" data-profile-toast data-toast-type="success" role="status" aria-live="polite">
+                    <i class="fas fa-check-circle"></i>
+                    <span><?= esc($errors['success']) ?></span>
+                    <button type="button" class="mentorship-toast-close" data-profile-toast-close aria-label="Close message">&times;</button>
+                </div>
+            <?php endif; ?>
+
+            <?php if (isset($errors['general'])): ?>
+                <div class="mentorship-toast mentorship-toast-error" data-profile-toast data-toast-type="error" role="alert" aria-live="assertive">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span><?= esc($errors['general']) ?></span>
+                    <button type="button" class="mentorship-toast-close" data-profile-toast-close aria-label="Close message">&times;</button>
+                </div>
+            <?php endif; ?>
+
             <section class="edit-form-section">
                 <h2 class="section-title">Edit Profile Information</h2>
                 
                 <form method="POST" class="profile-edit-form" enctype="multipart/form-data" data-password-modal="true">
-                    
-                    <?php if (!empty($errors)): ?>
-                        <div class="alert <?= isset($errors['success']) ? 'alert-success' : 'alert-danger' ?>">
-                            <?php foreach ($errors as $field => $error): ?>
-                                <p><?= esc($error) ?></p>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php endif; ?>
 
                     <!-- Profile Picture Section -->
                     <div class="profile-picture-section">
@@ -328,6 +336,33 @@ $hasPasswordErrors = isset($errors['password_current']) || isset($errors['passwo
                 closeAccountModal();
             }
         });
+
+        (function () {
+            const toasts = Array.from(document.querySelectorAll('[data-profile-toast]'));
+            if (!toasts.length) return;
+
+            toasts.forEach((toast) => {
+                const closeBtn = toast.querySelector('[data-profile-toast-close]');
+                const type = toast.getAttribute('data-toast-type') || 'success';
+                const timeout = type === 'error' ? 4200 : 3200;
+
+                const dismissToast = function () {
+                    if (toast.classList.contains('is-hiding')) return;
+                    toast.classList.add('is-hiding');
+                    setTimeout(() => {
+                        if (toast && toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
+                    }, 260);
+                };
+
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', dismissToast);
+                }
+
+                setTimeout(dismissToast, timeout);
+            });
+        })();
     </script>
     
 </body>

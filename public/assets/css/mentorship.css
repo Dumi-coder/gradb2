@@ -156,6 +156,50 @@
   transition: opacity 0.26s ease, transform 0.26s ease;
 }
 
+.action-confirm-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.48);
+  backdrop-filter: blur(2px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 13000;
+  padding: 16px;
+}
+
+.action-confirm-modal.is-open {
+  display: flex;
+}
+
+.action-confirm-panel {
+  width: min(440px, 100%);
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  box-shadow: 0 16px 46px rgba(15, 23, 42, 0.22);
+  padding: 18px;
+}
+
+.action-confirm-title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #0f172a;
+}
+
+.action-confirm-text {
+  margin: 8px 0 0 0;
+  color: #475569;
+  line-height: 1.45;
+}
+
+.action-confirm-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 @keyframes mentorship-toast-slide-in {
   from {
     opacity: 0;
@@ -825,6 +869,12 @@
   font-size: var(--font-sm);
 }
 
+.mentor-quick-meta .meta-sep {
+  font-weight: 800;
+  color: #334155;
+  padding: 0 0.2rem;
+}
+
 .mentor-meta,
 .mentor-expertise,
 .mentor-bio,
@@ -1167,8 +1217,14 @@ body.chat-open {
 .mentor-request-actions {
   margin-top: var(--spacing-sm);
   flex-direction: row;
-  align-items: center;
+  align-items: flex-end;
   justify-content: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.mentor-request-actions > form {
+  margin: 0;
 }
 
 .mentor-request-actions .btn {
@@ -1210,8 +1266,55 @@ body.chat-open {
 
 .reject-form {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: flex-end;
   gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.reject-form .form-textarea {
+  width: clamp(240px, 32vw, 420px);
+  min-height: 52px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: var(--font-sm);
+  line-height: 1.4;
+  color: #0f172a;
+  background: #ffffff;
+  resize: vertical;
+}
+
+.reject-form .form-textarea::placeholder {
+  color: #64748b;
+}
+
+.reject-form .form-textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+
+.reject-form .btn {
+  align-self: auto;
+}
+
+@media (max-width: 768px) {
+  .mentor-request-actions {
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .reject-form {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .reject-form .form-textarea {
+    width: 100%;
+  }
 }
 
 .compact-empty {

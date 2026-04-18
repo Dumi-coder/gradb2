@@ -45,17 +45,21 @@ require '../app/views/partials/alumni_header.php';
                   <div class="event-content">
                     <div class="event-category <?= esc($event['category']) ?>"><?= ucfirst(esc($event['category'])) ?></div>
                     <h3 class="event-title"><?= esc($event['title']) ?></h3>
+                    <p class="event-caption-line">
+                      <span><?= date('M d, Y', strtotime($event['event_date'])) ?></span>
+                      <span class="caption-dot">&middot;</span>
+                      <span><?= date('g:i A', strtotime($event['start_time'])) ?> - <?= date('g:i A', strtotime($event['end_time'])) ?></span>
+                      <?php if (!empty($event['venue'])): ?>
+                        <span class="caption-dot">&middot;</span>
+                        <span><?= esc($event['venue']) ?></span>
+                      <?php endif; ?>
+                    </p>
                     <p class="event-description"><?= esc($event['description']) ?></p>
-                    <div class="event-meta">
-                      <?php $modeLabel = ucfirst($event['mode'] ?? 'offline'); ?>
-                      <?php if (strtolower((string)$modeLabel) === 'offline') { $modeLabel = 'Physical'; } ?>
-                      <span class="event-time"><i class="fas fa-calendar"></i> <?= date('M d, Y', strtotime($event['event_date'])) ?></span>
-                      <span class="event-time"><i class="fas fa-clock"></i> <?= date('g:i A', strtotime($event['start_time'])) ?> - <?= date('g:i A', strtotime($event['end_time'])) ?></span>
-                      <span class="event-location"><i class="fas fa-map-marker-alt"></i> <?= esc($event['venue']) ?></span>
-                      <span class="event-mode-badge mode-<?= strtolower(esc($event['mode'] ?? 'offline')) ?>">
-                        <i class="fas fa-video"></i> <?= esc($modeLabel) ?>
-                      </span>
-                    </div>
+                    <?php $modeLabel = ucfirst($event['mode'] ?? 'offline'); ?>
+                    <?php if (strtolower((string)$modeLabel) === 'offline') { $modeLabel = 'Physical'; } ?>
+                    <span class="event-mode-badge mode-<?= strtolower(esc($event['mode'] ?? 'offline')) ?>">
+                      <i class="fas fa-video"></i> <?= esc($modeLabel) ?>
+                    </span>
                     <?php if (!empty($event['tags'])): ?>
                       <div class="event-tags-row">
                         <?php foreach (array_filter(array_map('trim', explode(',', (string)$event['tags']))) as $tag): ?>
@@ -66,14 +70,14 @@ require '../app/views/partials/alumni_header.php';
                     <div class="event-stats">
                       <?php
                         $registeredCount = (int)($event['registered_count'] ?? 0);
+                        $spotsLeft = !empty($event['max_attendees']) ? max(0, ((int)$event['max_attendees'] - $registeredCount)) : 'Unlimited';
                         $isClosed = (($event['registration_status'] ?? 'open') !== 'open');
                         $isFull = !empty($event['max_attendees']) && $registeredCount >= (int)$event['max_attendees'];
                         $isOwnEvent = ((int)($event['host_alumnus_id'] ?? 0) === (int)($_SESSION['user_id'] ?? 0));
                       ?>
-                      <span class="attendees"><i class="fas fa-user"></i> By <?= esc($event['organizer_name'] ?? 'Alumni') ?></span>
                       <span class="attendees"><i class="fas fa-users"></i> <?= $registeredCount ?> registered</span>
                       <?php if (!empty($event['max_attendees'])): ?>
-                        <span class="spots-left"><i class="fas fa-ticket-alt"></i> <?= (int)$event['max_attendees'] ?> max spots</span>
+                        <span class="spots-left"><i class="fas fa-ticket-alt"></i> <?= $spotsLeft ?> spots left</span>
                       <?php endif; ?>
                       <?php if ($isClosed): ?>
                         <span class="spots-left"><i class="fas fa-lock"></i> Registrations Closed</span>
@@ -152,19 +156,19 @@ require '../app/views/partials/alumni_header.php';
                         <i class="fas fa-external-link-alt"></i> View Details
                       </a>
                     <?php endif; ?>
-                    <button class="btn btn-outline btn-sm" onclick="openEditEventModal(<?= $event['event_id'] ?>)">
+                    <button class="btn btn-outline btn-sm js-host-edit" data-event-id="<?= (int)$event['event_id'] ?>" type="button">
                       <i class="fas fa-edit"></i> Edit Details
                     </button>
                     <?php if ($event['registration_status'] === 'open'): ?>
-                      <button class="btn btn-danger btn-sm" onclick="toggleRegistrationStatus(<?= $event['event_id'] ?>)">
+                      <button class="btn btn-danger btn-sm js-host-toggle" data-event-id="<?= (int)$event['event_id'] ?>" type="button">
                         <i class="fas fa-lock"></i> Close Registrations
                       </button>
                     <?php else: ?>
-                      <button class="btn btn-success btn-sm" onclick="toggleRegistrationStatus(<?= $event['event_id'] ?>)">
+                      <button class="btn btn-success btn-sm js-host-toggle" data-event-id="<?= (int)$event['event_id'] ?>" type="button">
                         <i class="fas fa-unlock"></i> Reopen Registrations
                       </button>
                     <?php endif; ?>
-                    <button class="btn btn-danger btn-sm" onclick="confirmDeleteEvent(<?= $event['event_id'] ?>)">
+                    <button class="btn btn-danger btn-sm js-host-delete" data-event-id="<?= (int)$event['event_id'] ?>" type="button">
                       <i class="fas fa-trash"></i> Delete
                     </button>
                   </div>
@@ -194,14 +198,32 @@ require '../app/views/partials/alumni_header.php';
             <?php if (!empty($attendingEvents)): ?>
               <?php foreach ($attendingEvents as $index => $event): ?>
                 <div class="my-event-card js-card-alumni-attending" <?= $index >= 2 ? 'style="display:none;"' : '' ?>>
-                  <div class="event-status registered">Registered</div>
+                  <div class="my-event-image" style="background-color: #E0EBF9;">
+                    <?php if (!empty($event['image_path'])): ?>
+                      <img src="<?=ROOT?><?= esc($event['image_path']) ?>" alt="<?= esc($event['title']) ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                    <?php endif; ?>
+                  </div>
                   <div class="event-content">
-                    <h3 class="event-title"><?= esc($event['title']) ?></h3>
-                    <div class="event-meta">
-                      <span class="event-time"><i class="fas fa-clock"></i> <?= date('M d, Y', strtotime($event['event_date'])) ?>, <?= date('g:i A', strtotime($event['start_time'])) ?></span>
-                      <span class="event-location"><i class="fas fa-map-marker-alt"></i> <?= esc($event['venue']) ?></span>
-                      <span class="event-location"><i class="fas fa-users"></i> <?= (int)($event['registered_count'] ?? 0) ?> registered</span>
+                    <div class="my-event-topline">
+                      <div class="event-status registered">Registered</div>
                     </div>
+                    <h3 class="event-title"><?= esc($event['title']) ?></h3>
+                    <p class="my-event-caption-line">
+                      <span><?= date('M d, Y', strtotime($event['event_date'])) ?></span>
+                      <span class="caption-dot">&middot;</span>
+                      <span><?= date('g:i A', strtotime($event['start_time'])) ?></span>
+                      <?php if (!empty($event['venue'])): ?>
+                        <span class="caption-dot">&middot;</span>
+                        <span><?= esc($event['venue']) ?></span>
+                      <?php endif; ?>
+                    </p>
+
+                    <?php $myEventModeLabel = ucfirst($event['mode'] ?? 'offline'); ?>
+                    <?php if (strtolower((string)$myEventModeLabel) === 'offline') { $myEventModeLabel = 'Physical'; } ?>
+                    <span class="event-mode-badge mode-<?= strtolower(esc($event['mode'] ?? 'offline')) ?>">
+                      <i class="fas fa-video"></i> <?= esc($myEventModeLabel) ?>
+                    </span>
+
                     <div class="event-actions">
                       <?php if (!empty($event['registration_link'])): ?>
                         <a class="btn btn-outline btn-sm" href="<?= esc($event['registration_link']) ?>" target="_blank" rel="noopener noreferrer">
@@ -209,9 +231,9 @@ require '../app/views/partials/alumni_header.php';
                           <span>View Details</span>
                         </a>
                       <?php endif; ?>
-                      <button class="btn btn-outline btn-sm" onclick="unregisterEvent(<?= (int)$event['event_id'] ?>)">
+                      <button class="btn btn-outline btn-sm btn-unregister" onclick="unregisterEvent(<?= (int)$event['event_id'] ?>)">
                         <i class="fas fa-times"></i>
-                        <span>Cancel</span>
+                        <span>Unregister</span>
                       </button>
                     </div>
                   </div>
@@ -529,11 +551,35 @@ require '../app/views/partials/alumni_header.php';
       </div>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div id="confirmActionModal" class="modal confirm-action-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Confirm Action</h2>
+          <button class="modal-close" id="confirmActionClose" type="button">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="confirm-action-body">
+          <p id="confirmActionMessage">Are you sure?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" id="confirmActionCancel" type="button">
+            <span>Cancel</span>
+          </button>
+          <button class="btn btn-danger" id="confirmActionOk" type="button">
+            <span>Confirm</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="<?=ROOT?>/assets/js/events-board.js"></script>
     <script>
     // Event CRUD Operations
     let currentEditingEventId = null;
     let currentRegisterEventId = null;
+    let confirmActionResolver = null;
 
     function toggleCreateSessionLinkField() {
       const modeSelect = document.getElementById('eventMode');
@@ -555,16 +601,23 @@ require '../app/views/partials/alumni_header.php';
       const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
       try {
         const response = await fetch(url, { ...options, signal: controller.signal });
-        const contentType = response.headers.get('content-type') || '';
-        if (contentType.includes('application/json')) {
-          return await response.json();
-        }
-
         const raw = await response.text();
-        throw new Error(raw ? raw.slice(0, 300) : 'Non-JSON response from server');
+
+        // Some PHP endpoints return JSON with text/html content-type.
+        // Parse JSON defensively based on payload, not header alone.
+        try {
+          return raw ? JSON.parse(raw) : {};
+        } catch (parseError) {
+          throw new Error(raw ? raw.slice(0, 300) : 'Non-JSON response from server');
+        }
       } finally {
         clearTimeout(timeoutId);
       }
+    }
+
+    function refreshEventBoard() {
+      // Use cache-busting navigation so latest server state is reflected immediately.
+      window.location.replace('<?=ROOT?>/alumni/eventboard?refresh=' + Date.now());
     }
 
     function toggleEventCards(sectionKey, button) {
@@ -635,8 +688,40 @@ require '../app/views/partials/alumni_header.php';
       }
     }
 
+    function openConfirmActionModal(message) {
+      const modal = document.getElementById('confirmActionModal');
+      const messageEl = document.getElementById('confirmActionMessage');
+
+      if (messageEl) {
+        messageEl.textContent = message || 'Are you sure?';
+      }
+
+      if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+
+      return new Promise((resolve) => {
+        confirmActionResolver = resolve;
+      });
+    }
+
+    function closeConfirmActionModal(confirmed) {
+      const modal = document.getElementById('confirmActionModal');
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+
+      if (confirmActionResolver) {
+        confirmActionResolver(Boolean(confirmed));
+        confirmActionResolver = null;
+      }
+    }
+
     async function unregisterEvent(eventId) {
-      if (!confirm('Cancel your registration for this event?')) {
+      const confirmed = await openConfirmActionModal('Cancel your registration for this event?');
+      if (!confirmed) {
         return;
       }
 
@@ -651,7 +736,7 @@ require '../app/views/partials/alumni_header.php';
 
         showNotification(result.message || 'Updated', result.success ? 'success' : 'error');
         if (result.success) {
-          location.reload();
+          refreshEventBoard();
         }
       } catch (err) {
         console.error(err);
@@ -695,7 +780,7 @@ require '../app/views/partials/alumni_header.php';
         showNotification(result.message || 'Updated', result.success ? 'success' : 'error');
         if (result.success) {
           closeRegisterModal();
-          location.reload();
+          refreshEventBoard();
         }
       } catch (err) {
         console.error(err);
@@ -726,7 +811,7 @@ require '../app/views/partials/alumni_header.php';
                 showNotification('Event created successfully!', 'success');
                 closeNewEventModal();
                 this.reset();
-              location.reload();
+              refreshEventBoard();
             } else {
                 showNotification(result.message || 'Failed to create event', 'error');
             }
@@ -752,7 +837,7 @@ require '../app/views/partials/alumni_header.php';
             if (result.success) {
                 showNotification('Event updated successfully! Registered students have been notified.', 'success');
                 closeEditEventModal();
-              location.reload();
+              refreshEventBoard();
             } else {
                 showNotification(result.message || 'Failed to update event', 'error');
             }
@@ -767,7 +852,7 @@ require '../app/views/partials/alumni_header.php';
         currentEditingEventId = eventId;
         
         try {
-            const event = await fetchJson(`<?=ROOT?>/alumni/eventboard/getevent?id=${eventId}`);
+            const event = await fetchJson(`<?=ROOT?>/alumni/eventboard/getEvent?id=${eventId}`);
             
             if (event.success) {
                 const data = event.data;
@@ -813,7 +898,8 @@ require '../app/views/partials/alumni_header.php';
 
     // Delete Event
     async function confirmDeleteEvent(eventId) {
-        if (!confirm('Are you sure you want to delete this event? All registered students will be notified.')) {
+      const confirmed = await openConfirmActionModal('Are you sure you want to delete this event? All registered students will be notified.');
+      if (!confirmed) {
             return;
         }
         
@@ -828,7 +914,9 @@ require '../app/views/partials/alumni_header.php';
             
             if (result.success) {
                 showNotification('Event deleted successfully! Registered students have been notified.', 'success');
-              location.reload();
+              setTimeout(() => {
+                refreshEventBoard();
+              }, 150);
             } else {
                 showNotification(result.message || 'Failed to delete event', 'error');
             }
@@ -844,14 +932,16 @@ require '../app/views/partials/alumni_header.php';
             const formData = new FormData();
             formData.append('eventId', eventId);
             
-            const result = await fetchJson('<?=ROOT?>/alumni/eventboard/toggleregistration', {
+            const result = await fetchJson('<?=ROOT?>/alumni/eventboard/toggleRegistration', {
                 method: 'POST',
                 body: formData
             });
             
             if (result.success) {
                 showNotification(`Registrations ${result.status === 'open' ? 'opened' : 'closed'} successfully!`, 'success');
-              location.reload();
+              setTimeout(() => {
+                refreshEventBoard();
+              }, 150);
             } else {
                 showNotification(result.message || 'Failed to update registration status', 'error');
             }
@@ -864,25 +954,69 @@ require '../app/views/partials/alumni_header.php';
     // Get Event Data (for edit modal)
     async function getEventData(eventId) {
         try {
-            return await fetchJson(`<?=ROOT?>/alumni/eventboard/getevent?id=${eventId}`);
+            return await fetchJson(`<?=ROOT?>/alumni/eventboard/getEvent?id=${eventId}`);
         } catch (error) {
             console.error('Error:', error);
             return { success: false };
         }
     }
 
+    function bindHostingActionButtons() {
+      const editButtons = document.querySelectorAll('.js-host-edit[data-event-id]');
+      const toggleButtons = document.querySelectorAll('.js-host-toggle[data-event-id]');
+      const deleteButtons = document.querySelectorAll('.js-host-delete[data-event-id]');
+
+      editButtons.forEach((button) => {
+        if (button.dataset.bound === '1') return;
+        button.dataset.bound = '1';
+        button.addEventListener('click', () => {
+          const eventId = parseInt(button.dataset.eventId || '0', 10);
+          if (eventId > 0) openEditEventModal(eventId);
+        });
+      });
+
+      toggleButtons.forEach((button) => {
+        if (button.dataset.bound === '1') return;
+        button.dataset.bound = '1';
+        button.addEventListener('click', () => {
+          const eventId = parseInt(button.dataset.eventId || '0', 10);
+          if (eventId > 0) toggleRegistrationStatus(eventId);
+        });
+      });
+
+      deleteButtons.forEach((button) => {
+        if (button.dataset.bound === '1') return;
+        button.dataset.bound = '1';
+        button.addEventListener('click', () => {
+          const eventId = parseInt(button.dataset.eventId || '0', 10);
+          if (eventId > 0) confirmDeleteEvent(eventId);
+        });
+      });
+    }
+
     // Close modals when clicking outside
     window.onclick = function(event) {
-        const modals = ['newEventModal', 'editEventModal', 'registerModal'];
+        const modals = ['newEventModal', 'editEventModal', 'registerModal', 'confirmActionModal'];
         modals.forEach(modalId => {
             const modal = document.getElementById(modalId);
             if (event.target === modal) {
                 if (modalId === 'newEventModal') closeNewEventModal();
                 if (modalId === 'editEventModal') closeEditEventModal();
                 if (modalId === 'registerModal') closeRegisterModal();
+                if (modalId === 'confirmActionModal') closeConfirmActionModal(false);
             }
         });
     }
+
+        document.getElementById('confirmActionOk')?.addEventListener('click', function() {
+          closeConfirmActionModal(true);
+        });
+        document.getElementById('confirmActionCancel')?.addEventListener('click', function() {
+          closeConfirmActionModal(false);
+        });
+        document.getElementById('confirmActionClose')?.addEventListener('click', function() {
+          closeConfirmActionModal(false);
+        });
 
         const alumniUpcomingToggleBtn = document.querySelector('.events-header-section .btn.btn-outline.btn-sm');
         if (alumniUpcomingToggleBtn) {
@@ -900,6 +1034,11 @@ require '../app/views/partials/alumni_header.php';
         window.closeRegisterModal = closeRegisterModal;
         window.unregisterEvent = unregisterEvent;
         window.toggleEventCards = toggleEventCards;
+        window.openEditEventModal = openEditEventModal;
+        window.toggleRegistrationStatus = toggleRegistrationStatus;
+        window.confirmDeleteEvent = confirmDeleteEvent;
+
+        bindHostingActionButtons();
 
           const createModeSelect = document.getElementById('eventMode');
           if (createModeSelect) {

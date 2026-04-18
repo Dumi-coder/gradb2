@@ -91,7 +91,9 @@
 
         if (typeof PasswordValidator === 'function' && indicatorContainer && indicatorContainer.id) {
             var validator = new PasswordValidator();
-            validator.initPasswordValidation(newField.id, confirmField.id, indicatorContainer.id);
+            validator.initPasswordValidation(newField.id, confirmField.id, indicatorContainer.id, {
+                allowEmpty: true
+            });
         }
 
         if (hasPasswordErrors) {

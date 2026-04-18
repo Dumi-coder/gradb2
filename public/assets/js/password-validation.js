@@ -227,9 +227,11 @@ class PasswordValidator {
      * @param {string} confirmFieldId - ID of confirm password field (optional)
      * @param {string} containerId - ID of container for strength indicator
      */
-    initPasswordValidation(passwordFieldId, confirmFieldId = null, containerId = null) {
+    initPasswordValidation(passwordFieldId, confirmFieldId = null, containerId = null, options = {}) {
         const passwordField = document.getElementById(passwordFieldId);
         if (!passwordField) return;
+
+        const allowEmpty = Boolean(options && options.allowEmpty);
 
         // Create strength indicator if container provided
         if (containerId) {
@@ -293,7 +295,6 @@ class PasswordValidator {
                 
                 // Check confirm password if exists
                 if (confirmFieldId) {
-                    const confirmField = document.getElementById(confirmFieldId);
                     if (confirmField && password !== confirmField.value) {
                         e.preventDefault();
                         this.showValidationErrors(['Passwords do not match']);

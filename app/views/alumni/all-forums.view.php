@@ -12,7 +12,7 @@ require '../app/views/partials/alumni_header.php';
   <?php require '../app/views/partials/alumni_sidebar.php'; ?>
 
   <!-- Main Content Area -->
-  <main class="main-content forum-ui all-forums-page">
+  <main class="main-content forum-ui discussion-main-page all-forums-page">
     <!-- Forum Topics Section -->
     <section class="dashboard-section forum-topics-section">
       <div class="section-header">

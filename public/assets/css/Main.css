@@ -172,10 +172,6 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
   
-  .section-title {
-    font-size: var(--font-4xl);
-  }
-  
   .cta-title {
     font-size: var(--font-4xl);
   }

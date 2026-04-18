@@ -45,7 +45,7 @@
 
 /* Section Titles - Basic title styling */
 .section-title {
-  font-size: var(--font-2xl);
+  font-size: var(--font-xl);
   font-weight: 600;
   color: var(--foreground);
   margin: 0;

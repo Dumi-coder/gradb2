@@ -4,8 +4,9 @@
 body.student-dashboard .featured-events-section .featured-events-grid,
 body.alumni-dashboard .featured-events-section .featured-events-grid {
   display: grid !important;
-  grid-template-columns: repeat(2, minmax(260px, 1fr)) !important;
+  grid-template-columns: repeat(2, minmax(320px, 420px)) !important;
   gap: var(--spacing-lg) !important;
+  justify-content: start;
   align-items: stretch;
 }
 
@@ -82,7 +83,8 @@ body.alumni-dashboard .featured-events-section .featured-event-card .event-meta 
 
 .featured-events-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(320px, 420px));
+  justify-content: start;
   gap: var(--spacing-lg);
 }
 
@@ -95,6 +97,8 @@ body.alumni-dashboard .featured-events-section .featured-event-card .event-meta 
   cursor: pointer;
   width: 100%;
   max-width: none;
+  display: flex;
+  flex-direction: column;
 }
 
 .featured-event-card:hover {
@@ -105,9 +109,12 @@ body.alumni-dashboard .featured-events-section .featured-event-card .event-meta 
 
 /* Event image - plain background for demo */
 .event-image {
-  height: 150px;
+  aspect-ratio: 16 / 10;
+  min-height: 180px;
+  height: auto;
   background: #E0EBF9;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  overflow: hidden;
 }
 
 .event-status {
@@ -133,7 +140,7 @@ body.alumni-dashboard .featured-events-section .featured-event-card .event-meta 
 }
 
 .event-content {
-  padding: var(--spacing-md);
+  padding: 14px;
 }
 
 .event-category {
@@ -168,19 +175,48 @@ body.alumni-dashboard .featured-events-section .featured-event-card .event-meta 
 }
 
 .event-title {
-  font-size: var(--font-lg);
+  font-size: var(--font-md);
   font-weight: 600;
   color: var(--foreground);
-  margin: 0 0 var(--spacing-sm) 0;
+  margin: 0 0 6px 0;
   line-height: var(--leading-tight);
   overflow-wrap: anywhere;
 }
 
+.featured-event-card .event-caption-line {
+  margin: 0 0 8px 0;
+  color: var(--muted-foreground);
+  font-size: var(--font-sm);
+  line-height: 1.35;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.featured-event-card .caption-dot {
+  display: inline-block;
+  padding: 0 6px;
+  color: #94a3b8;
+}
+
 .event-description {
   color: var(--muted-foreground);
-  margin: 0 0 var(--spacing-md) 0;
+  margin: 0 0 8px 0;
   line-height: var(--leading-normal);
   overflow-wrap: anywhere;
+}
+
+.featured-event-card .event-mode-badge {
+  margin-bottom: 8px;
+}
+
+.featured-event-card .event-stats {
+  margin-bottom: 8px;
+}
+
+.featured-event-card .event-actions {
+  margin-top: auto;
+  flex-wrap: nowrap;
 }
 
 .event-meta {
@@ -568,9 +604,10 @@ body.alumni-dashboard .featured-events-section .featured-event-card .event-meta 
   background-color: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-md);
+  padding: 0;
   position: relative;
   transition: all 0.3s ease;
+  overflow: hidden;
 }
 
 .my-event-card:hover {
@@ -579,9 +616,7 @@ body.alumni-dashboard .featured-events-section .featured-event-card .event-meta 
 }
 
 .my-event-card .event-status {
-  position: absolute;
-  top: var(--spacing-md);
-  right: var(--spacing-md);
+  position: static;
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-full);
   font-size: var(--font-xs);
@@ -600,12 +635,48 @@ body.alumni-dashboard .featured-events-section .featured-event-card .event-meta 
   color: white;
 }
 
+.my-event-image {
+  aspect-ratio: 16 / 7;
+  min-height: 132px;
+  background: #e0ebf9;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.my-event-card .event-content {
+  padding: var(--spacing-md);
+}
+
+.my-event-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
 .my-event-card .event-title {
   font-size: var(--font-md);
   font-weight: 600;
   color: var(--foreground);
   margin: 0 0 var(--spacing-sm) 0;
-  padding-right: 80px;
+  padding-right: 0;
+}
+
+.my-event-caption-line {
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--muted-foreground);
+  font-size: var(--font-sm);
+  line-height: 1.35;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.my-event-caption-line .caption-dot {
+  display: inline-block;
+  padding: 0 6px;
+  color: #94a3b8;
 }
 
 .my-event-card .event-meta {
@@ -618,6 +689,17 @@ body.alumni-dashboard .featured-events-section .featured-event-card .event-meta 
 .my-event-card .event-actions {
   display: flex;
   gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.my-event-card .event-actions .btn-unregister {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.my-event-card .event-actions .btn-unregister:hover {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
 }
 
 /* Modal Styles */
@@ -644,6 +726,21 @@ body.alumni-dashboard .featured-events-section .featured-event-card .event-meta 
   overflow-y: auto;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   animation: modalSlideIn 0.3s ease-out;
+}
+
+.confirm-action-modal .modal-content {
+  max-width: 420px;
+  margin: 12% auto;
+}
+
+.confirm-action-body {
+  padding: var(--spacing-lg);
+}
+
+.confirm-action-body p {
+  margin: 0;
+  color: var(--foreground);
+  line-height: var(--leading-normal);
 }
 
 @keyframes modalSlideIn {
@@ -826,7 +923,7 @@ body.alumni-dashboard .featured-events-section .featured-event-card .event-meta 
 /* Responsive Design */
 @media (max-width: 1024px) {
   .featured-events-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
   }
   
   .form-row {
@@ -841,7 +938,7 @@ body.alumni-dashboard .featured-events-section .featured-event-card .event-meta 
 @media (max-width: 1200px) {
   body.student-dashboard .featured-events-section .featured-events-grid,
   body.alumni-dashboard .featured-events-section .featured-events-grid {
-    grid-template-columns: repeat(2, minmax(240px, 1fr)) !important;
+    grid-template-columns: repeat(2, minmax(260px, 1fr)) !important;
   }
 }
 
