@@ -15,6 +15,22 @@ $hasPasswordErrors = isset($errors['password_current']) || isset($errors['passwo
         
         <!-- Main Content -->
         <main class="main-content">
+            <?php if (isset($errors['success'])): ?>
+                <div class="mentorship-toast mentorship-toast-success" data-profile-toast data-toast-type="success" role="status" aria-live="polite">
+                    <i class="fas fa-check-circle"></i>
+                    <span><?= esc($errors['success']) ?></span>
+                    <button type="button" class="mentorship-toast-close" data-profile-toast-close aria-label="Close message">&times;</button>
+                </div>
+            <?php endif; ?>
+
+            <?php if (isset($errors['general'])): ?>
+                <div class="mentorship-toast mentorship-toast-error" data-profile-toast data-toast-type="error" role="alert" aria-live="assertive">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span><?= esc($errors['general']) ?></span>
+                    <button type="button" class="mentorship-toast-close" data-profile-toast-close aria-label="Close message">&times;</button>
+                </div>
+            <?php endif; ?>
+
             <!-- Edit Profile Form -->
             <section class="edit-form-section">
                 <h2 class="section-title">Edit Profile Information</h2>
@@ -222,14 +238,6 @@ $hasPasswordErrors = isset($errors['password_current']) || isset($errors['passwo
                     </div>
 
                     <!-- Success/Error Messages -->
-                    <?php if (isset($errors['success'])): ?>
-                        <div class="success-message"><?= esc($errors['success']) ?></div>
-                    <?php endif; ?>
-                    
-                    <?php if (isset($errors['general'])): ?>
-                        <div class="error-message"><?= esc($errors['general']) ?></div>
-                    <?php endif; ?>
-
                     <input type="hidden" name="change_password" value="0">
 
                     <!-- Form Actions -->
@@ -433,6 +441,33 @@ $hasPasswordErrors = isset($errors['password_current']) || isset($errors['passwo
             });
         }
     }
+})();
+
+(function () {
+    const toasts = Array.from(document.querySelectorAll('[data-profile-toast]'));
+    if (!toasts.length) return;
+
+    toasts.forEach((toast) => {
+        const closeBtn = toast.querySelector('[data-profile-toast-close]');
+        const type = toast.getAttribute('data-toast-type') || 'success';
+        const timeout = type === 'error' ? 4200 : 3200;
+
+        const dismissToast = function () {
+            if (toast.classList.contains('is-hiding')) return;
+            toast.classList.add('is-hiding');
+            setTimeout(() => {
+                if (toast && toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 260);
+        };
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', dismissToast);
+        }
+
+        setTimeout(dismissToast, timeout);
+    });
 })();
 
 (function(){
