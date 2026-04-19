@@ -195,67 +195,6 @@
           </div>
         </section>
 
-        <!-- Browse by Category -->
-        <section class="dashboard-section categories-section">
-          <div class="section-header">
-            <h2 class="card-title">Browse by Category</h2>
-          </div>
-          
-          <div class="categories-grid">
-            <div class="category-card" onclick="window.location.href='<?=ROOT?>/superadmin/resourcemoderation/browse?category=lecture-notes'">
-              <div class="category-icon">
-                <i class="fas fa-file-alt"></i>
-              </div>
-              <div class="category-info">
-                <h3 class="category-name">Lecture Notes</h3>
-                <p class="category-description">Class notes and study guides</p>
-                <div class="category-stats">
-                  <span class="stat"><i class="fas fa-file"></i> <?= isset($resourceData['category_counts']['lecture-notes']) ? $resourceData['category_counts']['lecture-notes'] : 0 ?> files</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="category-card" onclick="window.location.href='<?=ROOT?>/superadmin/resourcemoderation/browse?category=assignments'">
-              <div class="category-icon">
-                <i class="fas fa-tasks"></i>
-              </div>
-              <div class="category-info">
-                <h3 class="category-name">Exercises</h3>
-                <p class="category-description">Sample solutions and templates</p>
-                <div class="category-stats">
-                  <span class="stat"><i class="fas fa-file"></i> <?= isset($resourceData['category_counts']['assignments']) ? $resourceData['category_counts']['assignments'] : 0 ?> files</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="category-card" onclick="window.location.href='<?=ROOT?>/superadmin/resourcemoderation/browse?category=textbooks'">
-              <div class="category-icon">
-                <i class="fas fa-book"></i>
-              </div>
-              <div class="category-info">
-                <h3 class="category-name">Textbooks</h3>
-                <p class="category-description">Digital books and references</p>
-                <div class="category-stats">
-                  <span class="stat"><i class="fas fa-file"></i> <?= isset($resourceData['category_counts']['textbooks']) ? $resourceData['category_counts']['textbooks'] : 0 ?> files</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="category-card" onclick="window.location.href='<?=ROOT?>/superadmin/resourcemoderation/browse?category=software'">
-              <div class="category-icon">
-                <i class="fas fa-code"></i>
-              </div>
-              <div class="category-info">
-                <h3 class="category-name">Software & Tools</h3>
-                <p class="category-description">Development tools and software</p>
-                <div class="category-stats">
-                  <span class="stat"><i class="fas fa-file"></i> <?= isset($resourceData['category_counts']['software']) ? $resourceData['category_counts']['software'] : 0 ?> files</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <!-- Recent Resources -->
         <section class="dashboard-section recent-section">
           <div class="section-header">
@@ -335,7 +274,7 @@
                 </div>
               <?php endforeach; ?>
             <?php else: ?>
-              <div class="resource-item sae-64">
+              <div class="resource-item resources-empty-state sae-64">
                 <div class="resource-content sae-65">
                   <h3 class="resource-title">No recent resources available</h3>
                   <p class="resource-description">Resources shared by users will appear here.</p>

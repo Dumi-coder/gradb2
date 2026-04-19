@@ -334,15 +334,45 @@ class Profile extends Controller
 
     private function getAdminStats()
     {
-        // You can expand this to get real statistics from the database
-        return [
-            'total_students' => 450,
-            'total_alumni' => 320,
-            'total_admins' => 24,
-            'pending_requests' => 67,
-            'events_managed' => 28,
-            'mentorship_connections' => 89,
-            'system_uptime' => '99.9%'
+        $stats = [
+            'total_students' => 0,
+            'total_alumni' => 0,
+            'pending_requests' => 0,
+            'events_managed' => 0,
+            'mentorship_connections' => 0,
         ];
+
+        try {
+            $db = new SuperAdmin();
+
+            $totalStudents = $db->query("SELECT COUNT(*) AS total FROM students");
+            $totalAlumni = $db->query("SELECT COUNT(*) AS total FROM alumnis");
+            $pendingRequests = $db->query(
+                "SELECT COUNT(*) AS total
+                 FROM requests
+                 WHERE status IN ('pending', 'pending_review')"
+            );
+            $eventsManaged = $db->query(
+                "SELECT COUNT(*) AS total
+                 FROM events
+                 WHERE status = 'active'"
+            );
+            $mentorshipConnections = $db->query(
+                "SELECT COUNT(*) AS total
+                 FROM requests
+                 WHERE request_type = 'mentorship'
+                   AND status IN ('accepted', 'pending_review', 'completed')"
+            );
+
+            $stats['total_students'] = (int)($totalStudents[0]->total ?? 0);
+            $stats['total_alumni'] = (int)($totalAlumni[0]->total ?? 0);
+            $stats['pending_requests'] = (int)($pendingRequests[0]->total ?? 0);
+            $stats['events_managed'] = (int)($eventsManaged[0]->total ?? 0);
+            $stats['mentorship_connections'] = (int)($mentorshipConnections[0]->total ?? 0);
+        } catch (Throwable $e) {
+            error_log('Super admin profile stats error: ' . $e->getMessage());
+        }
+
+        return $stats;
     }
 }

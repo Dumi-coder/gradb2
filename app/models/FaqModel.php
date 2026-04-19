@@ -41,7 +41,7 @@ class FaqModel
         $query = "INSERT INTO $this->table (" . implode(",", $keys) . ") VALUES (:" . implode(",:", $keys) . ")";
         
         // Get PDO connection
-        $string = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8";
+        $string = "mysql:host=" . DBHOST . ";port=" . DBPORT . ";dbname=" . DBNAME . ";charset=utf8";
         $con = new PDO($string, DBUSER, DBPASS);
         $stm = $con->prepare($query);
         
@@ -88,7 +88,7 @@ class FaqModel
         $query .= " WHERE $id_column = :$id_column";
 
         // Get PDO connection
-        $string = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8";
+        $string = "mysql:host=" . DBHOST . ";port=" . DBPORT . ";dbname=" . DBNAME . ";charset=utf8";
         $con = new PDO($string, DBUSER, DBPASS);
         $stm = $con->prepare($query);
 

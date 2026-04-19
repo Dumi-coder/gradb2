@@ -53,10 +53,40 @@ class Events extends Controller
         $description = trim((string)($_POST['eventDescription'] ?? ''));
         $eventDate = trim((string)($_POST['eventDate'] ?? ''));
         $startTime = trim((string)($_POST['startTime'] ?? ''));
+        $endTime = trim((string)($_POST['endTime'] ?? ''));
 
         if ($title === '' || $description === '' || $eventDate === '' || $startTime === '') {
             $this->jsonFail('Title, description, date, and start time are required');
             return;
+        }
+
+        $eventDateObj = DateTime::createFromFormat('Y-m-d', $eventDate);
+        $today = new DateTime('today');
+        if (!$eventDateObj || $eventDateObj->format('Y-m-d') !== $eventDate) {
+            $this->jsonFail('Invalid event date');
+            return;
+        }
+        if ($eventDateObj <= $today) {
+            $this->jsonFail('Event date must be after today');
+            return;
+        }
+
+        $startTimeObj = DateTime::createFromFormat('H:i', $startTime);
+        if (!$startTimeObj || $startTimeObj->format('H:i') !== $startTime) {
+            $this->jsonFail('Invalid start time');
+            return;
+        }
+
+        if ($endTime !== '') {
+            $endTimeObj = DateTime::createFromFormat('H:i', $endTime);
+            if (!$endTimeObj || $endTimeObj->format('H:i') !== $endTime) {
+                $this->jsonFail('Invalid end time');
+                return;
+            }
+            if ($startTimeObj >= $endTimeObj) {
+                $this->jsonFail('Start time must be before end time');
+                return;
+            }
         }
 
         $imagePath = null;
@@ -97,7 +127,7 @@ class Events extends Controller
             'category' => trim((string)($_POST['eventCategory'] ?? 'general')),
             'event_date' => $eventDate,
             'start_time' => $startTime,
-            'end_time' => trim((string)($_POST['endTime'] ?? '')),
+            'end_time' => $endTime,
             'venue' => trim((string)($_POST['eventLocation'] ?? 'TBA')),
             'mode' => trim((string)($_POST['eventMode'] ?? 'offline')),
             'registration_link' => trim((string)($_POST['externalLink'] ?? '')),

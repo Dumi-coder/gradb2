@@ -7,7 +7,7 @@ trait Database// This trait provides basic database operations for models
 {
     private function connect()
 {
-    $string = "mysql:host=".DBHOST.";dbname=".DBNAME.";charset=utf8";
+    $string = "mysql:host=".DBHOST.";port=".DBPORT.";dbname=".DBNAME.";charset=utf8";
     $con = new PDO($string, DBUSER, DBPASS);
     return $con;
 }

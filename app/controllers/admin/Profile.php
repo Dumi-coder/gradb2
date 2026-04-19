@@ -334,14 +334,95 @@ class Profile extends Controller
 
     private function getAdminStats()
     {
-        // You can expand this to get real statistics from the database
-        return [
-            'total_students' => 156,
-            'total_alumni' => 89,
-            'pending_requests' => 23,
-            'events_managed' => 12,
-            'mentorship_connections' => 45,
-            'system_uptime' => '99.9%'
+        $stats = [
+            'total_students' => 0,
+            'total_alumni' => 0,
+            'pending_requests' => 0,
+            'events_managed' => 0,
+            'mentorship_connections' => 0,
         ];
+
+        try {
+            $db = new FacultyAdmin();
+            $userId = (int)($_SESSION['user_id'] ?? 0);
+
+            if ($userId <= 0) {
+                return $stats;
+            }
+
+            $facultyRow = $db->query(
+                "SELECT faculty_id
+                 FROM faculty_admins
+                 WHERE user_id = :user_id
+                 ORDER BY faculty_admin_id DESC
+                 LIMIT 1",
+                ['user_id' => $userId]
+            );
+
+            $facultyId = (int)($facultyRow[0]->faculty_id ?? 0);
+            $params = [];
+            $studentFacultyFilter = '';
+            $alumniFacultyFilter = '';
+            $eventFacultyFilter = '';
+
+            if ($facultyId > 0) {
+                $params['faculty_id'] = $facultyId;
+                $studentFacultyFilter = 'WHERE s.faculty_id = :faculty_id';
+                $alumniFacultyFilter = 'WHERE a.faculty_id = :faculty_id';
+                $eventFacultyFilter = 'AND a.faculty_id = :faculty_id';
+            }
+
+            $totalStudents = $db->query(
+                "SELECT COUNT(*) AS total
+                 FROM students s
+                 $studentFacultyFilter",
+                $params
+            );
+
+            $totalAlumni = $db->query(
+                "SELECT COUNT(*) AS total
+                 FROM alumnis a
+                 $alumniFacultyFilter",
+                $params
+            );
+
+            $pendingRequests = $db->query(
+                "SELECT COUNT(*) AS total
+                 FROM requests r
+                 LEFT JOIN students s ON s.user_id = r.student_user_id
+                 WHERE r.status IN ('pending', 'pending_review')
+                 " . ($facultyId > 0 ? ' AND s.faculty_id = :faculty_id' : ''),
+                $params
+            );
+
+            $eventsManaged = $db->query(
+                "SELECT COUNT(*) AS total
+                 FROM events e
+                 LEFT JOIN alumnis a ON a.user_id = e.host_alumnus_id
+                 WHERE e.status = 'active'
+                 $eventFacultyFilter",
+                $params
+            );
+
+            $mentorshipConnections = $db->query(
+                "SELECT COUNT(*) AS total
+                 FROM requests r
+                 LEFT JOIN students s ON s.user_id = r.student_user_id
+                 WHERE r.request_type = 'mentorship'
+                   AND r.status IN ('accepted', 'pending_review', 'completed')
+                 " . ($facultyId > 0 ? ' AND s.faculty_id = :faculty_id' : ''),
+                $params
+            );
+
+            $stats['total_students'] = (int)($totalStudents[0]->total ?? 0);
+            $stats['total_alumni'] = (int)($totalAlumni[0]->total ?? 0);
+            $stats['pending_requests'] = (int)($pendingRequests[0]->total ?? 0);
+            $stats['events_managed'] = (int)($eventsManaged[0]->total ?? 0);
+            $stats['mentorship_connections'] = (int)($mentorshipConnections[0]->total ?? 0);
+        } catch (Throwable $e) {
+            error_log('Admin profile stats error: ' . $e->getMessage());
+        }
+
+        return $stats;
     }
 }

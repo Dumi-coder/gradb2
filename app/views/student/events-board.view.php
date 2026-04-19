@@ -431,19 +431,19 @@ require '../app/views/partials/student_header.php';
             
             <div class="form-group">
               <label for="eventDate">Event Date *</label>
-              <input type="date" id="eventDate" name="eventDate" required>
+              <input type="date" id="eventDate" name="eventDate" min="<?= date('Y-m-d', strtotime('+1 day')) ?>" required>
             </div>
           </div>
           
           <div class="form-row">
             <div class="form-group">
               <label for="startTime">Start Time *</label>
-              <input type="time" id="startTime" name="startTime" required>
+              <input type="time" id="startTime" name="startTime" placeholder="Select start time" title="Select start time" required>
             </div>
             
             <div class="form-group">
               <label for="endTime">End Time *</label>
-              <input type="time" id="endTime" name="endTime" required>
+              <input type="time" id="endTime" name="endTime" placeholder="Select end time" title="Select end time" required>
             </div>
           </div>
           

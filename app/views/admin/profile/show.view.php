@@ -105,16 +105,6 @@
                             <div class="stat-label">Mentorship Connections</div>
                         </div>
                     </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-server"></i>
-                        </div>
-                        <div class="stat-content">
-                            <div class="stat-number"><?= $stats['system_uptime'] ?></div>
-                            <div class="stat-label">System Uptime</div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
@@ -142,40 +132,6 @@
                     </div>
                 </div>
                 
-                <div class="experience-grid">
-                    <div class="experience-card">
-                        <div class="experience-icon">
-                            <i class="fas fa-graduation-cap"></i>
-                        </div>
-                        <div class="experience-content">
-                            <h4>Education Background</h4>
-                            <p>Master's in Educational Administration</p>
-                            <span class="experience-period">2018 - 2020</span>
-                        </div>
-                    </div>
-                    
-                    <div class="experience-card">
-                        <div class="experience-icon">
-                            <i class="fas fa-briefcase"></i>
-                        </div>
-                        <div class="experience-content">
-                            <h4>Professional Experience</h4>
-                            <p>5+ years in educational technology</p>
-                            <span class="experience-period">2019 - Present</span>
-                        </div>
-                    </div>
-                    
-                    <div class="experience-card">
-                        <div class="experience-icon">
-                            <i class="fas fa-award"></i>
-                        </div>
-                        <div class="experience-content">
-                            <h4>Certifications</h4>
-                            <p>Certified Educational Technology Specialist</p>
-                            <span class="experience-period">2021</span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </section>
         

@@ -66,7 +66,7 @@ class ResourceModeration extends Controller
         }
         
         try {
-            $string = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8";
+            $string = "mysql:host=" . DBHOST . ";port=" . DBPORT . ";dbname=" . DBNAME . ";charset=utf8";
             $con = new PDO($string, DBUSER, DBPASS);
             $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             

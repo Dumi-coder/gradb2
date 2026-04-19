@@ -335,19 +335,19 @@ require '../app/views/partials/alumni_header.php';
           <div class="form-row">
             <div class="form-group">
               <label for="eventDate">Event Date *</label>
-              <input type="date" id="eventDate" name="eventDate" required>
+              <input type="date" id="eventDate" name="eventDate" min="<?= date('Y-m-d', strtotime('+1 day')) ?>" required>
             </div>
             
             <div class="form-group">
               <label for="startTime">Start Time *</label>
-              <input type="time" id="startTime" name="startTime" required>
+              <input type="time" id="startTime" name="startTime" placeholder="Select start time" title="Select start time" required>
             </div>
           </div>
           
           <div class="form-row">
             <div class="form-group">
               <label for="endTime">End Time *</label>
-              <input type="time" id="endTime" name="endTime" required>
+              <input type="time" id="endTime" name="endTime" placeholder="Select end time" title="Select end time" required>
             </div>
             
             <div class="form-group">
@@ -441,19 +441,19 @@ require '../app/views/partials/alumni_header.php';
           <div class="form-row">
             <div class="form-group">
               <label for="editEventDate">Event Date *</label>
-              <input type="date" id="editEventDate" name="eventDate" required>
+              <input type="date" id="editEventDate" name="eventDate" min="<?= date('Y-m-d', strtotime('+1 day')) ?>" required>
             </div>
             
             <div class="form-group">
               <label for="editStartTime">Start Time *</label>
-              <input type="time" id="editStartTime" name="startTime" required>
+              <input type="time" id="editStartTime" name="startTime" placeholder="Select start time" title="Select start time" required>
             </div>
           </div>
           
           <div class="form-row">
             <div class="form-group">
               <label for="editEndTime">End Time *</label>
-              <input type="time" id="editEndTime" name="endTime" required>
+              <input type="time" id="editEndTime" name="endTime" placeholder="Select end time" title="Select end time" required>
             </div>
             
             <div class="form-group">
@@ -594,6 +594,18 @@ require '../app/views/partials/alumni_header.php';
       if (!isOnline) {
         input.value = '';
       }
+    }
+
+    function validateEventSchedule(eventDate, startTime, endTime, minDate) {
+      if (eventDate && eventDate < minDate) {
+        return 'Event date must be after today';
+      }
+
+      if (startTime && endTime && startTime >= endTime) {
+        return 'Start time must be before end time';
+      }
+
+      return '';
     }
 
     async function fetchJson(url, options = {}, timeoutMs = 12000) {
@@ -798,6 +810,16 @@ require '../app/views/partials/alumni_header.php';
     // Create Event Form Handler
     document.getElementById('createEventForm').addEventListener('submit', async function(e) {
         e.preventDefault();
+
+      const minDate = '<?= date('Y-m-d', strtotime('+1 day')) ?>';
+      const eventDate = document.getElementById('eventDate')?.value || '';
+      const startTime = document.getElementById('startTime')?.value || '';
+      const endTime = document.getElementById('endTime')?.value || '';
+      const validationMessage = validateEventSchedule(eventDate, startTime, endTime, minDate);
+      if (validationMessage) {
+        showNotification(validationMessage, 'error');
+        return;
+      }
         
         const formData = new FormData(this);
         
@@ -824,6 +846,16 @@ require '../app/views/partials/alumni_header.php';
     // Edit Event Form Handler
     document.getElementById('editEventForm').addEventListener('submit', async function(e) {
         e.preventDefault();
+
+      const minDate = '<?= date('Y-m-d', strtotime('+1 day')) ?>';
+      const eventDate = document.getElementById('editEventDate')?.value || '';
+      const startTime = document.getElementById('editStartTime')?.value || '';
+      const endTime = document.getElementById('editEndTime')?.value || '';
+      const validationMessage = validateEventSchedule(eventDate, startTime, endTime, minDate);
+      if (validationMessage) {
+        showNotification(validationMessage, 'error');
+        return;
+      }
         
         const formData = new FormData(this);
         formData.append('eventId', currentEditingEventId);
