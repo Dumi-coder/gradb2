@@ -25,6 +25,40 @@ class EventBoard extends Controller
         }
 
         $alumni_id = $_SESSION['user_id'];
+        $eventDate = trim((string)($_POST['eventDate'] ?? ''));
+        $startTime = trim((string)($_POST['startTime'] ?? ''));
+        $endTime = trim((string)($_POST['endTime'] ?? ''));
+
+        if ($eventDate === '' || $startTime === '' || $endTime === '') {
+            echo json_encode(['success' => false, 'message' => 'Event date, start time, and end time are required']);
+            return;
+        }
+
+        $eventDateObj = DateTime::createFromFormat('Y-m-d', $eventDate);
+        $today = new DateTime('today');
+        if (!$eventDateObj || $eventDateObj->format('Y-m-d') !== $eventDate) {
+            echo json_encode(['success' => false, 'message' => 'Invalid event date']);
+            return;
+        }
+        if ($eventDateObj <= $today) {
+            echo json_encode(['success' => false, 'message' => 'Event date must be after today']);
+            return;
+        }
+
+        $startTimeObj = DateTime::createFromFormat('H:i', $startTime);
+        $endTimeObj = DateTime::createFromFormat('H:i', $endTime);
+        if (!$startTimeObj || $startTimeObj->format('H:i') !== $startTime) {
+            echo json_encode(['success' => false, 'message' => 'Invalid start time']);
+            return;
+        }
+        if (!$endTimeObj || $endTimeObj->format('H:i') !== $endTime) {
+            echo json_encode(['success' => false, 'message' => 'Invalid end time']);
+            return;
+        }
+        if ($startTimeObj >= $endTimeObj) {
+            echo json_encode(['success' => false, 'message' => 'Start time must be before end time']);
+            return;
+        }
 
         // Get all active events (for upcoming events section), excluding events hosted by this alumni.
         $upcomingEvents = $this->eventModel->getAllActiveEvents();
@@ -78,6 +112,40 @@ class EventBoard extends Controller
         }
 
         $alumni_id = $_SESSION['user_id'];
+        $eventDate = trim((string)($_POST['eventDate'] ?? ''));
+        $startTime = trim((string)($_POST['startTime'] ?? ''));
+        $endTime = trim((string)($_POST['endTime'] ?? ''));
+
+        if ($eventDate === '' || $startTime === '' || $endTime === '') {
+            echo json_encode(['success' => false, 'message' => 'Event date, start time, and end time are required']);
+            return;
+        }
+
+        $eventDateObj = DateTime::createFromFormat('Y-m-d', $eventDate);
+        $today = new DateTime('today');
+        if (!$eventDateObj || $eventDateObj->format('Y-m-d') !== $eventDate) {
+            echo json_encode(['success' => false, 'message' => 'Invalid event date']);
+            return;
+        }
+        if ($eventDateObj <= $today) {
+            echo json_encode(['success' => false, 'message' => 'Event date must be after today']);
+            return;
+        }
+
+        $startTimeObj = DateTime::createFromFormat('H:i', $startTime);
+        $endTimeObj = DateTime::createFromFormat('H:i', $endTime);
+        if (!$startTimeObj || $startTimeObj->format('H:i') !== $startTime) {
+            echo json_encode(['success' => false, 'message' => 'Invalid start time']);
+            return;
+        }
+        if (!$endTimeObj || $endTimeObj->format('H:i') !== $endTime) {
+            echo json_encode(['success' => false, 'message' => 'Invalid end time']);
+            return;
+        }
+        if ($startTimeObj >= $endTimeObj) {
+            echo json_encode(['success' => false, 'message' => 'Start time must be before end time']);
+            return;
+        }
 
         // Handle image upload
         $image_path = null;
@@ -117,9 +185,9 @@ class EventBoard extends Controller
             'title' => $_POST['eventTitle'] ?? '',
             'description' => $_POST['eventDescription'] ?? '',
             'category' => $_POST['eventCategory'] ?? '',
-            'event_date' => $_POST['eventDate'] ?? '',
-            'start_time' => $_POST['startTime'] ?? '',
-            'end_time' => $_POST['endTime'] ?? '',
+            'event_date' => $eventDate,
+            'start_time' => $startTime,
+            'end_time' => $endTime,
             'venue' => $_POST['eventLocation'] ?? '',
             'mode' => $_POST['eventMode'] ?? 'offline',
             'registration_link' => $_POST['externalLink'] ?? '',

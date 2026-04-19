@@ -158,9 +158,9 @@ if (!function_exists('renderAdminEventCard')) {
       <div class="event-form-grid">
         <input type="text" name="eventTitle" placeholder="Event title" required>
         <input type="text" name="eventCategory" placeholder="Category" required>
-        <input type="date" name="eventDate" required>
-        <input type="time" name="startTime" required>
-        <input type="time" name="endTime">
+        <input type="date" name="eventDate" min="<?= date('Y-m-d', strtotime('+1 day')) ?>" required>
+        <input type="time" name="startTime" placeholder="Select start time" title="Select start time" required>
+        <input type="time" name="endTime" placeholder="Select end time" title="Select end time">
         <input type="text" name="eventLocation" placeholder="Venue" required>
         <select name="eventMode">
           <option value="offline">Offline</option>
@@ -282,8 +282,28 @@ if (!function_exists('renderAdminEventCard')) {
 
   const createForm = document.getElementById('createEventForm');
   if (createForm) {
+    const eventDateInput = createForm.querySelector('input[name="eventDate"]');
+    if (eventDateInput) {
+      eventDateInput.min = '<?= date('Y-m-d', strtotime('+1 day')) ?>';
+    }
+
     createForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      const eventDate = createForm.querySelector('input[name="eventDate"]')?.value || '';
+      const startTime = createForm.querySelector('input[name="startTime"]')?.value || '';
+      const endTime = createForm.querySelector('input[name="endTime"]')?.value || '';
+      const minDate = '<?= date('Y-m-d', strtotime('+1 day')) ?>';
+
+      if (eventDate && eventDate < minDate) {
+        alert('Event date must be after today');
+        return;
+      }
+
+      if (startTime && endTime && startTime >= endTime) {
+        alert('Start time must be before end time');
+        return;
+      }
+
       const formData = new FormData(createForm);
 
       fetch(root + '/admin/Events/create', {
