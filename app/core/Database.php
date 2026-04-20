@@ -5,11 +5,16 @@
 
 trait Database// This trait provides basic database operations for models
 {
-    private function connect()
+private function connect()
 {
-    $string = "mysql:host=".DBHOST.";dbname=".DBNAME.";charset=utf8";
-    $con = new PDO($string, DBUSER, DBPASS);
-    return $con;
+    try {
+        $string = "mysql:host=".DBHOST.";port=".DBPORT.";dbname=".DBNAME.";charset=utf8";
+        $con = new PDO($string, DBUSER, DBPASS);
+        $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $con;
+    } catch (PDOException $e) {
+        die('Connection failed: ' . $e->getMessage() . ' | host:'.DBHOST.' port:'.DBPORT.' user:'.DBUSER.' pass:'.DBPASS.' db:'.DBNAME);
+    }
 }
 
     

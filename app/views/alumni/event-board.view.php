@@ -140,9 +140,11 @@ require '../app/views/partials/alumni_header.php';
                       Registrations <?= ucfirst($event['registration_status']) ?>
                     </span>
                   </div>
+                  
                   <div class="event-meta">
                     <span class="event-time"><i class="fas fa-clock"></i> <?= date('M d, Y', strtotime($event['event_date'])) ?>, <?= date('g:i A', strtotime($event['start_time'])) ?></span>
                     <span class="event-location"><i class="fas fa-map-marker-alt"></i> <?= esc($event['venue']) ?></span>
+                    <span class="event-sponsor">sponsor: <?= esc($event['sponsor']) ?></span>
                   </div>
                   <div class="event-stats">
                     <span class="registrants"><i class="fas fa-users"></i> <?= $event['registered_count'] ?? 0 ?> registered</span>
@@ -150,6 +152,7 @@ require '../app/views/partials/alumni_header.php';
                       <span class="capacity"><i class="fas fa-ticket-alt"></i> <?= $event['max_attendees'] ?> capacity</span>
                     <?php endif; ?>
                   </div>
+
                   <div class="event-actions">
                     <?php if (!empty($event['registration_link'])): ?>
                       <a class="btn btn-outline btn-sm" href="<?= esc($event['registration_link']) ?>" target="_blank" rel="noopener noreferrer">
@@ -308,6 +311,11 @@ require '../app/views/partials/alumni_header.php';
             <label for="eventImage">Event Image</label>
             <input type="file" id="eventImage" name="event_image" accept="image/*">
             <small style="color: var(--muted-foreground); font-size: var(--font-xs); display: block; margin-top: 4px;">Upload an image for your event (optional)</small>
+          </div>
+
+          <div class="form-group">
+            <label for="eventSponsor">Sponsor *</label>
+            <input type="text" id="eventSponsor" name="eventSponsor" placeholder="Enter the sponsor's name" required>
           </div>
           
           <div class="form-row">

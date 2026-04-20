@@ -126,7 +126,9 @@ class EventBoard extends Controller
             'max_attendees' => !empty($_POST['maxAttendees']) ? (int)$_POST['maxAttendees'] : null,
             'tags' => $_POST['eventTags'] ?? '',
             'status' => 'active',
-            'registration_status' => 'open'
+            'registration_status' => 'open',
+            'sponsor' => $_POST['eventSponsor'] ?? '',
+
         ];
 
         if ($image_path) {

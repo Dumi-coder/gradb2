@@ -990,6 +990,7 @@
 
 .mentorship-chat-panel {
   width: min(760px, 100%);
+  height: min(82vh, 760px);
   max-height: min(82vh, 760px);
   display: flex;
   flex-direction: column;
@@ -1045,23 +1046,27 @@
 }
 
 .mentorship-chat-body {
+  flex: 1;
   position: relative;
-  min-height: 280px;
-  max-height: 52vh;
+  min-height: 0;
+  display: flex;
   overflow: hidden;
 }
 
 .mentorship-chat-empty {
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
-  min-height: 280px;
+  min-height: 0;
   color: var(--muted-foreground);
   font-weight: 500;
 }
 
 .mentorship-chat-messages {
-  max-height: 52vh;
+  flex: 1;
+  min-height: 0;
+  max-height: none;
   overflow-y: auto;
   padding: var(--spacing-lg);
   display: flex;
@@ -1396,6 +1401,7 @@ body.chat-open {
   }
 
   .mentorship-chat-panel {
+    height: 92vh;
     max-height: 92vh;
   }
 

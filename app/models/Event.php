@@ -28,7 +28,8 @@ class Event
         'max_attendees',
         'tags',
         'status',
-        'registration_status'
+        'registration_status',
+        'sponsor'
     ];
 
     // Get all active events
