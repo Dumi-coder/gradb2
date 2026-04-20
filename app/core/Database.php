@@ -7,15 +7,31 @@ trait Database// This trait provides basic database operations for models
 {
     private function connect()
 {
-    $string = "mysql:host=".DBHOST.";port=".DBPORT.";dbname=".DBNAME.";charset=utf8";
-    $con = new PDO($string, DBUSER, DBPASS);
-    return $con;
+    try {
+        $string = "mysql:host=".DBHOST.";port=".DBPORT.";dbname=".DBNAME.";charset=utf8";
+        $con = new PDO($string, DBUSER, DBPASS, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+        ]);
+        return $con;
+    } catch (Throwable $e) {
+        if(defined('DEBUG') && DEBUG)
+        {
+            echo "Database connection error: " . $e->getMessage() . "<br>";
+        }
+        return null;
+    }
 }
 
     
     public function query($query,$data=[])// This function is used to execute a query and return the results
     {
         $con=$this->connect();                     // 1. Get a PDO connection
+        if(!$con)
+        {
+            return false;
+        }
+
         $stm=$con->prepare($query);                // 2. Prepare the SQL statement
 
         $check=$stm->execute($data);               // 3. Execute the statement with data
@@ -37,6 +53,11 @@ trait Database// This trait provides basic database operations for models
     public function get_row($query,$data=[])// This function is used to get a single row from the database
     {
         $con=$this->connect();                     // 1. Get a PDO connection
+        if(!$con)
+        {
+            return false;
+        }
+
         $stm=$con->prepare($query);                // 2. Prepare the SQL statement
 
         $check=$stm->execute($data);               // 3. Execute the statement with data

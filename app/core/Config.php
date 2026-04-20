@@ -3,33 +3,37 @@
 //  echo "config.php loaded<br> ";
 // This file contains the configuration settings for the application, including database connection details and application constants.
 
- // This is a comment explaining that the following code checks if the server name is 'localhost'.
- // If it is, it sets the database configuration for a local development environment.
- // If it is not, it sets the database configuration for a production environment.
- if($_SERVER['SERVER_NAME']== 'localhost')// This condition checks if the server name is 'localhost'.
- {
-         /** dabtabase config */
-         define('DBNAME','gradb2');
-         define('DBHOST','localhost');
-         define('DBUSER','root');
-         define('DBPORT', '3307');
-         define('DBPASS','root');
-         define('DBDRIVER','');
+// This is a comment explaining that the following code checks if the server name is local.
+// If it is, it sets the database configuration for a local development environment.
+// If it is not, it sets the database configuration for a production environment.
+$serverName = $_SERVER['SERVER_NAME'] ?? '';
+$isLocalServer = in_array($serverName, ['localhost', '127.0.0.1', '::1'], true);
+$dbProfile = getenv('DB_PROFILE') ?: ($isLocalServer ? 'local' : 'cloud');
 
-        define('ROOT','http://localhost/gradb2/public');
-        
- }
- else{// This condition is executed if the server name is not 'localhost', indicating a production environment.
-        /** dabtabase config */
-        define('DBNAME','gradb2_gradb2');
-        define('DBPORT','3306');
-        define('DBHOST','mysql-gradb2.alwaysdata.net');
-        define('DBUSER','gradb2');
-        define('DBPASS','passwordmysql');
-        define('DBDRIVER','');
+if($dbProfile === 'local')
+{
+       /** database config */
+       define('DBNAME', getenv('DBNAME') ?: 'gradb2');
+       define('DBHOST', getenv('DBHOST') ?: 'localhost');
+       define('DBUSER', getenv('DBUSER') ?: 'root');
+       define('DBPORT', getenv('DBPORT') ?: '3306');
+       define('DBPASS', getenv('DBPASS') !== false ? getenv('DBPASS') : '');
+       define('DBDRIVER', getenv('DBDRIVER') ?: '');
 
-        // define('ROOT','https://www.GradBridge.com');
- }
+       define('ROOT', getenv('ROOT_URL') ?: 'http://localhost/gradb2/public');
+}
+else
+{
+       /** database config */
+       define('DBNAME', getenv('DBNAME') ?: 'gradb2_gradb2');
+       define('DBPORT', getenv('DBPORT') ?: '3306');
+       define('DBHOST', getenv('DBHOST') ?: 'mysql-gradb2.alwaysdata.net');
+       define('DBUSER', getenv('DBUSER') ?: 'gradb2');
+       define('DBPASS', getenv('DBPASS') ?: 'passwordmysql');
+       define('DBDRIVER', getenv('DBDRIVER') ?: '');
+
+       define('ROOT', getenv('ROOT_URL') ?: 'https://www.GradBridge.com');
+}
 
 // File system paths
 // APPROOT should point to the project root which contains both `app/` and `public/`.
