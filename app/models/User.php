@@ -9,6 +9,7 @@ class User
     protected $id_column = 'user_id';
     
     protected $allowedColumns = [
+        
         'name',
         'email', 
         'password',
