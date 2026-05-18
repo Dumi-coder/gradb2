@@ -65,71 +65,83 @@ require '../app/views/partials/student_header.php';
           </div> -->
           
           <div class="featured-events-grid">
-            <div class="featured-event-card">
-              <div class="event-image">
-                <div class="event-date">
-                  <span class="day">15</span>
-                  <span class="month">Dec</span>
+            <?php if (!empty($upcomingEvents)): ?>
+              <?php foreach ($upcomingEvents as $index => $event): ?>
+                <div class="featured-event-card js-card-student-upcoming" <?= $index >= 2 ? 'style="display:none;"' : '' ?>>
+                  <div class="event-image" style="background-color: #E0EBF9;">
+                    <?php if (!empty($event['image_path'])): ?>
+                      <img src="<?=ROOT?><?= esc($event['image_path']) ?>" alt="<?= esc($event['title']) ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                    <?php endif; ?>
+                  </div>
+                  <div class="event-content">
+                    <div class="event-category <?= esc($event['category']) ?>"><?= ucfirst(esc($event['category'])) ?></div>
+                    <h3 class="event-title"><?= esc($event['title']) ?></h3>
+                    <p class="event-caption-line">
+                      <span><?= date('M d, Y', strtotime($event['event_date'])) ?></span>
+                      <span class="caption-dot">&middot;</span>
+                      <span><?= date('g:i A', strtotime($event['start_time'])) ?> - <?= date('g:i A', strtotime($event['end_time'])) ?></span>
+                      <?php if (!empty($event['venue'])): ?>
+                        <span class="caption-dot">&middot;</span>
+                        <span><?= esc($event['venue']) ?></span>
+                      <?php endif; ?>
+                    </p>
+                    <p class="event-description"><?= esc($event['description']) ?></p>
+                    <?php $modeLabel = ucfirst($event['mode'] ?? 'offline'); ?>
+                    <?php if (strtolower((string)$modeLabel) === 'offline') { $modeLabel = 'Physical'; } ?>
+                    <span class="event-mode-badge mode-<?= strtolower(esc($event['mode'] ?? 'offline')) ?>">
+                      <i class="fas fa-video"></i> <?= esc($modeLabel) ?>
+                    </span>
+                    <?php if (!empty($event['tags'])): ?>
+                      <div class="event-tags-row">
+                        <?php foreach (array_filter(array_map('trim', explode(',', (string)$event['tags']))) as $tag): ?>
+                          <span class="event-tag-chip">#<?= esc($tag) ?></span>
+                        <?php endforeach; ?>
+                      </div>
+                    <?php endif; ?>
+                    <div class="event-stats">
+                      <?php
+                      $registeredCount = (int)($event['registered_count'] ?? 0);
+                      $spotsLeft = !empty($event['max_attendees']) ? max(0, ((int)$event['max_attendees'] - $registeredCount)) : 'Unlimited';
+                      $isClosed = (($event['registration_status'] ?? 'open') !== 'open');
+                      $isFull = !empty($event['max_attendees']) && $registeredCount >= (int)$event['max_attendees'];
+                      ?>
+                      <span class="attendees"><i class="fas fa-users"></i> <?= $registeredCount ?> registered</span>
+                      <?php if ($event['max_attendees']): ?>
+                        <span class="spots-left"><i class="fas fa-ticket-alt"></i> <?= $spotsLeft ?> spots left</span>
+                      <?php endif; ?>
+                      <?php if ($isClosed): ?>
+                        <span class="spots-left"><i class="fas fa-lock"></i> Registrations Closed</span>
+                      <?php elseif ($isFull): ?>
+                        <span class="spots-left"><i class="fas fa-ban"></i> Registrations Full</span>
+                      <?php endif; ?>
+                    </div>
+                    <div class="event-actions">
+                      <?php if (!empty($event['registration_link'])): ?>
+                        <a class="btn btn-outline btn-sm" href="<?= esc($event['registration_link']) ?>" target="_blank" rel="noopener noreferrer">
+                          <i class="fas fa-external-link-alt"></i>
+                          <span>View Details</span>
+                        </a>
+                      <?php endif; ?>
+                      <?php if ($isClosed || $isFull): ?>
+                        <button type="button" class="btn btn-primary btn-sm btn-disabled-ash" disabled>
+                          <i class="fas fa-calendar-plus"></i>
+                          <span><?= $isClosed ? 'Registrations Closed' : 'Registrations Full' ?></span>
+                        </button>
+                      <?php else: ?>
+                        <button type="button" class="btn btn-primary btn-sm" data-event-id="<?= (int)$event['event_id'] ?>" data-event-title="<?= esc($event['title']) ?>" onclick='openRegisterModal(<?= (int)$event["event_id"] ?>, <?= json_encode($event["title"]) ?>)'>
+                          <i class="fas fa-calendar-plus"></i>
+                          <span>Register Now</span>
+                        </button>
+                      <?php endif; ?>
+                    </div>
+                  </div>
                 </div>
-                <div class="event-status featured">Featured</div>
-              </div>
-              <div class="event-content">
-                <div class="event-category academic">Academic</div>
-                <h3 class="event-title">Computer Science Career Fair 2024</h3>
-                <p class="event-description">Connect with top tech companies and discover internship opportunities in software development, AI, and data science.</p>
-                <div class="event-meta">
-                  <span class="event-time"><i class="fas fa-clock"></i> 10:00 AM - 4:00 PM</span>
-                  <span class="event-location"><i class="fas fa-map-marker-alt"></i> Main Campus Hall</span>
-                </div>
-                <div class="event-stats">
-                  <span class="attendees"><i class="fas fa-users"></i> 156 registered</span>
-                  <span class="spots-left"><i class="fas fa-ticket-alt"></i> 44 spots left</span>
-                </div>
-                <div class="event-actions">
-                  <button type="button" class="btn btn-primary btn-sm" onclick="openRegisterModal('Tech Workshop 2025')">
-                    <i class="fas fa-calendar-plus"></i>
-                    <span>Register Now</span>
-                  </button>
-                  <button class="btn btn-outline btn-sm">
-                    <i class="fas fa-heart"></i>
-                    <span>Save</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-            
-            <div class="featured-event-card">
-              <div class="event-image">
-                <div class="event-date">
-                  <span class="day">18</span>
-                  <span class="month">Dec</span>
-                </div>
-                <div class="event-status workshop">Workshop</div>
-              </div>
-              <div class="event-content">
-                <div class="event-category workshop">Workshop</div>
-                <h3 class="event-title">Machine Learning Bootcamp</h3>
-                <p class="event-description">Hands-on workshop covering Python, TensorFlow, and real-world ML applications. Perfect for beginners!</p>
-                <div class="event-meta">
-                  <span class="event-time"><i class="fas fa-clock"></i> 2:00 PM - 6:00 PM</span>
-                  <span class="event-location"><i class="fas fa-map-marker-alt"></i> Computer Lab A</span>
-                </div>
-                <div class="event-stats">
-                  <span class="attendees"><i class="fas fa-users"></i> 89 registered</span>
-                  <span class="spots-left"><i class="fas fa-ticket-alt"></i> 11 spots left</span>
-                </div>
-                <div class="event-actions">
-                  <button type="button" class="btn btn-primary btn-sm" onclick="openRegisterModal('Tech Workshop 2025')">
-                    <i class="fas fa-calendar-plus"></i>
-                    <span>Register Now</span>
-                  </button>
-                  <button class="btn btn-outline btn-sm">
-                    <i class="fas fa-heart"></i>
-                    <span>Save</span>
-                  </button>
-                </div>
-              </div>
-            </div>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <p style="text-align: center; color: var(--muted-foreground); padding: 2rem;">
+                No upcoming events at the moment.
+              </p>
+            <?php endif; ?>
           </div>
         </section>
 
@@ -139,6 +151,7 @@ require '../app/views/partials/student_header.php';
             <h2 class="section-title">This Week's Events</h2>
             <div class="section-actions">
               <button class="btn btn-outline btn-sm" onclick="viewCalendar()">
+                                    <span>Unregister</span>
                 <i class="fas fa-calendar-alt"></i>
                 <span>Calendar View</span>
               </button>
@@ -259,54 +272,91 @@ require '../app/views/partials/student_header.php';
         <section class="dashboard-section my-events-section">
           <div class="section-header">
             <h2 class="card-title">My Events</h2>
-            <button class="btn btn-outline btn-sm" onclick="viewAllMyEvents()">
-              <span>View All</span>
-              <i class="fas fa-arrow-right"></i>
-            </button>
+            <?php if (!empty($registeredEvents) && count($registeredEvents) > 2): ?>
+              <button class="btn btn-outline btn-sm" id="studentMyEventsToggleBtn" onclick="toggleEventCards('student-my-events', this)">
+                <span>View More</span>
+                <i class="fas fa-arrow-right"></i>
+              </button>
+            <?php endif; ?>
           </div>
           
           <div class="my-events-grid">
-            <div class="my-event-card">
-              <div class="event-status registered">Registered</div>
-              <div class="event-content">
-                <h3 class="event-title">Computer Science Career Fair 2024</h3>
-                <div class="event-meta">
-                  <span class="event-time"><i class="fas fa-clock"></i> Dec 15, 10:00 AM</span>
-                  <span class="event-location"><i class="fas fa-map-marker-alt"></i> Main Campus Hall</span>
+            <?php if (!empty($registeredEvents)): ?>
+              <?php foreach ($registeredEvents as $index => $event): ?>
+                <div class="my-event-card js-card-student-my-events" <?= $index >= 2 ? 'style="display:none;"' : '' ?>>
+                  <div class="my-event-image" style="background-color: #E0EBF9;">
+                    <?php if (!empty($event['image_path'])): ?>
+                      <img src="<?=ROOT?><?= esc($event['image_path']) ?>" alt="<?= esc($event['title']) ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                    <?php endif; ?>
+                  </div>
+                  <div class="event-content">
+                    <div class="my-event-topline">
+                      <div class="event-status registered">Registered</div>
+                    </div>
+                    <h3 class="event-title"><?= esc($event['title']) ?></h3>
+                    <p class="my-event-caption-line">
+                      <span><?= date('M d, Y', strtotime($event['event_date'])) ?></span>
+                      <span class="caption-dot">&middot;</span>
+                      <span><?= date('g:i A', strtotime($event['start_time'])) ?></span>
+                      <?php if (!empty($event['venue'])): ?>
+                        <span class="caption-dot">&middot;</span>
+                        <span><?= esc($event['venue']) ?></span>
+                      <?php endif; ?>
+                    </p>
+
+                    <?php $myEventModeLabel = ucfirst($event['mode'] ?? 'offline'); ?>
+                    <?php if (strtolower((string)$myEventModeLabel) === 'offline') { $myEventModeLabel = 'Physical'; } ?>
+                    <span class="event-mode-badge mode-<?= strtolower(esc($event['mode'] ?? 'offline')) ?>">
+                      <i class="fas fa-video"></i> <?= esc($myEventModeLabel) ?>
+                    </span>
+                    
+                    <?php if (!empty($event['notifications'])): ?>
+                      <div class="event-notifications" style="background-color: #FFF3CD; border-left: 4px solid #FFC107; padding: var(--spacing-sm); margin-bottom: var(--spacing-md); border-radius: var(--radius-sm);">
+                        <?php foreach ($event['notifications'] as $notif): ?>
+                          <div class="notification-item" style="display: flex; align-items: start; gap: var(--spacing-xs); margin-bottom: var(--spacing-xs);">
+                            <i class="fas fa-info-circle" style="color: #856404; margin-top: 2px;"></i>
+                            <span style="color: #856404; font-size: var(--font-sm);">
+                              <?php
+                              if ($notif['notification_type'] === 'venue_changed') {
+                                  echo "Venue changed to: " . esc($notif['new_value']);
+                              } elseif ($notif['notification_type'] === 'date_changed') {
+                                  echo "Date changed to: " . date('M d, Y', strtotime($notif['new_value']));
+                              } elseif ($notif['notification_type'] === 'time_changed') {
+                                  echo "Time changed to: " . esc($notif['new_value']);
+                              } elseif ($notif['notification_type'] === 'event_cancelled') {
+                                  echo "<strong>Event Cancelled</strong>";
+                              } elseif ($notif['notification_type'] === 'event_postponed') {
+                                  echo "Event postponed to: " . date('M d, Y', strtotime($notif['new_value']));
+                              } else {
+                                  echo esc($notif['message']);
+                              }
+                              ?>
+                            </span>
+                          </div>
+                        <?php endforeach; ?>
+                      </div>
+                    <?php endif; ?>
+                    
+                    <div class="event-actions">
+                      <?php if (!empty($event['registration_link'])): ?>
+                        <a class="btn btn-outline btn-sm" href="<?= esc($event['registration_link']) ?>" target="_blank" rel="noopener noreferrer">
+                          <i class="fas fa-external-link-alt"></i>
+                          <span>View Details</span>
+                        </a>
+                      <?php endif; ?>
+                      <button class="btn btn-outline btn-sm btn-unregister" onclick="unregisterEvent(<?= $event['event_id'] ?>)">
+                        <i class="fas fa-times"></i>
+                        <span>Unregister</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div class="event-actions">
-                  <button class="btn btn-outline btn-sm">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>Add to Calendar</span>
-                  </button>
-                  <button class="btn btn-outline btn-sm">
-                    <i class="fas fa-times"></i>
-                    <span>Cancel</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-            
-            <div class="my-event-card">
-              <div class="event-status saved">Saved</div>
-              <div class="event-content">
-                <h3 class="event-title">Machine Learning Bootcamp</h3>
-                <div class="event-meta">
-                  <span class="event-time"><i class="fas fa-clock"></i> Dec 18, 2:00 PM</span>
-                  <span class="event-location"><i class="fas fa-map-marker-alt"></i> Computer Lab A</span>
-                </div>
-                <div class="event-actions">
-                <button type="button" class="btn btn-primary btn-sm" onclick="openRegisterModal('Tech Workshop 2025')">
-                  <i class="fas fa-calendar-plus"></i>
-                  <span>Register Now</span>
-                </button>
-                  <button class="btn btn-outline btn-sm">
-                    <i class="fas fa-heart-broken"></i>
-                    <span>Remove</span>
-                  </button>
-                </div>
-              </div>
-            </div>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <p style="text-align: center; color: var(--muted-foreground); padding: 2rem;">
+                You haven't registered for any events yet.
+              </p>
+            <?php endif; ?>
           </div>
         </section>
 
@@ -322,7 +372,7 @@ require '../app/views/partials/student_header.php';
                 <i class="fas fa-calendar-check"></i>
               </div>
               <div class="stat-content">
-                <h3 class="stat-number">24</h3>
+                <h3 class="stat-number"><?= (int)($eventStats['events_this_month'] ?? 0) ?></h3>
                 <p class="stat-label">Events This Month</p>
               </div>
             </div>
@@ -332,7 +382,7 @@ require '../app/views/partials/student_header.php';
                 <i class="fas fa-users"></i>
               </div>
               <div class="stat-content">
-                <h3 class="stat-number">1,247</h3>
+                <h3 class="stat-number"><?= (int)($eventStats['total_registrations'] ?? 0) ?></h3>
                 <p class="stat-label">Total Registrations</p>
               </div>
             </div>
@@ -342,7 +392,7 @@ require '../app/views/partials/student_header.php';
                 <i class="fas fa-clock"></i>
               </div>
               <div class="stat-content">
-                <h3 class="stat-number">8</h3>
+                <h3 class="stat-number"><?= (int)($eventStats['upcoming_this_week'] ?? 0) ?></h3>
                 <p class="stat-label">Upcoming This Week</p>
               </div>
             </div>
@@ -381,19 +431,19 @@ require '../app/views/partials/student_header.php';
             
             <div class="form-group">
               <label for="eventDate">Event Date *</label>
-              <input type="date" id="eventDate" name="eventDate" required>
+              <input type="date" id="eventDate" name="eventDate" min="<?= date('Y-m-d', strtotime('+1 day')) ?>" required>
             </div>
           </div>
           
           <div class="form-row">
             <div class="form-group">
               <label for="startTime">Start Time *</label>
-              <input type="time" id="startTime" name="startTime" required>
+              <input type="time" id="startTime" name="startTime" placeholder="Select start time" title="Select start time" required>
             </div>
             
             <div class="form-group">
               <label for="endTime">End Time *</label>
-              <input type="time" id="endTime" name="endTime" required>
+              <input type="time" id="endTime" name="endTime" placeholder="Select end time" title="Select end time" required>
             </div>
           </div>
           
@@ -442,47 +492,70 @@ require '../app/views/partials/student_header.php';
           </button>
         </div>
         
-        <form class="new-event-form">
+        <form class="register-event-form" id="registerEventForm">
+          <input type="hidden" id="registerEventId" name="eventId">
+          <input type="hidden" name="participantName" value="<?= esc($_SESSION['name'] ?? '') ?>">
+          <input type="hidden" name="participantEmail" value="<?= esc($_SESSION['email'] ?? '') ?>">
+          <input type="hidden" name="participantRole" value="student">
           <div class="form-row">
             <div class="form-group">
-          <label for="participantName">Full Name *</label>
-          <input type="text" id="participantName" name="participantName" placeholder="Enter your full name" required>
-          </div>
+              <label for="participantName">Full Name *</label>
+              <input type="text" id="participantName" value="<?= esc($_SESSION['name'] ?? '') ?>" readonly>
+            </div>
 
-          <div class="form-group">
-          <label for="participantEmail">Email *</label>
-          <input type="email" id="participantEmail" name="participantEmail" placeholder="Enter your email" required>
-          </div>
+            <div class="form-group">
+              <label for="participantEmail">Email *</label>
+              <input type="email" id="participantEmail" value="<?= esc($_SESSION['email'] ?? '') ?>" readonly>
+            </div>
 
-          <div class="form-group">
-            <label for="participantRole">Role *</label>
-            <select id="participantRole" name="participantRole" required>
-              <option value="">Select your role</option>
-              <option value="student">Student</option>
-              <option value="alumni">Alumni</option>
-              <option value="guest">Guest</option>
-            </select>
-          </div>
+            <div class="form-group">
+              <label for="participantRole">Role *</label>
+              <input type="text" id="participantRole" value="Student" readonly>
+            </div>
 
-          <div class="form-group">
-            <label for="eventName">Event Name *</label>
-            <input type="text" id="eventName" name="eventName" placeholder="Event name will appear here" readonly>
-          </div>
+            <div class="form-group">
+              <label for="eventName">Event Name *</label>
+              <input type="text" id="eventName" name="eventName" placeholder="Event name will appear here" readonly>
+            </div>
 
-          <div class="form-group">
-            <label for="specialNotes">Special Notes</label>
-            <textarea id="specialNotes" name="specialNotes" rows="3" placeholder="Any specific requests or comments?"></textarea>
+            <div class="form-group">
+              <label for="specialNotes">Special Notes</label>
+              <textarea id="specialNotes" name="specialNotes" rows="3" placeholder="Any specific requests or comments?"></textarea>
+            </div>
           </div>
 
           <div class="form-actions">
-          <button type="button" class="btn btn-outline" onclick="closeRegisterModal()">
-            <span>Cancel</span>
-          </button>
-          <button type="submit" class="btn btn-primary">
-            <span>Register Now</span>
-          </button>
+            <button type="button" class="btn btn-outline" onclick="closeRegisterModal()">
+              <span>Cancel</span>
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <span>Register Now</span>
+            </button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmActionModal" class="modal confirm-action-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Confirm Action</h2>
+          <button class="modal-close" id="confirmActionClose" type="button">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="confirm-action-body">
+          <p id="confirmActionMessage">Are you sure?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" id="confirmActionCancel" type="button">
+            <span>Cancel</span>
+          </button>
+          <button class="btn btn-danger" id="confirmActionOk" type="button">
+            <span>Confirm</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -572,8 +645,197 @@ require '../app/views/partials/student_header.php';
       </div>
     </div> -->
 
-    <script src="<?=ROOT?>/assets/js/main.js"></script>
     <script src="<?=ROOT?>/assets/js/events-board.js"></script>
+    <script>
+      let currentRegisterEventId = null;
+      let confirmActionResolver = null;
+
+      function toggleEventCards(sectionKey, button) {
+        const cards = document.querySelectorAll('.js-card-' + sectionKey);
+        if (!cards.length) return;
+
+        const hasHidden = Array.from(cards).some(card => card.style.display === 'none');
+        cards.forEach((card, index) => {
+          if (hasHidden) {
+            card.style.display = '';
+          } else {
+            card.style.display = index < 2 ? '' : 'none';
+          }
+        });
+
+        const label = button.querySelector('span');
+        if (label) {
+          label.textContent = hasHidden ? 'View Less' : 'View More';
+        }
+      }
+
+      function openRegisterModal(eventIdOrTitle, eventTitle) {
+        const modal = document.getElementById('registerModal');
+        const eventNameInput = document.getElementById('eventName');
+        const eventIdInput = document.getElementById('registerEventId');
+
+        let resolvedEventId = null;
+        let resolvedTitle = '';
+
+        if (typeof eventIdOrTitle === 'number') {
+          resolvedEventId = eventIdOrTitle;
+          resolvedTitle = eventTitle || '';
+        } else {
+          resolvedTitle = eventIdOrTitle || '';
+          const activeBtn = document.activeElement;
+          if (activeBtn && activeBtn.dataset && activeBtn.dataset.eventId) {
+            resolvedEventId = parseInt(activeBtn.dataset.eventId, 10);
+          }
+        }
+
+        currentRegisterEventId = resolvedEventId;
+        if (eventNameInput) eventNameInput.value = resolvedTitle;
+        if (eventIdInput) eventIdInput.value = resolvedEventId || '';
+
+        if (modal) {
+          modal.style.display = 'block';
+          document.body.style.overflow = 'hidden';
+        }
+      }
+
+      function closeRegisterModal() {
+        const modal = document.getElementById('registerModal');
+        const form = document.getElementById('registerEventForm');
+        currentRegisterEventId = null;
+
+        if (modal) {
+          modal.style.display = 'none';
+          document.body.style.overflow = 'auto';
+        }
+
+        if (form) {
+          form.reset();
+        }
+      }
+
+      function openConfirmActionModal(message) {
+        const modal = document.getElementById('confirmActionModal');
+        const messageEl = document.getElementById('confirmActionMessage');
+
+        if (messageEl) {
+          messageEl.textContent = message || 'Are you sure?';
+        }
+
+        if (modal) {
+          modal.style.display = 'block';
+          document.body.style.overflow = 'hidden';
+        }
+
+        return new Promise((resolve) => {
+          confirmActionResolver = resolve;
+        });
+      }
+
+      function closeConfirmActionModal(confirmed) {
+        const modal = document.getElementById('confirmActionModal');
+        if (modal) {
+          modal.style.display = 'none';
+          document.body.style.overflow = 'auto';
+        }
+
+        if (confirmActionResolver) {
+          confirmActionResolver(Boolean(confirmed));
+          confirmActionResolver = null;
+        }
+      }
+
+      async function unregisterEvent(eventId) {
+        const confirmed = await openConfirmActionModal('Cancel your registration for this event?');
+        if (!confirmed) {
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('eventId', eventId);
+
+        try {
+          const response = await fetch('<?=ROOT?>/student/eventsboard/unregister', {
+            method: 'POST',
+            body: formData
+          });
+
+          const result = await response.json();
+          showNotification(result.message || 'Updated', result.success ? 'success' : 'error');
+          if (result.success) {
+            setTimeout(() => location.reload(), 700);
+          }
+        } catch (err) {
+          console.error(err);
+          showNotification('Failed to cancel registration', 'error');
+        }
+      }
+
+      document.getElementById('registerEventForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const eventId = currentRegisterEventId || parseInt(document.getElementById('registerEventId')?.value || '0', 10);
+        if (!eventId) {
+          showNotification('Event ID is missing', 'error');
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('eventId', eventId);
+
+        try {
+          const response = await fetch('<?=ROOT?>/student/eventsboard/register', {
+            method: 'POST',
+            body: formData
+          });
+          const result = await response.json();
+          if (!result.success && (result.message || '').toLowerCase().includes('already registered')) {
+            alert('You are already registered for this event.');
+          }
+          showNotification(result.message || 'Updated', result.success ? 'success' : 'error');
+          if (result.success) {
+            closeRegisterModal();
+            setTimeout(() => location.reload(), 700);
+          }
+        } catch (err) {
+          console.error(err);
+          showNotification('Failed to register', 'error');
+        }
+      });
+
+      window.openRegisterModal = openRegisterModal;
+      window.closeRegisterModal = closeRegisterModal;
+      window.unregisterEvent = unregisterEvent;
+      window.toggleEventCards = toggleEventCards;
+
+      document.getElementById('confirmActionOk')?.addEventListener('click', function() {
+        closeConfirmActionModal(true);
+      });
+      document.getElementById('confirmActionCancel')?.addEventListener('click', function() {
+        closeConfirmActionModal(false);
+      });
+      document.getElementById('confirmActionClose')?.addEventListener('click', function() {
+        closeConfirmActionModal(false);
+      });
+
+      window.addEventListener('click', function(event) {
+        const modal = document.getElementById('confirmActionModal');
+        if (event.target === modal) {
+          closeConfirmActionModal(false);
+        }
+      });
+
+      const studentUpcomingToggleBtn = document.querySelector('.events-header-section .btn.btn-outline.btn-sm');
+      if (studentUpcomingToggleBtn) {
+        const upcomingCards = document.querySelectorAll('.js-card-student-upcoming');
+        if (upcomingCards.length > 2) {
+          studentUpcomingToggleBtn.setAttribute('onclick', "toggleEventCards('student-upcoming', this)");
+          const label = studentUpcomingToggleBtn.querySelector('span');
+          if (label) label.textContent = 'View More';
+        } else {
+          studentUpcomingToggleBtn.style.display = 'none';
+        }
+      }
+    </script>
   </body>
 </html>
 

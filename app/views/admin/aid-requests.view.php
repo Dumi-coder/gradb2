@@ -1,298 +1,212 @@
 <?php require '../app/views/partials/admin_header.php'; ?>
 
+<?php
+if (!function_exists('renderAidSupervisionCardAdmin')) {
+    function renderAidSupervisionCardAdmin($card)
+    {
+        $requestId = (int)($card->request_id ?? 0);
+        $studentUserId = (int)($card->student_user_id ?? 0);
+        $alumnusUserId = (int)($card->alumnus_user_id ?? 0);
+        $status = strtolower((string)($card->status ?? 'pending_verification'));
+
+        $statusLabel = 'Pending for Counsellor';
+        if ($status === 'open') {
+            $statusLabel = 'Approved by Counsellor';
+        } elseif (in_array($status, ['approved', 'accepted'], true)) {
+            $statusLabel = 'Accepted by Alumni';
+        } elseif ($status === 'completed') {
+            $statusLabel = 'Completed';
+        }
+
+        $studentIdDoc = trim((string)($card->student_id_pdf_path ?? ''));
+        $incomeDoc = trim((string)($card->income_statement_path ?? ''));
+        $gramasevaDoc = trim((string)($card->gramaseva_cert_path ?? ''));
+
+        $studentIdUrl = $studentIdDoc !== '' ? ROOT . '/' . ltrim($studentIdDoc, '/') : '';
+        $incomeDocUrl = $incomeDoc !== '' ? ROOT . '/' . ltrim($incomeDoc, '/') : '';
+        $gramasevaDocUrl = $gramasevaDoc !== '' ? ROOT . '/' . ltrim($gramasevaDoc, '/') : '';
+        ?>
+        <article class="aid-card">
+            <div class="card-head">
+                <div>
+                    <h3 class="student-name"><?= esc($card->student_name ?? 'Unknown Student') ?></h3>
+                    <p class="student-meta"><?= esc($card->student_email ?? '-') ?></p>
+                    <p class="student-meta">Faculty: <?= esc($card->faculty_name ?? 'Unknown') ?> · Student ID: <?= esc($card->student_id ?? '-') ?></p>
+                </div>
+                <div class="right-meta">
+                    <span class="status-badge status-<?= esc(str_replace('_', '-', $status)) ?>"><?= esc($statusLabel) ?></span>
+                    <p class="request-date">Submitted: <?= !empty($card->created_at) ? date('M j, Y g:i A', strtotime($card->created_at)) : '-' ?></p>
+                </div>
+            </div>
+
+            <div class="card-grid">
+                <div>
+                    <h4>Aid Type</h4>
+                    <p><?= esc(ucfirst((string)($card->aid_type ?? 'N/A'))) ?></p>
+                </div>
+                <div>
+                    <h4>Amount</h4>
+                    <p><?= isset($card->amount) && $card->amount !== null ? 'LKR ' . esc(number_format((float)$card->amount, 2)) : 'N/A' ?></p>
+                </div>
+                <div>
+                    <h4>Student Mobile</h4>
+                    <p><?= esc($card->mobile_number ?? 'N/A') ?></p>
+                </div>
+            </div>
+
+            <div class="reason-block">
+                <h4>Request Reason</h4>
+                <p><?= esc($card->reason ?? 'N/A') ?></p>
+            </div>
+
+            <div class="docs-block">
+                <h4>Supporting Documents</h4>
+                <ul class="docs-list">
+                    <li>
+                        <span>Student ID Document</span>
+                        <?php if ($studentIdUrl !== ''): ?>
+                            <a href="<?= esc($studentIdUrl) ?>" target="_blank" rel="noopener">View File</a>
+                        <?php else: ?>
+                            <span class="doc-missing">N/A</span>
+                        <?php endif; ?>
+                    </li>
+                    <li>
+                        <span>Income Statement</span>
+                        <?php if ($incomeDocUrl !== ''): ?>
+                            <a href="<?= esc($incomeDocUrl) ?>" target="_blank" rel="noopener">View File</a>
+                        <?php else: ?>
+                            <span class="doc-missing">N/A</span>
+                        <?php endif; ?>
+                    </li>
+                    <li>
+                        <span>Gramaseva Certificate</span>
+                        <?php if ($gramasevaDocUrl !== ''): ?>
+                            <a href="<?= esc($gramasevaDocUrl) ?>" target="_blank" rel="noopener">View File</a>
+                        <?php else: ?>
+                            <span class="doc-missing">N/A</span>
+                        <?php endif; ?>
+                    </li>
+                </ul>
+            </div>
+
+            <?php if ($alumnusUserId > 0): ?>
+                <div class="alumni-block">
+                    <h4>Assigned Alumni</h4>
+                    <p><?= esc($card->alumnus_name ?? 'Alumni') ?> · <?= esc($card->alumnus_email ?? 'N/A') ?></p>
+                </div>
+            <?php endif; ?>
+
+            <div class="card-actions">
+                <?php if ($studentUserId > 0): ?>
+                    <a class="btn btn-outline btn-sm" href="<?= ROOT ?>/admin/Userprofile?id=<?= $studentUserId ?>">
+                        <i class="fas fa-user"></i> View Student
+                    </a>
+                <?php endif; ?>
+
+                <?php if ($alumnusUserId > 0): ?>
+                    <a class="btn btn-outline btn-sm" href="<?= ROOT ?>/admin/Userprofile?id=<?= $alumnusUserId ?>">
+                        <i class="fas fa-user-graduate"></i> View Alumni
+                    </a>
+                <?php endif; ?>
+            </div>
+        </article>
+        <?php
+    }
+}
+?>
+
 <div class="dashboard-container">
-    <!-- Sidebar -->
     <?php require '../app/views/partials/admin_sidebar.php'; ?>
-    
-    <!-- Main Content -->
+
     <main class="main-content">
-        <!-- Aid Requests Section -->
         <section class="dashboard-section">
             <div class="section-header">
-                <h2 class="section-title">Financial Aid Requests</h2>
+                <h2 class="section-title">Pending for Counsellor</h2>
                 <div class="section-stats">
                     <div class="stat-item">
-                        <span class="stat-number"><?= $aidRequestsData['stats']['total_requests'] ?></span>
-                        <span class="stat-label">Total Requests</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">$<?= number_format($aidRequestsData['stats']['total_amount_requested']) ?></span>
-                        <span class="stat-label">Total Amount</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number"><?= $aidRequestsData['stats']['pending_requests'] ?></span>
-                        <span class="stat-label">Pending</span>
+                        <span class="stat-number"><?= (int)($aidRequestsData['stats']['pending_for_counsellor'] ?? 0) ?></span>
+                        <span class="stat-label">Awaiting Verification</span>
                     </div>
                 </div>
             </div>
-            
-            <div class="aid-requests-container">
-                <?php foreach ($aidRequestsData['requests'] as $request): ?>
-                <div class="aid-request-card">
-                    <div class="request-header">
-                        <div class="request-info">
-                            <h3 class="student-name"><?= esc($request['student_name']) ?></h3>
-                            <p class="student-details"><?= esc($request['student_email']) ?> • ID: <?= esc($request['student_id']) ?></p>
-                            <p class="aid-type"><?= esc($request['aid_type']) ?></p>
-                        </div>
-                        <div class="request-meta">
-                            <div class="amount-requested">
-                                <span class="amount">$<?= number_format($request['amount_requested']) ?></span>
-                            </div>
-                            <?php if ($request['urgency'] === 'high'): ?>
-                            <span class="status-badge status-urgent">URGENT</span>
-                            <?php else: ?>
-                            <span class="status-badge status-pending">PENDING</span>
-                            <?php endif; ?>
-                            <p class="request-date">Submitted: <?= date('M j, Y', strtotime($request['submitted_date'])) ?></p>
-                        </div>
-                    </div>
-                    
-                    <div class="request-details">
-                        <div class="reason-section">
-                            <h4>Reason for Aid:</h4>
-                            <p><?= esc($request['reason']) ?></p>
-                        </div>
-                        
-                        <div class="documents-info">
-                            <h4>Supporting Documents:</h4>
-                            <p><?= $request['supporting_documents'] ?> document(s) attached</p>
-                        </div>
-                    </div>
-                    
-                    <div class="request-actions">
-                        <button class="btn btn-success btn-sm approve-btn" data-request-id="<?= $request['id'] ?>">
-                            <i class="fas fa-check"></i>
-                            Approve
-                        </button>
-                        <button class="btn btn-danger btn-sm reject-btn" data-request-id="<?= $request['id'] ?>">
-                            <i class="fas fa-times"></i>
-                            Reject
-                        </button>
-                        <button class="btn btn-outline btn-sm view-btn" data-request-id="<?= $request['id'] ?>">
-                            <i class="fas fa-file-alt"></i>
-                            View Documents
-                        </button>
-                        <button class="btn btn-outline btn-sm details-btn" data-request-id="<?= $request['id'] ?>">
-                            <i class="fas fa-eye"></i>
-                            View Details
-                        </button>
+
+            <div class="cards-wrap">
+                <?php if (!empty($aidRequestsData['pending_for_counsellor'])): ?>
+                    <?php foreach ($aidRequestsData['pending_for_counsellor'] as $card): ?>
+                        <?php renderAidSupervisionCardAdmin($card); ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="empty-state">No requests are currently waiting for counsellor verification in your faculty.</div>
+                <?php endif; ?>
+            </div>
+        </section>
+
+        <section class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">Approved by Counsellor</h2>
+                <div class="section-stats">
+                    <div class="stat-item">
+                        <span class="stat-number"><?= (int)($aidRequestsData['stats']['approved_by_counsellor'] ?? 0) ?></span>
+                        <span class="stat-label">Waiting for Alumni</span>
                     </div>
                 </div>
-                <?php endforeach; ?>
+            </div>
+
+            <div class="cards-wrap">
+                <?php if (!empty($aidRequestsData['approved_by_counsellor'])): ?>
+                    <?php foreach ($aidRequestsData['approved_by_counsellor'] as $card): ?>
+                        <?php renderAidSupervisionCardAdmin($card); ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="empty-state">No counsellor-approved requests are waiting for alumni in your faculty.</div>
+                <?php endif; ?>
+            </div>
+        </section>
+
+        <section class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">Accepted by Alumni</h2>
+                <div class="section-stats">
+                    <div class="stat-item">
+                        <span class="stat-number"><?= (int)($aidRequestsData['stats']['accepted_by_alumni'] ?? 0) ?></span>
+                        <span class="stat-label">Alumni Accepted</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cards-wrap">
+                <?php if (!empty($aidRequestsData['accepted_by_alumni'])): ?>
+                    <?php foreach ($aidRequestsData['accepted_by_alumni'] as $card): ?>
+                        <?php renderAidSupervisionCardAdmin($card); ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="empty-state">No aid requests have been accepted by alumni yet in your faculty.</div>
+                <?php endif; ?>
+            </div>
+        </section>
+
+        <section class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">Completed</h2>
+                <div class="section-stats">
+                    <div class="stat-item">
+                        <span class="stat-number"><?= (int)($aidRequestsData['stats']['completed'] ?? 0) ?></span>
+                        <span class="stat-label">Closed Cases</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cards-wrap">
+                <?php if (!empty($aidRequestsData['completed'])): ?>
+                    <?php foreach ($aidRequestsData['completed'] as $card): ?>
+                        <?php renderAidSupervisionCardAdmin($card); ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="empty-state">No completed aid requests in your faculty yet.</div>
+                <?php endif; ?>
             </div>
         </section>
     </main>
 </div>
 
-<style>
-.aid-requests-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
 
-.aid-request-card {
-    background: white;
-    border: 2px solid #E5E7EB;
-    border-radius: 12px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.aid-request-card:hover {
-    border-color: #0E2072;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.request-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-}
-
-.request-info h3 {
-    margin: 0 0 0.25rem 0;
-    color: #1F2937;
-    font-size: 1.25rem;
-    font-weight: 600;
-}
-
-.student-details {
-    margin: 0 0 0.5rem 0;
-    color: #6B7280;
-    font-size: 0.9rem;
-}
-
-.aid-type {
-    margin: 0;
-    color: #0E2072;
-    font-weight: 500;
-    font-size: 0.9rem;
-}
-
-.request-meta {
-    text-align: right;
-}
-
-.amount-requested {
-    margin-bottom: 0.5rem;
-}
-
-.amount {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #059669;
-}
-
-.status-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-}
-
-.status-urgent {
-    background-color: #FEE2E2;
-    color: #DC2626;
-}
-
-.status-pending {
-    background-color: #FEF3C7;
-    color: #D97706;
-}
-
-.request-date {
-    margin: 0;
-    color: #6B7280;
-    font-size: 0.8rem;
-}
-
-.request-details {
-    margin-bottom: 1.5rem;
-}
-
-.reason-section, .documents-info {
-    margin-bottom: 1rem;
-}
-
-.reason-section h4, .documents-info h4 {
-    margin: 0 0 0.5rem 0;
-    color: #374151;
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-.reason-section p, .documents-info p {
-    margin: 0;
-    color: #4B5563;
-    line-height: 1.5;
-}
-
-.request-actions {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-}
-
-/* Button styles are now in buttons.css - removed to prevent override */
-
-.btn-success {
-    background-color: #10B981;
-    color: white;
-}
-
-.btn-success:hover {
-    background-color: #059669;
-}
-
-.btn-danger {
-    background-color: #EF4444;
-    color: white;
-}
-
-.btn-danger:hover {
-    background-color: #DC2626;
-}
-
-.btn-outline {
-    background-color: white;
-    color: #000000;
-    border: 1px solid #000000;
-}
-
-.btn-outline:hover {
-    background-color: #000000;
-    color: white;
-}
-
-.section-stats {
-    display: flex;
-    gap: 2rem;
-}
-
-.stat-item {
-    text-align: center;
-}
-
-.stat-number {
-    display: block;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #0E2072;
-}
-
-.stat-label {
-    font-size: 0.875rem;
-    color: #6B7280;
-    font-weight: 500;
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Handle approve button clicks
-    document.querySelectorAll('.approve-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const requestId = this.getAttribute('data-request-id');
-            if (confirm('Are you sure you want to approve this aid request?')) {
-                alert('Aid request approved successfully!');
-                this.closest('.aid-request-card').style.opacity = '0.5';
-                this.disabled = true;
-            }
-        });
-    });
-
-    // Handle reject button clicks
-    document.querySelectorAll('.reject-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const requestId = this.getAttribute('data-request-id');
-            if (confirm('Are you sure you want to reject this aid request?')) {
-                alert('Aid request rejected.');
-                this.closest('.aid-request-card').style.opacity = '0.5';
-                this.disabled = true;
-            }
-        });
-    });
-
-    // Handle view documents button clicks
-    document.querySelectorAll('.view-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const requestId = this.getAttribute('data-request-id');
-            alert('View documents functionality would be implemented here for request ID: ' + requestId);
-        });
-    });
-
-    // Handle view details button clicks
-    document.querySelectorAll('.details-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const requestId = this.getAttribute('data-request-id');
-            alert('View details functionality would be implemented here for request ID: ' + requestId);
-        });
-    });
-});
-</script>

@@ -1,905 +1,256 @@
-<?php 
-$page_title = "Event Board";
-$page_subtitle = "Explore and organize alumni events";
+﻿<?php 
+$page_title = "Events Board";
+$page_subtitle = "Discover & Join Campus Activities";
 require '../app/views/partials/alumni_header.php'; 
 ?>
 
 <!-- Page-specific CSS -->
-<link rel="stylesheet" href="<?=ROOT?>/assets/css/alumni-dashboard.css">
+<link rel="stylesheet" href="<?=ROOT?>/assets/css/events-board.css">
 
-<style>
-    /* Event Board Specific Styles - Match Student Events */
-    .featured-events-grid {
-      display: grid !important;
-      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)) !important;
-      gap: 24px !important;
-    }
-    
-    .featured-event-card {
-      background-color: white !important;
-      border: 1px solid #E5E7EB !important;
-      border-radius: 16px !important;
-      overflow: hidden !important;
-      transition: all 0.3s ease !important;
-      cursor: pointer !important;
-    }
-    
-    .featured-event-card:hover {
-      border-color: #0E2072 !important;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-      transform: translateY(-4px) !important;
-    }
-    
-    .event-image {
-      height: 200px !important;
-      background: linear-gradient(135deg, #0E2072 0%, #7C3AED 100%) !important;
-      position: relative !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      color: white !important;
-    }
-    
-    .event-date {
-      text-align: center !important;
-      background-color: rgba(255, 255, 255, 0.2) !important;
-      padding: 16px !important;
-      border-radius: 12px !important;
-      backdrop-filter: blur(10px) !important;
-    }
-    
-    .event-date .day {
-      display: block !important;
-      font-size: 2rem !important;
-      font-weight: 700 !important;
-      line-height: 1 !important;
-    }
-    
-    .event-date .month {
-      display: block !important;
-      font-size: 14px !important;
-      font-weight: 500 !important;
-      text-transform: uppercase !important;
-      letter-spacing: 1px !important;
-    }
-    
-    .event-status {
-      position: absolute !important;
-      top: 16px !important;
-      right: 16px !important;
-      padding: 6px 12px !important;
-      border-radius: 20px !important;
-      font-size: 12px !important;
-      font-weight: 600 !important;
-      text-transform: uppercase !important;
-      letter-spacing: 0.5px !important;
-    }
-    
-    .event-status.featured {
-      background-color: #f59e0b !important;
-      color: white !important;
-    }
-    
-    .event-status.workshop {
-      background-color: #10b981 !important;
-      color: white !important;
-    }
-    
-    .event-content {
-      padding: 24px !important;
-    }
-    
-    .event-category {
-      display: inline-block !important;
-      padding: 4px 8px !important;
-      border-radius: 20px !important;
-      font-size: 12px !important;
-      font-weight: 600 !important;
-      text-transform: uppercase !important;
-      letter-spacing: 0.5px !important;
-      margin-bottom: 12px !important;
-    }
-    
-    .event-category.workshop {
-      background-color: #10b981 !important;
-      color: white !important;
-    }
-    
-    .event-category.bootcamp {
-      background-color: #8b5cf6 !important;
-      color: white !important;
-    }
-    
-    .event-title {
-      font-size: 18px !important;
-      font-weight: 600 !important;
-      color: #1F2937 !important;
-      margin: 0 0 12px 0 !important;
-      line-height: 1.3 !important;
-    }
-    
-    .event-description {
-      color: #6B7280 !important;
-      margin: 0 0 16px 0 !important;
-      line-height: 1.5 !important;
-    }
-    
-    .event-meta {
-      display: flex !important;
-      flex-direction: column !important;
-      gap: 8px !important;
-      margin-bottom: 16px !important;
-    }
-    
-    .event-meta span {
-      display: flex !important;
-      align-items: center !important;
-      gap: 8px !important;
-      font-size: 14px !important;
-      color: #6B7280 !important;
-    }
-    
-    .event-meta i {
-      color: #0E2072 !important;
-      width: 16px !important;
-    }
-    
-    .event-stats {
-      display: flex !important;
-      gap: 16px !important;
-      margin-bottom: 16px !important;
-      font-size: 14px !important;
-      color: #6B7280 !important;
-    }
-    
-    .event-stats span {
-      display: flex !important;
-      align-items: center !important;
-      gap: 6px !important;
-    }
-    
-    .event-stats i {
-      color: #0E2072 !important;
-    }
-    
-    .event-actions {
-      display: flex !important;
-      gap: 12px !important;
-    }
-    
-    .event-card.registered {
-      background-color: white !important;
-      border: 1px solid #E5E7EB !important;
-    }
-    
-    .registered-event-header {
-      display: flex !important;
-      align-items: center !important;
-      gap: 12px !important;
-      margin-bottom: 16px !important;
-      padding-bottom: 16px !important;
-      border-bottom: 1px solid #FEE5A0 !important;
-    }
-    
-    .registered-event-tags {
-      display: flex !important;
-      align-items: center !important;
-      gap: 8px !important;
-    }
-    
-    .badge-student-event {
-      background-color: #E0F7ED !important;
-      color: #28A745 !important;
-      padding: 6px 12px !important;
-      border-radius: 20px !important;
-      font-size: 12px !important;
-      font-weight: 600 !important;
-      text-transform: uppercase !important;
-    }
-    
-    .badge-alumni-event {
-      background-color: #E0F0FF !important;
-      color: #007BFF !important;
-      padding: 6px 12px !important;
-      border-radius: 20px !important;
-      font-size: 12px !important;
-      font-weight: 600 !important;
-      text-transform: uppercase !important;
-    }
-    
-    .badge-registered-status {
-      background-color: #FFD700 !important;
-      color: #333333 !important;
-      padding: 6px 12px !important;
-      border-radius: 20px !important;
-      font-size: 12px !important;
-      font-weight: 600 !important;
-      display: flex !important;
-      align-items: center !important;
-      gap: 4px !important;
-    }
-    
-    .registered-event-title {
-      font-size: 20px !important;
-      font-weight: 700 !important;
-      color: #333333 !important;
-      margin: 0 !important;
-      line-height: 1.3 !important;
-    }
-    
-    .registered-event-details {
-      display: flex !important;
-      flex-direction: column !important;
-      gap: 8px !important;
-      margin-bottom: 20px !important;
-      padding-bottom: 16px !important;
-      border-bottom: 1px solid #FEE5A0 !important;
-    }
-    
-    .registered-event-detail {
-      display: flex !important;
-      align-items: center !important;
-      gap: 8px !important;
-      font-size: 14px !important;
-      color: #6C757D !important;
-    }
-    
-    .registered-event-detail i {
-      font-size: 14px !important;
-      width: 16px !important;
-      text-align: center !important;
-    }
-    
-    .registered-event-actions {
-      display: flex !important;
-      gap: 12px !important;
-    }
-    
-    .unregister-btn {
-      background-color: #000000 !important;
-      color: white !important;
-      border: none !important;
-      border-radius: 8px !important;
-      padding: 10px 16px !important;
-      font-weight: 600 !important;
-      font-size: 14px !important;
-      display: flex !important;
-      align-items: center !important;
-      gap: 6px !important;
-      transition: all 0.2s ease !important;
-    }
-    
-    .unregister-btn:hover {
-      background-color: #333333 !important;
-    }
-    
-    /* Event Activity Statistics Section */
-    .event-stats-section {
-      border: 2px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      background-color: white !important;
-      margin-top: 20px !important;
-      margin-bottom: 30px !important;
-    }
-    
-    .stats-grid {
-      display: grid !important;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
-      gap: 24px !important;
-    }
-    
-    .stat-card {
-      background-color: white !important;
-      border: 1px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      display: flex !important;
-      align-items: center !important;
-      gap: 16px !important;
-      transition: all 0.3s ease !important;
-    }
-    
-    .stat-card:hover {
-      border-color: #0E2072 !important;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-      transform: translateY(-2px) !important;
-    }
-    
-    .stat-icon {
-      width: 50px !important;
-      height: 50px !important;
-      background-color: #0E2072 !important;
-      border-radius: 8px !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      color: white !important;
-      font-size: 20px !important;
-    }
-    
-    .stat-content {
-      flex: 1 !important;
-    }
-    
-    .stat-number {
-      font-size: 28px !important;
-      font-weight: 700 !important;
-      color: #0E2072 !important;
-      margin: 0 0 4px 0 !important;
-      line-height: 1 !important;
-    }
-    
-    .stat-label {
-      color: #6B7280 !important;
-      font-size: 14px !important;
-      margin: 0 !important;
-      font-weight: 500 !important;
-    }
-    
-    .event-header {
-      margin-bottom: 20px !important;
-    }
-    
-    .event-type-badge {
-      display: inline-block !important;
-      padding: 6px 12px !important;
-      border-radius: 20px !important;
-      font-size: 11px !important;
-      font-weight: 700 !important;
-      text-transform: uppercase !important;
-      letter-spacing: 0.5px !important;
-      margin-bottom: 12px !important;
-    }
-    
-    .event-title {
-      font-size: 22px !important;
-      font-weight: 800 !important;
-      color: #1F2937 !important;
-      margin: 0 0 12px 0 !important;
-      line-height: 1.2 !important;
-    }
-    
-    .event-description {
-      font-size: 15px !important;
-      color: #6B7280 !important;
-      line-height: 1.5 !important;
-      margin: 0 0 20px 0 !important;
-    }
-    
-    .event-details {
-      display: flex !important;
-      flex-direction: column !important;
-      gap: 12px !important;
-      margin-bottom: 24px !important;
-    }
-    
-    .event-detail {
-      display: flex !important;
-      align-items: center !important;
-      gap: 10px !important;
-      font-size: 14px !important;
-      color: #6B7280 !important;
-    }
-    
-    .event-detail i {
-      font-size: 16px !important;
-      width: 16px !important;
-      text-align: center !important;
-    }
-    
-    .event-detail strong {
-      color: #1F2937 !important;
-      font-weight: 600 !important;
-    }
-    
-    .event-actions {
-      display: flex !important;
-      gap: 16px !important;
-    }
-    
-    .btn-primary {
-      background-color: #000000 !important;
-      color: white !important;
-      border: none !important;
-      border-radius: 12px !important;
-      padding: 12px 20px !important;
-      font-weight: 600 !important;
-      font-size: 14px !important;
-      display: flex !important;
-      align-items: center !important;
-      gap: 8px !important;
-      transition: all 0.2s ease !important;
-    }
-    
-    .btn-primary:hover {
-      background-color: #333333 !important;
-      transform: translateY(-1px) !important;
-    }
-    
-    .btn-outline {
-      background-color: white !important;
-      color: #000000 !important;
-      border: 2px solid #000000 !important;
-      border-radius: 12px !important;
-      padding: 12px 20px !important;
-      font-weight: 600 !important;
-      font-size: 14px !important;
-      display: flex !important;
-      align-items: center !important;
-      gap: 8px !important;
-      transition: all 0.2s ease !important;
-    }
-    
-    .btn-outline:hover {
-      background-color: #000000 !important;
-      color: white !important;
-    }
-    
-    .event-type-badge {
-      padding: 4px 8px !important;
-      border-radius: 6px !important;
-      font-size: 12px !important;
-      font-weight: 600 !important;
-      text-transform: uppercase !important;
-      letter-spacing: 0.5px !important;
-    }
-    
-    .badge-alumni {
-      background-color: #E3F2FD !important;
-      color: #1976D2 !important;
-    }
-    
-    .badge-student {
-      background-color: #E8F5E8 !important;
-      color: #2E7D32 !important;
-    }
-    
-    .badge-registered {
-      background-color: #FEF3C7 !important;
-      color: #D97706 !important;
-    }
-    
-    .badge-pending {
-      background-color: #FEF3C7 !important;
-      color: #D97706 !important;
-    }
-    
-    .section-header {
-      display: flex !important;
-      justify-content: space-between !important;
-      align-items: center !important;
-      margin-bottom: 20px !important;
-    }
-    
-    .section-title {
-      display: flex !important;
-      align-items: center !important;
-      gap: 8px !important;
-      font-size: 20px !important;
-      font-weight: 700 !important;
-      color: #1F2937 !important;
-      margin: 0 !important;
-    }
-    
-    .event-count-badge {
-      background-color: #F3F4F6 !important;
-      color: #374151 !important;
-      padding: 4px 12px !important;
-      border-radius: 20px !important;
-      font-size: 14px !important;
-      font-weight: 500 !important;
-    }
-    
-    .quick-actions-section {
-      border: 2px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      background-color: white !important;
-      margin-top: 20px !important;
-      margin-bottom: 30px !important;
-    }
-    
-    .pending-events-section {
-      border: 2px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      background-color: white !important;
-      margin-top: 20px !important;
-      margin-bottom: 30px !important;
-    }
-    
-    .registered-events-section {
-      border: 2px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      background-color: white !important;
-      margin-top: 20px !important;
-      margin-bottom: 30px !important;
-    }
-    
-    .events-container {
-      display: flex !important;
-      flex-direction: column !important;
-      gap: 20px !important;
-    }
-    
-    .quick-action-item {
-      background-color: white !important;
-      border: 1px solid #E5E7EB !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      margin-bottom: 20px !important;
-    }
-    
-    .action-content {
-      display: flex !important;
-      justify-content: space-between !important;
-      align-items: center !important;
-      gap: 24px !important;
-    }
-    
-    .action-info {
-      flex: 1 !important;
-    }
-    
-    .action-title {
-      font-size: 18px !important;
-      font-weight: 700 !important;
-      color: #1F2937 !important;
-      margin: 0 0 8px 0 !important;
-    }
-    
-    .action-description {
-      font-size: 14px !important;
-      color: #6B7280 !important;
-      margin: 0 !important;
-      line-height: 1.5 !important;
-    }
-    
-    .action-btn {
-      white-space: nowrap !important;
-      font-weight: 600 !important;
-      padding: 12px 20px !important;
-      background-color: #000000 !important;
-      color: white !important;
-      border: none !important;
-      border-radius: 8px !important;
-      display: flex !important;
-      align-items: center !important;
-      gap: 8px !important;
-      transition: all 0.2s ease !important;
-    }
-    
-    .action-btn:hover {
-      background-color: #333333 !important;
-      transform: translateY(-1px) !important;
-    }
-    
-    /* Publish Event Modal Styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(4px);
-    }
-    
-    .modal.show {
-      display: block !important;
-    }
-    
-    .modal-content {
-      background-color: white !important;
-      margin: 5% auto !important;
-      padding: 0 !important;
-      border-radius: 12px !important;
-      width: 90% !important;
-      max-width: 600px !important;
-      max-height: 90vh !important;
-      overflow-y: auto !important;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
-      animation: modalSlideIn 0.3s ease-out !important;
-    }
-    
-    @keyframes modalSlideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-50px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .modal-header {
-      padding: 24px !important;
-      border-bottom: 1px solid #E5E7EB !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: space-between !important;
-    }
-    
-    .modal-title {
-      font-size: 20px !important;
-      font-weight: 600 !important;
-      color: #1F2937 !important;
-      margin: 0 !important;
-    }
-    
-    .modal-close {
-      background: none !important;
-      border: none !important;
-      font-size: 18px !important;
-      color: #6B7280 !important;
-      cursor: pointer !important;
-      padding: 4px !important;
-      border-radius: 4px !important;
-      transition: all 0.2s ease !important;
-    }
-    
-    .modal-close:hover {
-      background-color: #F3F4F6 !important;
-      color: #1F2937 !important;
-    }
-    
-    .publish-event-form {
-      padding: 24px !important;
-    }
-    
-    .form-group {
-      margin-bottom: 20px !important;
-    }
-    
-    .form-row {
-      display: grid !important;
-      grid-template-columns: 1fr 1fr !important;
-      gap: 16px !important;
-    }
-    
-    .form-group label {
-      display: block !important;
-      font-weight: 500 !important;
-      color: #1F2937 !important;
-      margin-bottom: 8px !important;
-    }
-    
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100% !important;
-      padding: 12px !important;
-      border: 1px solid #D1D5DB !important;
-      border-radius: 8px !important;
-      font-size: 14px !important;
-      background-color: white !important;
-      color: #1F2937 !important;
-      transition: border-color 0.2s ease !important;
-      box-sizing: border-box !important;
-    }
-    
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none !important;
-      border-color: #0E2072 !important;
-      box-shadow: 0 0 0 3px rgba(14, 32, 114, 0.1) !important;
-    }
-    
-    .form-group textarea {
-      resize: vertical !important;
-      min-height: 100px !important;
-    }
-    
-    .form-actions {
-      display: flex !important;
-      gap: 12px !important;
-      justify-content: flex-end !important;
-      margin-top: 24px !important;
-      padding-top: 20px !important;
-      border-top: 1px solid #E5E7EB !important;
-    }
-    
-    .btn-outline {
-      background-color: white !important;
-      color: #374151 !important;
-      border: 1px solid #D1D5DB !important;
-      border-radius: 8px !important;
-      padding: 12px 20px !important;
-      font-weight: 500 !important;
-      font-size: 14px !important;
-      cursor: pointer !important;
-      transition: all 0.2s ease !important;
-    }
-    
-    .btn-outline:hover {
-      background-color: #000000 !important;
-      color: white !important;
-      border-color: #000000 !important;
-    }
-    
-    .btn-primary {
-      background-color: #000000 !important;
-      color: white !important;
-      border: none !important;
-      border-radius: 8px !important;
-      padding: 12px 20px !important;
-      font-weight: 600 !important;
-      font-size: 14px !important;
-      cursor: pointer !important;
-      display: flex !important;
-      align-items: center !important;
-      gap: 8px !important;
-      transition: all 0.2s ease !important;
-    }
-    
-    .btn-primary:hover {
-      background-color: #333333 !important;
-    }
-    </style>
-    
-  </head>
+<div class="dashboard-container">
+      
+      <!-- Sidebar Navigation -->
+      <?php require '../app/views/partials/alumni_sidebar.php'; ?>
 
-  <body class="alumni-dashboard">
-    <!-- Top Navbar -->
-    <header class="dashboard-header">
-      <div class="container">
-        <div class="header-content">
-          <div class="welcome-section">
-            <h1 class="welcome-text">Events</h1>
-            <p class="header-subtitle">Explore alumni and student-organized events. Publish, register, and view event details.</p>
-          </div>
-          
-          <div class="header-actions">
-            <button class="btn btn-outline notification-btn" aria-label="Notifications">
-              <i class="fas fa-bell"></i>
-              <span class="notification-badge">3</span>
-            </button>
-            <a href="<?=ROOT?>/alumni/logout" class="btn btn-primary logout-btn">Logout</a>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <div class="dashboard-container">
-     <!-- sidebar -->
-    <?php require '../app/views/partials/alumni_sidebar.php'; ?>
-
-      <!-- Main Content Area -->
+       <!-- Main Content Area -->
       <main class="main-content">
-        <!-- Quick Actions Section -->
-        <section class="dashboard-section quick-actions-section">
+        <!-- Events Header Section -->
+        <section class="dashboard-section events-header-section">
           <div class="section-header">
-            <h2 class="section-title">Quick Actions</h2>
-          </div>
-          
-          <div class="quick-action-item">
-            <div class="action-content">
-              <div class="action-info">
-                <h3 class="action-title">Publish an Event</h3>
-                <p class="action-description">Create a new event to connect with fellow alumni and students. Share knowledge, network, and build community.</p>
-              </div>
-              <button class="btn btn-primary action-btn" onclick="openPublishEventModal()">
+            <h2 class="card-title">Upcoming Events</h2>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="openNewEventModal()">
                 <i class="fas fa-plus"></i>
-                Publish Event
+                <span>Create Event</span>
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="viewAllFeatured()">
+                <span>View All</span>
+                <i class="fas fa-arrow-right"></i>
               </button>
             </div>
           </div>
         </section>
 
-        <!-- Pending Events Section -->
-        <section class="dashboard-section pending-events-section">
+        <!-- Featured Events Section -->
+        <section class="dashboard-section featured-events-section">
+          <div class="featured-events-grid">
+            <?php if (!empty($upcomingEvents)): ?>
+              <?php foreach ($upcomingEvents as $index => $event): ?>
+                <div class="featured-event-card js-card-alumni-upcoming" <?= $index >= 2 ? 'style="display:none;"' : '' ?>>
+                  <div class="event-image" style="background-color: #E0EBF9;">
+                    <?php if (!empty($event['image_path'])): ?>
+                      <img src="<?=ROOT?><?= esc($event['image_path']) ?>" alt="<?= esc($event['title']) ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                    <?php endif; ?>
+                  </div>
+                  <div class="event-content">
+                    <div class="event-category <?= esc($event['category']) ?>"><?= ucfirst(esc($event['category'])) ?></div>
+                    <h3 class="event-title"><?= esc($event['title']) ?></h3>
+                    <p class="event-caption-line">
+                      <span><?= date('M d, Y', strtotime($event['event_date'])) ?></span>
+                      <span class="caption-dot">&middot;</span>
+                      <span><?= date('g:i A', strtotime($event['start_time'])) ?> - <?= date('g:i A', strtotime($event['end_time'])) ?></span>
+                      <?php if (!empty($event['venue'])): ?>
+                        <span class="caption-dot">&middot;</span>
+                        <span><?= esc($event['venue']) ?></span>
+                      <?php endif; ?>
+                    </p>
+                    <p class="event-description"><?= esc($event['description']) ?></p>
+                    <?php $modeLabel = ucfirst($event['mode'] ?? 'offline'); ?>
+                    <?php if (strtolower((string)$modeLabel) === 'offline') { $modeLabel = 'Physical'; } ?>
+                    <span class="event-mode-badge mode-<?= strtolower(esc($event['mode'] ?? 'offline')) ?>">
+                      <i class="fas fa-video"></i> <?= esc($modeLabel) ?>
+                    </span>
+                    <?php if (!empty($event['tags'])): ?>
+                      <div class="event-tags-row">
+                        <?php foreach (array_filter(array_map('trim', explode(',', (string)$event['tags']))) as $tag): ?>
+                          <span class="event-tag-chip">#<?= esc($tag) ?></span>
+                        <?php endforeach; ?>
+                      </div>
+                    <?php endif; ?>
+                    <div class="event-stats">
+                      <?php
+                        $registeredCount = (int)($event['registered_count'] ?? 0);
+                        $spotsLeft = !empty($event['max_attendees']) ? max(0, ((int)$event['max_attendees'] - $registeredCount)) : 'Unlimited';
+                        $isClosed = (($event['registration_status'] ?? 'open') !== 'open');
+                        $isFull = !empty($event['max_attendees']) && $registeredCount >= (int)$event['max_attendees'];
+                        $isOwnEvent = ((int)($event['host_alumnus_id'] ?? 0) === (int)($_SESSION['user_id'] ?? 0));
+                      ?>
+                      <span class="attendees"><i class="fas fa-users"></i> <?= $registeredCount ?> registered</span>
+                      <?php if (!empty($event['max_attendees'])): ?>
+                        <span class="spots-left"><i class="fas fa-ticket-alt"></i> <?= $spotsLeft ?> spots left</span>
+                      <?php endif; ?>
+                      <?php if ($isClosed): ?>
+                        <span class="spots-left"><i class="fas fa-lock"></i> Registrations Closed</span>
+                      <?php elseif ($isFull): ?>
+                        <span class="spots-left"><i class="fas fa-ban"></i> Registrations Full</span>
+                      <?php endif; ?>
+                    </div>
+                    <div class="event-actions">
+                      <?php if (!empty($event['registration_link'])): ?>
+                        <a class="btn btn-outline btn-sm" href="<?= esc($event['registration_link']) ?>" target="_blank" rel="noopener noreferrer">
+                          <i class="fas fa-external-link-alt"></i>
+                          <span>View Details</span>
+                        </a>
+                      <?php endif; ?>
+                      <?php if ($isOwnEvent): ?>
+                        <button type="button" class="btn btn-primary btn-sm btn-disabled-ash" disabled>
+                          <i class="fas fa-user-check"></i>
+                          <span>Your Event</span>
+                        </button>
+                      <?php elseif ($isClosed || $isFull): ?>
+                        <button type="button" class="btn btn-primary btn-sm btn-disabled-ash" disabled>
+                          <i class="fas fa-calendar-plus"></i>
+                          <span><?= $isClosed ? 'Registrations Closed' : 'Registrations Full' ?></span>
+                        </button>
+                      <?php else: ?>
+                        <button type="button" class="btn btn-primary btn-sm" data-event-id="<?= (int)$event['event_id'] ?>" data-event-title="<?= esc($event['title']) ?>" onclick='openRegisterModal(<?= (int)$event["event_id"] ?>, <?= json_encode($event["title"]) ?>)'>
+                          <i class="fas fa-calendar-plus"></i>
+                          <span>Register Now</span>
+                        </button>
+                      <?php endif; ?>
+                    </div>
+                  </div>
+                </div>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <p style="text-align: center; color: var(--muted-foreground); padding: 2rem;">
+                No upcoming events yet. Create one to get started.
+              </p>
+            <?php endif; ?>
+          </div>
+        </section>
+
+        <!-- Events I'm Hosting Section -->
+        <section class="dashboard-section hosting-events-section">
           <div class="section-header">
-            <h2 class="section-title">
-              <i class="fas fa-clock" style="color: #3B82F6;"></i>
-              Pending Events
-            </h2>
-            <span class="event-count-badge"><?= $eventData['statistics']['pending_events'] ?> events</span>
+            <h2 class="card-title">Events I'm Hosting</h2>
+            <button class="btn btn-outline btn-sm" onclick="viewAllHostingEvents()">
+              <span>Manage All</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
           </div>
           
-          <div class="featured-events-grid">
-            <?php foreach ($eventData['pending_events'] as $event): ?>
-            <div class="featured-event-card">
-              <div class="event-image">
-                <div class="event-date">
-                  <span class="day"><?= date('d', strtotime($event['date'])) ?></span>
-                  <span class="month"><?= date('M', strtotime($event['date'])) ?></span>
+          <div class="hosting-events-grid">
+            <?php if (!empty($hostingEvents)): ?>
+              <?php foreach ($hostingEvents as $event): ?>
+                <div class="hosting-event-card">
+                  <div class="event-header">
+                    <h3 class="event-title"><?= esc($event['title']) ?></h3>
+                    <span class="status-badge status-<?= $event['registration_status'] === 'open' ? 'active' : 'closed' ?>">
+                      Registrations <?= ucfirst($event['registration_status']) ?>
+                    </span>
+                  </div>
+                  <div class="event-meta">
+                    <span class="event-time"><i class="fas fa-clock"></i> <?= date('M d, Y', strtotime($event['event_date'])) ?>, <?= date('g:i A', strtotime($event['start_time'])) ?></span>
+                    <span class="event-location"><i class="fas fa-map-marker-alt"></i> <?= esc($event['venue']) ?></span>
+                  </div>
+                  <div class="event-stats">
+                    <span class="registrants"><i class="fas fa-users"></i> <?= $event['registered_count'] ?? 0 ?> registered</span>
+                    <?php if ($event['max_attendees']): ?>
+                      <span class="capacity"><i class="fas fa-ticket-alt"></i> <?= $event['max_attendees'] ?> capacity</span>
+                    <?php endif; ?>
+                  </div>
+                  <div class="event-actions">
+                    <?php if (!empty($event['registration_link'])): ?>
+                      <a class="btn btn-outline btn-sm" href="<?= esc($event['registration_link']) ?>" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-external-link-alt"></i> View Details
+                      </a>
+                    <?php endif; ?>
+                    <button class="btn btn-outline btn-sm js-host-edit" data-event-id="<?= (int)$event['event_id'] ?>" type="button">
+                      <i class="fas fa-edit"></i> Edit Details
+                    </button>
+                    <?php if ($event['registration_status'] === 'open'): ?>
+                      <button class="btn btn-danger btn-sm js-host-toggle" data-event-id="<?= (int)$event['event_id'] ?>" type="button">
+                        <i class="fas fa-lock"></i> Close Registrations
+                      </button>
+                    <?php else: ?>
+                      <button class="btn btn-success btn-sm js-host-toggle" data-event-id="<?= (int)$event['event_id'] ?>" type="button">
+                        <i class="fas fa-unlock"></i> Reopen Registrations
+                      </button>
+                    <?php endif; ?>
+                    <button class="btn btn-danger btn-sm js-host-delete" data-event-id="<?= (int)$event['event_id'] ?>" type="button">
+                      <i class="fas fa-trash"></i> Delete
+                    </button>
+                  </div>
                 </div>
-                <div class="event-status <?= $event['category'] ?>"><?= ucfirst($event['category']) ?></div>
-              </div>
-              <div class="event-content">
-                <div class="event-category <?= $event['category'] ?>"><?= ucfirst($event['category']) ?></div>
-                <h3 class="event-title"><?= esc($event['title']) ?></h3>
-                <p class="event-description"><?= esc($event['description']) ?></p>
-                <div class="event-meta">
-                  <span class="event-time"><i class="fas fa-clock"></i> <?= esc($event['date']) ?> at <?= esc($event['time']) ?></span>
-                  <span class="event-location"><i class="fas fa-map-marker-alt"></i> <?= esc($event['location']) ?></span>
-                </div>
-                <div class="event-stats">
-                  <span class="attendees"><i class="fas fa-users"></i> 0 registered</span>
-                  <span class="spots-left"><i class="fas fa-ticket-alt"></i> 50 spots left</span>
-                </div>
-                <div class="event-actions">
-                  <button type="button" class="btn btn-primary">
-                    <i class="fas fa-calendar-plus"></i>
-                    <span>Register Now</span>
-                  </button>
-                  <button class="btn btn-outline btn-sm">
-                    <i class="fas fa-heart"></i>
-                    <span>Save</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-            <?php endforeach; ?>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <p style="text-align: center; color: var(--muted-foreground); padding: 2rem;">
+                You haven't created any events yet. Click "Create Event" to get started!
+              </p>
+            <?php endif; ?>
           </div>
         </section>
 
         <!-- My Registered Events Section -->
-        <section class="dashboard-section registered-events-section">
+        <section class="dashboard-section my-events-section">
           <div class="section-header">
-            <h2 class="section-title">
-              <i class="fas fa-check-circle" style="color: #3B82F6;"></i>
-              My Registered Events
-            </h2>
-            <span class="event-count-badge"><?= $eventData['statistics']['registered_events'] ?> events</span>
+            <h2 class="card-title">Events I'm Attending</h2>
+            <?php if (!empty($attendingEvents) && count($attendingEvents) > 2): ?>
+              <button class="btn btn-outline btn-sm" id="alumniAttendingToggleBtn" onclick="toggleEventCards('alumni-attending', this)">
+                <span>View More</span>
+                <i class="fas fa-arrow-right"></i>
+              </button>
+            <?php endif; ?>
           </div>
           
-          <div class="events-container">
-            <?php foreach ($eventData['registered_events'] as $event): ?>
-            <div class="event-card registered">
-              <div class="registered-event-header">
-                <div class="registered-event-tags">
-                  <span class="badge-<?= $event['type'] ?>-event"><?= ucfirst($event['type']) ?> Event</span>
-                  <span class="badge-registered-status">
-                    <i class="fas fa-check" style="font-size: 10px;"></i>
-                    Registered
-                  </span>
-                </div>
-              </div>
-              
-              <div class="event-card-body">
-                <h3 class="registered-event-title"><?= esc($event['title']) ?></h3>
-                
-                <div class="registered-event-details">
-                  <div class="registered-event-detail">
-                    <i class="fas fa-calendar"></i>
-                    <span><?= esc($event['date']) ?> at <?= esc($event['time']) ?></span>
+          <div class="my-events-grid">
+            <?php if (!empty($attendingEvents)): ?>
+              <?php foreach ($attendingEvents as $index => $event): ?>
+                <div class="my-event-card js-card-alumni-attending" <?= $index >= 2 ? 'style="display:none;"' : '' ?>>
+                  <div class="my-event-image" style="background-color: #E0EBF9;">
+                    <?php if (!empty($event['image_path'])): ?>
+                      <img src="<?=ROOT?><?= esc($event['image_path']) ?>" alt="<?= esc($event['title']) ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                    <?php endif; ?>
                   </div>
-                  <div class="registered-event-detail">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span><?= esc($event['location']) ?></span>
-                  </div>
-                  <div class="registered-event-detail">
-                    <i class="fas fa-user"></i>
-                    <span>Organized by <?= esc($event['organizer']) ?></span>
+                  <div class="event-content">
+                    <div class="my-event-topline">
+                      <div class="event-status registered">Registered</div>
+                    </div>
+                    <h3 class="event-title"><?= esc($event['title']) ?></h3>
+                    <p class="my-event-caption-line">
+                      <span><?= date('M d, Y', strtotime($event['event_date'])) ?></span>
+                      <span class="caption-dot">&middot;</span>
+                      <span><?= date('g:i A', strtotime($event['start_time'])) ?></span>
+                      <?php if (!empty($event['venue'])): ?>
+                        <span class="caption-dot">&middot;</span>
+                        <span><?= esc($event['venue']) ?></span>
+                      <?php endif; ?>
+                    </p>
+
+                    <?php $myEventModeLabel = ucfirst($event['mode'] ?? 'offline'); ?>
+                    <?php if (strtolower((string)$myEventModeLabel) === 'offline') { $myEventModeLabel = 'Physical'; } ?>
+                    <span class="event-mode-badge mode-<?= strtolower(esc($event['mode'] ?? 'offline')) ?>">
+                      <i class="fas fa-video"></i> <?= esc($myEventModeLabel) ?>
+                    </span>
+
+                    <div class="event-actions">
+                      <?php if (!empty($event['registration_link'])): ?>
+                        <a class="btn btn-outline btn-sm" href="<?= esc($event['registration_link']) ?>" target="_blank" rel="noopener noreferrer">
+                          <i class="fas fa-external-link-alt"></i>
+                          <span>View Details</span>
+                        </a>
+                      <?php endif; ?>
+                      <button class="btn btn-outline btn-sm btn-unregister" onclick="unregisterEvent(<?= (int)$event['event_id'] ?>)">
+                        <i class="fas fa-times"></i>
+                        <span>Unregister</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
-                
-                <div class="registered-event-actions">
-                  <button class="unregister-btn">
-                    <i class="fas fa-times"></i>
-                    Unregister
-                  </button>
-                </div>
-              </div>
-            </div>
-            <?php endforeach; ?>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <p style="text-align: center; color: var(--muted-foreground); padding: 2rem;">
+                You haven't registered for any events yet.
+              </p>
+            <?php endif; ?>
           </div>
         </section>
 
-        <!-- Event Activity Statistics Section -->
+        <!-- Event Statistics Section -->
         <section class="dashboard-section event-stats-section">
           <div class="section-header">
-            <h2 class="section-title">
-              <i class="fas fa-chart-bar" style="color: #0E2072;"></i>
-              Event Activity
-            </h2>
+            <h2 class="card-title">Event Activity</h2>
           </div>
           
           <div class="stats-grid">
@@ -908,7 +259,7 @@ require '../app/views/partials/alumni_header.php';
                 <i class="fas fa-calendar-check"></i>
               </div>
               <div class="stat-content">
-                <h3 class="stat-number">24</h3>
+                <h3 class="stat-number"><?= (int)($eventStats['events_this_month'] ?? 0) ?></h3>
                 <p class="stat-label">Events This Month</p>
               </div>
             </div>
@@ -918,7 +269,7 @@ require '../app/views/partials/alumni_header.php';
                 <i class="fas fa-users"></i>
               </div>
               <div class="stat-content">
-                <h3 class="stat-number">1,247</h3>
+                <h3 class="stat-number"><?= (int)($eventStats['total_registrations'] ?? 0) ?></h3>
                 <p class="stat-label">Total Registrations</p>
               </div>
             </div>
@@ -928,7 +279,7 @@ require '../app/views/partials/alumni_header.php';
                 <i class="fas fa-clock"></i>
               </div>
               <div class="stat-content">
-                <h3 class="stat-number">8</h3>
+                <h3 class="stat-number"><?= (int)($eventStats['upcoming_this_week'] ?? 0) ?></h3>
                 <p class="stat-label">Upcoming This Week</p>
               </div>
             </div>
@@ -937,20 +288,26 @@ require '../app/views/partials/alumni_header.php';
       </main>
     </div>
 
-    <!-- Publish Event Modal -->
-    <div id="publishEventModal" class="modal">
+    <!-- New Event Modal -->
+    <div id="newEventModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2 class="modal-title">Publish an Event</h2>
-          <button class="modal-close" onclick="closePublishEventModal()">
+          <h2 class="modal-title">Create New Event</h2>
+          <button class="modal-close" onclick="closeNewEventModal()">
             <i class="fas fa-times"></i>
           </button>
         </div>
         
-        <form class="publish-event-form">
+        <form class="new-event-form" id="createEventForm" enctype="multipart/form-data">
           <div class="form-group">
             <label for="eventTitle">Event Title *</label>
             <input type="text" id="eventTitle" name="eventTitle" placeholder="Enter a clear, descriptive title for your event" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="eventImage">Event Image</label>
+            <input type="file" id="eventImage" name="event_image" accept="image/*">
+            <small style="color: var(--muted-foreground); font-size: var(--font-xs); display: block; margin-top: 4px;">Upload an image for your event (optional)</small>
           </div>
           
           <div class="form-row">
@@ -958,105 +315,785 @@ require '../app/views/partials/alumni_header.php';
               <label for="eventCategory">Category *</label>
               <select id="eventCategory" name="eventCategory" required>
                 <option value="">Select a category</option>
-                <option value="workshop">Workshop</option>
-                <option value="networking">Networking</option>
-                <option value="seminar">Seminar</option>
+                <option value="academic">Academic</option>
                 <option value="social">Social</option>
                 <option value="career">Career</option>
+                <option value="workshop">Workshop</option>
               </select>
             </div>
             
             <div class="form-group">
-              <label for="eventDate">Event Date *</label>
-              <input type="date" id="eventDate" name="eventDate" required>
+              <label for="eventMode">Mode *</label>
+              <select id="eventMode" name="eventMode" required>
+                <option value="offline">Physical</option>
+                <option value="online">Online</option>
+                <option value="hybrid">Hybrid</option>
+              </select>
             </div>
           </div>
           
           <div class="form-row">
             <div class="form-group">
-              <label for="startTime">Start Time *</label>
-              <input type="time" id="startTime" name="startTime" required>
+              <label for="eventDate">Event Date *</label>
+              <input type="date" id="eventDate" name="eventDate" min="<?= date('Y-m-d', strtotime('+1 day')) ?>" required>
             </div>
             
             <div class="form-group">
+              <label for="startTime">Start Time *</label>
+              <input type="time" id="startTime" name="startTime" placeholder="Select start time" title="Select start time" required>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
               <label for="endTime">End Time *</label>
-              <input type="time" id="endTime" name="endTime" required>
+              <input type="time" id="endTime" name="endTime" placeholder="Select end time" title="Select end time" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="maxAttendees">Maximum Attendees</label>
+              <input type="number" id="maxAttendees" name="maxAttendees" placeholder="Leave empty for unlimited" min="1">
             </div>
           </div>
           
           <div class="form-group">
-            <label for="eventLocation">Location *</label>
-            <input type="text" id="eventLocation" name="eventLocation" placeholder="Enter event location" required>
+            <label for="eventLocation">Venue/Location *</label>
+            <input type="text" id="eventLocation" name="eventLocation" placeholder="Enter event venue or location" required>
           </div>
+
+          <div class="form-group" id="createSessionLinkGroup" style="display:none;">
+            <label for="externalLink">Session Link (Zoom/Meet) *</label>
+            <input type="url" id="externalLink" name="externalLink" placeholder="https://zoom.us/j/...">
+            <small style="color: var(--muted-foreground); font-size: var(--font-xs); display: block; margin-top: 4px;">Add the live meeting link for online events.</small>
+          </div>
+          
           
           <div class="form-group">
             <label for="eventDescription">Event Description *</label>
             <textarea id="eventDescription" name="eventDescription" rows="4" placeholder="Describe your event in detail. What will attendees learn or experience?" required></textarea>
           </div>
           
-          <div class="form-row">
-            <div class="form-group">
-              <label for="maxAttendees">Maximum Attendees</label>
-              <input type="number" id="maxAttendees" name="maxAttendees" placeholder="Leave empty for unlimited" min="1">
-            </div>
-            
-            <div class="form-group">
-              <label for="eventTags">Tags</label>
-              <input type="text" id="eventTags" name="eventTags" placeholder="e.g., networking, career, workshop">
-            </div>
+          <div class="form-group">
+            <label for="eventTags">Tags</label>
+            <input type="text" id="eventTags" name="eventTags" placeholder="e.g., python, networking, career">
           </div>
           
           <div class="form-actions">
-            <button type="button" class="btn btn-outline" onclick="closePublishEventModal()">
+            <button type="button" class="btn btn-outline" onclick="closeNewEventModal()">
               <span>Cancel</span>
             </button>
             <button type="submit" class="btn btn-primary">
               <i class="fas fa-calendar-plus"></i>
-              <span>Publish Event</span>
+              <span>Create Event</span>
             </button>
           </div>
         </form>
       </div>
     </div>
 
-    <script src="<?=ROOT?>/assets/js/main.js"></script>
+    <!-- Edit Event Modal -->
+    <div id="editEventModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Edit Event</h2>
+          <button class="modal-close" onclick="closeEditEventModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <form class="new-event-form" id="editEventForm" enctype="multipart/form-data">
+          <input type="hidden" id="editEventId" name="eventId">
+          
+          <div class="form-group">
+            <label for="editEventTitle">Event Title *</label>
+            <input type="text" id="editEventTitle" name="eventTitle" placeholder="Enter a clear, descriptive title for your event" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editEventImage">Event Image</label>
+            <input type="file" id="editEventImage" name="event_image" accept="image/*">
+            <small style="color: var(--muted-foreground); font-size: var(--font-xs); display: block; margin-top: 4px;">Upload a new image to replace the current one (optional)</small>
+            <div id="currentEventImage" style="margin-top: 8px;"></div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editEventCategory">Category *</label>
+              <select id="editEventCategory" name="eventCategory" required>
+                <option value="">Select a category</option>
+                <option value="academic">Academic</option>
+                <option value="social">Social</option>
+                <option value="career">Career</option>
+                <option value="workshop">Workshop</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="editEventMode">Mode *</label>
+              <select id="editEventMode" name="eventMode" required>
+                <option value="offline">Physical</option>
+                <option value="online">Online</option>
+                <option value="hybrid">Hybrid</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editEventDate">Event Date *</label>
+              <input type="date" id="editEventDate" name="eventDate" min="<?= date('Y-m-d', strtotime('+1 day')) ?>" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="editStartTime">Start Time *</label>
+              <input type="time" id="editStartTime" name="startTime" placeholder="Select start time" title="Select start time" required>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editEndTime">End Time *</label>
+              <input type="time" id="editEndTime" name="endTime" placeholder="Select end time" title="Select end time" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="editMaxAttendees">Maximum Attendees</label>
+              <input type="number" id="editMaxAttendees" name="maxAttendees" placeholder="Leave empty for unlimited" min="1">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="editEventLocation">Venue/Location *</label>
+            <input type="text" id="editEventLocation" name="eventLocation" placeholder="Enter event venue or location" required>
+          </div>
+
+          <div class="form-group">
+            <label for="editExternalLink">External Details Link</label>
+            <input type="url" id="editExternalLink" name="externalLink" placeholder="https://example.com/event-details">
+            <small style="color: var(--muted-foreground); font-size: var(--font-xs); display: block; margin-top: 4px;">Optional link for more event details.</small>
+          </div>
+          
+          
+          <div class="form-group">
+            <label for="editEventDescription">Event Description *</label>
+            <textarea id="editEventDescription" name="eventDescription" rows="4" placeholder="Describe your event in detail. What will attendees learn or experience?" required></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="editEventTags">Tags</label>
+            <input type="text" id="editEventTags" name="eventTags" placeholder="e.g., python, networking, career">
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="closeEditEventModal()">
+              <span>Cancel</span>
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i>
+              <span>Update Event</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Register Now Modal -->
+    <div id="registerModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Register for the Event</h2>
+          <button class="modal-close" onclick="closeRegisterModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <form class="register-event-form" id="registerEventForm">
+          <input type="hidden" id="registerEventId" name="eventId">
+          <input type="hidden" name="participantName" value="<?= esc($_SESSION['name'] ?? '') ?>">
+          <input type="hidden" name="participantEmail" value="<?= esc($_SESSION['email'] ?? '') ?>">
+          <input type="hidden" name="participantRole" value="alumni">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="participantName">Full Name *</label>
+              <input type="text" id="participantName" value="<?= esc($_SESSION['name'] ?? '') ?>" readonly>
+            </div>
+
+            <div class="form-group">
+              <label for="participantEmail">Email *</label>
+              <input type="email" id="participantEmail" value="<?= esc($_SESSION['email'] ?? '') ?>" readonly>
+            </div>
+
+            <div class="form-group">
+              <label for="participantRole">Role *</label>
+              <input type="text" id="participantRole" value="Alumni" readonly>
+            </div>
+
+            <div class="form-group">
+              <label for="eventName">Event Name *</label>
+              <input type="text" id="eventName" name="eventName" placeholder="Event name will appear here" readonly>
+            </div>
+
+            <div class="form-group">
+              <label for="specialNotes">Special Notes</label>
+              <textarea id="specialNotes" name="specialNotes" rows="3" placeholder="Any specific requests or comments?"></textarea>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="closeRegisterModal()">
+              <span>Cancel</span>
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <span>Register Now</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmActionModal" class="modal confirm-action-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Confirm Action</h2>
+          <button class="modal-close" id="confirmActionClose" type="button">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="confirm-action-body">
+          <p id="confirmActionMessage">Are you sure?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" id="confirmActionCancel" type="button">
+            <span>Cancel</span>
+          </button>
+          <button class="btn btn-danger" id="confirmActionOk" type="button">
+            <span>Confirm</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="<?=ROOT?>/assets/js/events-board.js"></script>
     <script>
-    // Publish Event Modal Functions
-    function openPublishEventModal() {
-      console.log('Opening Publish Event Modal');
-      const modal = document.getElementById('publishEventModal');
-      modal.style.display = 'block';
-      modal.classList.add('show');
-      document.body.style.overflow = 'hidden';
-    }
-    
-    function closePublishEventModal() {
-      console.log('Closing Publish Event Modal');
-      const modal = document.getElementById('publishEventModal');
-      modal.style.display = 'none';
-      modal.classList.remove('show');
-      document.body.style.overflow = 'auto';
-    }
-    
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-      const modal = document.getElementById('publishEventModal');
-      if (event.target === modal) {
-        closePublishEventModal();
+    // Event CRUD Operations
+    let currentEditingEventId = null;
+    let currentRegisterEventId = null;
+    let confirmActionResolver = null;
+
+    function toggleCreateSessionLinkField() {
+      const modeSelect = document.getElementById('eventMode');
+      const group = document.getElementById('createSessionLinkGroup');
+      const input = document.getElementById('externalLink');
+      if (!modeSelect || !group || !input) return;
+
+      const isOnline = modeSelect.value === 'online';
+      group.style.display = isOnline ? 'block' : 'none';
+      input.required = isOnline;
+
+      if (!isOnline) {
+        input.value = '';
       }
     }
-    
-    // Form submission
-    document.addEventListener('DOMContentLoaded', function() {
-      const form = document.querySelector('.publish-event-form');
+
+    function validateEventSchedule(eventDate, startTime, endTime, minDate) {
+      if (eventDate && eventDate < minDate) {
+        return 'Event date must be after today';
+      }
+
+      if (startTime && endTime && startTime >= endTime) {
+        return 'Start time must be before end time';
+      }
+
+      return '';
+    }
+
+    async function fetchJson(url, options = {}, timeoutMs = 12000) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const response = await fetch(url, { ...options, signal: controller.signal });
+        const raw = await response.text();
+
+        // Some PHP endpoints return JSON with text/html content-type.
+        // Parse JSON defensively based on payload, not header alone.
+        try {
+          return raw ? JSON.parse(raw) : {};
+        } catch (parseError) {
+          throw new Error(raw ? raw.slice(0, 300) : 'Non-JSON response from server');
+        }
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    }
+
+    function refreshEventBoard() {
+      // Use cache-busting navigation so latest server state is reflected immediately.
+      window.location.replace('<?=ROOT?>/alumni/eventboard?refresh=' + Date.now());
+    }
+
+    function toggleEventCards(sectionKey, button) {
+      const cards = document.querySelectorAll('.js-card-' + sectionKey);
+      if (!cards.length) return;
+
+      const hasHidden = Array.from(cards).some(card => card.style.display === 'none');
+      cards.forEach((card, index) => {
+        if (hasHidden) {
+          card.style.display = '';
+        } else {
+          card.style.display = index < 2 ? '' : 'none';
+        }
+      });
+
+      const label = button.querySelector('span');
+      if (label) {
+        label.textContent = hasHidden ? 'View Less' : 'View More';
+      }
+    }
+
+    function openRegisterModal(eventIdOrTitle, eventTitle) {
+      const modal = document.getElementById('registerModal');
+      const eventNameInput = document.getElementById('eventName');
+      const eventIdInput = document.getElementById('registerEventId');
+
+      let resolvedEventId = null;
+      let resolvedTitle = '';
+
+      if (typeof eventIdOrTitle === 'number') {
+        resolvedEventId = eventIdOrTitle;
+        resolvedTitle = eventTitle || '';
+      } else {
+        resolvedTitle = eventIdOrTitle || '';
+        const activeBtn = document.activeElement;
+        if (activeBtn && activeBtn.dataset && activeBtn.dataset.eventId) {
+          resolvedEventId = parseInt(activeBtn.dataset.eventId, 10);
+        }
+      }
+
+      currentRegisterEventId = resolvedEventId;
+      if (eventNameInput) eventNameInput.value = resolvedTitle;
+      if (eventIdInput) eventIdInput.value = resolvedEventId || '';
+
+      if (!resolvedEventId) {
+        showNotification('Unable to identify selected event. Please try again.', 'error');
+        return;
+      }
+
+      if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeRegisterModal() {
+      const modal = document.getElementById('registerModal');
+      const form = document.getElementById('registerEventForm');
+      currentRegisterEventId = null;
+
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+
       if (form) {
-        form.addEventListener('submit', function(e) {
-          e.preventDefault();
-          alert('Event published successfully!');
-          closePublishEventModal();
-        });
+        form.reset();
       }
+    }
+
+    function openConfirmActionModal(message) {
+      const modal = document.getElementById('confirmActionModal');
+      const messageEl = document.getElementById('confirmActionMessage');
+
+      if (messageEl) {
+        messageEl.textContent = message || 'Are you sure?';
+      }
+
+      if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+
+      return new Promise((resolve) => {
+        confirmActionResolver = resolve;
+      });
+    }
+
+    function closeConfirmActionModal(confirmed) {
+      const modal = document.getElementById('confirmActionModal');
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+
+      if (confirmActionResolver) {
+        confirmActionResolver(Boolean(confirmed));
+        confirmActionResolver = null;
+      }
+    }
+
+    async function unregisterEvent(eventId) {
+      const confirmed = await openConfirmActionModal('Cancel your registration for this event?');
+      if (!confirmed) {
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('eventId', eventId);
+
+      try {
+        const result = await fetchJson('<?=ROOT?>/alumni/eventboard/unregister', {
+          method: 'POST',
+          body: formData
+        });
+
+        showNotification(result.message || 'Updated', result.success ? 'success' : 'error');
+        if (result.success) {
+          refreshEventBoard();
+        }
+      } catch (err) {
+        console.error(err);
+        showNotification('Failed to cancel registration', 'error');
+      }
+    }
+
+    async function submitAlumniRegistration(e) {
+      e.preventDefault();
+
+      const eventIdFromInput = parseInt(document.getElementById('registerEventId')?.value || '0', 10);
+      const eventId = eventIdFromInput || currentRegisterEventId || 0;
+      if (!eventId) {
+        showNotification('Event ID is missing', 'error');
+        return;
+      }
+
+      const submitBtn = document.querySelector('#registerEventForm button[type="submit"]');
+      const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>Registering...</span>';
+      }
+
+      const formData = new FormData();
+      formData.append('eventId', eventId);
+
+      try {
+        const result = await fetchJson('<?=ROOT?>/alumni/eventboard/register', {
+          method: 'POST',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: formData
+        });
+
+        if (!result.success && (result.message || '').toLowerCase().includes('already registered')) {
+          alert('You are already registered for this event.');
+        }
+
+        showNotification(result.message || 'Updated', result.success ? 'success' : 'error');
+        if (result.success) {
+          closeRegisterModal();
+          refreshEventBoard();
+        }
+      } catch (err) {
+        console.error(err);
+        showNotification('Failed to register. Please try again.', 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnHtml;
+        }
+      }
+    }
+
+    document.getElementById('registerEventForm')?.addEventListener('submit', submitAlumniRegistration);
+
+    // Create Event Form Handler
+    document.getElementById('createEventForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+      const minDate = '<?= date('Y-m-d', strtotime('+1 day')) ?>';
+      const eventDate = document.getElementById('eventDate')?.value || '';
+      const startTime = document.getElementById('startTime')?.value || '';
+      const endTime = document.getElementById('endTime')?.value || '';
+      const validationMessage = validateEventSchedule(eventDate, startTime, endTime, minDate);
+      if (validationMessage) {
+        showNotification(validationMessage, 'error');
+        return;
+      }
+        
+        const formData = new FormData(this);
+        
+        try {
+            const result = await fetchJson('<?=ROOT?>/alumni/eventboard/create', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (result.success) {
+                showNotification('Event created successfully!', 'success');
+                closeNewEventModal();
+                this.reset();
+              refreshEventBoard();
+            } else {
+                showNotification(result.message || 'Failed to create event', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('An error occurred while creating the event', 'error');
+        }
     });
+
+    // Edit Event Form Handler
+    document.getElementById('editEventForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+      const minDate = '<?= date('Y-m-d', strtotime('+1 day')) ?>';
+      const eventDate = document.getElementById('editEventDate')?.value || '';
+      const startTime = document.getElementById('editStartTime')?.value || '';
+      const endTime = document.getElementById('editEndTime')?.value || '';
+      const validationMessage = validateEventSchedule(eventDate, startTime, endTime, minDate);
+      if (validationMessage) {
+        showNotification(validationMessage, 'error');
+        return;
+      }
+        
+        const formData = new FormData(this);
+        formData.append('eventId', currentEditingEventId);
+        
+        try {
+            const result = await fetchJson('<?=ROOT?>/alumni/eventboard/update', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (result.success) {
+                showNotification('Event updated successfully! Registered students have been notified.', 'success');
+                closeEditEventModal();
+              refreshEventBoard();
+            } else {
+                showNotification(result.message || 'Failed to update event', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('An error occurred while updating the event', 'error');
+        }
+    });
+
+    // Open Edit Modal
+    async function openEditEventModal(eventId) {
+        currentEditingEventId = eventId;
+        
+        try {
+            const event = await fetchJson(`<?=ROOT?>/alumni/eventboard/getEvent?id=${eventId}`);
+            
+            if (event.success) {
+                const data = event.data;
+                document.getElementById('editEventId').value = data.event_id;
+                document.getElementById('editEventTitle').value = data.title;
+                document.getElementById('editEventCategory').value = data.category;
+                document.getElementById('editEventMode').value = data.mode;
+                document.getElementById('editEventDate').value = data.event_date;
+                document.getElementById('editStartTime').value = data.start_time;
+                document.getElementById('editEndTime').value = data.end_time;
+                document.getElementById('editEventLocation').value = data.venue;
+                document.getElementById('editExternalLink').value = data.registration_link || '';
+                document.getElementById('editMaxAttendees').value = data.max_attendees || '';
+                document.getElementById('editEventDescription').value = data.description;
+                document.getElementById('editEventTags').value = data.tags || '';
+                
+                // Show current image if exists
+                const imageContainer = document.getElementById('currentEventImage');
+                if (data.image_path) {
+                    imageContainer.innerHTML = `<img src="<?=ROOT?>${data.image_path}" style="max-width: 200px; border-radius: 8px; margin-top: 8px;" alt="Current event image">`;
+                } else {
+                    imageContainer.innerHTML = '';
+                }
+                
+                document.getElementById('editEventModal').style.display = 'block';
+                document.getElementById('editEventModal').classList.add('show');
+            } else {
+                showNotification('Failed to load event details', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('An error occurred while loading event details', 'error');
+        }
+    }
+
+    // Close Edit Modal
+    function closeEditEventModal() {
+        document.getElementById('editEventModal').style.display = 'none';
+        document.getElementById('editEventModal').classList.remove('show');
+        currentEditingEventId = null;
+        document.getElementById('editEventForm').reset();
+    }
+
+    // Delete Event
+    async function confirmDeleteEvent(eventId) {
+      const confirmed = await openConfirmActionModal('Are you sure you want to delete this event? All registered students will be notified.');
+      if (!confirmed) {
+            return;
+        }
+        
+        try {
+            const formData = new FormData();
+            formData.append('eventId', eventId);
+            
+            const result = await fetchJson('<?=ROOT?>/alumni/eventboard/delete', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (result.success) {
+                showNotification('Event deleted successfully! Registered students have been notified.', 'success');
+              setTimeout(() => {
+                refreshEventBoard();
+              }, 150);
+            } else {
+                showNotification(result.message || 'Failed to delete event', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('An error occurred while deleting the event', 'error');
+        }
+    }
+
+    // Toggle Registration Status
+    async function toggleRegistrationStatus(eventId) {
+        try {
+            const formData = new FormData();
+            formData.append('eventId', eventId);
+            
+            const result = await fetchJson('<?=ROOT?>/alumni/eventboard/toggleRegistration', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (result.success) {
+                showNotification(`Registrations ${result.status === 'open' ? 'opened' : 'closed'} successfully!`, 'success');
+              setTimeout(() => {
+                refreshEventBoard();
+              }, 150);
+            } else {
+                showNotification(result.message || 'Failed to update registration status', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('An error occurred', 'error');
+        }
+    }
+
+    // Get Event Data (for edit modal)
+    async function getEventData(eventId) {
+        try {
+            return await fetchJson(`<?=ROOT?>/alumni/eventboard/getEvent?id=${eventId}`);
+        } catch (error) {
+            console.error('Error:', error);
+            return { success: false };
+        }
+    }
+
+    function bindHostingActionButtons() {
+      const editButtons = document.querySelectorAll('.js-host-edit[data-event-id]');
+      const toggleButtons = document.querySelectorAll('.js-host-toggle[data-event-id]');
+      const deleteButtons = document.querySelectorAll('.js-host-delete[data-event-id]');
+
+      editButtons.forEach((button) => {
+        if (button.dataset.bound === '1') return;
+        button.dataset.bound = '1';
+        button.addEventListener('click', () => {
+          const eventId = parseInt(button.dataset.eventId || '0', 10);
+          if (eventId > 0) openEditEventModal(eventId);
+        });
+      });
+
+      toggleButtons.forEach((button) => {
+        if (button.dataset.bound === '1') return;
+        button.dataset.bound = '1';
+        button.addEventListener('click', () => {
+          const eventId = parseInt(button.dataset.eventId || '0', 10);
+          if (eventId > 0) toggleRegistrationStatus(eventId);
+        });
+      });
+
+      deleteButtons.forEach((button) => {
+        if (button.dataset.bound === '1') return;
+        button.dataset.bound = '1';
+        button.addEventListener('click', () => {
+          const eventId = parseInt(button.dataset.eventId || '0', 10);
+          if (eventId > 0) confirmDeleteEvent(eventId);
+        });
+      });
+    }
+
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+        const modals = ['newEventModal', 'editEventModal', 'registerModal', 'confirmActionModal'];
+        modals.forEach(modalId => {
+            const modal = document.getElementById(modalId);
+            if (event.target === modal) {
+                if (modalId === 'newEventModal') closeNewEventModal();
+                if (modalId === 'editEventModal') closeEditEventModal();
+                if (modalId === 'registerModal') closeRegisterModal();
+                if (modalId === 'confirmActionModal') closeConfirmActionModal(false);
+            }
+        });
+    }
+
+        document.getElementById('confirmActionOk')?.addEventListener('click', function() {
+          closeConfirmActionModal(true);
+        });
+        document.getElementById('confirmActionCancel')?.addEventListener('click', function() {
+          closeConfirmActionModal(false);
+        });
+        document.getElementById('confirmActionClose')?.addEventListener('click', function() {
+          closeConfirmActionModal(false);
+        });
+
+        const alumniUpcomingToggleBtn = document.querySelector('.events-header-section .btn.btn-outline.btn-sm');
+        if (alumniUpcomingToggleBtn) {
+          const upcomingCards = document.querySelectorAll('.js-card-alumni-upcoming');
+          if (upcomingCards.length > 2) {
+            alumniUpcomingToggleBtn.setAttribute('onclick', "toggleEventCards('alumni-upcoming', this)");
+            const label = alumniUpcomingToggleBtn.querySelector('span');
+            if (label) label.textContent = 'View More';
+          } else {
+            alumniUpcomingToggleBtn.style.display = 'none';
+          }
+        }
+
+        window.openRegisterModal = openRegisterModal;
+        window.closeRegisterModal = closeRegisterModal;
+        window.unregisterEvent = unregisterEvent;
+        window.toggleEventCards = toggleEventCards;
+        window.openEditEventModal = openEditEventModal;
+        window.toggleRegistrationStatus = toggleRegistrationStatus;
+        window.confirmDeleteEvent = confirmDeleteEvent;
+
+        bindHostingActionButtons();
+
+          const createModeSelect = document.getElementById('eventMode');
+          if (createModeSelect) {
+            createModeSelect.addEventListener('change', toggleCreateSessionLinkField);
+          }
+
+          const originalOpenNewEventModal = window.openNewEventModal;
+          if (typeof originalOpenNewEventModal === 'function') {
+            window.openNewEventModal = function() {
+              originalOpenNewEventModal();
+              toggleCreateSessionLinkField();
+            };
+          }
+
+          const originalCloseNewEventModal = window.closeNewEventModal;
+          if (typeof originalCloseNewEventModal === 'function') {
+            window.closeNewEventModal = function() {
+              originalCloseNewEventModal();
+              toggleCreateSessionLinkField();
+            };
+          }
+
+          toggleCreateSessionLinkField();
     </script>
   </body>
 </html>

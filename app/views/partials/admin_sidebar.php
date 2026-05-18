@@ -5,7 +5,13 @@ $isActive = function(string $path) use ($current): string {
 };
 ?>
 <!-- Admin Sidebar -->
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
+    <!-- Sidebar Toggle Button -->
+    <div class="sidebar-toggle">
+        <button class="toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
     <nav class="sidebar-nav">
         <!-- MAIN Section -->
         <div class="nav-section">
@@ -46,6 +52,10 @@ $isActive = function(string $path) use ($current): string {
             <a href="<?=ROOT?>/admin/UserManagement" class="nav-item<?= $isActive('admin/UserManagement') ?>">
                 <i class="fas fa-user-slash"></i>
                 <span>Suspend/Reactivate Users</span>
+            </a>
+            <a href="<?=ROOT?>/admin/DeletedUsers" class="nav-item<?= $isActive('admin/DeletedUsers') ?>">
+                <i class="fas fa-user-times"></i>
+                <span>Deleted Users</span>
             </a>
             <a href="<?=ROOT?>/admin/AddNewStudents" class="nav-item<?= $isActive('admin/AddNewStudents') ?>">
                 <i class="fas fa-user-plus"></i>

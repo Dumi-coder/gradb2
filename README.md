@@ -11,7 +11,7 @@ The system provides networking opportunities, mentoring, career guidance, and al
 - Support different roles:
   - **Student** → access alumni resources, networking, career guidance.  
   - **Alumni** → mentor, post opportunities, events, and updates.  
-  - **Counselor** → validate alumni identities before granting access.  
+  - **Counsellor** → validate alumni identities before granting access.  
   - **Faculty Admin** → manage alumni of their faculty.  
   - **Super Admin** → manage the entire university alumni network.  
 
@@ -31,3 +31,7 @@ The system provides networking opportunities, mentoring, career guidance, and al
    ```bash
    git clone git@github.com:Dumi-coder/gradb2.git
    cd gradb2
+
+  ---
+
+  Note: Student dashboard avatar sizing was updated to use the unified `profile.css` so the picture displays the same size and style as the student profile page.

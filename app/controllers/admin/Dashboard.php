@@ -2,6 +2,8 @@
 
 class Dashboard extends Controller
 {
+    use DashboardMetrics;
+
     public function index()
     {
         // Start session if not started
@@ -14,32 +16,43 @@ class Dashboard extends Controller
             redirect('admin');
         }
 
-        // Get dashboard statistics
-        $stats = $this->getDashboardStats();
+        $facultyId = $this->getFacultyIdForAdmin();
+        $stats = $this->getDashboardStats($facultyId);
+
+        $facultyAdminModel = new FacultyAdmin();
+        $facultyAdminProfile = $facultyAdminModel->getFacultyAdminProfile($_SESSION['user_id']);
         
         $data = [
             'title' => 'Faculty Admin Dashboard - GradBridge',
             'user' => $_SESSION,
-            'stats' => $stats
+            'stats' => $stats,
+            'facultyAdminProfile' => $facultyAdminProfile
         ];
 
         $this->view('admin/dashboard', $data);
     }
 
-    private function getDashboardStats()
+    private function getFacultyIdForAdmin(): ?int
     {
-        // You can expand this to get real statistics from the database
-        return [
-            'registered_students' => 156,
-            'students_online' => 23,
-            'pending_aid_requests' => 8,
-            'events_waiting_approval' => 5,
-            'password_verification_requests' => 7,
-            'registered_alumni' => 89,
-            'alumni_online' => 12,
-            'pending_mentorship_requests' => 15,
-            'pending_complaints' => 3,
-            'upcoming_events' => 12
-        ];
+        $userId = $_SESSION['user_id'] ?? null;
+        if (!$userId) {
+            return null;
+        }
+
+        $facultyAdmin = new FacultyAdmin();
+        $row = $facultyAdmin->query(
+            "SELECT faculty_id
+             FROM faculty_admins
+             WHERE user_id = :user_id
+             ORDER BY faculty_admin_id DESC
+             LIMIT 1",
+            ['user_id' => $userId]
+        );
+
+        if (is_array($row) && !empty($row[0]) && isset($row[0]->faculty_id)) {
+            return (int)$row[0]->faculty_id;
+        }
+
+        return null;
     }
 }

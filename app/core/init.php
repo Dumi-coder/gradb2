@@ -28,6 +28,7 @@ require 'Config.php';        // Load configuration settings
 require 'functions.php';     // Load utility functions
 require 'Database.php';      // Load the Database trait for database operations
 require 'Model.php';         // Load the Model trait for database interaction
+require 'DashboardMetrics.php'; // Shared dashboard statistics helpers
 require 'Controller.php';    // Load the Controller class for handling views and requests
 require 'App.php';          // Load the App class for routing and controller management
 
@@ -83,3 +84,72 @@ function destroyUserSession()
     session_destroy();
     session_start(); // Start a new clean session
 }
+
+// Initialize database tables
+function initializeDatabaseTables()
+{
+    try {
+        $string = "mysql:host=" . DBHOST . ";port=" . DBPORT . ";dbname=" . DBNAME . ";charset=utf8";
+        $con = new PDO($string, DBUSER, DBPASS);
+        $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        // Counsellor table already exists; do not create tables here.
+        
+        // Keep counsellor relationship attached only to users.user_id = 1
+        $cleanupCounsellors = "DELETE FROM counsellor WHERE user_id <> 1";
+        $con->exec($cleanupCounsellors);
+
+                // Normalize role values for the default counsellor account.
+        $normalizeRole = "
+        UPDATE users
+                SET role = 'counsellor'
+                WHERE user_id = 1
+                    AND (
+                            role IS NULL
+                            OR TRIM(role) = ''
+                            OR LOWER(TRIM(role)) = 'counsellor'
+                    )
+        ";
+        $con->exec($normalizeRole);
+
+        // Sync only user_id = 1 from users table into counsellor table
+        // and ensure core account updates are reflected in both tables.
+        // Keep profile_photo_url owned by counsellor table.
+        $syncCounsellors = "
+        INSERT INTO counsellor (user_id, name, email, password)
+        SELECT user_id, name, email, password
+        FROM users
+        WHERE user_id = 1 AND role = 'counsellor'
+        ON DUPLICATE KEY UPDATE
+            name = VALUES(name),
+            email = VALUES(email),
+            password = VALUES(password)
+        ";
+        
+        try {
+            $con->exec($syncCounsellors);
+        } catch (Exception $e) {
+            // Sync might fail if there's a constraint, that's ok
+        }
+
+                $cleanupInvalidPrimary = "
+                DELETE FROM counsellor
+                WHERE user_id = 1
+                    AND NOT EXISTS (
+                            SELECT 1 FROM users
+                            WHERE users.user_id = 1
+                                AND users.role = 'counsellor'
+                    )
+                ";
+                $con->exec($cleanupInvalidPrimary);
+        
+        // No auto relationship creation for any other users.
+        
+    } catch (Exception $e) {
+        // Database initialization error - log but don't break the app
+        error_log("Database initialization error: " . $e->getMessage());
+    }
+}
+
+// Initialize tables on application load
+initializeDatabaseTables();

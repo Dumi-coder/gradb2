@@ -1,4 +1,4 @@
-
+﻿
 <!-- Footer -->
     <footer class="footer">
       <div class="container">
@@ -16,12 +16,11 @@
           </div>
           
           <div class="footer-copy">
-            ©️ 2025 GradBridge. All rights reserved.
+            Â©ï¸ 2025 GradBridge. All rights reserved.
           </div>
         </div>
       </div>
     </footer>
 
-    <!-- <script type="module" src="<?=ROOT?>/assets/js/main.js"></script> -->
   </body>
 </html>

@@ -8,95 +8,7 @@
     <link rel="stylesheet" href="<?= ROOT ?>/assets/css/admin_sidebar.css">
     <link rel="stylesheet" href="<?= ROOT ?>/assets/css/admin_dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .form-container {
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            max-width: 600px;
-            margin: 0 auto;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .form-title {
-            color: #2c3e50;
-            font-size: 24px;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .form-subtitle {
-            color: #7f8c8d;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            color: #2c3e50;
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .btn-submit:hover {
-            background: #2980b9;
-        }
-
-        .alert {
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        .alert-danger {
-            background-color: #fee;
-            border: 1px solid #fcc;
-            color: #c33;
-        }
-
-        .alert-success {
-            background-color: #efe;
-            border: 1px solid #cfc;
-            color: #3c3;
-        }
-
-        .main-content {
-            padding: 30px;
-        }
-    </style>
+    
 </head>
 <body>
     <?php include '../app/views/partials/admin_header.php'; ?>
@@ -123,6 +35,11 @@
 
                 <form method="POST" action="">
                     <div class="form-group">
+                        <label for="graduated_year">Graduation Year *</label>
+                        <input type="number" id="graduated_year" name="graduated_year" placeholder="e.g., 2020" min="1900" max="<?= date('Y') ?>" required value="<?= $_POST['graduated_year'] ?? '' ?>">
+                    </div>
+
+                    <div class="form-group">
                         <label for="name">Full Name *</label>
                         <input type="text" id="name" name="name" placeholder="Enter full name" required value="<?= $_POST['name'] ?? '' ?>">
                     </div>
@@ -130,6 +47,35 @@
                     <div class="form-group">
                         <label for="email">Email Address *</label>
                         <input type="email" id="email" name="email" placeholder="alumni@email.com" required value="<?= $_POST['email'] ?? '' ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mobile">Mobile Phone Number *</label>
+                        <input type="tel" id="mobile" name="mobile" placeholder="Enter mobile number" required value="<?= $_POST['mobile'] ?? '' ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="degrees">Degree *</label>
+                        <input type="text" id="degrees" name="degrees" placeholder="e.g., BSc Computer Science" required value="<?= $_POST['degrees'] ?? '' ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="current_workplace">Current Workplace *</label>
+                        <input type="text" id="current_workplace" name="current_workplace" placeholder="Enter current workplace" required value="<?= $_POST['current_workplace'] ?? '' ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expertise_area">Area of Expertise *</label>
+                        <input type="text" id="expertise_area" name="expertise_area" placeholder="e.g., Data Science, Web Development" required value="<?= $_POST['expertise_area'] ?? '' ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="is_mentor">Willing to Be a Mentor? *</label>
+                        <select id="is_mentor" name="is_mentor" required>
+                            <option value="">Select Option</option>
+                            <option value="1" <?= (isset($_POST['is_mentor']) && $_POST['is_mentor'] === '1') ? 'selected' : '' ?>>Yes</option>
+                            <option value="0" <?= (isset($_POST['is_mentor']) && $_POST['is_mentor'] === '0') ? 'selected' : '' ?>>No</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
@@ -154,12 +100,10 @@
 
                     <div class="form-group">
                         <label for="password">Password *</label>
-                        <input type="password" id="password" name="password" placeholder="Minimum 6 characters" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="confirm_password">Confirm Password *</label>
-                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter password" required>
+                        <div id="admin-password-container">
+                            <input type="password" id="admin-password" name="password" placeholder="Enter secure password" required>
+                            <input type="password" id="admin-confirm-password" name="confirm_password" placeholder="Re-enter password" required>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn-submit">
@@ -170,6 +114,9 @@
         </main>
     </div>
 
+    <!-- Password Validation Script -->
+    <script src="<?= ROOT ?>/assets/js/password-validation.js"></script>
+    
     <script>
         function logout() {
             window.location.href = '<?= ROOT ?>/admin/logout';

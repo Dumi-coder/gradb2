@@ -1,265 +1,209 @@
-<?php 
-$page_title = "Aid Requests";
-$page_subtitle = "Manage your financial aid requests";
-require '../app/views/partials/student_header.php'; 
+﻿<?php
+$page_title = "Aid Request Form";
+$page_subtitle = "Submit an aid request";
+require '../app/views/partials/student_header.php';
 ?>
-
-<!-- Page-specific CSS -->
 <link rel="stylesheet" href="<?=ROOT?>/assets/css/aid-request-form.css">
 
 <div class="dashboard-container">
+    <?php require '../app/views/partials/student_sidebar.php'; ?>
 
-      <!-- Main Content Area -->
-      <main class="main-content">
-        <!-- Form Progress -->
-        <section class="dashboard-section progress-section">
-          <div class="section-header">
-            <h2 class="card-title">Application Progress</h2>
-          </div>
-          
-          <div class="progress-steps">
-            <div class="step active" data-step="1">
-              <div class="step-number">1</div>
-              <div class="step-label">Personal Info</div>
+    <main class="main-content">
+        <section class="dashboard-section aid-form-wrap">
+            <div class="aid-form-card">
+                <div>
+                    <div class="aid-form-head">
+                        <div>
+                            <h2 class="aid-form-title">Student Aid Request</h2>
+                            <p class="aid-form-subtitle">Fill in your details and upload the required documents. Counsellor will review your request first.</p>
+                        </div>
+                    </div>
+                    <div class="student-info-box">
+                        <div class="student-info-item">
+                            <span class="label">Student Name</span>
+                            <span class="value"><?= htmlspecialchars($studentInfo->name ?? 'N/A') ?></span>
+                        </div>
+                        <div class="student-info-item">
+                            <span class="label">Student ID</span>
+                            <span class="value"><?= htmlspecialchars($studentInfo->student_id ?? 'N/A') ?></span>
+                        </div>
+                        <div class="student-info-item">
+                            <span class="label">Faculty</span>
+                            <span class="value"><?= htmlspecialchars($studentInfo->faculty ?? ($studentInfo->faculty_name ?? 'N/A')) ?></span>
+                        </div>
+                    </div>
+                </div>
+
+                <?php if (!empty($flashMessage)): ?>
+                    <div class="toast-notice toast-<?= htmlspecialchars($flashMessage['type']) ?>" role="status" aria-live="polite">
+                        <div class="toast-content"><?= htmlspecialchars($flashMessage['text']) ?></div>
+                        <button type="button" class="toast-close" aria-label="Close">&times;</button>
+                    </div>
+                <?php endif; ?>
+
+                <form method="POST" enctype="multipart/form-data" class="aid-request-form">
+            <div class="aid-section">
+                <h3>Basic Information</h3>
+                <div class="aid-form-grid">
+                    <div class="form-group">
+                        <label for="mobile_number">Mobile Number <span class="required-mark">*</span></label>
+                        <input
+                            type="tel"
+                            id="mobile_number"
+                            name="mobile_number"
+                            required
+                            pattern="[0-9]{10}"
+                            placeholder="07XXXXXXXX"
+                            value="<?= htmlspecialchars($formData['mobile_number'] ?? '') ?>"
+                        >
+                        <small>Use 10 digits starting with 07</small>
+                    </div>
+                </div>
             </div>
-            <div class="step" data-step="2">
-              <div class="step-number">2</div>
-              <div class="step-label">Aid Details</div>
+
+            <div class="aid-section">
+                <h3>Aid Request Details</h3>
+                <div class="aid-form-grid">
+                    <div class="form-group">
+                        <label for="aid_type">Type of Aid Request <span class="required-mark">*</span></label>
+                        <select id="aid_type" name="aid_type" required>
+                            <option value="">Select aid type</option>
+                            <option value="money" <?= (($formData['aid_type'] ?? '') === 'money') ? 'selected' : '' ?>>Money</option>
+                            <option value="laptop" <?= (($formData['aid_type'] ?? '') === 'laptop') ? 'selected' : '' ?>>Laptop</option>
+                            <option value="textbooks" <?= (($formData['aid_type'] ?? '') === 'textbooks') ? 'selected' : '' ?>>Textbooks</option>
+                            <option value="stationery" <?= (($formData['aid_type'] ?? '') === 'stationery') ? 'selected' : '' ?>>Stationery</option>
+                            <option value="other" <?= (($formData['aid_type'] ?? '') === 'other') ? 'selected' : '' ?>>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group amount-group hidden" id="amountGroup">
+                        <label for="amount">If Money, How Much (LKR)</label>
+                        <input
+                            type="number"
+                            min="1"
+                            id="amount"
+                            name="amount"
+                            placeholder="Enter amount only for money requests"
+                            value="<?= htmlspecialchars($formData['amount'] ?? '') ?>"
+                        >
+                    </div>
+
+                    <div class="form-group other-aid-group hidden" id="otherAidGroup">
+                        <label for="other_aid_type">If Other, Please Specify <span class="required-mark">*</span></label>
+                        <input
+                            type="text"
+                            id="other_aid_type"
+                            name="other_aid_type"
+                            placeholder="Specify the aid you need"
+                            value="<?= htmlspecialchars($formData['other_aid_type'] ?? '') ?>"
+                        >
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="reason">Reason Why You Need Aid <span class="required-mark">*</span></label>
+                        <textarea
+                            id="reason"
+                            name="reason"
+                            rows="4"
+                            required
+                            placeholder="Explain your current situation and why this aid is needed"
+                        ><?= htmlspecialchars($formData['reason'] ?? '') ?></textarea>
+                    </div>
+                </div>
             </div>
-            <div class="step" data-step="3">
-              <div class="step-number">3</div>
-              <div class="step-label">Documents</div>
+
+            <div class="aid-section">
+                <h3>Required Documents</h3>
+                <div class="doc-grid">
+                    <div class="doc-item">
+                        <label class="doc-title" for="student_id_pdf">Student ID (PDF or Image) <span class="required-mark">*</span></label>
+                        <input type="file" id="student_id_pdf" name="student_id_pdf" accept=".pdf,.jpg,.jpeg,.png" required>
+                    </div>
+
+                    <div class="doc-item">
+                        <label class="doc-title" for="income_statement">Income Statement from Divisional Secretary <span class="required-mark">*</span></label>
+                        <input type="file" id="income_statement" name="income_statement" accept=".pdf" required>
+                    </div>
+
+                    <div class="doc-item">
+                        <label class="doc-title" for="gramaseva_certificate">Gramaseva Niladhari Certificate <span class="required-mark">*</span></label>
+                        <input type="file" id="gramaseva_certificate" name="gramaseva_certificate" accept=".pdf" required>
+                    </div>
+                </div>
             </div>
-            <div class="step" data-step="4">
-              <div class="step-number">4</div>
-              <div class="step-label">Review</div>
+
+                    <div class="submit-row">
+                        <span class="submit-note">Please check all information before submitting.</span>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <a href="<?=ROOT?>/student/aidrequests" class="btn btn-outline">
+                                <i class="fas fa-arrow-left"></i>
+                                <span>Back</span>
+                            </a>
+                            <button type="submit" class="btn btn-primary">Submit Aid Request</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-          </div>
         </section>
+    </main>
+</div>
 
-        <!-- Application Form -->
-        <section class="dashboard-section form-section">
-          <form class="aid-request-form" id="aidRequestForm">
-            <!-- Step 1: Personal Information -->
-            <div class="form-step active" data-step="1">
-              <div class="step-header">
-                <h3 class="step-title">Personal Information</h3>
-                <p class="step-description">Please provide your basic personal details</p>
-              </div>
+<script>
+    (function () {
+        const toast = document.querySelector('.toast-notice');
+        if (toast) {
+            const closeBtn = toast.querySelector('.toast-close');
+            const closeToast = function () {
+                toast.classList.add('is-hiding');
+                setTimeout(() => {
+                    if (toast && toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 280);
+            };
 
-              <div class="form-grid">
-                <div class="form-group">
-                  <label for="firstName">First Name *</label>
-                  <input type="text" id="firstName" name="firstName" required>
-                </div>
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeToast);
+            }
 
-                <div class="form-group">
-                  <label for="lastName">Last Name *</label>
-                  <input type="text" id="lastName" name="lastName" required>
-                </div>
+            setTimeout(closeToast, 3600);
+        }
 
-                <div class="form-group">
-                  <label for="studentId">Student ID *</label>
-                  <input type="text" id="studentId" name="studentId" required>
-                </div>
+        const aidType = document.getElementById('aid_type');
+        const amountGroup = document.getElementById('amountGroup');
+        const amountInput = document.getElementById('amount');
+        const otherAidGroup = document.getElementById('otherAidGroup');
+        const otherAidInput = document.getElementById('other_aid_type');
 
-                <div class="form-group">
-                  <label for="email">Email Address *</label>
-                  <input type="email" id="email" name="email" required>
-                </div>
+        function toggleAmount() {
+            const isMoney = aidType && aidType.value === 'money';
+            const isOther = aidType && aidType.value === 'other';
 
-                <div class="form-group">
-                  <label for="phone">Phone Number *</label>
-                  <input type="number" id="phone" name="phone" required>
-                </div>
+            if (isMoney) {
+                amountGroup.classList.remove('hidden');
+                amountInput.required = true;
+            } else {
+                amountGroup.classList.add('hidden');
+                amountInput.required = false;
+                amountInput.value = '';
+            }
 
-                <div class="form-group">
-                  <label for="major">Major/Program *</label>
-                  <input type="text" id="major" name="major" required>
-                </div>
+            if (isOther) {
+                otherAidGroup.classList.remove('hidden');
+                otherAidInput.required = true;
+            } else {
+                otherAidGroup.classList.add('hidden');
+                otherAidInput.required = false;
+                otherAidInput.value = '';
+            }
+        }
 
-                <div class="form-group">
-                  <label for="year">Academic Year *</label>
-                  <select id="year" name="year" required>
-                    <option value="">Select year</option>
-                    <option value="freshman">Freshman</option>
-                    <option value="sophomore">Sophomore</option>
-                    <option value="junior">Junior</option>
-                    <option value="senior">Senior</option>
-                    <option value="graduate">Graduate</option>
-                  </select>
-                </div>
+        if (aidType) {
+            aidType.addEventListener('change', toggleAmount);
+            toggleAmount();
+        }
+    })();
+</script>
 
-                <div class="form-group">
-                  <label for="gpa">Current GPA</label>
-                  <input type="number" id="gpa" name="gpa" step="0.01" min="0" max="4" placeholder="e.g., 3.5">
-                </div>
-              </div>
-            </div>
-
-            <!-- Step 2: Aid Details -->
-            <div class="form-step" data-step="2">
-              <div class="step-header">
-                <h3 class="step-title">Aid Request Details</h3>
-                <p class="step-description">Tell us about the type of assistance you need</p>
-              </div>
-
-              <div class="form-group">
-                <label for="aidType">Type of Aid Requested *</label>
-                <select id="aidType" name="aidType" required>
-                  <option value="">Select aid type</option>
-                  <option value="emergency">Emergency Fund</option>
-                  <option value="tuition">Tuition Assistance</option>
-                  <option value="textbooks">Textbook Support</option>
-                  <option value="technology">Technology Grant</option>
-                  <option value="meal-plan">Meal Plan Subsidy</option>
-                  <option value="transportation">Transportation</option>
-                  <option value="medical">Medical Expenses</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="amountRequested">Amount Requested *</label>
-                <input type="number" id="amountRequested" name="amountRequested" min="1" required placeholder="Enter amount in USD">
-              </div>
-
-              <div class="form-group">
-                <label for="urgency">Urgency Level *</label>
-                <select id="urgency" name="urgency" required>
-                  <option value="">Select urgency</option>
-                  <option value="low">Low - Can wait 2+ weeks</option>
-                  <option value="medium">Medium - Needed within 1-2 weeks</option>
-                  <option value="high">High - Needed within 3-7 days</option>
-                  <option value="urgent">Urgent - Needed within 24-48 hours</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="reason">Reason for Request *</label>
-                <textarea id="reason" name="reason" rows="4" required placeholder="Please explain your situation and why you need financial assistance..."></textarea>
-              </div>
-
-              <div class="form-group">
-                <label for="previousAid">Previous Aid Received</label>
-                <textarea id="previousAid" name="previousAid" rows="3" placeholder="List any previous financial aid or assistance you have received (optional)"></textarea>
-              </div>
-            </div>
-
-            <!-- Step 3: Documents -->
-            <div class="form-step" data-step="3">
-              <div class="step-header">
-                <h3 class="step-title">Supporting Documents</h3>
-                <p class="step-description">Upload any relevant documents to support your application</p>
-              </div>
-
-              <div class="form-group">
-                <label>Required Documents</label>
-                <div class="document-upload">
-                  <div class="upload-item">
-                    <label for="financialStatement">Financial Statement/Bank Statement *</label>
-                    <div class="file-upload-area" onclick="document.getElementById('financialStatement').click()">
-                      <input type="file" id="financialStatement" name="financialStatement" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" required>
-                      <div class="upload-placeholder">
-                        <i class="fas fa-file-upload"></i>
-                        <p>Click to upload or drag and drop</p>
-                        <small>PDF, JPG, PNG (Max 5MB)</small>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="upload-item">
-                    <label for="enrollmentProof">Proof of Enrollment *</label>
-                    <div class="file-upload-area" onclick="document.getElementById('enrollmentProof').click()">
-                      <input type="file" id="enrollmentProof" name="enrollmentProof" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" required>
-                      <div class="upload-placeholder">
-                        <i class="fas fa-file-upload"></i>
-                        <p>Click to upload or drag and drop</p>
-                        <small>PDF, JPG, PNG (Max 5MB)</small>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="upload-item">
-                    <label for="additionalDocs">Additional Supporting Documents</label>
-                    <div class="file-upload-area" onclick="document.getElementById('additionalDocs').click()">
-                      <input type="file" id="additionalDocs" name="additionalDocs" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="display: none;" multiple>
-                      <div class="upload-placeholder">
-                        <i class="fas fa-file-upload"></i>
-                        <p>Click to upload or drag and drop</p>
-                        <small>PDF, JPG, PNG, DOC, DOCX (Max 5MB each)</small>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Step 4: Review -->
-            <div class="form-step" data-step="4">
-              <div class="step-header">
-                <h3 class="step-title">Review Your Application</h3>
-                <p class="step-description">Please review all information before submitting</p>
-              </div>
-
-              <div class="review-section">
-                <div class="review-item">
-                  <h4>Personal Information</h4>
-                  <div class="review-content" id="personalReview"></div>
-                </div>
-
-                <div class="review-item">
-                  <h4>Aid Request Details</h4>
-                  <div class="review-content" id="aidReview"></div>
-                </div>
-
-                <div class="review-item">
-                  <h4>Supporting Documents</h4>
-                  <div class="review-content" id="documentsReview"></div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="checkbox-label">
-                  <input type="checkbox" id="termsAgreement" name="termsAgreement" required>
-                  <span class="checkmark"></span>
-                  I agree to the <a href="#" target="_blank">Terms and Conditions</a> and confirm that all information provided is accurate *
-                </label>
-              </div>
-
-              <div class="form-group">
-                <label class="checkbox-label">
-                  <input type="checkbox" id="privacyAgreement" name="privacyAgreement" required>
-                  <span class="checkmark"></span>
-                  I consent to the processing of my personal data as described in the <a href="#" target="_blank">Privacy Policy</a> *
-                </label>
-              </div>
-            </div>
-
-            <!-- Form Navigation -->
-            <div class="form-navigation">
-              <button type="button" class="btn btn-outline" id="prevBtn" onclick="changeStep(-1)" style="display: none;">
-                <i class="fas fa-arrow-left"></i>
-                <span>Previous</span>
-              </button>
-              
-              <button type="button" class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
-                <span>Next</span>
-                <i class="fas fa-arrow-right"></i>
-              </button>
-              
-              <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;">
-                <i class="fas fa-paper-plane"></i>
-                <span>Submit Application</span>
-              </button>
-            </div>
-          </form>
-        </section>
-      </main>
-    </div>
-
-    <!-- JS -->
-    <script type="module" src="<?=ROOT?>/assets/js/main.js"></script>
-    <script src="<?=ROOT?>/assets/js/aid-request-form.js"></script>
-  </body>
+</body>
 </html>

@@ -1,0 +1,11 @@
+otp_mailer/forgot_password.php
+otp_mailer/reset_password.php
+otp_mailer/send_otp.php
+otp_mailer/verify_otp.php
+public/forgot.php
+public/reset_password.php
+public/send_otp.php
+public/verify_otp.php
+reset_password.php
+send_otp.php
+verify_otp.php

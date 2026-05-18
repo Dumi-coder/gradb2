@@ -12,7 +12,8 @@ class Logout extends Controller
         // Destroy the session
         session_destroy();
         
-        // Redirect directly to the clean superadmin login view
-        $this->view('auth/superadmin-login', []);
+        // Redirect to superadmin login page
+        header("Location: http://localhost/gradb2/superadmin/");
+        exit();
     }
 }

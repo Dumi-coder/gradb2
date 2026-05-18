@@ -27,6 +27,9 @@ class Profile extends Controller
             return;
         }
 
+        redirect('student/profile?action=edit');
+        return;
+
         $student = new Student();
         $profile = $student->getStudentProfile($_SESSION['student_id']);
         
@@ -34,6 +37,8 @@ class Profile extends Controller
             redirect('student/auth');
             
         }
+
+        $_SESSION['profile_picture'] = $profile->profile_photo_url ?? null;
 
         $data = [
             'title' => 'Student Profile - GradBridge',
@@ -61,6 +66,8 @@ class Profile extends Controller
             exit();
         }
 
+        $_SESSION['profile_picture'] = $profile->profile_photo_url ?? null;
+
         $data = [
             'title' => 'Edit Profile - GradBridge',
             'profile' => $profile,
@@ -79,14 +86,20 @@ class Profile extends Controller
     // Get form data
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
-    $faculty = trim($_POST['faculty'] ?? '');
     $academic_year = trim($_POST['academic_year'] ?? '');
-    $student_id = trim($_POST['student_id'] ?? '');
     $mobile = trim($_POST['mobile'] ?? '');
     $bio = trim($_POST['bio'] ?? '');
     $linkedin_url = trim($_POST['linkedin_url'] ?? '');
     $github_url = trim($_POST['github_url'] ?? '');
     $profile_picture = $_FILES['profile_picture'] ?? null;
+    $password_current = (string)($_POST['password_current'] ?? '');
+    $password_new = (string)($_POST['password_new'] ?? '');
+    $password_confirm = (string)($_POST['password_confirm'] ?? '');
+    $password_to_update = null;
+    
+    // Use current profile values for faculty and student_id (not editable)
+    $faculty = $current_profile->faculty;
+    $student_id = $current_profile->student_id;
 
     // Validation
     if (empty($name)) {
@@ -95,14 +108,8 @@ class Profile extends Controller
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = "Valid email is required";
     }
-    if (empty($faculty)) {
-        $errors['faculty'] = "Faculty is required";
-    }
     if (empty($academic_year) || !is_numeric($academic_year) || $academic_year < 1 || $academic_year > 5) {
         $errors['academic_year'] = "Academic year must be between 1 and 5";
-    }
-    if (empty($student_id)) {
-        $errors['student_id'] = "Student ID is required";
     }
     if (!empty($mobile) && !preg_match('/^[7][0-9]{8}$/', $mobile)) {
         $errors['mobile'] = "Mobile number must be 9 digits starting with 7";
@@ -111,25 +118,59 @@ class Profile extends Controller
         $errors['bio'] = "Bio must be less than 1000 characters";
     }
 
-    // Validate faculty exists
-    if (empty($errors['faculty'])) {
-        $faculty_model = new Faculty();
-        $faculty_record = $faculty_model->first(['faculty_name' => $faculty]);
-        if (!$faculty_record) {
-            $errors['faculty'] = "Invalid faculty selected";
+    $wants_password_change = ((string)($_POST['change_password'] ?? '0') === '1') || $password_current !== '' || $password_new !== '' || $password_confirm !== '';
+    if ($wants_password_change) {
+        if ($password_current === '') {
+            $errors['password_current'] = "Current password is required";
+        }
+
+        if ($password_new === '') {
+            $errors['password_new'] = "New password is required";
+        }
+
+        if ($password_confirm === '') {
+            $errors['password_confirm'] = "Please confirm your new password";
+        }
+
+        if ($password_new !== '' && $password_confirm !== '' && $password_new !== $password_confirm) {
+            $errors['password_confirm'] = "Passwords do not match";
+        }
+
+        if (!isset($errors['password_current'])) {
+            $user_for_password = new User();
+            $user_auth_row = $user_for_password->first(['user_id' => (int)$current_profile->user_id]);
+            $stored_password_hash = (string)($user_auth_row->password ?? '');
+
+            $is_current_password_valid = false;
+            if ($stored_password_hash !== '') {
+                $is_current_password_valid = password_verify($password_current, $stored_password_hash) || hash_equals($stored_password_hash, $password_current);
+            }
+
+            if (!$is_current_password_valid) {
+                $errors['password_current'] = "Current password is incorrect";
+            }
+        }
+
+        if (!isset($errors['password_new']) && $password_new !== '') {
+            $strength = validatePasswordStrength($password_new);
+            if (!$strength['valid']) {
+                $errors['password_new'] = implode(' ', $strength['errors']);
+            }
+        }
+
+        if (!isset($errors['password_current']) && !isset($errors['password_new']) && !isset($errors['password_confirm'])) {
+            $password_to_update = password_hash($password_new, PASSWORD_BCRYPT);
         }
     }
 
-    // Validate student_id and email uniqueness (exclude current student)
+    // Get faculty record from current profile
+    $faculty_model = new Faculty();
+    $faculty_record = $faculty_model->first(['faculty_id' => $current_profile->faculty_id]);
+
+    // Validate email uniqueness (exclude current student)
     $student = new Student();
     $user = new User();
 
-    if ($student_id !== $current_profile->student_id) {
-        $existing_student = $student->first(['student_id' => $student_id], ['student_id' => $current_profile->student_id]);
-        if ($existing_student) {
-            $errors['student_id'] = "This Student ID is already in use by another student";
-        }
-    }
     if ($email !== $current_profile->email) {
         $existing_user = $user->first(['email' => $email], ['user_id' => $current_profile->user_id]);
         if ($existing_user) {
@@ -211,6 +252,7 @@ class Profile extends Controller
             $user_data = [];
             if ($name !== $current_profile->name) $user_data['name'] = $name;
             if ($email !== $current_profile->email) $user_data['email'] = $email;
+            if ($password_to_update !== null) $user_data['password'] = $password_to_update;
             if (!empty($user_data) && !$user->logUpdate($current_profile->user_id, $user_data, 'user_id')) {
                 throw new Exception("Failed to update user data for user_id: {$current_profile->user_id}");
             }
@@ -245,6 +287,8 @@ class Profile extends Controller
                 $_SESSION['student_id'] = $student_id;
             }
 
+            $_SESSION['profile_picture'] = $profile_photo_url ?: null;
+
             $errors['success'] = "Profile updated successfully!";
         } catch (Exception $e) {
             error_log("Profile update error: " . $e->getMessage() . ", Data: " . print_r($_POST, true));
@@ -255,6 +299,9 @@ class Profile extends Controller
     // Refresh profile data for display
     $student = new Student();
     $updated_profile = $student->getStudentProfile($_SESSION['student_id']);
+    if ($updated_profile) {
+        $_SESSION['profile_picture'] = $updated_profile->profile_photo_url ?? null;
+    }
 
     // Show form with errors or success
     $data = [
@@ -290,6 +337,7 @@ class Profile extends Controller
                 // Update database to remove photo URL
                 $student_data = ['profile_photo_url' => null];
                 $student->update($_SESSION['student_id'], $student_data, 'student_id');
+                $_SESSION['profile_picture'] = null;
             }
         }
         
@@ -321,44 +369,13 @@ class Profile extends Controller
         $user_id = $_SESSION['user_id'];
         $student_id = $_SESSION['student_id'] ?? null;
 
-        // Delete uploaded resources files and DB rows
+        // Soft delete: Mark account as deleted instead of removing records
         try {
-            $resourceModel = new SharedResource();
-            $resources = $resourceModel->where(['user_id' => $user_id]);
-            if ($resources) {
-                foreach ($resources as $r) {
-                    if (!empty($r->file_path)) {
-                        $fileName = basename($r->file_path);
-                        $physicalPath = RESOURCE_UPLOAD_PATH . $fileName;
-                        if (file_exists($physicalPath)) {
-                            @unlink($physicalPath);
-                        }
-                    }
-                    // delete DB row
-                    $resourceModel->delete($r->resource_id, 'resource_id');
-                }
-            }
-
-            // Delete profile photo file if exists
             if ($student_id) {
                 $studentModel = new Student();
-                $profile = $studentModel->getStudentProfile($student_id);
-                if ($profile && !empty($profile->profile_photo_url)) {
-                    if (strpos($profile->profile_photo_url, '/assets/uploads/profiles/') !== false) {
-                        $old_file = '../public' . str_replace(ROOT, '', $profile->profile_photo_url);
-                        if (file_exists($old_file)) {
-                            @unlink($old_file);
-                        }
-                    }
-                }
-
-                // Delete student DB row
-                $studentModel->delete($student_id, 'student_id');
+                // Set is_deleted = 1 to mark account as deleted
+                $studentModel->update($student_id, ['is_deleted' => 1], 'student_id');
             }
-
-            // Delete user row
-            $userModel = new User();
-            $userModel->delete($user_id, 'user_id');
 
         } catch (Exception $e) {
             error_log('Account deletion error: ' . $e->getMessage());

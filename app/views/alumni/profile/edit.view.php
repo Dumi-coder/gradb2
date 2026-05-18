@@ -2,6 +2,8 @@
 $page_title = "Edit Profile";
 $page_subtitle = "Update your profile information";
 require '../app/views/partials/alumni_header.php'; 
+
+$hasPasswordErrors = isset($errors['password_current']) || isset($errors['password_new']) || isset($errors['password_confirm']);
 ?>
 
 <!-- Unified Profile Styles -->
@@ -13,11 +15,27 @@ require '../app/views/partials/alumni_header.php';
         
         <!-- Main Content -->
         <main class="main-content">
+            <?php if (isset($errors['success'])): ?>
+                <div class="mentorship-toast mentorship-toast-success" data-profile-toast data-toast-type="success" role="status" aria-live="polite">
+                    <i class="fas fa-check-circle"></i>
+                    <span><?= esc($errors['success']) ?></span>
+                    <button type="button" class="mentorship-toast-close" data-profile-toast-close aria-label="Close message">&times;</button>
+                </div>
+            <?php endif; ?>
+
+            <?php if (isset($errors['general'])): ?>
+                <div class="mentorship-toast mentorship-toast-error" data-profile-toast data-toast-type="error" role="alert" aria-live="assertive">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span><?= esc($errors['general']) ?></span>
+                    <button type="button" class="mentorship-toast-close" data-profile-toast-close aria-label="Close message">&times;</button>
+                </div>
+            <?php endif; ?>
+
             <!-- Edit Profile Form -->
             <section class="edit-form-section">
                 <h2 class="section-title">Edit Profile Information</h2>
                 
-                <form method="POST" enctype="multipart/form-data">
+                <form method="POST" enctype="multipart/form-data" data-password-modal="true">
                     <!-- Profile Picture Section -->
                     <div class="profile-picture-section">
                         <div class="profile-picture-preview">
@@ -28,15 +46,15 @@ require '../app/views/partials/alumni_header.php';
                             <?php endif; ?>
                         </div>
                         <div style="display: flex; gap: 10px; align-items: center;">
-                            <label for="profile_picture" class="profile-picture-upload">
+                            <label for="profile_picture" class="btn btn-primary" style="cursor: pointer;">
                                 <i class="fas fa-camera"></i>
-                                Change Photo
-                                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)">
+                                <span>Change Photo</span>
+                                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)" style="display: none;">
                             </label>
                             <?php if (!empty($profile->profile_photo_url)): ?>
-                                <button type="button" onclick="deleteProfilePicture()" class="btn btn-danger btn-sm">
+                                <button type="button" onclick="deleteProfilePicture()" class="btn btn-danger">
                                     <i class="fas fa-trash"></i>
-                                    Delete Photo
+                                    <span>Delete Photo</span>
                                 </button>
                             <?php endif; ?>
                         </div>
@@ -124,13 +142,60 @@ require '../app/views/partials/alumni_header.php';
                             <?php endif; ?>
                         </div>
 
-                        <!-- Bio -->
+                        <!-- Mentor Description / Bio -->
                         <div class="form-group full-width">
-                            <label for="bio" class="form-label">Bio</label>
-                            <textarea id="bio" name="bio" class="form-textarea" placeholder="Tell us about yourself..."><?= esc($profile->bio ?? '') ?></textarea>
+                            <label for="bio" class="form-label">Mentor Description / Bio</label>
+                            <textarea id="bio" name="bio" class="form-textarea" placeholder="Write a short description students will see on your mentor card..."><?= esc($profile->bio ?? '') ?></textarea>
+                            <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">This text appears in the student mentor list as your public mentor description.</small>
                             <?php if (isset($errors['bio'])): ?>
                                 <div class="error-message"><?= esc($errors['bio']) ?></div>
                             <?php endif; ?>
+                        </div>
+
+                        <!-- Mentorship Preferences -->
+                        <div class="form-group full-width">
+                            <label class="form-label">Mentorship Preferences</label>
+                            <div style="padding: 14px; border: 1px solid #dbe2ea; border-radius: 8px; background: #f9fbff;">
+                                <label style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #1f2937; cursor: pointer;">
+                                    <input
+                                        type="checkbox"
+                                        id="is_verified_mentor"
+                                        name="is_verified_mentor"
+                                        value="1"
+                                        <?= ((int)($profile->is_verified_mentor ?? 0) === 1) ? 'checked' : '' ?>
+                                    >
+                                    Be visible as a mentor to students
+                                </label>
+
+                                <div id="mentorAvailabilityWrap" style="margin-top: 12px; <?= ((int)($profile->is_verified_mentor ?? 0) === 1) ? '' : 'display:none;' ?>">
+                                    <label for="mentorship_availability_status" class="form-label" style="margin-bottom: 6px; display: block;">Mentor Availability</label>
+                                    <select id="mentorship_availability_status" name="mentorship_availability_status" class="form-input">
+                                        <?php $availability = strtolower(trim((string)($profile->mentorship_availability_status ?? 'available'))); ?>
+                                        <option value="available" <?= ($availability !== 'unavailable') ? 'selected' : '' ?>>Available</option>
+                                        <option value="unavailable" <?= ($availability === 'unavailable') ? 'selected' : '' ?>>Unavailable</option>
+                                    </select>
+                                    <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">If unavailable, students will not see you in the mentor list.</small>
+
+                                    <?php $needsMentorAgreement = ((int)($profile->is_verified_mentor ?? 0) !== 1); ?>
+                                    <div id="mentorTermsWrap" style="margin-top: 12px; <?= ((int)($profile->is_verified_mentor ?? 0) === 1) ? 'display:none;' : '' ?>">
+                                        <div style="padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: #ffffff;">
+                                            <p style="margin: 0 0 8px; font-size: 13px; color: #0f172a; font-weight: 600;">Mentor Terms & Responsibilities</p>
+                                            <ul style="margin: 0 0 8px 18px; padding: 0; color: #334155; font-size: 12px; line-height: 1.45;">
+                                                <li>Provide respectful, professional, and constructive guidance to students.</li>
+                                                <li>Maintain confidentiality and avoid sharing personal data outside mentorship needs.</li>
+                                                <li>Respond within a reasonable time and end mentorship when guidance is complete.</li>
+                                            </ul>
+                                            <label style="display: flex; align-items: flex-start; gap: 8px; color: #1f2937; font-size: 13px;">
+                                                <input type="checkbox" id="mentor_terms_agree" name="mentor_terms_agree" value="1" <?= !$needsMentorAgreement ? 'checked' : '' ?> <?= !$needsMentorAgreement ? 'disabled' : '' ?>>
+                                                <span>I agree to these mentor terms and understand I may be shown to students as a mentor.</span>
+                                            </label>
+                                        </div>
+                                        <?php if (isset($errors['mentor_terms_agree'])): ?>
+                                            <div class="error-message" style="margin-top: 8px;"><?= esc($errors['mentor_terms_agree']) ?></div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -173,24 +238,66 @@ require '../app/views/partials/alumni_header.php';
                     </div>
 
                     <!-- Success/Error Messages -->
-                    <?php if (isset($errors['success'])): ?>
-                        <div class="success-message"><?= esc($errors['success']) ?></div>
-                    <?php endif; ?>
-                    
-                    <?php if (isset($errors['general'])): ?>
-                        <div class="error-message"><?= esc($errors['general']) ?></div>
-                    <?php endif; ?>
+                    <input type="hidden" name="change_password" value="0">
 
                     <!-- Form Actions -->
-                    <div class="form-actions">
-                        <a href="<?= ROOT ?>/alumni/profile" class="btn btn-outline">
-                            <i class="fas fa-arrow-left"></i>
-                            Cancel
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i>
-                            Save Changes
-                        </button>
+                    <div class="form-actions" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                            <button type="button" onclick="confirmAccountDelete()" class="btn btn-danger">
+                                <i class="fas fa-user-times"></i>
+                                Delete Account
+                            </button>
+                            <button type="button" class="btn btn-outline js-open-password-modal" aria-expanded="false">
+                                <i class="fas fa-key"></i>
+                                Change Password
+                            </button>
+                        </div>
+                        <div style="display:flex;gap:10px;margin-left:auto;">
+                            <a href="<?= ROOT ?>/alumni/profile" class="btn btn-outline">
+                                <i class="fas fa-arrow-left"></i>
+                                Back
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="change-password-modal" aria-hidden="true" data-has-password-errors="<?= $hasPasswordErrors ? '1' : '0' ?>">
+                        <div class="change-password-modal-content" role="dialog" aria-modal="true" aria-labelledby="alumniChangePasswordTitle">
+                            <div class="change-password-modal-header">
+                                <h3 class="change-password-modal-title" id="alumniChangePasswordTitle">Change Password</h3>
+                                <button type="button" class="btn btn-outline js-close-password-modal">Close</button>
+                            </div>
+                            <div class="change-password-modal-body">
+                                <div class="form-group">
+                                    <label for="alumni_password_current" class="form-label">Current Password</label>
+                                    <input type="password" id="alumni_password_current" name="password_current" class="form-input" autocomplete="current-password">
+                                    <?php if (isset($errors['password_current'])): ?>
+                                        <span class="error-message"><?= esc($errors['password_current']) ?></span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="form-group">
+                                    <label for="alumni_password_new" class="form-label">New Password</label>
+                                    <input type="password" id="alumni_password_new" name="password_new" class="form-input" autocomplete="new-password">
+                                    <?php if (isset($errors['password_new'])): ?>
+                                        <span class="error-message"><?= esc($errors['password_new']) ?></span>
+                                    <?php endif; ?>
+                                    <div class="js-password-strength-container" id="alumni-password-strength-widget"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="alumni_password_confirm" class="form-label">Confirm New Password</label>
+                                    <input type="password" id="alumni_password_confirm" name="password_confirm" class="form-input" autocomplete="new-password">
+                                    <?php if (isset($errors['password_confirm'])): ?>
+                                        <span class="error-message"><?= esc($errors['password_confirm']) ?></span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="change-password-modal-footer">
+                                    <button type="button" class="btn btn-outline js-done-password-modal">Done</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </section>
@@ -207,18 +314,34 @@ require '../app/views/partials/alumni_header.php';
             <h3 style="margin: 0 0 10px 0; color: #2c3e50; font-size: 24px;">Delete Profile Picture?</h3>
             <p style="color: #7f8c8d; margin: 0 0 30px 0;">Are you sure you want to delete your profile picture? This action cannot be undone.</p>
             <div style="display: flex; gap: 10px; justify-content: center;">
-                <button onclick="closeDeleteModal()" style="padding: 12px 30px; background: #95a5a6; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: 500;">
-                    <i class="fas fa-times"></i> Cancel
+                <button onclick="closeDeleteModal()" class="btn btn-outline">
+                    <i class="fas fa-times"></i>
+                    <span>Cancel</span>
                 </button>
-                <button onclick="confirmDeletePhoto()" style="padding: 12px 30px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: 500;">
-                    <i class="fas fa-trash"></i> Delete
+                <button onclick="confirmDeletePhoto()" class="btn btn-danger">
+                    <i class="fas fa-trash"></i>
+                    <span>Delete</span>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Account Confirmation Modal -->
+    <div id="deleteAccountModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:9999;">
+        <div style="background:#fff; padding:24px; border-radius:8px; max-width:480px; width:90%; text-align:center;">
+            <h3 style="margin-top:0; color:#c0392b;">Delete Account</h3>
+            <p>Are you sure you want to delete your account? This will deactivate your profile and you will no longer be able to log in. Your data will be preserved in the system.</p>
+            <div style="display:flex; gap:10px; justify-content:center; margin-top:18px;">
+                <button type="button" onclick="closeAccountModal()" style="padding:10px 18px; background:#95a5a6; color:#fff; border:none; border-radius:6px;">Cancel</button>
+                <button type="button" onclick="submitDeleteAccount()" style="padding:10px 18px; background:#e74c3c; color:#fff; border:none; border-radius:6px;">Delete Account</button>
             </div>
         </div>
     </div>
 
     <!-- Unified Profile JavaScript -->
     <script src="<?=ROOT?>/assets/js/profile.js"></script>
+    <script src="<?=ROOT?>/assets/js/password-validation.js"></script>
+    <script src="<?=ROOT?>/assets/js/profile-password-modal.js"></script>
     <script>
         function deleteProfilePicture() {
             // Show the custom modal
@@ -248,10 +371,32 @@ require '../app/views/partials/alumni_header.php';
             form.submit();
         }
 
+        function confirmAccountDelete() {
+            document.getElementById('deleteAccountModal').style.display = 'flex';
+        }
+
+        function closeAccountModal() {
+            document.getElementById('deleteAccountModal').style.display = 'none';
+        }
+
+        function submitDeleteAccount() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?=ROOT?>/alumni/profile?action=delete_account';
+            document.body.appendChild(form);
+            form.submit();
+        }
+
         // Close modal when clicking outside
         document.getElementById('deletePhotoModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeDeleteModal();
+            }
+        });
+
+        document.getElementById('deleteAccountModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAccountModal();
             }
         });
     </script>
@@ -296,5 +441,54 @@ require '../app/views/partials/alumni_header.php';
             });
         }
     }
+})();
+
+(function () {
+    const toasts = Array.from(document.querySelectorAll('[data-profile-toast]'));
+    if (!toasts.length) return;
+
+    toasts.forEach((toast) => {
+        const closeBtn = toast.querySelector('[data-profile-toast-close]');
+        const type = toast.getAttribute('data-toast-type') || 'success';
+        const timeout = type === 'error' ? 4200 : 3200;
+
+        const dismissToast = function () {
+            if (toast.classList.contains('is-hiding')) return;
+            toast.classList.add('is-hiding');
+            setTimeout(() => {
+                if (toast && toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 260);
+        };
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', dismissToast);
+        }
+
+        setTimeout(dismissToast, timeout);
+    });
+})();
+
+(function(){
+    const mentorCheckbox = document.getElementById('is_verified_mentor');
+    const availabilityWrap = document.getElementById('mentorAvailabilityWrap');
+    const termsWrap = document.getElementById('mentorTermsWrap');
+    const termsCheck = document.getElementById('mentor_terms_agree');
+
+    if (!mentorCheckbox || !availabilityWrap) return;
+
+    function syncMentorFields() {
+        availabilityWrap.style.display = mentorCheckbox.checked ? '' : 'none';
+        if (termsWrap) {
+            termsWrap.style.display = mentorCheckbox.checked ? '' : 'none';
+        }
+        if (termsCheck && !mentorCheckbox.checked) {
+            termsCheck.checked = false;
+        }
+    }
+
+    mentorCheckbox.addEventListener('change', syncMentorFields);
+    syncMentorFields();
 })();
 </script>

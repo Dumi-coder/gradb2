@@ -24,19 +24,10 @@ class Profile extends Controller
             return;
         }
 
-        $alumni = new Alumni();
-        $profile = $alumni->getalumniProfile($_SESSION['alumni_id']);
-        
-        if (!$profile) {
-            redirect('alumni/auth');
-        }
-
-        $data = [
-            'title' => 'Alumni Profile - GradBridge',
-            'profile' => $profile
-        ];
-
-        $this->view('alumni/profile/show', $data);
+        // Alumni profile show page has been retired.
+        // Keep a stable entry route by redirecting to edit profile.
+        redirect('alumni/profile?action=edit');
+        return;
     }
 
     public function edit()
@@ -55,6 +46,8 @@ class Profile extends Controller
             redirect('alumni/auth');
             exit();
         }
+
+        $_SESSION['profile_picture'] = $profile->profile_photo_url ?? null;
 
         $data = [
             'title' => 'Edit Profile - GradBridge',
@@ -86,7 +79,18 @@ class Profile extends Controller
         $github_url = trim($_POST['github_url'] ?? '');
         $twitter_url = trim($_POST['twitter_url'] ?? '');
         $personal_website = trim($_POST['personal_website'] ?? '');
+        $is_verified_mentor = isset($_POST['is_verified_mentor']) ? 1 : 0;
+        $mentor_terms_agree = isset($_POST['mentor_terms_agree']) ? 1 : 0;
+        $mentorship_availability_status = strtolower(trim($_POST['mentorship_availability_status'] ?? 'available'));
         $profile_picture = $_FILES['profile_picture'] ?? null;
+        $password_current = (string)($_POST['password_current'] ?? '');
+        $password_new = (string)($_POST['password_new'] ?? '');
+        $password_confirm = (string)($_POST['password_confirm'] ?? '');
+        $password_to_update = null;
+
+        if ($mentorship_availability_status !== 'available' && $mentorship_availability_status !== 'unavailable') {
+            $mentorship_availability_status = 'available';
+        }
 
         // Validation
         if (empty($name)) {
@@ -106,6 +110,56 @@ class Profile extends Controller
         }
         if (strlen($bio) > 1000) {
             $errors['bio'] = "Bio must be less than 1000 characters";
+        }
+
+        $wants_password_change = ((string)($_POST['change_password'] ?? '0') === '1') || $password_current !== '' || $password_new !== '' || $password_confirm !== '';
+        if ($wants_password_change) {
+            if ($password_current === '') {
+                $errors['password_current'] = "Current password is required";
+            }
+
+            if ($password_new === '') {
+                $errors['password_new'] = "New password is required";
+            }
+
+            if ($password_confirm === '') {
+                $errors['password_confirm'] = "Please confirm your new password";
+            }
+
+            if ($password_new !== '' && $password_confirm !== '' && $password_new !== $password_confirm) {
+                $errors['password_confirm'] = "Passwords do not match";
+            }
+
+            if (!isset($errors['password_current'])) {
+                $user_for_password = new User();
+                $user_auth_row = $user_for_password->first(['user_id' => (int)$current_profile->user_id]);
+                $stored_password_hash = (string)($user_auth_row->password ?? '');
+
+                $is_current_password_valid = false;
+                if ($stored_password_hash !== '') {
+                    $is_current_password_valid = password_verify($password_current, $stored_password_hash) || hash_equals($stored_password_hash, $password_current);
+                }
+
+                if (!$is_current_password_valid) {
+                    $errors['password_current'] = "Current password is incorrect";
+                }
+            }
+
+            if (!isset($errors['password_new']) && $password_new !== '') {
+                $strength = validatePasswordStrength($password_new);
+                if (!$strength['valid']) {
+                    $errors['password_new'] = implode(' ', $strength['errors']);
+                }
+            }
+
+            if (!isset($errors['password_current']) && !isset($errors['password_new']) && !isset($errors['password_confirm'])) {
+                $password_to_update = password_hash($password_new, PASSWORD_BCRYPT);
+            }
+        }
+
+        $currentMentorFlag = (int)($current_profile->is_verified_mentor ?? 0);
+        if ($currentMentorFlag !== 1 && $is_verified_mentor === 1 && $mentor_terms_agree !== 1) {
+            $errors['mentor_terms_agree'] = "You must agree to mentor terms and conditions before enabling mentor visibility.";
         }
 
         // Validate profile picture
@@ -134,6 +188,7 @@ class Profile extends Controller
                 $user_data = [];
                 if ($name !== $current_profile->name) $user_data['name'] = $name;
                 if ($email !== $current_profile->email) $user_data['email'] = $email;
+                if ($password_to_update !== null) $user_data['password'] = $password_to_update;
                 if (!empty($user_data) && !$user->logUpdate($current_profile->user_id, $user_data, 'user_id')) {
                     throw new Exception("Failed to update user data for user_id: {$current_profile->user_id}");
                 }
@@ -154,19 +209,34 @@ class Profile extends Controller
                 if ($twitter_url !== ($current_profile->twitter_url ?? '')) $alumni_data['twitter_url'] = $twitter_url ?: null;
                 if ($personal_website !== ($current_profile->personal_website ?? '')) $alumni_data['personal_website'] = $personal_website ?: null;
 
+                $currentMentorFlag = (int)($current_profile->is_verified_mentor ?? 0);
+                $currentAvailability = strtolower(trim((string)($current_profile->mentorship_availability_status ?? 'available')));
+                $newAvailability = $is_verified_mentor === 1 ? $mentorship_availability_status : 'unavailable';
+
+                if ($is_verified_mentor !== $currentMentorFlag) {
+                    $alumni_data['is_verified_mentor'] = $is_verified_mentor;
+                }
+                if ($newAvailability !== $currentAvailability) {
+                    $alumni_data['mentorship_availability_status'] = $newAvailability;
+                }
+
                 $profile_photo_url = $current_profile->profile_photo_url; // Keep current if no new upload
 
                 // Handle profile picture upload
                 if ($profile_picture && $profile_picture['error'] == UPLOAD_ERR_OK) {
-                    // Create upload directory in public folder
-                    $upload_dir = '../public/assets/uploads/profiles/';
-                    if (!is_dir($upload_dir)) {
-                        mkdir($upload_dir, 0775, true);
-                    }
+                        // Create upload directory in public folder (use absolute path from project root)
+                        $projectRoot = dirname(__DIR__, 3);
+                        $upload_dir = $projectRoot . '/public/assets/uploads/profiles/';
+                        if (!is_dir($upload_dir)) {
+                            if (!mkdir($upload_dir, 0775, true)) {
+                                $errors['profile_picture'] = "Failed to create upload directory";
+                            }
+                        }
 
-                    // Generate unique filename
-                    $file_extension = pathinfo($profile_picture['name'], PATHINFO_EXTENSION);
-                    $file_name = 'profile_' . $_SESSION['alumni_id'] . '_' . time() . '.' . $file_extension;
+                    // Generate unique filename (sanitize alumni id to avoid path separators / special chars)
+                    $file_extension = strtolower(pathinfo($profile_picture['name'], PATHINFO_EXTENSION));
+                    $safe_alumni_id = isset($_SESSION['alumni_id']) ? preg_replace('/[^A-Za-z0-9_\-]/', '_', $_SESSION['alumni_id']) : 'unknown';
+                    $file_name = 'profile_' . $safe_alumni_id . '_' . time() . '.' . $file_extension;
                     $target_file = $upload_dir . $file_name;
 
                     if (move_uploaded_file($profile_picture['tmp_name'], $target_file)) {
@@ -175,12 +245,14 @@ class Profile extends Controller
                         // Delete old profile picture if it exists
                         if ($current_profile->profile_photo_url && 
                             strpos($current_profile->profile_photo_url, '/assets/uploads/profiles/') !== false) {
-                            $old_file = '../public' . str_replace(ROOT, '', $current_profile->profile_photo_url);
+                            // Build absolute path to the old file safely
+                            $old_file = $upload_dir . basename($current_profile->profile_photo_url);
                             if (file_exists($old_file)) {
                                 unlink($old_file);
                             }
                         }
                     } else {
+                        error_log("move_uploaded_file failed for target: $target_file, tmp: " . ($profile_picture['tmp_name'] ?? '')); 
                         $errors['profile_picture'] = "Failed to upload profile picture";
                     }
                 }
@@ -198,6 +270,12 @@ class Profile extends Controller
 
                 // Update session
                 $_SESSION['name'] = $name;
+                $_SESSION['profile_picture'] = $profile_photo_url ?: null;
+
+                $freshProfile = $alumni->getalumniProfile($_SESSION['alumni_id']);
+                if ($freshProfile) {
+                    $_SESSION['profile_picture'] = $freshProfile->profile_photo_url ?? null;
+                }
 
                 $errors['success'] = "Profile updated successfully!";
             } catch (Exception $e) {
@@ -228,7 +306,8 @@ class Profile extends Controller
             if ($profile && !empty($profile->profile_photo_url)) {
                 // Delete the file from server
                 if (strpos($profile->profile_photo_url, '/assets/uploads/profiles/') !== false) {
-                    $file_path = '../public' . str_replace(ROOT, '', $profile->profile_photo_url);
+                    $projectRoot = dirname(__DIR__, 3);
+                    $file_path = $projectRoot . '/public/assets/uploads/profiles/' . basename($profile->profile_photo_url);
                     if (file_exists($file_path)) {
                         unlink($file_path);
                     }
@@ -237,6 +316,7 @@ class Profile extends Controller
                 // Update database to remove photo URL
                 $alumni_data = ['profile_photo_url' => null];
                 $alumni->update($_SESSION['alumni_id'], $alumni_data, 'alumni_id');
+                $_SESSION['profile_picture'] = null;
             }
         }
         
@@ -268,44 +348,13 @@ class Profile extends Controller
         $user_id = $_SESSION['user_id'];
         $alumni_id = $_SESSION['alumni_id'] ?? null;
 
-        // Delete uploaded resources files and DB rows
+        // Soft delete: Mark account as deleted instead of removing records
         try {
-            $resourceModel = new SharedResource();
-            $resources = $resourceModel->where(['user_id' => $user_id]);
-            if ($resources) {
-                foreach ($resources as $r) {
-                    if (!empty($r->file_path)) {
-                        $fileName = basename($r->file_path);
-                        $physicalPath = RESOURCE_UPLOAD_PATH . $fileName;
-                        if (file_exists($physicalPath)) {
-                            @unlink($physicalPath);
-                        }
-                    }
-                    // delete DB row
-                    $resourceModel->delete($r->resource_id, 'resource_id');
-                }
-            }
-
-            // Delete profile photo file if exists
             if ($alumni_id) {
                 $alumniModel = new Alumni();
-                $profile = $alumniModel->getalumniProfile($alumni_id);
-                if ($profile && !empty($profile->profile_photo_url)) {
-                    if (strpos($profile->profile_photo_url, '/assets/uploads/profiles/') !== false) {
-                        $old_file = '../public' . str_replace(ROOT, '', $profile->profile_photo_url);
-                        if (file_exists($old_file)) {
-                            @unlink($old_file);
-                        }
-                    }
-                }
-
-                // Delete alumni DB row
-                $alumniModel->delete($alumni_id, 'alumni_id');
+                // Set is_deleted = 1 to mark account as deleted
+                $alumniModel->update($alumni_id, ['is_deleted' => 1], 'alumni_id');
             }
-
-            // Delete user row
-            $userModel = new User();
-            $userModel->delete($user_id, 'user_id');
 
         } catch (Exception $e) {
             error_log('Account deletion error: ' . $e->getMessage());

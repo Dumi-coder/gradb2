@@ -1,0 +1,12 @@
+basename: reset_password.php | count: 3
+  - otp_mailer/reset_password.php
+  - public/reset_password.php
+  - reset_password.php
+basename: send_otp.php | count: 3
+  - otp_mailer/send_otp.php
+  - public/send_otp.php
+  - send_otp.php
+basename: verify_otp.php | count: 3
+  - otp_mailer/verify_otp.php
+  - public/verify_otp.php
+  - verify_otp.php

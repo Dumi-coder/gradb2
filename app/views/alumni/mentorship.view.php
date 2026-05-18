@@ -1,223 +1,333 @@
-<?php 
+﻿<?php 
 $page_title = "Mentorship";
 $page_subtitle = "Connect with students seeking guidance";
+$page_stylesheets = [ROOT . '/assets/css/mentorship.css?v=' . time()];
 require '../app/views/partials/alumni_header.php'; 
 ?>
 
-<!-- Page-specific CSS -->
-<link rel="stylesheet" href="<?=ROOT?>/assets/css/mentorship.css">
-
-<body class="alumni-dashboard">
 <div class="dashboard-container">
-     <!-- sidebar -->
-    <?php require '../app/views/partials/alumni_sidebar.php'; ?>
+  <?php require '../app/views/partials/alumni_sidebar.php'; ?>
 
-      <!-- Main Content Area -->
-      <main class="main-content">
-        <!-- Mentorship Requests Section -->
-        <section class="dashboard-section mentorship-requests-section">
-          <div class="section-header">
-            <h2 class="section-title">Student Mentorship Requests</h2>
-          </div>
-          
-          <div class="mentorship-requests-container">
-            <?php 
-            // Demo hardcoded mentorship request data
-            $demoMentorshipRequests = [
-              [
-                'id' => 1,
-                'student_name' => 'Alex Thompson',
-                'student_major' => 'Computer Science',
-                'student_year' => '3rd Year',
-                'student_gpa' => '3.7',
-                'student_email' => 'alex.thompson@university.edu',
-                'student_interests' => 'Web Development, AI/ML, Cloud Computing',
-                'guidance_type' => 'Career Guidance & Technical Skills',
-                'description' => 'Looking for guidance on transitioning from academic projects to real-world software development. Interested in learning about industry best practices and building a strong portfolio.',
-                'status' => 'pending'
-              ]
-            ];
-            
-            foreach ($demoMentorshipRequests as $request): ?>
-            <div class="mentorship-request-card">
-              <div class="request-header">
-                <div class="request-info">
-                  <h3 class="student-name"><?= esc($request['student_name']) ?></h3>
-                  <p class="guidance-type"><?= esc($request['guidance_type']) ?></p>
-                </div>
-                <?php if ($request['status'] === 'urgent'): ?>
-                <span class="status-badge status-urgent">URGENT</span>
-                <?php elseif ($request['status'] === 'pending'): ?>
-                <span class="status-badge status-pending">PENDING</span>
-                <?php endif; ?>
-              </div>
-              
-              <div class="request-description">
-                <p><?= esc($request['description']) ?></p>
-              </div>
-              
-              <div class="request-actions">
-                <button class="btn btn-secondary btn-sm view-student-profile-btn"
-                        data-student-name="<?= esc($request['student_name']) ?>"
-                        data-student-major="<?= esc($request['student_major']) ?>"
-                        data-student-year="<?= esc($request['student_year']) ?>"
-                        data-student-gpa="<?= esc($request['student_gpa']) ?>"
-                        data-student-email="<?= esc($request['student_email']) ?>"
-                        data-student-interests="<?= esc($request['student_interests']) ?>">
-                  <i class="fas fa-user"></i> View Student Profile
-                </button>
-                <button class="btn btn-success btn-sm accept-btn">Accept</button>
-                <button class="btn btn-danger btn-sm decline-btn">Decline</button>
-              </div>
-            </div>
-            <?php endforeach; ?>
-            
-            <div class="view-all-link">
-              <a href="#" class="view-all-link-text">View All Student Mentorship Requests</a>
-            </div>
-          </div>
-        </section>
-
-        <!-- Active Mentorships Section -->
-        <section class="dashboard-section active-mentorships-section">
-          <div class="section-header">
-            <h2 class="section-title">Active Mentorships</h2>
-          </div>
-          
-          <div class="active-mentorships-container">
-            <?php foreach ($mentorshipData['active'] as $mentorship): ?>
-            <div class="mentorship-card">
-              <div class="mentorship-header">
-                <div class="mentorship-info">
-                  <h3 class="student-name"><?= esc($mentorship['student_name']) ?></h3>
-                  <p class="mentorship-type"><?= esc($mentorship['mentorship_type']) ?></p>
-                </div>
-                <span class="status-badge status-active">ACTIVE</span>
-              </div>
-              
-              <div class="mentorship-description">
-                <p><?= esc($mentorship['description']) ?></p>
-              </div>
-              
-              <div class="mentorship-actions">
-                <button class="btn btn-primary btn-sm details-btn">More Details</button>
-                <button class="btn btn-outline btn-sm complete-btn">Mark as Completed</button>
-              </div>
-            </div>
-            <?php endforeach; ?>
-          </div>
-        </section>
-
-        <!-- Completed Mentorships Section -->
-        <section class="dashboard-section completed-mentorships-section">
-          <div class="section-header">
-            <h2 class="section-title">Completed Mentorships</h2>
-          </div>
-          
-          <div class="completed-mentorships-container">
-            <?php foreach ($mentorshipData['completed'] as $mentorship): ?>
-            <div class="completed-mentorship-card">
-              <div class="completed-header">
-                <div class="completed-info">
-                  <h3 class="student-name"><?= esc($mentorship['student_name']) ?></h3>
-                  <p class="mentorship-topic"><?= esc($mentorship['topic']) ?></p>
-                </div>
-                <span class="status-badge status-completed">COMPLETED</span>
-              </div>
-              
-              <div class="completed-description">
-                <p><?= esc($mentorship['description']) ?></p>
-              </div>
-              
-              <div class="completed-footer">
-                <p class="completion-date">Completed: <?= esc($mentorship['completed_date']) ?></p>
-                <button class="btn btn-primary btn-sm details-btn">More Details</button>
-              </div>
-            </div>
-            <?php endforeach; ?>
-            
-            <div class="view-all-link">
-              <a href="#" class="view-all-link-text">View All Completed Mentorships</a>
-            </div>
-          </div>
-        </section>
-      </main>
-    </div>
-
-    <!-- Student Profile Modal -->
-    <div id="studentProfileModal" class="profile-modal" style="display: none;">
-      <div class="profile-modal-content">
-        <div class="profile-modal-header">
-          <h3><i class="fas fa-user-graduate"></i> Student Profile</h3>
-          <button class="profile-modal-close">&times;</button>
-        </div>
-        
-        <div class="profile-modal-body">
-          <div class="profile-avatar">
-            <div class="avatar-circle">
-              <i class="fas fa-user-graduate"></i>
-            </div>
-          </div>
-          
-          <div class="profile-info-section">
-            <h2 class="profile-name" id="studentProfileName"></h2>
-            <p class="profile-subtitle" id="studentProfileMajor"></p>
-          </div>
-
-          <div class="profile-details-grid">
-            <div class="profile-detail-item">
-              <div class="detail-icon">
-                <i class="fas fa-graduation-cap"></i>
-              </div>
-              <div class="detail-content">
-                <span class="detail-label">Academic Year</span>
-                <span class="detail-value" id="studentProfileYear"></span>
-              </div>
-            </div>
-
-            <div class="profile-detail-item">
-              <div class="detail-icon">
-                <i class="fas fa-chart-line"></i>
-              </div>
-              <div class="detail-content">
-                <span class="detail-label">GPA</span>
-                <span class="detail-value" id="studentProfileGPA"></span>
-              </div>
-            </div>
-
-            <div class="profile-detail-item">
-              <div class="detail-icon">
-                <i class="fas fa-envelope"></i>
-              </div>
-              <div class="detail-content">
-                <span class="detail-label">Email</span>
-                <span class="detail-value" id="studentProfileEmail"></span>
-              </div>
-            </div>
-
-            <div class="profile-detail-item full-width">
-              <div class="detail-icon">
-                <i class="fas fa-heart"></i>
-              </div>
-              <div class="detail-content">
-                <span class="detail-label">Interests & Goals</span>
-                <span class="detail-value" id="studentProfileInterests"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="profile-modal-footer">
-          <button class="btn btn-outline close-profile-btn">Close</button>
-          <button class="btn btn-primary">
-            <i class="fas fa-paper-plane"></i> Send Message
-          </button>
-        </div>
+  <main class="main-content">
+    <?php if (isset($_SESSION['success'])): ?>
+      <div class="mentorship-toast mentorship-toast-success" role="status" aria-live="polite">
+        <i class="fas fa-check-circle"></i>
+        <span><?= esc($_SESSION['success']) ?></span>
+        <button type="button" class="mentorship-toast-close" aria-label="Close message">&times;</button>
       </div>
+      <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['error'])): ?>
+      <div class="mentorship-toast mentorship-toast-error" role="alert" aria-live="assertive">
+        <i class="fas fa-exclamation-circle"></i>
+        <span><?= esc($_SESSION['error']) ?></span>
+        <button type="button" class="mentorship-toast-close" aria-label="Close message">&times;</button>
+      </div>
+      <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
+
+    <?php
+      $mentorEnabled = (int)($profile->is_verified_mentor ?? 0) === 1;
+      $mentorAvailability = strtolower(trim((string)($profile->mentorship_availability_status ?? 'available')));
+      $mentorHidden = (!$mentorEnabled || $mentorAvailability === 'unavailable');
+    ?>
+
+    <section class="dashboard-section mentor-reputation-section">
+      <div class="reputation-card">
+        <h2 class="section-title">Your Mentor Feedback</h2>
+        <p class="mentor-rating">&#9733; <?= number_format((float)($mentorshipData['reputation']['avg_rating'] ?? 0), 1) ?> Feedback Score</p>
+        <p class="mentor-sessions">Completed Sessions: <?= (int)($mentorshipData['reputation']['total_completed_sessions'] ?? 0) ?></p>
+      </div>
+    </section>
+
+    <?php if ($mentorHidden): ?>
+      <section class="dashboard-section mentor-onboarding-section">
+        <div class="mentor-onboarding-card">
+          <h3 class="mentor-onboarding-title">
+            <?= !$mentorEnabled ? 'Become a Mentor' : 'Mentorship Is Currently Paused' ?>
+          </h3>
+          <p class="mentor-onboarding-copy">
+            <?= !$mentorEnabled
+              ? 'You are not visible in the student mentor list yet. Turn on mentor mode and help students with real guidance from your experience.'
+              : 'Your profile is currently hidden from students because availability is set to unavailable. Switch availability to start receiving mentorship requests again.' ?>
+          </p>
+          <a href="<?= ROOT ?>/alumni/profile?action=edit" class="btn btn-primary btn-sm">
+            <i class="fas fa-user-edit"></i>
+            Go to Edit Profile
+          </a>
+        </div>
+      </section>
+    <?php endif; ?>
+
+    <section class="dashboard-section mentorship-requests-section">
+      <h2 class="section-title">Pending Requests</h2>
+
+      <?php if (!empty($mentorshipData['requests'])): ?>
+        <div class="requests-grid">
+          <?php foreach ($mentorshipData['requests'] as $request): ?>
+            <article class="request-card">
+              <div class="request-header">
+                <h3 class="request-title"><?= esc($request['topic'] ?: 'Mentorship Request') ?></h3>
+                <span class="status-badge status-pending">Pending</span>
+              </div>
+              <p class="request-description"><?= esc($request['request_reason']) ?></p>
+              <p class="student-details">
+                <small>
+                  <?= esc($request['student_name']) ?> | <?= esc($request['student_id']) ?> | Year <?= esc($request['academic_year']) ?> | <?= esc($request['faculty_name']) ?>
+                </small>
+              </p>
+              <p class="mentor-meta">Student Email: <?= esc($request['student_email']) ?></p>
+              <div class="request-actions mentor-request-actions">
+                <form method="POST" action="<?= ROOT ?>/Alumni/Mentorship/accept/<?= (int)$request['request_id'] ?>" class="js-accept-request-form">
+                  <button type="submit" class="btn btn-success btn-sm">
+                    <i class="fas fa-check"></i> Accept
+                  </button>
+                </form>
+
+                <form method="POST" action="<?= ROOT ?>/Alumni/Mentorship/reject/<?= (int)$request['request_id'] ?>" class="reject-form">
+                  <textarea name="rejection_reason" class="form-textarea" rows="2" placeholder="Reason for rejection" required></textarea>
+                  <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Reject this request?');">
+                    <i class="fas fa-times"></i> Reject
+                  </button>
+                </form>
+              </div>
+            </article>
+          <?php endforeach; ?>
+        </div>
+      <?php else: ?>
+        <div class="no-requests-message">
+          <div class="no-requests-icon"><i class="fas fa-user-graduate"></i></div>
+          <h3>No pending requests</h3>
+          <p>New student mentorship requests will appear here.</p>
+        </div>
+      <?php endif; ?>
+    </section>
+
+    <section class="dashboard-section active-mentorships-section">
+      <h2 class="section-title">Accepted Mentorships</h2>
+
+      <?php if (!empty($mentorshipData['active'])): ?>
+        <div class="requests-grid">
+          <?php foreach ($mentorshipData['active'] as $active): ?>
+            <article class="request-card active-card">
+              <div class="request-header">
+                <h3 class="request-title"><?= esc($active['topic'] ?: 'Active Mentorship') ?></h3>
+                <span class="status-badge status-accepted">Accepted</span>
+              </div>
+              <p class="request-description"><?= esc($active['request_reason']) ?></p>
+                <div class="contact-reveal-card">
+                  <h4 class="contact-reveal-title">Student Contact</h4>
+                  <p class="student-details"><small><?= esc($active['student_name']) ?> | <?= esc($active['student_id']) ?> | Year <?= esc($active['academic_year']) ?> | <?= esc($active['faculty_name'] ?: 'Faculty N/A') ?></small></p>
+                  <p class="mentor-meta">Student Email: <?= esc($active['student_email']) ?></p>
+                  <?php if (!empty($active['student_mobile'])): ?>
+                    <p class="mentor-meta">Mobile: +94 <?= esc($active['student_mobile']) ?></p>
+                  <?php endif; ?>
+                  <?php if (!empty($active['student_linkedin_url'])): ?>
+                    <p class="mentor-meta">LinkedIn: <a href="<?= esc($active['student_linkedin_url']) ?>" target="_blank" rel="noopener">View profile</a></p>
+                  <?php endif; ?>
+                </div>
+                <div class="request-actions mentor-request-actions active-mentor-actions">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm mentorship-chat-open"
+                    data-thread-id="<?= (int)$active['request_id'] ?>"
+                    data-thread-name="<?= esc($active['student_name']) ?>"
+                  >
+                    <i class="fas fa-comments"></i>
+                    Chat with Student
+                  </button>
+                  <form method="POST" action="<?= ROOT ?>/Alumni/Mentorship/end/<?= (int)$active['request_id'] ?>">
+                    <button type="submit" class="btn btn-outline btn-sm" onclick="return confirm('End this mentorship now? Student will be prompted to submit required feedback.');">
+                      <i class="fas fa-flag-checkered"></i> Mark Completed
+                    </button>
+                  </form>
+                </div>
+            </article>
+          <?php endforeach; ?>
+        </div>
+      <?php else: ?>
+        <div class="empty-state compact-empty">
+          <p>No accepted mentorships yet.</p>
+        </div>
+      <?php endif; ?>
+    </section>
+
+    <section class="dashboard-section completed-mentorships-section">
+      <h2 class="section-title">Completed Mentorships</h2>
+
+      <?php if (!empty($mentorshipData['completed'])): ?>
+        <div class="requests-grid">
+          <?php foreach ($mentorshipData['completed'] as $completed): ?>
+            <article class="request-card completed-card">
+              <div class="request-header">
+                <h3 class="request-title"><?= esc($completed['topic'] ?: 'Completed Mentorship') ?></h3>
+                <span class="status-badge status-completed">Completed</span>
+              </div>
+              <p class="request-description"><?= esc($completed['request_reason']) ?></p>
+              <p class="mentor-meta">Student: <?= esc($completed['student_name']) ?></p>
+              <p class="mentor-meta">Feedback Score: &#9733; <?= (int)($completed['rating'] ?? 0) ?></p>
+              <?php if (!empty($completed['review_comment'])): ?>
+                <p class="review-note"><strong>Feedback Note:</strong> "<?= esc($completed['review_comment']) ?>"</p>
+              <?php endif; ?>
+            </article>
+          <?php endforeach; ?>
+        </div>
+      <?php else: ?>
+        <div class="empty-state compact-empty">
+          <p>No completed mentorships yet.</p>
+        </div>
+      <?php endif; ?>
+    </section>
+  </main>
+</div>
+
+<div class="action-confirm-modal" id="acceptRequestConfirmModal" aria-hidden="true">
+  <div class="action-confirm-panel" role="dialog" aria-modal="true" aria-labelledby="acceptRequestConfirmTitle">
+    <h3 id="acceptRequestConfirmTitle" class="action-confirm-title">Accept this request?</h3>
+    <p class="action-confirm-text">This student request will move to your accepted mentorships list.</p>
+    <div class="action-confirm-actions">
+      <button type="button" class="btn btn-outline btn-sm" data-confirm-cancel>Cancel</button>
+      <button type="button" class="btn btn-primary btn-sm" data-confirm-accept>Yes, Accept</button>
+    </div>
+  </div>
+</div>
+
+<div class="mentorship-chat-modal" id="mentorshipChatModal" aria-hidden="true">
+  <div class="mentorship-chat-panel" role="dialog" aria-modal="true" aria-labelledby="mentorshipChatTitle">
+    <div class="mentorship-chat-header">
+      <div>
+        <h3 id="mentorshipChatTitle" class="mentorship-chat-title">Mentorship Chat</h3>
+        <p id="mentorshipChatMeta" class="mentorship-chat-meta">Chat with your mentee</p>
+      </div>
+      <button type="button" class="mentorship-chat-close" data-chat-close aria-label="Close chat">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
 
-    <script src="<?=ROOT?>/assets/js/main.js"></script>
-    <script src="<?=ROOT?>/assets/js/mentorship.js"></script>
-    <script src="<?=ROOT?>/assets/js/profile-modals.js"></script>
-  </body>
+    <div class="mentorship-chat-status" id="mentorshipChatStatus"></div>
+
+    <div class="mentorship-chat-body">
+      <div class="mentorship-chat-empty" id="mentorshipChatEmpty">
+        Start the conversation.
+      </div>
+      <div class="mentorship-chat-messages" id="mentorshipChatMessages"></div>
+    </div>
+
+    <form class="mentorship-chat-form" id="mentorshipChatForm">
+      <textarea id="mentorshipChatInput" name="message" class="mentorship-chat-input" rows="3" placeholder="Type a short message..."></textarea>
+      <button type="submit" class="btn btn-primary mentorship-chat-send">
+        Send
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const toast = document.querySelector('.mentorship-toast');
+    if (toast) {
+      const closeBtn = toast.querySelector('.mentorship-toast-close');
+
+      const dismissToast = function () {
+        toast.classList.add('is-hiding');
+        setTimeout(() => {
+          if (toast && toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+          }
+        }, 260);
+      };
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', dismissToast);
+      }
+
+      setTimeout(dismissToast, 3200);
+    }
+
+    const acceptForms = Array.from(document.querySelectorAll('.js-accept-request-form'));
+    const confirmModal = document.getElementById('acceptRequestConfirmModal');
+    const confirmAcceptBtn = confirmModal ? confirmModal.querySelector('[data-confirm-accept]') : null;
+    const confirmCancelBtn = confirmModal ? confirmModal.querySelector('[data-confirm-cancel]') : null;
+    let pendingAcceptForm = null;
+
+    const closeConfirmModal = function () {
+      if (!confirmModal) return;
+      confirmModal.classList.remove('is-open');
+      confirmModal.style.display = '';
+      confirmModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      pendingAcceptForm = null;
+    };
+
+    const openConfirmModal = function (form) {
+      if (!confirmModal || !confirmAcceptBtn || !confirmCancelBtn) {
+        if (window.confirm('Accept this request?')) {
+          form.submit();
+        }
+        return;
+      }
+
+      pendingAcceptForm = form;
+      confirmModal.classList.add('is-open');
+      confirmModal.style.display = 'flex';
+      confirmModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+
+      const modalIsVisible = window.getComputedStyle(confirmModal).display !== 'none';
+      if (!modalIsVisible) {
+        confirmModal.classList.remove('is-open');
+        confirmModal.style.display = '';
+        confirmModal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        pendingAcceptForm = null;
+        if (window.confirm('Accept this request?')) {
+          form.submit();
+        }
+      }
+    };
+
+    acceptForms.forEach((form) => {
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        openConfirmModal(form);
+      });
+    });
+
+    if (confirmAcceptBtn) {
+      confirmAcceptBtn.addEventListener('click', function () {
+        if (!pendingAcceptForm) return;
+        const formToSubmit = pendingAcceptForm;
+        closeConfirmModal();
+        formToSubmit.submit();
+      });
+    }
+
+    if (confirmCancelBtn) {
+      confirmCancelBtn.addEventListener('click', closeConfirmModal);
+    }
+
+    if (confirmModal) {
+      confirmModal.addEventListener('click', function (event) {
+        if (event.target === confirmModal) {
+          closeConfirmModal();
+        }
+      });
+    }
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && confirmModal && confirmModal.classList.contains('is-open')) {
+        closeConfirmModal();
+      }
+    });
+  })();
+</script>
+<script>
+  window.mentorshipChatConfig = {
+    baseUrl: '<?=ROOT?>/alumni/Mentorship',
+    currentUserId: '<?= (int)($_SESSION['user_id'] ?? 0) ?>'
+  };
+</script>
+<script src="<?=ROOT?>/assets/js/mentorship-chat.js?v=<?=time()?>"></script>
+</body>
 </html>

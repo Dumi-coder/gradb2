@@ -171,7 +171,7 @@ function validateField(field) {
         const amount = parseFloat(value);
         if (amount < 1) {
             formGroup.classList.add('error');
-            showFieldError(formGroup, 'Amount must be at least $1');
+            showFieldError(formGroup, 'Amount must be at least Rs. 1');
             return false;
         }
     }

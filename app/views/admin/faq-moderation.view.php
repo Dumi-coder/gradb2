@@ -58,8 +58,18 @@
             
             <!-- FAQs List -->
             <div class="faqs-container">
+                <div id="faq-empty-state" class="faq-empty-state <?= empty($faqData['faq_items']) ? '' : 'is-hidden' ?>">
+                    There is nothing to show.
+                </div>
                 <?php foreach ($faqData['faq_items'] as $faq): ?>
-                <div class="faq-card" data-category="<?= esc($faq['category']) ?>" data-status="<?= $faq['status'] ?>">
+                <div class="faq-card" 
+                     data-category="<?= esc($faq['category']) ?>" 
+                     data-status="<?= $faq['status'] ?>"
+                     data-faq-id="<?= $faq['id'] ?>"
+                     data-question="<?= esc($faq['question']) ?>"
+                     data-answer="<?= esc($faq['answer']) ?>"
+                     data-priority="<?= esc($faq['priority'] ?? 'normal') ?>"
+                     data-tags="<?= esc($faq['tags'] ?? '') ?>">
                     <div class="faq-header">
                         <div class="faq-info">
                             <h4 class="faq-question"><?= esc($faq['question']) ?></h4>
@@ -67,10 +77,6 @@
                         </div>
                         <div class="faq-meta">
                             <span class="status-badge status-<?= $faq['status'] ?>"><?= ucfirst($faq['status']) ?></span>
-                            <div class="faq-stats">
-                                <span class="stat"><i class="fas fa-eye"></i> <?= $faq['views'] ?> views</span>
-                                <span class="stat"><i class="fas fa-thumbs-up"></i> <?= $faq['helpful'] ?> helpful</span>
-                            </div>
                         </div>
                     </div>
                     
@@ -90,27 +96,21 @@
                     </div>
                     
                     <div class="faq-actions">
-                        <?php if ($faq['status'] === 'pending'): ?>
-                        <button class="btn btn-success btn-sm approve-btn" data-faq-id="<?= $faq['id'] ?>">
-                            <i class="fas fa-check"></i>
-                            Approve
-                        </button>
-                        <?php endif; ?>
-                        
                         <?php if ($faq['status'] === 'published'): ?>
                         <button class="btn btn-warning btn-sm unpublish-btn" data-faq-id="<?= $faq['id'] ?>">
                             <i class="fas fa-eye-slash"></i>
                             Unpublish
+                        </button>
+                        <?php else: ?>
+                        <button class="btn btn-success btn-sm publish-btn" data-faq-id="<?= $faq['id'] ?>">
+                            <i class="fas fa-check"></i>
+                            Publish
                         </button>
                         <?php endif; ?>
                         
                         <button class="btn btn-primary btn-sm edit-btn" data-faq-id="<?= $faq['id'] ?>">
                             <i class="fas fa-edit"></i>
                             Edit
-                        </button>
-                        <button class="btn btn-outline btn-sm view-btn" data-faq-id="<?= $faq['id'] ?>">
-                            <i class="fas fa-eye"></i>
-                            View
                         </button>
                         <button class="btn btn-danger btn-sm delete-btn" data-faq-id="<?= $faq['id'] ?>">
                             <i class="fas fa-trash"></i>
@@ -149,14 +149,11 @@
                 <label for="faqCategory">Category *</label>
                 <select id="faqCategory" name="faqCategory" required>
                     <option value="">Select a category</option>
-                    <option value="General">General</option>
-                    <option value="Academic">Academic</option>
-                    <option value="Career">Career</option>
-                    <option value="Financial">Financial Aid</option>
-                    <option value="Technical">Technical Support</option>
-                    <option value="Registration">Registration</option>
-                    <option value="Graduation">Graduation</option>
-                    <option value="Alumni">Alumni Services</option>
+                    <option value="general">General</option>
+                    <option value="mentorship">Mentorship</option>
+                    <option value="aid">Aid Requests</option>
+                    <option value="technical">Technical</option>
+                    <option value="fundraiser">Fundraiser</option>
                 </select>
             </div>
 
@@ -196,416 +193,272 @@
     </div>
 </div>
 
-<style>
-.faq-filters {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    align-items: center;
-    flex-wrap: wrap;
-}
+<!-- Edit FAQ Modal -->
+<div id="editFaqModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Edit FAQ</h2>
+            <button class="modal-close" onclick="closeEditFaqModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
 
-.search-box {
-    position: relative;
-    flex: 1;
-    min-width: 300px;
-}
+        <form class="faq-form" id="editFaqForm">
+            <input type="hidden" id="editFaqId" name="editFaqId">
+            
+            <div class="form-group">
+                <label for="editFaqQuestion">Question *</label>
+                <input type="text" id="editFaqQuestion" name="editFaqQuestion" placeholder="Enter the FAQ question" required>
+            </div>
 
-.search-input {
-    width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.5rem;
-    border: 2px solid #E5E7EB;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
+            <div class="form-group">
+                <label for="editFaqAnswer">Answer *</label>
+                <textarea id="editFaqAnswer" name="editFaqAnswer" rows="6" placeholder="Enter the detailed answer..." required></textarea>
+            </div>
 
-.search-input:focus {
-    outline: none;
-    border-color: #0E2072;
-    box-shadow: 0 0 0 3px rgba(14, 32, 114, 0.1);
-}
+            <div class="form-group">
+                <label for="editFaqCategory">Category *</label>
+                <select id="editFaqCategory" name="editFaqCategory" required>
+                    <option value="">Select a category</option>
+                    <option value="general">General</option>
+                    <option value="mentorship">Mentorship</option>
+                    <option value="aid">Aid Requests</option>
+                    <option value="technical">Technical</option>
+                    <option value="fundraiser">Fundraiser</option>
+                </select>
+            </div>
 
-.search-icon {
-    position: absolute;
-    left: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6B7280;
-}
+            <div class="form-group">
+                <label for="editFaqPriority">Priority</label>
+                <select id="editFaqPriority" name="editFaqPriority">
+                    <option value="normal">Normal</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                </select>
+            </div>
 
-.filter-options {
-    display: flex;
-    gap: 0.75rem;
-}
+            <div class="form-group">
+                <label for="editFaqStatus">Status</label>
+                <select id="editFaqStatus" name="editFaqStatus">
+                    <option value="draft">Draft</option>
+                    <option value="pending">Pending Review</option>
+                    <option value="published">Published</option>
+                </select>
+            </div>
 
-.filter-select {
-    padding: 0.75rem 1rem;
-    border: 2px solid #E5E7EB;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    background-color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+            <div class="form-group">
+                <label for="editFaqTags">Tags (Optional)</label>
+                <input type="text" id="editFaqTags" name="editFaqTags" placeholder="Enter tags separated by commas">
+            </div>
 
-.filter-select:focus {
-    outline: none;
-    border-color: #0E2072;
-}
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" onclick="closeEditFaqModal()">
+                    <span>Cancel</span>
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    <span>Update FAQ</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
-.faqs-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
+<!-- Custom Alert Modal -->
+<div id="customAlert" class="custom-modal">
+    <div class="custom-modal-content alert-modal">
+        <div class="custom-modal-icon">
+            <i class="fas fa-check-circle" id="alertIcon"></i>
+        </div>
+        <h3 id="alertTitle">Success</h3>
+        <p id="alertMessage"></p>
+        <button class="btn btn-primary" onclick="closeCustomAlert()">OK</button>
+    </div>
+</div>
 
-.faq-card {
-    background: white;
-    border: 2px solid #E5E7EB;
-    border-radius: 12px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-}
+<!-- Custom Confirm Modal -->
+<div id="customConfirm" class="custom-modal">
+    <div class="custom-modal-content confirm-modal">
+        <div class="custom-modal-icon warning">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3 id="confirmTitle">Confirm Action</h3>
+        <p id="confirmMessage"></p>
+        <div class="custom-modal-actions">
+            <button class="btn btn-outline" onclick="closeCustomConfirm(false)">Cancel</button>
+            <button class="btn btn-primary" onclick="closeCustomConfirm(true)" id="confirmBtn">Confirm</button>
+        </div>
+    </div>
+</div>
 
-.faq-card:hover {
-    border-color: #0E2072;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
 
-.faq-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-}
-
-.faq-question {
-    margin: 0 0 0.25rem 0;
-    color: #1F2937;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.faq-category {
-    margin: 0;
-    color: #0E2072;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.faq-meta {
-    text-align: right;
-}
-
-.status-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-}
-
-.status-published {
-    background-color: #D1FAE5;
-    color: #065F46;
-}
-
-.status-pending {
-    background-color: #FEF3C7;
-    color: #D97706;
-}
-
-.status-draft {
-    background-color: #E5E7EB;
-    color: #6B7280;
-}
-
-.faq-stats {
-    display: flex;
-    gap: 1rem;
-}
-
-.stat {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    color: #6B7280;
-    font-size: 0.875rem;
-}
-
-.stat i {
-    color: #0E2072;
-}
-
-.faq-content {
-    margin-bottom: 1rem;
-}
-
-.faq-content p {
-    margin: 0;
-    color: #4B5563;
-    line-height: 1.5;
-}
-
-.faq-details {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-}
-
-.detail-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #4B5563;
-    font-size: 0.9rem;
-}
-
-.detail-item i {
-    color: #0E2072;
-    width: 16px;
-}
-
-.faq-actions {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-}
-
-/* Button styles are now in buttons.css - removed to prevent override */
-
-.btn-success {
-    background-color: #10B981;
-    color: white;
-}
-
-.btn-success:hover {
-    background-color: #059669;
-}
-
-.btn-warning {
-    background-color: #F59E0B;
-    color: white;
-}
-
-.btn-warning:hover {
-    background-color: #D97706;
-}
-
-.btn-danger {
-    background-color: #EF4444;
-    color: white;
-}
-
-.btn-danger:hover {
-    background-color: #DC2626;
-}
-
-.btn-outline {
-    background-color: white;
-    color: #000000;
-    border: 1px solid #000000;
-}
-
-.btn-outline:hover {
-    background-color: #000000;
-    color: white;
-}
-
-.section-stats {
-    display: flex;
-    gap: 2rem;
-}
-
-.stat-item {
-    text-align: center;
-}
-
-.stat-number {
-    display: block;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #0E2072;
-}
-
-.stat-label {
-    font-size: 0.875rem;
-    color: #6B7280;
-    font-weight: 500;
-}
-
-/* Add FAQ Section */
-.add-faq-section {
-    margin-bottom: 2rem;
-}
-
-.add-faq-btn {
-    background-color: #000000;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.add-faq-btn:hover {
-    background-color: #333333;
-    transform: translateY(-1px);
-}
-
-/* Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-}
-
-.modal-content {
-    background-color: white;
-    margin: 5% auto;
-    padding: 0;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: modalSlideIn 0.3s ease-out;
-}
-
-@keyframes modalSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid #E5E7EB;
-    background-color: #F9FAFB;
-    border-radius: 12px 12px 0 0;
-}
-
-.modal-title {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #1F2937;
-}
-
-.modal-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: #6B7280;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.modal-close:hover {
-    background-color: #E5E7EB;
-    color: #374151;
-}
-
-.faq-form {
-    padding: 1.5rem;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: #374151;
-    font-size: 0.9rem;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 2px solid #E5E7EB;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: #0E2072;
-    box-shadow: 0 0 0 3px rgba(14, 32, 114, 0.1);
-}
-
-.form-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #E5E7EB;
-}
-
-. {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-}
-</style>
 
 <script>
+const ROOT_URL = '<?= ROOT ?>';
+
+// Custom Alert Function
+let alertCallback = null;
+
+function showAlert(message, type = 'success') {
+    const modal = document.getElementById('customAlert');
+    const icon = document.getElementById('alertIcon');
+    const title = document.getElementById('alertTitle');
+    const messageEl = document.getElementById('alertMessage');
+    
+    messageEl.textContent = message;
+    
+    if (type === 'success') {
+        title.textContent = 'Success';
+        icon.className = 'fas fa-check-circle';
+        icon.parentElement.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+    } else if (type === 'error') {
+        title.textContent = 'Error';
+        icon.className = 'fas fa-times-circle';
+        icon.parentElement.style.background = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
+    }
+    
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    
+    return new Promise((resolve) => {
+        alertCallback = resolve;
+    });
+}
+
+function closeCustomAlert() {
+    document.getElementById('customAlert').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    if (alertCallback) {
+        alertCallback();
+        alertCallback = null;
+    }
+}
+
+// Custom Confirm Function
+let confirmCallback = null;
+
+function showConfirm(message, title = 'Confirm Action') {
+    const modal = document.getElementById('customConfirm');
+    const titleEl = document.getElementById('confirmTitle');
+    const messageEl = document.getElementById('confirmMessage');
+    
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+    
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    
+    return new Promise((resolve) => {
+        confirmCallback = resolve;
+    });
+}
+
+function closeCustomConfirm(result) {
+    document.getElementById('customConfirm').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    if (confirmCallback) {
+        confirmCallback(result);
+        confirmCallback = null;
+    }
+}
+
+function sendAjaxRequest(action, faqId, formData = null) {
+    const data = new FormData();
+    data.append('action', action);
+    if (faqId) data.append('faq_id', faqId);
+    if (formData) {
+        for (let [key, value] of formData.entries()) {
+            data.append(key, value);
+        }
+    }
+
+    return fetch(window.location.href, {
+        method: 'POST',
+        body: data
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            return result;
+        } else {
+            throw new Error(result.message || 'Operation failed');
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle approve button clicks
-    document.querySelectorAll('.approve-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+    function updateFaqEmptyState() {
+        const emptyState = document.getElementById('faq-empty-state');
+        const faqCards = document.querySelectorAll('.faq-card');
+        let visibleCount = 0;
+
+        faqCards.forEach(card => {
+            if (card.style.display !== 'none') {
+                visibleCount++;
+            }
+        });
+
+        if (emptyState) {
+            emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+    }
+
+    function applyFaqFilters() {
+        const searchTerm = document.getElementById('faq-search').value.toLowerCase();
+        const selectedCategory = document.getElementById('category-filter').value;
+        const selectedStatus = document.getElementById('status-filter').value;
+        const faqCards = document.querySelectorAll('.faq-card');
+
+        faqCards.forEach(card => {
+            const question = card.querySelector('.faq-question').textContent.toLowerCase();
+            const answer = card.querySelector('.faq-content p').textContent.toLowerCase();
+            const cardCategory = card.getAttribute('data-category');
+            const cardStatus = card.getAttribute('data-status');
+
+            const matchesSearch = searchTerm === '' || question.includes(searchTerm) || answer.includes(searchTerm);
+            const matchesCategory = selectedCategory === '' || cardCategory === selectedCategory;
+            const matchesStatus = selectedStatus === '' || cardStatus === selectedStatus;
+
+            card.style.display = (matchesSearch && matchesCategory && matchesStatus) ? 'block' : 'none';
+        });
+
+        updateFaqEmptyState();
+    }
+
+    // Handle publish button clicks
+    document.querySelectorAll('.publish-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
             const faqId = this.getAttribute('data-faq-id');
-            if (confirm('Are you sure you want to approve this FAQ?')) {
-                alert('FAQ approved successfully!');
-                this.closest('.faq-card').style.opacity = '0.5';
-                this.disabled = true;
+            const confirmed = await showConfirm('Are you sure you want to publish this FAQ?', 'Publish FAQ');
+            
+            if (confirmed) {
+                sendAjaxRequest('publish', faqId)
+                    .then(async () => {
+                        await showAlert('FAQ published successfully!', 'success');
+                        location.reload();
+                    })
+                    .catch(async (error) => {
+                        await showAlert('Error: ' + error.message, 'error');
+                    });
             }
         });
     });
 
     // Handle unpublish button clicks
     document.querySelectorAll('.unpublish-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', async function() {
             const faqId = this.getAttribute('data-faq-id');
-            if (confirm('Are you sure you want to unpublish this FAQ?')) {
-                alert('FAQ unpublished successfully!');
-                this.closest('.faq-card').style.opacity = '0.5';
-                this.disabled = true;
+            const confirmed = await showConfirm('Are you sure you want to unpublish this FAQ? You can publish it again anytime.', 'Unpublish FAQ');
+            
+            if (confirmed) {
+                sendAjaxRequest('unpublish', faqId)
+                    .then(async () => {
+                        await showAlert('FAQ unpublished successfully!', 'success');
+                        location.reload();
+                    })
+                    .catch(async (error) => {
+                        await showAlert('Error: ' + error.message, 'error');
+                    });
             }
         });
     });
@@ -614,73 +467,59 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.edit-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const faqId = this.getAttribute('data-faq-id');
-            alert('Edit FAQ functionality would be implemented here for FAQ ID: ' + faqId);
-        });
-    });
-
-    // Handle view button clicks
-    document.querySelectorAll('.view-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const faqId = this.getAttribute('data-faq-id');
-            alert('View FAQ functionality would be implemented here for FAQ ID: ' + faqId);
+            const faqCard = this.closest('.faq-card');
+            
+            // Populate the edit modal with FAQ data
+            document.getElementById('editFaqId').value = faqId;
+            document.getElementById('editFaqQuestion').value = faqCard.getAttribute('data-question');
+            document.getElementById('editFaqAnswer').value = faqCard.getAttribute('data-answer');
+            document.getElementById('editFaqCategory').value = faqCard.getAttribute('data-category');
+            document.getElementById('editFaqPriority').value = faqCard.getAttribute('data-priority');
+            document.getElementById('editFaqStatus').value = faqCard.getAttribute('data-status');
+            document.getElementById('editFaqTags').value = faqCard.getAttribute('data-tags');
+            
+            // Open the edit modal
+            openEditFaqModal();
         });
     });
 
     // Handle delete button clicks
     document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', async function() {
             const faqId = this.getAttribute('data-faq-id');
-            if (confirm('Are you sure you want to delete this FAQ? This action cannot be undone.')) {
-                alert('FAQ deleted successfully!');
-                this.closest('.faq-card').remove();
+            const confirmed = await showConfirm('Are you sure you want to delete this FAQ? This action cannot be undone.', 'Delete FAQ');
+            
+            if (confirmed) {
+                const faqCard = this.closest('.faq-card');
+                sendAjaxRequest('delete', faqId)
+                    .then(async () => {
+                        await showAlert('FAQ deleted successfully!', 'success');
+                        faqCard.remove();
+                        applyFaqFilters();
+                    })
+                    .catch(async (error) => {
+                        await showAlert('Error: ' + error.message, 'error');
+                    });
             }
         });
     });
 
     // Handle search functionality
     document.getElementById('faq-search').addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        const faqCards = document.querySelectorAll('.faq-card');
-        
-        faqCards.forEach(card => {
-            const question = card.querySelector('.faq-question').textContent.toLowerCase();
-            const answer = card.querySelector('.faq-content p').textContent.toLowerCase();
-            
-            if (question.includes(searchTerm) || answer.includes(searchTerm)) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-        });
+        applyFaqFilters();
     });
 
     // Handle category filter
     document.getElementById('category-filter').addEventListener('change', function() {
-        const selectedCategory = this.value;
-        const faqCards = document.querySelectorAll('.faq-card');
-        
-        faqCards.forEach(card => {
-            if (selectedCategory === '' || card.getAttribute('data-category') === selectedCategory) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-        });
+        applyFaqFilters();
     });
 
     // Handle status filter
     document.getElementById('status-filter').addEventListener('change', function() {
-        const selectedStatus = this.value;
-        const faqCards = document.querySelectorAll('.faq-card');
-        
-        faqCards.forEach(card => {
-            if (selectedStatus === '' || card.getAttribute('data-status') === selectedStatus) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-        });
+        applyFaqFilters();
     });
+
+    applyFaqFilters();
 });
 
 // Modal Functions
@@ -692,42 +531,82 @@ function openAddFaqModal() {
 function closeAddFaqModal() {
     document.getElementById('addFaqModal').style.display = 'none';
     document.body.style.overflow = 'auto';
-    // Reset form
     document.getElementById('faqForm').reset();
+}
+
+function openEditFaqModal() {
+    document.getElementById('editFaqModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeEditFaqModal() {
+    document.getElementById('editFaqModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    document.getElementById('editFaqForm').reset();
 }
 
 // Close modal when clicking outside
 window.onclick = function(event) {
-    const modal = document.getElementById('addFaqModal');
-    if (event.target === modal) {
+    const addModal = document.getElementById('addFaqModal');
+    const editModal = document.getElementById('editFaqModal');
+    
+    if (event.target === addModal) {
         closeAddFaqModal();
+    } else if (event.target === editModal) {
+        closeEditFaqModal();
     }
 }
 
-// Handle form submission
+// Handle add form submission
 document.getElementById('faqForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
     const formData = new FormData(this);
-    const faqData = {
-        question: formData.get('faqQuestion'),
-        answer: formData.get('faqAnswer'),
-        category: formData.get('faqCategory'),
-        priority: formData.get('faqPriority'),
-        status: formData.get('faqStatus'),
-        tags: formData.get('faqTags')
-    };
+    const faqData = new FormData();
+    faqData.append('action', 'add');
+    faqData.append('question', formData.get('faqQuestion'));
+    faqData.append('answer', formData.get('faqAnswer'));
+    faqData.append('category', formData.get('faqCategory'));
+    faqData.append('priority', formData.get('faqPriority'));
+    faqData.append('status', formData.get('faqStatus'));
+    faqData.append('tags', formData.get('faqTags'));
     
-    // Here you would typically send the data to the server
-    console.log('FAQ Data:', faqData);
+    sendAjaxRequest('add', null, faqData)
+        .then(async () => {
+            closeAddFaqModal();
+            await showAlert('FAQ added successfully!', 'success');
+            location.reload();
+        })
+        .catch(async (error) => {
+            await showAlert('Error: ' + error.message, 'error');
+        });
+});
+
+// Handle edit form submission
+document.getElementById('editFaqForm').addEventListener('submit', function(e) {
+    e.preventDefault();
     
-    // Show success message
-    alert('FAQ added successfully!');
+    const formData = new FormData(this);
+    const faqData = new FormData();
+    const faqId = formData.get('editFaqId');
     
-    // Close modal
-    closeAddFaqModal();
+    faqData.append('action', 'edit');
+    faqData.append('faq_id', faqId);
+    faqData.append('question', formData.get('editFaqQuestion'));
+    faqData.append('answer', formData.get('editFaqAnswer'));
+    faqData.append('category', formData.get('editFaqCategory'));
+    faqData.append('priority', formData.get('editFaqPriority'));
+    faqData.append('status', formData.get('editFaqStatus'));
+    faqData.append('tags', formData.get('editFaqTags'));
     
-    // Here you would typically refresh the FAQ list
-    // or add the new FAQ to the page dynamically
+    sendAjaxRequest('edit', faqId, faqData)
+        .then(async () => {
+            closeEditFaqModal();
+            await showAlert('FAQ updated successfully!', 'success');
+            location.reload();
+        })
+        .catch(async (error) => {
+            await showAlert('Error: ' + error.message, 'error');
+        });
 });
 </script>

@@ -3,10 +3,20 @@ ob_start(); // Start output buffering
 
 class Auth extends Controller
 {
+    const TEMP_BYPASS_LOGIN = false; // TEMP: Allow bypass for testing
+    
     public function index()
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
+        }
+
+        // TEMP: Bypass login for testing
+        if (self::TEMP_BYPASS_LOGIN) {
+            $_SESSION['user_id'] = $_SESSION['user_id'] ?? 1;
+            $_SESSION['role'] = 'student';
+            redirect('student/aid-req-form');
+            exit();
         }
 
         if (isset($_SESSION['user_id']) && $_SESSION['role'] == 'student') {
@@ -46,9 +56,11 @@ class Auth extends Controller
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $student_id = trim($_POST['student_id'] ?? '');
+        // $alumni_id = isset($_POST['alumni_id']) ? trim($_POST['alumni_id']) : null;
         $academic_year = trim($_POST['academic_year'] ?? '');
-        $faculty = trim($_POST['faculty'] ?? '');
+        $faculty_input = isset($_POST['faculty']) ? trim($_POST['faculty']) : null;
         $password = $_POST['password'] ?? '';
+        // $role = (strpos($email, 'alumni') !== false) ? 'alumni' : 'student'; // Determine role based on email
 
         if (empty($name)) $errors[] = "Name is required";
 
@@ -58,24 +70,58 @@ class Auth extends Controller
 
         if (empty($student_id)) $errors[] = "Student ID is required";
 
-        if (empty($academic_year) || !is_numeric($academic_year) || $academic_year < 1 || $academic_year > 5) $errors[] = "Academic year must be between 1 and 5";
-
-        if (empty($faculty)) $errors[] = "Faculty is required";
-
-        if (empty($password) || strlen($password) < 8) $errors[] = "Password must be at least 6 characters";
-
-
-        if (empty($errors)) {
-            $user = new User();
-            if ($user->first(['email' => $email])) $errors[] = "Email already exists";
-            $student = new Student();
-            if ($student->first(['student_id' => $student_id])) $errors[] = "Student ID already exists";
+        if (empty($academic_year) || !is_numeric($academic_year) || $academic_year < 1 || $academic_year > 5) {
+            $errors[] = "Academic year must be between 1 and 5";
         }
 
+        if (empty($faculty_input)) $errors[] = "Faculty is required";
+
+        if (empty($password)) {
+            $errors[] = "Password is required";
+        } else {
+            $passwordValidation = validatePasswordStrength($password);
+            if (!$passwordValidation['valid']) {
+                $errors = array_merge($errors, $passwordValidation['errors']);
+            }
+        }
+
+        // Check if user already exists
+        if (empty($errors)) {
+            $user = new User();
+            if ($user->first(['email' => $email])) {
+                $errors[] = "Email already exists";
+            }
+            
+            $student = new Student();
+            if ($student->first(['student_id' => $student_id])) {
+                $errors[] = "Student ID already exists in the system";
+            }
+        }
+        
         if (empty($errors)) {
             $faculty_model = new Faculty();
-            $faculty_record = $faculty_model->first(['faculty_name' => $faculty]);
+            $faculty_record = $faculty_model->first(['faculty_name' => $faculty_input]);
             if (!$faculty_record) $errors[] = "Invalid faculty selected";
+        }
+
+        // VERIFY STUDENT EXISTS IN RECORDS TABLE
+        // User cannot register if their student_id is not in student_records table
+        if (empty($errors) && isset($faculty_record) && $faculty_record) {
+            $studentModel = new Student();
+            error_log("=== Student Registration Verification ===");
+            error_log("Student ID: " . $student_id);
+            error_log("Faculty ID: " . $faculty_record->faculty_id);
+            
+            $exists = $studentModel->existsInRecords($student_id, $faculty_record->faculty_id);
+            
+            if (!$exists) {
+                $errors[] = "Invalid Student ID.";
+                error_log("Verification FAILED - Student ID not found in student_records table");
+            } else {
+                error_log("Verification PASSED - Student ID found in student_records table");
+            }
+        } elseif (empty($errors) && !isset($faculty_record)) {
+            $errors[] = "Faculty verification failed. Please try again.";
         }
 
         if (empty($errors)) {
@@ -99,42 +145,82 @@ class Auth extends Controller
                     ];
 
                     $student = new Student();
-                    if (!$student->insert($student_data)) {
-                        // Log error for debugging
-                        error_log("Failed to insert student data: " . print_r($student_data, true));
-                        // Check if record was actually inserted
-                        if ($student->first(['student_id' => $student_id])) {
-                            // Record exists, proceed with session and redirect
-                            $_SESSION['user_id'] = $created_user->user_id;
-                            $_SESSION['role'] = 'student';
-                            $_SESSION['student_id'] = $student_id;
-                            $_SESSION['name'] = $name;
-                            ob_end_flush();
-                            // header("Location: " . ROOT . "/student/dashboard");
-                            redirect('student/dashboard');
-                            exit();
-                        } else {
-                            $errors[] = "Failed to create student record.";
-                        }
-                    } else {
-                        // Insert succeeded, set session and redirect
+                    $insert_result = $student->insert($student_data);
+                    
+                    // Log for debugging
+                    error_log("Student insert result: " . ($insert_result ? 'true' : 'false'));
+                    
+                    // Verify student record was created (check database directly)
+                    $student_record = $student->first(['student_id' => $student_id]);
+                    
+                    if ($student_record) {
+                        // Student record exists - registration successful
+                        // Set session and auto-login the user
                         $_SESSION['user_id'] = $created_user->user_id;
                         $_SESSION['role'] = 'student';
                         $_SESSION['student_id'] = $student_id;
                         $_SESSION['name'] = $name;
-                        ob_end_flush();
-                        // header("Location: " . ROOT . "/student/dashboard");
-                        redirect('student/dashboard');
-                        exit();
+                        
+                        error_log("Student registration successful - auto-login user: " . $student_id);
+                        
+                        // Check if AJAX request - must check BEFORE any output
+                        $isAjax = false;
+                        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                            $isAjax = true;
+                        } elseif (isset($_POST['_ajax']) && $_POST['_ajax'] == '1') {
+                            $isAjax = true;
+                        }
+                        
+                        if ($isAjax) {
+                            // AJAX request - return JSON
+                            ob_clean(); // Clear any output buffer
+                            header('Content-Type: application/json');
+                            echo json_encode(['success' => true, 'redirect' => ROOT . '/student/dashboard']);
+                            exit();
+                        } else {
+                            // Regular request - redirect
+                            ob_end_flush();
+                            redirect('student/dashboard');
+                            exit();
+                        }
+                    } else {
+                        // Record not found - registration failed
+                        error_log("Failed to create student record - record not found in database");
+                        $errors[] = "Failed to create student record. Please try again.";
                     }
                 } else {
                     $errors[] = "Failed to retrieve created user.";
                 }
             } else {
                 $errors[] = "Failed to create user.";
+                error_log("User insert failed for email: " . $email);
             }
         }
 
+        // Check if AJAX request - check multiple ways
+        $isAjax = false;
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            $isAjax = true;
+        } elseif (!empty($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+            $isAjax = true;
+        } elseif (isset($_POST['_ajax']) && $_POST['_ajax'] == '1') {
+            $isAjax = true;
+        }
+        
+        // Log for debugging
+        error_log("Registration errors: " . print_r($errors, true));
+        error_log("Is AJAX request: " . ($isAjax ? 'YES' : 'NO'));
+        
+        // ALWAYS return JSON for AJAX requests - never render view
+        if ($isAjax) {
+            ob_clean(); // Clear any output buffer first
+            header('Content-Type: application/json; charset=utf-8');
+            header('Cache-Control: no-cache, must-revalidate');
+            echo json_encode(['success' => false, 'errors' => $errors], JSON_UNESCAPED_UNICODE);
+            exit();
+        }
+
+        // Only render view for non-AJAX requests
         $data['errors'] = $errors;
         $this->view('auth/student_signup', $data);
     }
@@ -165,13 +251,22 @@ class Auth extends Controller
             $student_record = $student->getStudentWithUser($student_id);
 
             if ($student_record) {
+                // Check if account is deleted
+                if (isset($student_record->is_deleted) && $student_record->is_deleted == 1) {
+                    $errors[] = "This account has been deleted. Please contact support if you need assistance.";
+                }
+                // Check if account is suspended
+                elseif (isset($student_record->is_suspended) && (int)$student_record->is_suspended === 1) {
+                    $errors[] = "Your account has been suspended";
+                }
                 // Verify password
-                if (password_verify($password, $student_record->password)) {
+                elseif (password_verify($password, $student_record->password)) {
                     // Login successful - set session
                     $_SESSION['user_id'] = $student_record->user_id;
                     $_SESSION['role'] = 'student';
                     $_SESSION['student_id'] = $student_id;
                     $_SESSION['name'] = $student_record->name;
+                    $_SESSION['profile_picture'] = $student_record->profile_photo_url ?? null;
                     
                     // Redirect to dashboard
                     redirect('student/dashboard');

@@ -1,5 +1,7 @@
 <?php require '../app/views/partials/superadmin_header.php'; ?>
 
+<?php $hasPasswordErrors = isset($errors['password_current']) || isset($errors['password_new']) || isset($errors['password_confirm']); ?>
+
 <!-- Unified Profile Styles -->
 <link rel="stylesheet" href="<?=ROOT?>/assets/css/profile.css">
 
@@ -11,23 +13,40 @@
     <main class="main-content">
         <!-- Edit Profile Form -->
         <section class="edit-form-section">
-            <h2 class="section-title">Edit Admin Profile</h2>
+            <h2 class="section-title">Edit Super Admin Profile</h2>
+
+            <!-- Success/Error Messages -->
+            <?php if (isset($errors['success'])): ?>
+                <div class="alert alert-success"><?= esc($errors['success']) ?></div>
+            <?php endif; ?>
             
-            <form method="POST" enctype="multipart/form-data">
+            <?php if (isset($errors['general'])): ?>
+                <div class="alert alert-danger"><?= esc($errors['general']) ?></div>
+            <?php endif; ?>
+            
+            <form method="POST" enctype="multipart/form-data" data-password-modal="true">
                 <!-- Profile Picture Section -->
                 <div class="profile-picture-section">
                     <div class="profile-picture-preview">
-                        <?php if (!empty($profile->profile_photo_url)): ?>
-                            <img src="<?= esc($profile->profile_photo_url) ?>" alt="Profile Picture" id="profilePreview">
+                        <?php if (!empty($profile->picture_path)): ?>
+                            <img src="<?= esc($profile->picture_path) ?>" alt="Profile Picture" id="profilePreview">
                         <?php else: ?>
                             <span id="profileInitials"><?= strtoupper(substr($profile->name, 0, 2)) ?></span>
                         <?php endif; ?>
                     </div>
-                    <label for="profile_picture" class="profile-picture-upload">
-                        <i class="fas fa-camera"></i>
-                        Change Photo
-                        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)">
-                    </label>
+                    <div class="profile-picture-actions">
+                        <label for="profile_picture" class="btn btn-primary profile-photo-trigger">
+                            <i class="fas fa-camera"></i>
+                            <span>Change Photo</span>
+                            <input type="file" id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(this)" class="profile-file-input-hidden">
+                        </label>
+                        <?php if (!empty($profile->picture_path)): ?>
+                            <button type="button" onclick="deleteProfilePicture()" class="btn btn-danger">
+                                <i class="fas fa-trash"></i>
+                                <span>Delete Photo</span>
+                            </button>
+                        <?php endif; ?>
+                    </div>
                     <?php if (isset($errors['profile_picture'])): ?>
                         <div class="error-message"><?= esc($errors['profile_picture']) ?></div>
                     <?php endif; ?>
@@ -59,13 +78,11 @@
                         <small class="form-help">Role cannot be changed</small>
                     </div>
 
-                    <!-- Department -->
+                    <!-- Admin Level -->
                     <div class="form-group">
-                        <label for="department" class="form-label">Department</label>
-                        <input type="text" id="department" name="department" class="form-input" value="<?= esc($profile->department ?? 'Educational Technology') ?>">
-                        <?php if (isset($errors['department'])): ?>
-                            <div class="error-message"><?= esc($errors['department']) ?></div>
-                        <?php endif; ?>
+                        <label for="admin_level" class="form-label">Admin Level</label>
+                        <input type="text" id="admin_level" class="form-input" value="<?= esc($profile->admin_level ?? 'Super Admin') ?>" disabled>
+                        <small class="form-help">Admin level cannot be changed</small>
                     </div>
 
                     <!-- Bio -->
@@ -107,26 +124,23 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="website_url" class="form-label">Personal Website</label>
-                            <input type="url" id="website_url" name="website_url" class="form-input" value="<?= esc($profile->website_url ?? '') ?>" placeholder="https://yourwebsite.com">
-                            <?php if (isset($errors['website_url'])): ?>
-                                <div class="error-message"><?= esc($errors['website_url']) ?></div>
+                            <label for="personalweb_url" class="form-label">Personal Website</label>
+                            <input type="url" id="personalweb_url" name="personalweb_url" class="form-input" value="<?= esc($profile->personalweb_url ?? '') ?>" placeholder="https://yourwebsite.com">
+                            <?php if (isset($errors['personalweb_url'])): ?>
+                                <div class="error-message"><?= esc($errors['personalweb_url']) ?></div>
                             <?php endif; ?>
                         </div>
                     </div>
                 </div>
 
-                <!-- Success/Error Messages -->
-                <?php if (isset($success)): ?>
-                    <div class="success-message"><?= esc($success) ?></div>
-                <?php endif; ?>
-                
-                <?php if (isset($errors['general'])): ?>
-                    <div class="error-message"><?= esc($errors['general']) ?></div>
-                <?php endif; ?>
+                <input type="hidden" name="change_password" value="0">
 
                 <!-- Form Actions -->
                 <div class="form-actions">
+                    <button type="button" class="btn btn-outline js-open-password-modal" aria-expanded="false">
+                        <i class="fas fa-key"></i>
+                        Change Password
+                    </button>
                     <a href="<?= ROOT ?>/superadmin/profile" class="btn btn-outline">
                         <i class="fas fa-arrow-left"></i>
                         Cancel
@@ -136,10 +150,84 @@
                         Save Changes
                     </button>
                 </div>
+
+                <div class="change-password-modal" aria-hidden="true" data-has-password-errors="<?= $hasPasswordErrors ? '1' : '0' ?>">
+                    <div class="change-password-modal-content" role="dialog" aria-modal="true" aria-labelledby="superadminChangePasswordTitle">
+                        <div class="change-password-modal-header">
+                            <h3 class="change-password-modal-title" id="superadminChangePasswordTitle">Change Password</h3>
+                            <button type="button" class="btn btn-outline js-close-password-modal">Close</button>
+                        </div>
+                        <div class="change-password-modal-body">
+                            <div class="form-group">
+                                <label for="superadmin_password_current" class="form-label">Current Password</label>
+                                <input type="password" id="superadmin_password_current" name="password_current" class="form-input" autocomplete="current-password">
+                                <?php if (isset($errors['password_current'])): ?>
+                                    <div class="error-message"><?= esc($errors['password_current']) ?></div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="form-group">
+                                <label for="superadmin_password_new" class="form-label">New Password</label>
+                                <input type="password" id="superadmin_password_new" name="password_new" class="form-input" autocomplete="new-password">
+                                <?php if (isset($errors['password_new'])): ?>
+                                    <div class="error-message"><?= esc($errors['password_new']) ?></div>
+                                <?php endif; ?>
+                                <div class="js-password-strength-container" id="superadmin-password-strength-widget"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="superadmin_password_confirm" class="form-label">Confirm New Password</label>
+                                <input type="password" id="superadmin_password_confirm" name="password_confirm" class="form-input" autocomplete="new-password">
+                                <?php if (isset($errors['password_confirm'])): ?>
+                                    <div class="error-message"><?= esc($errors['password_confirm']) ?></div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="change-password-modal-footer">
+                                <button type="button" class="btn btn-outline js-done-password-modal">Done</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </form>
         </section>
     </main>
 </div>
 
+<!-- Delete Photo Form (Hidden) -->
+<form id="deletePhotoForm" action="<?= ROOT ?>/superadmin/profile?action=delete_photo" method="POST" class="profile-delete-form-hidden">
+    <input type="hidden" name="delete_photo" value="1">
+</form>
+
 <!-- Unified Profile JavaScript -->
 <script src="<?=ROOT?>/assets/js/profile.js"></script>
+<script src="<?=ROOT?>/assets/js/password-validation.js"></script>
+<script src="<?=ROOT?>/assets/js/profile-password-modal.js"></script>
+<script>
+function deleteProfilePicture() {
+    if (confirm('Are you sure you want to delete your profile picture?')) {
+        document.getElementById('deletePhotoForm').submit();
+    }
+}
+
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var preview = document.getElementById('profilePreview');
+            var initials = document.getElementById('profileInitials');
+            
+            if (preview) {
+                preview.src = e.target.result;
+            } else if (initials) {
+                // Replace initials with image
+                var container = initials.parentElement;
+                initials.remove();
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = 'Profile Picture';
+                img.id = 'profilePreview';
+                container.appendChild(img);
+            }
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>

@@ -5,7 +5,13 @@ $isActive = function(string $path) use ($current): string {
 };
 ?>
 <!-- Super Admin Sidebar -->
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
+    <!-- Sidebar Toggle Button -->
+    <div class="sidebar-toggle">
+        <button class="toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
     <nav class="sidebar-nav">
         <!-- MAIN Section -->
         <div class="nav-section">
@@ -43,9 +49,17 @@ $isActive = function(string $path) use ($current): string {
         <!-- RESOURCES Section -->
         <div class="nav-section">
             <h3 class="nav-section-title">RESOURCES</h3>
+            <a href="<?=ROOT?>/superadmin/FacultyModeration" class="nav-item<?= $isActive('superadmin/FacultyModeration') ?>">
+                <i class="fas fa-user-shield"></i>
+                <span>Faculty Moderation</span>
+            </a>
             <a href="<?=ROOT?>/superadmin/UserManagement" class="nav-item<?= $isActive('superadmin/UserManagement') ?>">
                 <i class="fas fa-user-slash"></i>
                 <span>Suspend/Reactivate Users</span>
+            </a>
+            <a href="<?=ROOT?>/superadmin/DeletedUsers" class="nav-item<?= $isActive('superadmin/DeletedUsers') ?>">
+                <i class="fas fa-user-times"></i>
+                <span>Deleted Users</span>
             </a>
             <a href="<?=ROOT?>/superadmin/FaqModeration" class="nav-item<?= $isActive('superadmin/FaqModeration') ?>">
                 <i class="fas fa-question-circle"></i>

@@ -54,7 +54,8 @@ class Alumni
         'github_url',
         'twitter_url',
         'personal_website',
-        'current_job'
+        'current_job',
+        'is_deleted'
     ];
 
     public function validate($data)
@@ -104,10 +105,11 @@ class Alumni
      */
     public function getalumniWithUser($alumni_id)
     {
-        $query = "SELECT a.*, u.name, u.email, u.password, u.role, u.created_at, u.updated_at
+        $query = "SELECT a.*, u.name, u.email, u.password, u.role, u.created_at, u.updated_at, a.profile_photo_url
                   FROM $this->table a
                   JOIN users u ON a.user_id = u.user_id
-                  WHERE a.alumni_id = :alumni_id";
+                  WHERE a.alumni_id = :alumni_id
+                  AND (a.is_deleted IS NULL OR a.is_deleted = 0)";
         
         $result = $this->query($query, ['alumni_id' => $alumni_id]);
         return $result ? $result[0] : false;
@@ -125,7 +127,8 @@ class Alumni
                   FROM $this->table a
                   JOIN users u ON a.user_id = u.user_id
                   JOIN faculties f ON a.faculty_id = f.faculty_id
-                  WHERE a.alumni_id = :alumni_id";
+                  WHERE a.alumni_id = :alumni_id
+                  AND (a.is_deleted IS NULL OR a.is_deleted = 0)";
 
         $result = $this->query($query, ['alumni_id' => $alumni_id]);
         return $result ? $result[0] : false;
@@ -140,6 +143,7 @@ class Alumni
                   FROM $this->table a
                   JOIN users u ON a.user_id = u.user_id
                   WHERE a.faculty_id = :faculty_id
+                  AND (a.is_deleted IS NULL OR a.is_deleted = 0)
                   ORDER BY u.name";
         
         return $this->query($query, ['faculty_id' => $faculty_id]);
@@ -155,6 +159,7 @@ class Alumni
                   JOIN users u ON a.user_id = u.user_id
                   JOIN faculties f ON a.faculty_id = f.faculty_id
                   WHERE a.academic_year = :academic_year
+                  AND (a.is_deleted IS NULL OR a.is_deleted = 0)
                   ORDER BY u.name";
         
         return $this->query($query, ['academic_year' => $academic_year]);
@@ -169,7 +174,8 @@ class Alumni
                   FROM $this->table a
                   JOIN users u ON a.user_id = u.user_id
                   JOIN faculties f ON a.faculty_id = f.faculty_id
-                  WHERE u.name LIKE :search OR a.alumni_id LIKE :search
+                  WHERE (u.name LIKE :search OR a.alumni_id LIKE :search)
+                  AND (a.is_deleted IS NULL OR a.is_deleted = 0)
                   ORDER BY u.name";
         
         $search_param = '%' . $search_term . '%';
@@ -244,4 +250,96 @@ class Alumni
         error_log("alumni update result: " . ($result ? 'success' : 'failed'));
         return $result;
     }
+
+    // public function existsInRecords($alumni_id, $faculty = null)
+    // {
+    //     $alumni_id = trim($alumni_id);
+    //     if ($alumni_id === '') return false;
+
+    //     // if faculty passed as name (not numeric), try to resolve to id
+    //     if ($faculty !== null && !is_numeric($faculty)) {
+    //         try {
+    //             $facModel = new Faculty();
+    //             $facRec = $facModel->first(['faculty_name' => trim($faculty)]);
+    //             if ($facRec) {
+    //                 // adjust property name if your faculty model uses different column name
+    //                 $faculty = $facRec->id ?? $facRec->faculty_id ?? null;
+    //             } else {
+    //                 $faculty = null;
+    //             }
+    //         } catch (\Throwable $e) {
+    //             error_log("[Alumni::existsInRecords] faculty lookup error: ".$e->getMessage());
+    //             $faculty = null;
+    //         }
+    //     }
+
+    //     $params = ['alumni_id' => $alumni_id];
+    //     $sql = "SELECT 1 FROM alumni_records WHERE alumni_id = :alumni_id";
+
+    //     if (!empty($faculty)) {
+    //         $sql .= " AND faculty_id = :faculty_id";
+    //         $params['faculty_id'] = (int)$faculty;
+    //     }
+
+    //     error_log("[Alumni::existsInRecords] SQL: $sql | params: ".json_encode($params));
+    //     $res = $this->query($sql, $params);
+    //     error_log("[Alumni::existsInRecords] result: ".var_export($res, true));
+    //     return !empty($res);
+    // }
+
+
+    /**
+ * Check if an alumni exists in alumni_records table
+ * This verifies that the alumni is a legitimate university graduate
+ */
+public function existsInRecords($alumni_id, $faculty = null)
+ {
+    $alumni_id = trim($alumni_id);
+    if ($alumni_id === '') {
+        error_log("[Alumni::existsInRecords] Empty alumni_id provided");
+        return false;
+    }
+
+    // If faculty passed as name (not numeric), try to resolve to faculty_id
+    if ($faculty !== null && !is_numeric($faculty)) {
+        try {
+            $facModel = new Faculty();
+            $facRec = $facModel->first(['faculty_name' => trim($faculty)]);
+            if ($facRec) {
+                $faculty = $facRec->faculty_id ?? null;
+            } else {
+                $faculty = null;
+            }
+        } catch (\Throwable $e) {
+            error_log("[Alumni::existsInRecords] faculty lookup error: " . $e->getMessage());
+            $faculty = null;
+        }
+    }
+
+    $params = ['alumni_id' => $alumni_id];
+    $sql = "SELECT 1 FROM alumni_records WHERE alumni_id = :alumni_id";
+
+    if (!empty($faculty)) {
+        $sql .= " AND faculty_id = :faculty_id";
+        $params['faculty_id'] = (int)$faculty;
+    }
+
+    error_log("[Alumni::existsInRecords] SQL: $sql | params: " . json_encode($params));
+    
+    try {
+        $result = $this->query($sql, $params);
+        
+        error_log("[Alumni::existsInRecords] Query executed. Result: " . var_export($result, true));
+        
+        // Check if result is an array with at least one element
+        $exists = !empty($result) && is_array($result) && count($result) > 0;
+        
+        error_log("[Alumni::existsInRecords] Final result - exists: " . ($exists ? 'YES' : 'NO'));
+        
+        return $exists;
+    } catch (Exception $e) {
+        error_log("[Alumni::existsInRecords] Exception: " . $e->getMessage());
+        return false;
+    }
+  }
 }

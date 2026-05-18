@@ -142,7 +142,7 @@ const mockData = {
         {
             id: 2,
             name: "Donor",
-            description: "Contributed $1000+",
+            description: "Contributed Rs. 1000+",
             icon: "💰",
             color: "green"
         },

@@ -6,19 +6,20 @@
  // This is a comment explaining that the following code checks if the server name is 'localhost'.
  // If it is, it sets the database configuration for a local development environment.
  // If it is not, it sets the database configuration for a production environment.
-// if($_SERVER['SERVER_NAME']== 'localhost')// This condition checks if the server name is 'localhost'.
-// {
-//         /** dabtabase config */
-//         define('DBNAME','gradb2');
-//         define('DBHOST','localhost');
-//         define('DBUSER','root');
-//         define('DBPASS','');
-//         define('DBDRIVER','');
+ if($_SERVER['SERVER_NAME']== 'localhost')// This condition checks if the server name is 'localhost'.
+ {
+         /** dabtabase config */
+         define('DBNAME','gradb2');
+         define('DBHOST','localhost');
+         define('DBUSER','root');
+         define('DBPORT', '3307');
+         define('DBPASS','root');
+         define('DBDRIVER','');
 
         define('ROOT','http://localhost/gradb2/public');
         
-// }
-// else{// This condition is executed if the server name is not 'localhost', indicating a production environment.
+ }
+ else{// This condition is executed if the server name is not 'localhost', indicating a production environment.
         /** dabtabase config */
         define('DBNAME','gradb2_gradb2');
         define('DBPORT','3306');
@@ -28,7 +29,7 @@
         define('DBDRIVER','');
 
         // define('ROOT','https://www.GradBridge.com');
-// }
+ }
 
 // File system paths
 // APPROOT should point to the project root which contains both `app/` and `public/`.
@@ -51,7 +52,25 @@ define('APP_NAME','GradBridge');// This is the name of the application, used in 
 define('APP_DESC','Best website on the planet');// This is the description of the application, used in the meta description tag and other places.
 
 // true means show errors
-define('DEBUG',false); // This constant is used to enable or disable error reporting in the application.
+define('DEBUG',true); // This constant is used to enable or disable error reporting in the application.
 // If set to true, errors will be displayed on the screen. If set to false,
 // errors will be logged to a file instead. This is useful for debugging during development.
 
+// Fundraising payment configuration
+// Use 'demo' for local/test, or 'payhere', 'paypal', etc. for real gateways
+define('FUNDRAISING_PAYMENT_MODE', getenv('FUNDRAISING_PAYMENT_MODE') ?: 'demo');
+
+// Password reset (OTP) settings
+define('OTP_EXP_MINUTES', 10);
+define('OTP_RATE_LIMIT_SECONDS', 60);
+define('OTP_MAX_ATTEMPTS', 5);
+define('MAIL_FROM', 'no-reply@gradbridge.com');
+
+// SMTP settings for PHPMailer (Gmail example)
+define('SMTP_HOST', 'smtp.gmail.com');
+define('SMTP_PORT', 587);
+define('SMTP_SECURE', 'tls');
+define('SMTP_USER', '2023cs058@stu.ucsc.cmb.ac.lk');
+define('SMTP_PASS', 'gkcf gyax jpan ceby');
+define('SMTP_FROM', '2023cs058@stu.ucsc.cmb.ac.lk');
+define('SMTP_FROM_NAME', 'GradBridge');
